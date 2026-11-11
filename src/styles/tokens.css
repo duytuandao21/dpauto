@@ -1,0 +1,15 @@
+:root {
+  --background: #0b0d0f;
+  --surface: #15181b;
+  --raised: #202428;
+  --surface-secondary: #24282c;
+  --warm: #f4f1ea;
+  --white: #ffffff;
+  --orange: #ff5a1f;
+  --orange-secondary: #ff7b4a;
+  --muted-dark: #979da3;
+  --muted-light: #5f666d;
+  --text-muted: #ffffffb3;
+  --border-dark: #2d3237;
+  --border-light: #e4e9eb;
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "question": "Do I need an appointment?",
+    "answer": "Walk-ins are welcome for selected services, but we recommend calling ahead for longer services such as ceramic coating, paint correction, PPF, and window tint."
+  },
+  {
+    "question": "Do you accept walk-ins?",
+    "answer": "Yes. Availability depends on the service and how busy the shop is that day."
+  },
+  {
+    "question": "How long does detailing take?",
+    "answer": "Service time depends on the type of service, vehicle size, and vehicle condition."
+  },
+  {
+    "question": "How long does ceramic coating last?",
+    "answer": "Durability depends on the coating product, vehicle usage, maintenance, and environmental conditions."
+  },
+  {
+    "question": "Do prices vary by vehicle size?",
+    "answer": "Yes. Larger vehicles and vehicles requiring additional cleaning or preparation may have different pricing."
+  },
+  {
+    "question": "What services should I book in advance?",
+    "answer": "We recommend calling ahead for paint correction, ceramic coating, PPF installation, window tint, and larger detailing jobs."
+  },
+  {
+    "question": "Can you work on older vehicles?",
+    "answer": "Yes. We can inspect the vehicle first and recommend appropriate cleaning, restoration, or protection options."
+  },
+  {
+    "question": "Do you offer same-day service?",
+    "answer": "Some services may be completed the same day. Longer detailing and protection services may require additional time."
+  }
+]

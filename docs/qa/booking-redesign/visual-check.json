@@ -1,0 +1,297 @@
+[
+  {
+    "width": 360,
+    "route": "/quanly",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64,
+    "card": 176
+  },
+  {
+    "width": 360,
+    "route": "/quanly/lich-hen",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64,
+    "card": 176
+  },
+  {
+    "width": 360,
+    "route": "/quanly/khach-hang",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64
+  },
+  {
+    "width": 360,
+    "route": "/quanly/lich-hen/DP-0001",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64,
+    "card": 0
+  },
+  {
+    "width": 360,
+    "route": "/quanly/lich-hen/tao-moi",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64
+  },
+  {
+    "width": 360,
+    "route": "/quanly/cai-dat",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64
+  },
+  {
+    "width": 360,
+    "route": "/quanly/website",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64
+  },
+  {
+    "width": 390,
+    "route": "/quanly",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64,
+    "card": 176
+  },
+  {
+    "width": 390,
+    "route": "/quanly/lich-hen",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64,
+    "card": 176
+  },
+  {
+    "width": 390,
+    "route": "/quanly/khach-hang",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64
+  },
+  {
+    "width": 390,
+    "route": "/quanly/lich-hen/DP-0001",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64,
+    "card": 0
+  },
+  {
+    "width": 390,
+    "route": "/quanly/lich-hen/tao-moi",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64
+  },
+  {
+    "width": 390,
+    "route": "/quanly/cai-dat",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64
+  },
+  {
+    "width": 390,
+    "route": "/quanly/website",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 64
+  },
+  {
+    "width": 768,
+    "route": "/quanly",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65,
+    "card": 176
+  },
+  {
+    "width": 768,
+    "route": "/quanly/lich-hen",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65,
+    "card": 176
+  },
+  {
+    "width": 768,
+    "route": "/quanly/khach-hang",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65
+  },
+  {
+    "width": 768,
+    "route": "/quanly/lich-hen/DP-0001",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65,
+    "card": 176
+  },
+  {
+    "width": 768,
+    "route": "/quanly/lich-hen/tao-moi",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65
+  },
+  {
+    "width": 768,
+    "route": "/quanly/cai-dat",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65
+  },
+  {
+    "width": 768,
+    "route": "/quanly/website",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65
+  },
+  {
+    "width": 1024,
+    "route": "/quanly",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65,
+    "card": 180
+  },
+  {
+    "width": 1024,
+    "route": "/quanly/lich-hen",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65,
+    "card": 180
+  },
+  {
+    "width": 1024,
+    "route": "/quanly/khach-hang",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65
+  },
+  {
+    "width": 1024,
+    "route": "/quanly/lich-hen/DP-0001",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65,
+    "card": 180
+  },
+  {
+    "width": 1024,
+    "route": "/quanly/lich-hen/tao-moi",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65
+  },
+  {
+    "width": 1024,
+    "route": "/quanly/cai-dat",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65
+  },
+  {
+    "width": 1024,
+    "route": "/quanly/website",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "24px",
+    "header": 65
+  },
+  {
+    "width": 1440,
+    "route": "/quanly",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "26px",
+    "header": 65,
+    "card": 172
+  },
+  {
+    "width": 1440,
+    "route": "/quanly/lich-hen",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "26px",
+    "header": 65,
+    "card": 172
+  },
+  {
+    "width": 1440,
+    "route": "/quanly/khach-hang",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "26px",
+    "header": 65
+  },
+  {
+    "width": 1440,
+    "route": "/quanly/lich-hen/DP-0001",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "26px",
+    "header": 65,
+    "card": 172
+  },
+  {
+    "width": 1440,
+    "route": "/quanly/lich-hen/tao-moi",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "26px",
+    "header": 65
+  },
+  {
+    "width": 1440,
+    "route": "/quanly/cai-dat",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "26px",
+    "header": 65
+  },
+  {
+    "width": 1440,
+    "route": "/quanly/website",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "title": "26px",
+    "header": 65
+  }
+]

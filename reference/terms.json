@@ -1,0 +1,1402 @@
+{
+  "url": "https://hyperautocare.framer.website/terms",
+  "title": "Terms & Conditions | HyperAuto Care",
+  "text": "Services\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nCall Us: +1 206 555 0148\n\nContact Us\n\nLEGAL\n\nTerms of Service\n\nWelcome to HyperAuto Care.\n\nThese Terms of Service explain the rules and conditions for using our website and accessing information about our automotive detailing, protection, and vehicle care services.\n\nBy visiting our website or contacting HyperAuto Care, you agree to these terms.\n\nLast updated: August 12, 2026\n\n1. Website Use\n\nYou may use this website for personal and informational purposes related to our services.\n\nYou agree not to:\n\nUse this website for unlawful purposes\n\nAttempt to damage, disrupt, or gain unauthorized access to our website\n\nCopy or misuse website content without permission\n\nProvide false information when contacting us\n\nWe reserve the right to restrict access to our website if misuse or harmful activity is detected.\n\n2. Services\n\nHyperAuto Care provides professional automotive care services, including:\n\nVehicle detailing\n\nInterior cleaning\n\nPaint correction\n\nCeramic coating\n\nPaint protection film installation\n\nWindow tint services\n\nOther vehicle appearance and protection services\n\nService availability, pricing, and completion times may vary depending on:\n\nVehicle size\n\nVehicle condition\n\nService requirements\n\nCurrent availability\n\nWe may inspect a vehicle before confirming the recommended service.\n\n3. Service Estimates and Pricing\n\nPricing information provided on our website is intended as general guidance.\n\nFinal pricing may vary based on the actual condition of the vehicle and the level of work required.\n\nAdditional services may be recommended if unexpected conditions are discovered during inspection.\n\nWe will communicate any significant changes before additional work is performed.\n\n4. Appointments and Service Availability\n\nSome services may be available without an appointment.\n\nFor specialized services such as ceramic coating, paint correction, paint protection film, and window tint, we recommend contacting HyperAuto Care in advance.\n\nService completion times may vary depending on workload and vehicle requirements.\n\n5. Vehicle Responsibility\n\nCustomers are responsible for removing personal belongings from their vehicles before service.\n\nHyperAuto Care is not responsible for personal items left inside vehicles.\n\nCustomers should inform our team of any existing vehicle conditions, damage, modifications, or concerns before service begins.\n\n6. Results and Expectations\n\nAutomotive detailing and protection services improve vehicle appearance and protection but cannot guarantee the removal of every imperfection.\n\nResults may vary depending on:\n\nVehicle condition\n\nPrevious repairs\n\nPaint quality\n\nMaterial condition\n\nEnvironmental exposure\n\nOur team will provide professional recommendations based on the condition of each vehicle.\n\n7. Payments\n\nPayment terms will be communicated before or during service confirmation.\n\nCustomers are responsible for completing payment for approved services.\n\nPricing, promotions, and service availability may change without prior notice.\n\n8. Intellectual Property\n\nAll website content, including text, images, graphics, logos, and design elements, belongs to HyperAuto Care or its content providers and is protected by applicable intellectual property laws.\n\nYou may not reproduce, distribute, or use website materials without prior written permission.\n\n9. Third-Party Services\n\nOur website may include links to external websites or services.\n\nHyperAuto Care does not control third-party websites and is not responsible for their content, availability, or policies.\n\n10. Limitation of Liability\n\nHyperAuto Care is not responsible for indirect, incidental, or consequential damages resulting from the use of our website or services.\n\nOur responsibility is limited to the services directly provided and the terms agreed upon with the customer.\n\n11. Changes to These Terms\n\nWe may update these Terms of Service from time to time.\n\nAny changes will be posted on this page with an updated revision date.\n\nYour continued use of our website after changes are posted means you accept the updated terms.\n\n12. Contact Us\n\nIf you have questions about these Terms of Service, please contact us.\n\nHyperAuto Care\n\n000 Harbor Avenue SW, Suite 120, Seattle, WA 98126, United States\n\nPhone:\n\n+1 206 555 0148\n\nEmail:\n\ncontact@hyperautocare.com\n\nProfessional car care, detailing, paint protection, and vehicle appearance services in Seattle.\n\nHyperAuto Care\n\nHyperAuto Care\n\nNavigation\n\nHome\n\nServices\n\nService Process\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nContact\n\nContact\n\n+1 206 555 0148\n\ncontact@hyperautocare.com\n\n000 Harbor Avenue SW, Suite 120\n\nSeattle, WA 98126\n\nUSA\n\nOpening Hours\n\nMonday - Friday\n\n8:00 AM - 6:00 PM\n\nSaturday\n\n8:00 AM - 12:00 PM\n\nSunday\n\nClosed\n\n© HyperAuto Care. All rights reserved.\n\nDesigned by RedSignal.Red\n\nPrivacy Policy\n\nTerms of Service\n\nGet Template - Free\n\nCreate a free website with Framer, the website builder loved by startups, designers and agencies.\n\n ",
+  "blocks": [
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 397,
+      "y": 31,
+      "width": 57
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 496,
+      "y": 31,
+      "width": 46
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 565,
+      "y": 31,
+      "width": 62
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 651,
+      "y": 31,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 768,
+      "y": 31,
+      "width": 40
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 832,
+      "y": 31,
+      "width": 53
+    },
+    {
+      "tag": "P",
+      "text": "Call Us: +1 206 555 0148",
+      "html": "Call Us: +1 206 555 0148",
+      "name": "Label",
+      "x": 1006,
+      "y": 31,
+      "width": 174
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 1224,
+      "y": 31,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "LEGAL",
+      "html": "LEGAL",
+      "name": "Legal Eyebrow",
+      "x": 392,
+      "y": 236,
+      "width": 640
+    },
+    {
+      "tag": "H1",
+      "text": "Terms of Service",
+      "html": "Terms of Service",
+      "name": "Legal Page Title",
+      "x": 392,
+      "y": 270,
+      "width": 640
+    },
+    {
+      "tag": "P",
+      "text": "Welcome to HyperAuto Care.",
+      "html": "Welcome to HyperAuto Care.",
+      "name": "Legal Introduction",
+      "x": 392,
+      "y": 368,
+      "width": 640
+    },
+    {
+      "tag": "P",
+      "text": "These Terms of Service explain the rules and conditions for using our website and accessing information about our automotive detailing, protection, and vehicle care services.",
+      "html": "These Terms of Service explain the rules and conditions for using our website and accessing information about our automotive detailing, protection, and vehicle care services.",
+      "name": "Legal Introduction",
+      "x": 392,
+      "y": 413,
+      "width": 640
+    },
+    {
+      "tag": "P",
+      "text": "By visiting our website or contacting HyperAuto Care, you agree to these terms.",
+      "html": "By visiting our website or contacting HyperAuto Care, you agree to these terms.",
+      "name": "Legal Introduction",
+      "x": 392,
+      "y": 507,
+      "width": 640
+    },
+    {
+      "tag": "P",
+      "text": "Last updated: August 12, 2026",
+      "html": "Last updated: August 12, 2026",
+      "name": "Last Updated",
+      "x": 392,
+      "y": 550,
+      "width": 640
+    },
+    {
+      "tag": "H3",
+      "text": "1. Website Use",
+      "html": "1. Website Use",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 636,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "You may use this website for personal and informational purposes related to our services.",
+      "html": "You may use this website for personal and informational purposes related to our services.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 677,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "You agree not to:",
+      "html": "You agree not to:",
+      "name": "Section Body",
+      "x": 352,
+      "y": 722,
+      "width": 720
+    },
+    {
+      "tag": "LI",
+      "text": "Use this website for unlawful purposes",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Use this website for unlawful purposes</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 767,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Use this website for unlawful purposes",
+      "html": "Use this website for unlawful purposes",
+      "name": "Section Body",
+      "x": 373,
+      "y": 767,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Attempt to damage, disrupt, or gain unauthorized access to our website",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Attempt to damage, disrupt, or gain unauthorized access to our website</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 791,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Attempt to damage, disrupt, or gain unauthorized access to our website",
+      "html": "Attempt to damage, disrupt, or gain unauthorized access to our website",
+      "name": "Section Body",
+      "x": 373,
+      "y": 791,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Copy or misuse website content without permission",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Copy or misuse website content without permission</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 816,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Copy or misuse website content without permission",
+      "html": "Copy or misuse website content without permission",
+      "name": "Section Body",
+      "x": 373,
+      "y": 816,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Provide false information when contacting us",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Provide false information when contacting us</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 841,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Provide false information when contacting us",
+      "html": "Provide false information when contacting us",
+      "name": "Section Body",
+      "x": 373,
+      "y": 841,
+      "width": 700
+    },
+    {
+      "tag": "P",
+      "text": "We reserve the right to restrict access to our website if misuse or harmful activity is detected.",
+      "html": "We reserve the right to restrict access to our website if misuse or harmful activity is detected.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 886,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "2. Services",
+      "html": "2. Services",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 975,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care provides professional automotive care services, including:",
+      "html": "HyperAuto Care provides professional automotive care services, including:",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1015,
+      "width": 720
+    },
+    {
+      "tag": "LI",
+      "text": "Vehicle detailing",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Vehicle detailing</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1060,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Vehicle detailing",
+      "html": "Vehicle detailing",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1060,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Interior cleaning",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Interior cleaning</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1085,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Interior cleaning",
+      "html": "Interior cleaning",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1085,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Paint correction",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Paint correction</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1110,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Paint correction",
+      "html": "Paint correction",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1110,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Ceramic coating",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Ceramic coating</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1135,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Ceramic coating",
+      "html": "Ceramic coating",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1135,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Paint protection film installation",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Paint protection film installation</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1159,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Paint protection film installation",
+      "html": "Paint protection film installation",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1159,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Window tint services",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Window tint services</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1184,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Window tint services",
+      "html": "Window tint services",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1184,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Other vehicle appearance and protection services",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Other vehicle appearance and protection services</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1209,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Other vehicle appearance and protection services",
+      "html": "Other vehicle appearance and protection services",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1209,
+      "width": 700
+    },
+    {
+      "tag": "P",
+      "text": "Service availability, pricing, and completion times may vary depending on:",
+      "html": "Service availability, pricing, and completion times may vary depending on:",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1254,
+      "width": 720
+    },
+    {
+      "tag": "LI",
+      "text": "Vehicle size",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Vehicle size</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1299,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Vehicle size",
+      "html": "Vehicle size",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1299,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Vehicle condition",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Vehicle condition</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1323,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Vehicle condition",
+      "html": "Vehicle condition",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1323,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Service requirements",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Service requirements</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1348,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Service requirements",
+      "html": "Service requirements",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1348,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Current availability",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Current availability</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1373,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Current availability",
+      "html": "Current availability",
+      "name": "Section Body",
+      "x": 373,
+      "y": 1373,
+      "width": 700
+    },
+    {
+      "tag": "P",
+      "text": "We may inspect a vehicle before confirming the recommended service.",
+      "html": "We may inspect a vehicle before confirming the recommended service.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1418,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "3. Service Estimates and Pricing",
+      "html": "3. Service Estimates and Pricing",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 1507,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Pricing information provided on our website is intended as general guidance.",
+      "html": "Pricing information provided on our website is intended as general guidance.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1547,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Final pricing may vary based on the actual condition of the vehicle and the level of work required.",
+      "html": "Final pricing may vary based on the actual condition of the vehicle and the level of work required.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1592,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Additional services may be recommended if unexpected conditions are discovered during inspection.",
+      "html": "Additional services may be recommended if unexpected conditions are discovered during inspection.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1662,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "We will communicate any significant changes before additional work is performed.",
+      "html": "We will communicate any significant changes before additional work is performed.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1731,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "4. Appointments and Service Availability",
+      "html": "4. Appointments and Service Availability",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 1820,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Some services may be available without an appointment.",
+      "html": "Some services may be available without an appointment.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1861,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "For specialized services such as ceramic coating, paint correction, paint protection film, and window tint, we recommend contacting HyperAuto Care in advance.",
+      "html": "For specialized services such as ceramic coating, paint correction, paint protection film, and window tint, we recommend contacting HyperAuto Care in advance.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1906,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Service completion times may vary depending on workload and vehicle requirements.",
+      "html": "Service completion times may vary depending on workload and vehicle requirements.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 1975,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "5. Vehicle Responsibility",
+      "html": "5. Vehicle Responsibility",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 2064,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Customers are responsible for removing personal belongings from their vehicles before service.",
+      "html": "Customers are responsible for removing personal belongings from their vehicles before service.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2105,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care is not responsible for personal items left inside vehicles.",
+      "html": "HyperAuto Care is not responsible for personal items left inside vehicles.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2150,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Customers should inform our team of any existing vehicle conditions, damage, modifications, or concerns before service begins.",
+      "html": "Customers should inform our team of any existing vehicle conditions, damage, modifications, or concerns before service begins.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2195,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "6. Results and Expectations",
+      "html": "6. Results and Expectations",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 2308,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Automotive detailing and protection services improve vehicle appearance and protection but cannot guarantee the removal of every imperfection.",
+      "html": "Automotive detailing and protection services improve vehicle appearance and protection but cannot guarantee the removal of every imperfection.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2349,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Results may vary depending on:",
+      "html": "Results may vary depending on:",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2419,
+      "width": 720
+    },
+    {
+      "tag": "LI",
+      "text": "Vehicle condition",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Vehicle condition</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2463,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Vehicle condition",
+      "html": "Vehicle condition",
+      "name": "Section Body",
+      "x": 373,
+      "y": 2463,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Previous repairs",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Previous repairs</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2488,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Previous repairs",
+      "html": "Previous repairs",
+      "name": "Section Body",
+      "x": 373,
+      "y": 2488,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Paint quality",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Paint quality</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2513,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Paint quality",
+      "html": "Paint quality",
+      "name": "Section Body",
+      "x": 373,
+      "y": 2513,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Material condition",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Material condition</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2538,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Material condition",
+      "html": "Material condition",
+      "name": "Section Body",
+      "x": 373,
+      "y": 2538,
+      "width": 700
+    },
+    {
+      "tag": "LI",
+      "text": "Environmental exposure",
+      "html": "<p style=\"--framer-text-color:var(--token-0a7271af-2f77-4b23-9fa0-251c9278c9cb, rgb(196, 200, 203))\" class=\"framer-text\">Environmental exposure</p>",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2563,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Environmental exposure",
+      "html": "Environmental exposure",
+      "name": "Section Body",
+      "x": 373,
+      "y": 2563,
+      "width": 700
+    },
+    {
+      "tag": "P",
+      "text": "Our team will provide professional recommendations based on the condition of each vehicle.",
+      "html": "Our team will provide professional recommendations based on the condition of each vehicle.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2607,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "7. Payments",
+      "html": "7. Payments",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 2696,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Payment terms will be communicated before or during service confirmation.",
+      "html": "Payment terms will be communicated before or during service confirmation.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2737,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Customers are responsible for completing payment for approved services.",
+      "html": "Customers are responsible for completing payment for approved services.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2782,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Pricing, promotions, and service availability may change without prior notice.",
+      "html": "Pricing, promotions, and service availability may change without prior notice.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2827,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "8. Intellectual Property",
+      "html": "8. Intellectual Property",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 2915,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "All website content, including text, images, graphics, logos, and design elements, belongs to HyperAuto Care or its content providers and is protected by applicable intellectual property laws.",
+      "html": "All website content, including text, images, graphics, logos, and design elements, belongs to HyperAuto Care or its content providers and is protected by applicable intellectual property laws.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 2956,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "You may not reproduce, distribute, or use website materials without prior written permission.",
+      "html": "You may not reproduce, distribute, or use website materials without prior written permission.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 3051,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "9. Third-Party Services",
+      "html": "9. Third-Party Services",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 3139,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Our website may include links to external websites or services.",
+      "html": "Our website may include links to external websites or services.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 3180,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care does not control third-party websites and is not responsible for their content, availability, or policies.",
+      "html": "HyperAuto Care does not control third-party websites and is not responsible for their content, availability, or policies.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 3225,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "10. Limitation of Liability",
+      "html": "10. Limitation of Liability",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 3339,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care is not responsible for indirect, incidental, or consequential damages resulting from the use of our website or services.",
+      "html": "HyperAuto Care is not responsible for indirect, incidental, or consequential damages resulting from the use of our website or services.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 3379,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Our responsibility is limited to the services directly provided and the terms agreed upon with the customer.",
+      "html": "Our responsibility is limited to the services directly provided and the terms agreed upon with the customer.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 3449,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "11. Changes to These Terms",
+      "html": "11. Changes to These Terms",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 3563,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "We may update these Terms of Service from time to time.",
+      "html": "We may update these Terms of Service from time to time.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 3603,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Any changes will be posted on this page with an updated revision date.",
+      "html": "Any changes will be posted on this page with an updated revision date.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 3648,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Your continued use of our website after changes are posted means you accept the updated terms.",
+      "html": "Your continued use of our website after changes are posted means you accept the updated terms.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 3693,
+      "width": 720
+    },
+    {
+      "tag": "H3",
+      "text": "12. Contact Us",
+      "html": "12. Contact Us",
+      "name": "Section Heading",
+      "x": 352,
+      "y": 3807,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "If you have questions about these Terms of Service, please contact us.",
+      "html": "If you have questions about these Terms of Service, please contact us.",
+      "name": "Section Body",
+      "x": 352,
+      "y": 3847,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Terms of Service Contact Details",
+      "x": 376,
+      "y": 3960,
+      "width": 672
+    },
+    {
+      "tag": "P",
+      "text": "000 Harbor Avenue SW, Suite 120, Seattle, WA 98126, United States",
+      "html": "000 Harbor Avenue SW, Suite 120, Seattle, WA 98126, United States",
+      "name": "Terms of Service Contact Details",
+      "x": 376,
+      "y": 3995,
+      "width": 672
+    },
+    {
+      "tag": "P",
+      "text": "Phone:",
+      "html": "Phone:",
+      "name": "Phone",
+      "x": 376,
+      "y": 4030,
+      "width": 52
+    },
+    {
+      "tag": "P",
+      "text": "+1 206 555 0148",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-1s7ei9b\" data-styles-preset=\"ZyuoSYAHS\" href=\"tel:+12065550148\" rel=\"\">+1 206 555 0148</a><!--/$-->",
+      "name": "Phone",
+      "x": 438,
+      "y": 4030,
+      "width": 127
+    },
+    {
+      "tag": "P",
+      "text": "Email:",
+      "html": "Email:",
+      "name": "Email",
+      "x": 376,
+      "y": 4065,
+      "width": 45
+    },
+    {
+      "tag": "P",
+      "text": "contact@hyperautocare.com",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-1s7ei9b\" data-styles-preset=\"ZyuoSYAHS\" href=\"mailto:contact@hyperautocare.com\" rel=\"\">contact@hyperautocare.com</a><!--/$-->",
+      "name": "Email",
+      "x": 431,
+      "y": 4065,
+      "width": 227
+    },
+    {
+      "tag": "P",
+      "text": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "html": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "name": "Brand Description",
+      "x": 104,
+      "y": 4313,
+      "width": 300
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Facebook",
+      "x": 136,
+      "y": 4411,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Instagram",
+      "x": 136,
+      "y": 4449,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "Navigation",
+      "html": "Navigation",
+      "name": "Navigation Heading",
+      "x": 513,
+      "y": 4313,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Home",
+      "html": "Home",
+      "name": "Services",
+      "x": 513,
+      "y": 4351,
+      "width": 41
+    },
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 513,
+      "y": 4389,
+      "width": 60
+    },
+    {
+      "tag": "P",
+      "text": "Service Process",
+      "html": "Service Process",
+      "name": "Services",
+      "x": 513,
+      "y": 4427,
+      "width": 112
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 513,
+      "y": 4465,
+      "width": 48
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 513,
+      "y": 4503,
+      "width": 66
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 513,
+      "y": 4541,
+      "width": 99
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 513,
+      "y": 4579,
+      "width": 42
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 513,
+      "y": 4617,
+      "width": 56
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Services",
+      "x": 513,
+      "y": 4655,
+      "width": 55
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Contact Heading",
+      "x": 727,
+      "y": 4313,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "+1 206 555 0148",
+      "html": "+1 206 555 0148",
+      "name": "Services",
+      "x": 753,
+      "y": 4351,
+      "width": 115
+    },
+    {
+      "tag": "P",
+      "text": "contact@hyperautocare.com",
+      "html": "contact@hyperautocare.com",
+      "name": "Services",
+      "x": 753,
+      "y": 4389,
+      "width": 203
+    },
+    {
+      "tag": "P",
+      "text": "000 Harbor Avenue SW, Suite 120",
+      "html": "000 Harbor Avenue SW, Suite 120",
+      "name": "Street",
+      "x": 753,
+      "y": 4424,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Seattle, WA 98126",
+      "html": "Seattle, WA 98126",
+      "name": "City",
+      "x": 753,
+      "y": 4446,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "USA",
+      "html": "USA",
+      "name": "Country",
+      "x": 753,
+      "y": 4468,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Opening Hours",
+      "html": "Opening Hours",
+      "name": "Opening Hours Heading",
+      "x": 1046,
+      "y": 4313,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Monday - Friday",
+      "html": "Monday - Friday",
+      "name": "Days",
+      "x": 1046,
+      "y": 4348,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 6:00 PM",
+      "html": "8:00 AM - 6:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 4372,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Saturday",
+      "html": "Saturday",
+      "name": "Days",
+      "x": 1046,
+      "y": 4404,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 12:00 PM",
+      "html": "8:00 AM - 12:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 4428,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Sunday",
+      "html": "Sunday",
+      "name": "Day",
+      "x": 1046,
+      "y": 4460,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Closed",
+      "html": "Closed",
+      "name": "Status",
+      "x": 1046,
+      "y": 4484,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "© HyperAuto Care. All rights reserved.",
+      "html": "© HyperAuto Care. All rights reserved.",
+      "name": "Copyright",
+      "x": 104,
+      "y": 5144,
+      "width": 250
+    },
+    {
+      "tag": "P",
+      "text": "Designed by RedSignal.Red",
+      "html": "Designed by <!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"https://redsignal.red\" target=\"_blank\" rel=\"\">RedSignal.Red</a><!--/$-->",
+      "name": "Footer Bottom Bar",
+      "x": 363,
+      "y": 5144,
+      "width": 179
+    },
+    {
+      "tag": "P",
+      "text": "Privacy Policy",
+      "html": "Privacy Policy",
+      "name": "Services",
+      "x": 1082,
+      "y": 5147,
+      "width": 97
+    },
+    {
+      "tag": "P",
+      "text": "Terms of Service",
+      "html": "Terms of Service",
+      "name": "Services",
+      "x": 1203,
+      "y": 5147,
+      "width": 117
+    },
+    {
+      "tag": "P",
+      "text": "Get Template - Free",
+      "html": "Get Template - Free",
+      "name": "Get Free Template Button",
+      "x": 1256,
+      "y": 810,
+      "width": 138
+    },
+    {
+      "tag": "P",
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "html": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "name": "Content",
+      "x": 1335,
+      "y": 871,
+      "width": 0
+    }
+  ],
+  "images": [
+    {
+      "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+      "alt": "HyperAuto Care Logo",
+      "name": "Image Logo",
+      "y": 13,
+      "width": 146,
+      "height": 50
+    }
+  ],
+  "videos": [],
+  "links": [
+    {
+      "text": "",
+      "href": "./"
+    },
+    {
+      "text": "Services",
+      "href": "./services"
+    },
+    {
+      "text": "Pricing",
+      "href": "./#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "./our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "./news"
+    },
+    {
+      "text": "About",
+      "href": "./about"
+    },
+    {
+      "text": "Training",
+      "href": "./#training"
+    },
+    {
+      "text": "Call Us: +1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "Contact Us",
+      "href": "./contact"
+    },
+    {
+      "text": "+1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "contact@hyperautocare.com",
+      "href": "mailto:contact@hyperautocare.com"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.facebook.com"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.instagram.com"
+    },
+    {
+      "text": "Home",
+      "href": "./"
+    },
+    {
+      "text": "Services",
+      "href": "./services"
+    },
+    {
+      "text": "Service Process",
+      "href": "./#Our Service Process"
+    },
+    {
+      "text": "Pricing",
+      "href": "./#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "./our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "./news"
+    },
+    {
+      "text": "About",
+      "href": "./about"
+    },
+    {
+      "text": "Training",
+      "href": "./#training"
+    },
+    {
+      "text": "Contact",
+      "href": "./contact"
+    },
+    {
+      "text": "+1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "contact@hyperautocare.com",
+      "href": "mailto:contact@hyperautocare.com"
+    },
+    {
+      "text": "RedSignal.Red",
+      "href": "https://redsignal.red"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "./privacy"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "./terms"
+    },
+    {
+      "text": "Get Template - Free",
+      "href": "https://framer.link/bqU9862"
+    },
+    {
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "href": "https://www.framer.com"
+    }
+  ],
+  "sections": [
+    {
+      "name": "Terms of Service Legal Content",
+      "y": 76,
+      "height": 4157,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "120px 40px",
+      "gap": "48px"
+    },
+    {
+      "name": "Desktop",
+      "y": 4233,
+      "height": 962,
+      "background": "rgb(11, 13, 15)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Footer Content",
+      "y": 4233,
+      "height": 962,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "80px 32px 28px",
+      "gap": "72px"
+    },
+    {
+      "name": "Footer Information",
+      "y": 4313,
+      "height": 362,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "44px"
+    },
+    {
+      "name": "Logo",
+      "y": 4748,
+      "height": 300,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    }
+  ]
+}

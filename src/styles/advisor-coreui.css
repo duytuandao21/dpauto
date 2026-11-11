@@ -1,0 +1,482 @@
+/* Advisor workspace: CoreUI-inspired surface hierarchy and color roles. */
+.adm-app[data-theme="light"],
+.adm-app[data-theme="light"] .adm-dialog,
+.adm-dialog[data-theme="light"]:not(.mgr-dialog),
+.adm-toast[data-theme="light"]:not(.mgr-toast) {
+  --adm-font-increase: 2px;
+  --adm-bg: #f3f4f7;
+  --adm-sidebar: #212631;
+  --adm-surface: #fff;
+  --adm-raised: #f7f8fa;
+  --adm-input: #fff;
+  --adm-border: #d9dfe8;
+  --adm-text: #252b36;
+  --adm-muted: #5b687b;
+  --adm-accent: #5856d6;
+  --adm-accent-soft: #edecfb;
+  --adm-accent-text: #4543b5;
+  --adm-success: #15783b;
+  --adm-success-bg: #e3f5e8;
+  --adm-warning: #805300;
+  --adm-warning-bg: #fff3d6;
+  --adm-blue: #1b65bf;
+  --adm-blue-bg: #e7f1ff;
+  --adm-danger: #b42332;
+  --adm-danger-bg: #fdebed;
+  --adm-status-pending-text: #805300;
+  --adm-status-pending-bg: #fff3d6;
+  --adm-status-pending-border: #efd18c;
+  --adm-status-confirmed-text: #1759af;
+  --adm-status-confirmed-bg: #e7f1ff;
+  --adm-status-confirmed-border: #b7d3f5;
+  --adm-status-arrived-text: #08796e;
+  --adm-status-arrived-bg: #dff6f1;
+  --adm-status-arrived-border: #a8ded4;
+  --adm-status-completed-text: #146c3e;
+  --adm-status-completed-bg: #e3f5e8;
+  --adm-status-completed-border: #afd9bd;
+  --adm-status-cancelled-text: #b42332;
+  --adm-status-cancelled-bg: #fdebed;
+  --adm-status-cancelled-border: #efb6be;
+  --adm-status-no-show-text: #4e5b6d;
+  --adm-status-no-show-bg: #edf1f5;
+  --adm-status-no-show-border: #cbd4df;
+  --adv-primary-hover: #4644b5;
+  --adv-header-border: #d9dfe8;
+  --adv-sidebar-border: #333b49;
+  color-scheme: light;
+}
+
+.adm-app[data-theme="dark"],
+.adm-app[data-theme="dark"] .adm-dialog,
+.adm-dialog[data-theme="dark"]:not(.mgr-dialog),
+.adm-toast[data-theme="dark"]:not(.mgr-toast) {
+  --adm-font-increase: 2px;
+  --adm-bg: #1b2029;
+  --adm-sidebar: #171c25;
+  --adm-surface: #252c37;
+  --adm-raised: #303846;
+  --adm-input: #202630;
+  --adm-border: #445061;
+  --adm-text: #f2f5fa;
+  --adm-muted: #b7c1d0;
+  --adm-accent: #7775e7;
+  --adm-accent-soft: #7775e72b;
+  --adm-accent-text: #b9b8ff;
+  --adm-success: #79d59a;
+  --adm-success-bg: #173d2a;
+  --adm-warning: #f5c35d;
+  --adm-warning-bg: #493713;
+  --adm-blue: #79b3ff;
+  --adm-blue-bg: #1d3759;
+  --adm-danger: #ff9a9e;
+  --adm-danger-bg: #4d292f;
+  --adm-status-pending-text: #ffd476;
+  --adm-status-pending-bg: #493713;
+  --adm-status-pending-border: #8f681c;
+  --adm-status-confirmed-text: #a9d0ff;
+  --adm-status-confirmed-bg: #1d3759;
+  --adm-status-confirmed-border: #436b9d;
+  --adm-status-arrived-text: #8ce0d1;
+  --adm-status-arrived-bg: #174139;
+  --adm-status-arrived-border: #347d70;
+  --adm-status-completed-text: #90e6ad;
+  --adm-status-completed-bg: #173d2a;
+  --adm-status-completed-border: #39845a;
+  --adm-status-cancelled-text: #ffafb3;
+  --adm-status-cancelled-bg: #4d292f;
+  --adm-status-cancelled-border: #925056;
+  --adm-status-no-show-text: #cbd3e0;
+  --adm-status-no-show-bg: #343d49;
+  --adm-status-no-show-border: #647085;
+  --adv-primary-hover: #6866da;
+  --adv-header-border: #445061;
+  --adv-sidebar-border: #333b49;
+  color-scheme: dark;
+}
+
+.adm-app,
+.adm-dialog:not(.mgr-dialog),
+.adm-toast:not(.mgr-toast) {
+  letter-spacing: 0;
+}
+
+.adm-app {
+  background: var(--adm-bg);
+}
+
+.adm-app .adm-body,
+.adm-app .adm-main {
+  background: var(--adm-bg);
+}
+
+.adm-app .adm-header {
+  background: var(--adm-surface);
+  border-bottom-color: var(--adv-header-border);
+}
+
+.adm-app .adm-header-breadcrumb {
+  color: var(--adm-muted);
+}
+
+.adm-app .adm-header-breadcrumb strong {
+  color: var(--adm-text);
+  font-weight: 600;
+}
+
+.adm-app .adm-sidebar {
+  color: #eef1f6;
+  background: var(--adm-sidebar);
+  border-right-color: var(--adv-sidebar-border);
+}
+
+.adm-app .adm-sidebar-brand strong,
+.adm-app .adm-advisor strong {
+  color: #f5f7fb;
+}
+
+.adm-app .adm-sidebar-brand small,
+.adm-app .adm-advisor small,
+.adm-app .adm-nav-group {
+  color: #b7c1d0;
+}
+
+.adm-app .adm-sidebar .adm-nav-link {
+  color: #d4dbe6;
+}
+
+.adm-app .adm-sidebar .adm-nav-link:hover,
+.adm-app .adm-sidebar .adm-nav-link.is-active {
+  color: #fff;
+  background: #8791af2e;
+}
+
+.adm-app .adm-sidebar .adm-nav-link.is-active {
+  font-weight: 600;
+}
+
+.adm-app .adm-sidebar .adm-nav-link .icon,
+.adm-app .adm-header-actions .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.adm-app .adm-sidebar .adm-nav-count {
+  color: #fff;
+  background: #3b4555;
+}
+
+.adm-app .adm-sidebar .adm-advisor,
+.adm-app .adm-sidebar nav > div:nth-child(4) {
+  border-color: var(--adv-sidebar-border);
+}
+
+.adm-app .adm-sidebar .adm-avatar {
+  color: #fff;
+  background: #3b4555;
+  border-color: #515b6c;
+}
+
+.adm-app .adm-page-heading h1,
+.adm-app .adm-panel :is(h2, h3) {
+  letter-spacing: -0.015em;
+}
+
+.adm-app .adm-page-heading h1 {
+  font-weight: 650;
+}
+
+.adm-app .adm-panel,
+.adm-app .adm-booking-list,
+.adm-app .adm-customer-list,
+.adm-app .adv-order-list {
+  border-radius: 6px;
+  box-shadow: 0 1px 2px #1623390a;
+}
+
+.adm-app .adm-booking-card:hover,
+.adm-app .adm-customer-card:hover,
+.adm-app .adv-order-card:hover,
+.adm-app .adv-task-list a:hover {
+  background: var(--adm-raised);
+}
+
+.adm-app .adm-section-line,
+.adm-app .adm-form-section-title {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--adm-border);
+}
+
+.adm-app .adm-form-section-title > span {
+  color: var(--adm-accent-text);
+  background: var(--adm-accent-soft);
+  border-color: transparent;
+  font-weight: 700;
+}
+
+.adm-app .adm-kpi {
+  min-height: 108px;
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  background: #5856d6;
+}
+
+.adm-app .adm-kpi > div,
+.adm-app .adm-kpi strong,
+.adm-app .adm-kpi small,
+.adm-app .adm-kpi .icon {
+  color: inherit;
+  opacity: 1;
+}
+
+.adm-app .adm-kpi-pending {
+  color: #252b36;
+  background: #f9b115;
+}
+
+.adm-app .adm-kpi-confirmed {
+  background: #1b74d1;
+}
+
+.adm-app .adm-kpi-done {
+  background: #15783b;
+}
+
+.adm-app .adm-btn {
+  border-radius: 6px;
+  background: var(--adm-surface);
+}
+
+.adm-app .adm-btn:hover {
+  border-color: var(--adm-accent);
+  background: var(--adm-accent-soft);
+  color: var(--adm-accent-text);
+}
+
+.adm-app .adm-btn.adm-primary,
+.adm-dialog:not(.mgr-dialog) .adm-btn.adm-primary {
+  color: #fff;
+  border-color: #5856d6;
+  background: #5856d6;
+}
+
+.adm-app .adm-btn.adm-primary:hover,
+.adm-dialog:not(.mgr-dialog) .adm-btn.adm-primary:hover {
+  color: #fff;
+  border-color: var(--adv-primary-hover);
+  background: var(--adv-primary-hover);
+}
+
+.adm-app .adm-btn.adm-danger,
+.adm-dialog:not(.mgr-dialog) .adm-btn.adm-danger {
+  color: #fff;
+  border-color: #b42332;
+  background: #b42332;
+}
+
+.adm-app .adm-btn.adm-danger:hover,
+.adm-dialog:not(.mgr-dialog) .adm-btn.adm-danger:hover {
+  color: #fff;
+  border-color: #96212d;
+  background: #96212d;
+}
+
+.adm-app .adm-action-confirm,
+.adm-dialog:not(.mgr-dialog) .adm-action-confirm {
+  --adm-action-color: #1759af;
+}
+
+.adm-app .adm-action-arrive,
+.adm-dialog:not(.mgr-dialog) .adm-action-arrive {
+  --adm-action-color: #08796e;
+}
+
+.adm-app .adm-action-complete,
+.adm-dialog:not(.mgr-dialog) .adm-action-complete {
+  --adm-action-color: #146c3e;
+}
+
+.adm-app .adm-btn.adm-booking-action,
+.adm-dialog:not(.mgr-dialog) .adm-btn.adm-booking-action {
+  color: #fff;
+  border-color: var(--adm-action-color);
+  background: var(--adm-action-color);
+}
+
+.adm-app .adm-btn.adm-booking-action:hover,
+.adm-dialog:not(.mgr-dialog) .adm-btn.adm-booking-action:hover {
+  color: #fff;
+  border-color: var(--adm-action-color);
+  background: var(--adm-action-color);
+  filter: brightness(0.9);
+}
+
+.adm-app .adm-search,
+.adm-app .adm-field :is(input, select, textarea),
+.adm-app .adm-filters select,
+.adm-app .adm-results-row select,
+.adm-app .adv-filters input {
+  border-radius: 6px;
+  background: var(--adm-input);
+  border-color: var(--adm-border);
+}
+
+.adm-app .adm-search:focus-within,
+.adm-app .adm-field:not(.has-error) :is(input, select, textarea):focus,
+.adm-app .adm-filters select:focus,
+.adm-app .adv-filters input:focus {
+  border-color: var(--adm-accent);
+  box-shadow: 0 0 0 3px var(--adm-accent-soft);
+}
+
+.adm-app .adm-segment,
+.adm-app .adm-date-strip button,
+.adm-app .adm-filters,
+.adm-app .adv-check-grid label,
+.adm-app .adm-service-options > label,
+.adm-app .adv-line {
+  border-radius: 6px;
+}
+
+.adm-app .adm-segment button.is-active {
+  color: var(--adm-accent-text);
+}
+
+.adm-app .adm-date-strip button.is-active {
+  color: #fff;
+  border-color: #5856d6;
+  background: #5856d6;
+}
+
+.adm-app .adm-quick-filters button.is-active {
+  color: var(--adm-accent-text);
+}
+
+.adm-app .adm-quick-filters button.is-active::after {
+  background: var(--adm-accent);
+}
+
+.adm-app .adm-badge,
+.adm-app .adm-ended {
+  border-radius: 5px;
+}
+
+.adm-app .adm-bottom-nav {
+  color: var(--adm-muted);
+  background: var(--adm-surface);
+  border-top-color: var(--adm-border);
+}
+
+.adm-app .adm-bottom-nav .is-active {
+  color: var(--adm-accent-text);
+}
+
+.adm-app .adm-bottom-nav .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.adm-app .adv-tabs {
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--adm-surface);
+}
+
+.adm-app .adv-tabs a {
+  min-height: 48px;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+}
+
+.adm-app .adv-tabs a.is-active {
+  color: var(--adm-accent-text);
+  border-bottom-color: var(--adm-accent);
+  background: transparent;
+}
+
+.adm-app .adv-task-list,
+.adm-app .adv-order-list {
+  background: var(--adm-surface);
+}
+
+.adm-app .adv-task-list a,
+.adm-app .adv-order-card {
+  transition: background 0.15s ease;
+}
+
+.adm-app .adv-progress {
+  background: var(--adm-raised);
+}
+
+.adm-app .adv-progress i {
+  background: var(--adm-accent);
+}
+
+.adm-app .adv-line {
+  background: var(--adm-raised);
+}
+
+.adm-app .adv-line :is(input, select, textarea) {
+  background: var(--adm-input);
+}
+
+.adm-app .adv-advanced > summary {
+  color: var(--adm-accent-text);
+}
+
+.adm-dialog:not(.mgr-dialog) {
+  background: var(--adm-surface);
+  border-color: var(--adm-border);
+  color: var(--adm-text);
+}
+
+.adm-toast:not(.mgr-toast) {
+  background: var(--adm-surface);
+  border-color: var(--adm-border);
+  color: var(--adm-text);
+}
+
+@media (min-width: 768px) {
+  .adm-app .adm-body {
+    min-height: 100dvh;
+  }
+}
+
+@media (min-width: 1200px) {
+  .adm-app {
+    background: var(--adm-sidebar);
+  }
+
+  .adm-app .adm-body {
+    margin: 0 0 0 232px;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .adm-app.adm-collapsed .adm-body {
+    margin-left: 72px;
+  }
+
+  .adm-app .adm-header {
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .adm-app .adm-kpi {
+    min-height: 104px;
+  }
+
+  .adm-app .adm-panel {
+    padding: 16px;
+  }
+}
+
+@media print {
+  .adm-app,
+  .adm-app .adm-body,
+  .adm-app .adm-main {
+    background: #fff !important;
+  }
+}

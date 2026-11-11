@@ -1,0 +1,10 @@
+{
+  "cardHover": {
+    "background": "rgb(255, 90, 31)",
+    "labelWidth": 87.88750457763672
+  },
+  "typography768": {
+    "fontSize": "60px",
+    "overflow": false
+  }
+}

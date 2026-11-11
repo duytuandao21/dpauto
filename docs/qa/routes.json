@@ -1,0 +1,132 @@
+[
+  {
+    "route": "/",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/our-work",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/news",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/services",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/privacy",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/about",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/contact",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/terms",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/404",
+    "status": 404,
+    "ok": true
+  },
+  {
+    "route": "/services/detail-wash",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/services/interior-detailing",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/services/paint-correction",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/services/paint-protection-film-(ppf)",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/services/window-tint",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/services/ceramic-coating",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/services/engine-bay-detailing",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/services/glass-water-spot-removal",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/services/headlight-restoration",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/services/underbody-coating-protection",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/news/ceramic-coating-maintenance-guide",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/news/ppf-vs-ceramic-coating",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/news/window-tint-aftercare-guide",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/news/seattle-wet-weather-car-care",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/news/why-detailing-preparation-matters",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/news/seasonal-vehicle-protection-special",
+    "status": 200,
+    "ok": true
+  },
+  {
+    "route": "/page-that-does-not-exist",
+    "status": 404,
+    "ok": true
+  }
+]

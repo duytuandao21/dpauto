@@ -1,0 +1,134 @@
+[
+  {
+    "theme": "dark",
+    "status": "pending",
+    "text": "Chờ xác nhận",
+    "color": "rgb(252, 211, 77)",
+    "bg": "rgb(58, 42, 14)",
+    "border": "rgb(120, 87, 16)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 9.6
+  },
+  {
+    "theme": "dark",
+    "status": "confirmed",
+    "text": "Đã xác nhận",
+    "color": "rgb(147, 197, 253)",
+    "bg": "rgb(21, 46, 80)",
+    "border": "rgb(43, 86, 132)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 7.57
+  },
+  {
+    "theme": "dark",
+    "status": "arrived",
+    "text": "Đã đến",
+    "color": "rgb(216, 180, 254)",
+    "bg": "rgb(48, 32, 71)",
+    "border": "rgb(105, 65, 140)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 8.35
+  },
+  {
+    "theme": "dark",
+    "status": "completed",
+    "text": "Hoàn thành",
+    "color": "rgb(134, 239, 172)",
+    "bg": "rgb(18, 57, 39)",
+    "border": "rgb(36, 99, 66)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 9.12
+  },
+  {
+    "theme": "dark",
+    "status": "cancelled",
+    "text": "Đã hủy",
+    "color": "rgb(255, 171, 171)",
+    "bg": "rgb(72, 32, 32)",
+    "border": "rgb(132, 60, 60)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 7.76
+  },
+  {
+    "theme": "dark",
+    "status": "no_show",
+    "text": "Không đến",
+    "color": "rgb(203, 213, 225)",
+    "bg": "rgb(37, 45, 56)",
+    "border": "rgb(84, 97, 114)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 9.36
+  },
+  {
+    "theme": "light",
+    "status": "pending",
+    "text": "Chờ xác nhận",
+    "color": "rgb(133, 77, 14)",
+    "bg": "rgb(254, 243, 199)",
+    "border": "rgb(245, 210, 121)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 6.15
+  },
+  {
+    "theme": "light",
+    "status": "confirmed",
+    "text": "Đã xác nhận",
+    "color": "rgb(30, 64, 175)",
+    "bg": "rgb(219, 234, 254)",
+    "border": "rgb(147, 183, 239)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 7.15
+  },
+  {
+    "theme": "light",
+    "status": "arrived",
+    "text": "Đã đến",
+    "color": "rgb(107, 33, 168)",
+    "bg": "rgb(243, 232, 255)",
+    "border": "rgb(206, 177, 238)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 7.39
+  },
+  {
+    "theme": "light",
+    "status": "completed",
+    "text": "Hoàn thành",
+    "color": "rgb(22, 101, 52)",
+    "bg": "rgb(220, 252, 231)",
+    "border": "rgb(146, 217, 173)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 6.49
+  },
+  {
+    "theme": "light",
+    "status": "cancelled",
+    "text": "Đã hủy",
+    "color": "rgb(180, 35, 24)",
+    "bg": "rgb(255, 241, 241)",
+    "border": "rgb(243, 170, 170)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 5.98
+  },
+  {
+    "theme": "light",
+    "status": "no_show",
+    "text": "Không đến",
+    "color": "rgb(71, 85, 105)",
+    "bg": "rgb(241, 245, 249)",
+    "border": "rgb(203, 213, 225)",
+    "icon": true,
+    "overflow": false,
+    "contrast": 6.92
+  }
+]

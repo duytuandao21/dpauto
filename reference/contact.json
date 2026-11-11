@@ -1,0 +1,934 @@
+{
+  "url": "https://hyperautocare.framer.website/contact",
+  "title": "Contact HyperAuto Care | Book Your Car Detailing Service",
+  "text": "Services\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nCall Us: +1 206 555 0148\n\nContact Us\n\nContact Us\nVisit HyperAuto Care\nAddress\n\n000 Harbor Avenue SW, Suite 120\n\nSeattle, WA 98126, United States\n\nGet Directions\n\nPhone\n\n+1 206 555 0148\n\nOpening Hours\n\nMonday - Friday\n\n8:00 AM - 6:00 PM\n\nSaturday\n\n8:00 AM - 12:00 PM\n\nSunday\n\nClosed\n\nEmail\n\ncontact@hyperautocare.com\n\nWe are closed on major holidays. If you plan to visit during a holiday, please contact us first to confirm our hours.\n\nFrequently Asked Questions\n\nClear answers about appointments, timing, pricing, and service availability.\n\nDo I need an appointment?\n\nDo you accept walk-ins?\n\nHow long does detailing take?\n\nHow long does ceramic coating last?\n\nDo prices vary by vehicle size?\n\nWhat services should I book in advance?\n\nCan you work on older vehicles?\n\nDo you offer same-day service?\n\nGive Your Vehicle the Care It Deserves\n\nFrom routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.\n\nContact Us\n\nCall Now\n\nProfessional car care, detailing, paint protection, and vehicle appearance services in Seattle.\n\nHyperAuto Care\n\nHyperAuto Care\n\nNavigation\n\nHome\n\nServices\n\nService Process\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nContact\n\nContact\n\n+1 206 555 0148\n\ncontact@hyperautocare.com\n\n000 Harbor Avenue SW, Suite 120\n\nSeattle, WA 98126\n\nUSA\n\nOpening Hours\n\nMonday - Friday\n\n8:00 AM - 6:00 PM\n\nSaturday\n\n8:00 AM - 12:00 PM\n\nSunday\n\nClosed\n\n© HyperAuto Care. All rights reserved.\n\nDesigned by RedSignal.Red\n\nPrivacy Policy\n\nTerms of Service\n\nGet Template - Free\n\nCreate a free website with Framer, the website builder loved by startups, designers and agencies.\n\n ",
+  "blocks": [
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 397,
+      "y": 31,
+      "width": 57
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 496,
+      "y": 31,
+      "width": 46
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 565,
+      "y": 31,
+      "width": 62
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 651,
+      "y": 31,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 768,
+      "y": 31,
+      "width": 40
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 832,
+      "y": 31,
+      "width": 53
+    },
+    {
+      "tag": "P",
+      "text": "Call Us: +1 206 555 0148",
+      "html": "Call Us: +1 206 555 0148",
+      "name": "Label",
+      "x": 1006,
+      "y": 31,
+      "width": 174
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 1224,
+      "y": 31,
+      "width": 78
+    },
+    {
+      "tag": "H1",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Header",
+      "x": 104,
+      "y": 236,
+      "width": 750
+    },
+    {
+      "tag": "H2",
+      "text": "Visit HyperAuto Care",
+      "html": "Visit HyperAuto Care",
+      "name": "Section Heading",
+      "x": 104,
+      "y": 596,
+      "width": 560
+    },
+    {
+      "tag": "H3",
+      "text": "Address",
+      "html": "Address",
+      "name": "Label",
+      "x": 150,
+      "y": 725,
+      "width": 494
+    },
+    {
+      "tag": "P",
+      "text": "000 Harbor Avenue SW, Suite 120",
+      "html": "000 Harbor Avenue SW, Suite 120",
+      "name": "Street",
+      "x": 124,
+      "y": 772,
+      "width": 520
+    },
+    {
+      "tag": "P",
+      "text": "Seattle, WA 98126, United States",
+      "html": "Seattle, WA 98126, United States",
+      "name": "City",
+      "x": 124,
+      "y": 800,
+      "width": 520
+    },
+    {
+      "tag": "P",
+      "text": "Get Directions",
+      "html": "Get Directions",
+      "name": "Label",
+      "x": 142,
+      "y": 859,
+      "width": 100
+    },
+    {
+      "tag": "H3",
+      "text": "Phone",
+      "html": "Phone",
+      "name": "Label",
+      "x": 150,
+      "y": 937,
+      "width": 210
+    },
+    {
+      "tag": "P",
+      "text": "+1 206 555 0148",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"tel:+12065550148\" target=\"_blank\" rel=\"\">+1 206 555 0148</a><!--/$-->",
+      "name": "Phone Value",
+      "x": 124,
+      "y": 1077,
+      "width": 236
+    },
+    {
+      "tag": "H3",
+      "text": "Opening Hours",
+      "html": "Opening Hours",
+      "name": "Label",
+      "x": 434,
+      "y": 937,
+      "width": 210
+    },
+    {
+      "tag": "P",
+      "text": "Monday - Friday",
+      "html": "Monday - Friday",
+      "name": "1",
+      "x": 408,
+      "y": 1153,
+      "width": 236
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 6:00 PM",
+      "html": "8:00 AM - 6:00 PM",
+      "name": "1",
+      "x": 408,
+      "y": 1175,
+      "width": 236
+    },
+    {
+      "tag": "P",
+      "text": "Saturday",
+      "html": "Saturday",
+      "name": "2",
+      "x": 408,
+      "y": 1210,
+      "width": 236
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 12:00 PM",
+      "html": "8:00 AM - 12:00 PM",
+      "name": "2",
+      "x": 408,
+      "y": 1233,
+      "width": 236
+    },
+    {
+      "tag": "P",
+      "text": "Sunday",
+      "html": "Sunday",
+      "name": "3",
+      "x": 408,
+      "y": 1267,
+      "width": 236
+    },
+    {
+      "tag": "P",
+      "text": "Closed",
+      "html": "Closed",
+      "name": "3",
+      "x": 408,
+      "y": 1290,
+      "width": 236
+    },
+    {
+      "tag": "H3",
+      "text": "Email",
+      "html": "Email",
+      "name": "Label",
+      "x": 150,
+      "y": 1150,
+      "width": 210
+    },
+    {
+      "tag": "P",
+      "text": "contact@hyperautocare.com",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"mailto:contact@hyperautocare.com\" target=\"_blank\" rel=\"\">contact@hyperautocare.com</a><!--/$-->",
+      "name": "Email Value",
+      "x": 124,
+      "y": 1290,
+      "width": 236
+    },
+    {
+      "tag": "P",
+      "text": "We are closed on major holidays. If you plan to visit during a holiday, please contact us first to confirm our hours.",
+      "html": "We are closed on major holidays. If you plan to visit during a holiday, please contact us first to confirm our hours.",
+      "name": "Street",
+      "x": 104,
+      "y": 1346,
+      "width": 560
+    },
+    {
+      "tag": "H2",
+      "text": "Frequently Asked Questions",
+      "html": "Frequently Asked Questions",
+      "name": "Section Heading",
+      "x": 104,
+      "y": 1636,
+      "width": 387
+    },
+    {
+      "tag": "P",
+      "text": "Clear answers about appointments, timing, pricing, and service availability.",
+      "html": "Clear answers about appointments, timing, pricing, and service availability.",
+      "name": "Supporting Text",
+      "x": 104,
+      "y": 1769,
+      "width": 387
+    },
+    {
+      "tag": "P",
+      "text": "Do I need an appointment?",
+      "html": "Do I need an appointment?",
+      "name": "Question",
+      "x": 619,
+      "y": 1675,
+      "width": 621
+    },
+    {
+      "tag": "P",
+      "text": "Do you accept walk-ins?",
+      "html": "Do you accept walk-ins?",
+      "name": "Question",
+      "x": 619,
+      "y": 1767,
+      "width": 621
+    },
+    {
+      "tag": "P",
+      "text": "How long does detailing take?",
+      "html": "How long does detailing take?",
+      "name": "Question",
+      "x": 619,
+      "y": 1859,
+      "width": 621
+    },
+    {
+      "tag": "P",
+      "text": "How long does ceramic coating last?",
+      "html": "How long does ceramic coating last?",
+      "name": "Question",
+      "x": 619,
+      "y": 1951,
+      "width": 621
+    },
+    {
+      "tag": "P",
+      "text": "Do prices vary by vehicle size?",
+      "html": "Do prices vary by vehicle size?",
+      "name": "Question",
+      "x": 619,
+      "y": 2043,
+      "width": 621
+    },
+    {
+      "tag": "P",
+      "text": "What services should I book in advance?",
+      "html": "What services should I book in advance?",
+      "name": "Question",
+      "x": 619,
+      "y": 2135,
+      "width": 621
+    },
+    {
+      "tag": "P",
+      "text": "Can you work on older vehicles?",
+      "html": "Can you work on older vehicles?",
+      "name": "Question",
+      "x": 619,
+      "y": 2227,
+      "width": 621
+    },
+    {
+      "tag": "P",
+      "text": "Do you offer same-day service?",
+      "html": "Do you offer same-day service?",
+      "name": "Question",
+      "x": 619,
+      "y": 2319,
+      "width": 621
+    },
+    {
+      "tag": "H2",
+      "text": "Give Your Vehicle the Care It Deserves",
+      "html": "Give Your Vehicle the Care It Deserves",
+      "name": "Final CTA Heading",
+      "x": 706,
+      "y": 2781,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "html": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "name": "Final CTA Description",
+      "x": 706,
+      "y": 2918,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 724,
+      "y": 3011,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "Call Now",
+      "html": "Call Now",
+      "name": "Label",
+      "x": 879,
+      "y": 3011,
+      "width": 63
+    },
+    {
+      "tag": "P",
+      "text": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "html": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "name": "Brand Description",
+      "x": 104,
+      "y": 3424,
+      "width": 300
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Facebook",
+      "x": 136,
+      "y": 3521,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Instagram",
+      "x": 136,
+      "y": 3559,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "Navigation",
+      "html": "Navigation",
+      "name": "Navigation Heading",
+      "x": 513,
+      "y": 3424,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Home",
+      "html": "Home",
+      "name": "Services",
+      "x": 513,
+      "y": 3461,
+      "width": 41
+    },
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 513,
+      "y": 3499,
+      "width": 60
+    },
+    {
+      "tag": "P",
+      "text": "Service Process",
+      "html": "Service Process",
+      "name": "Services",
+      "x": 513,
+      "y": 3537,
+      "width": 112
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 513,
+      "y": 3575,
+      "width": 48
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 513,
+      "y": 3613,
+      "width": 66
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 513,
+      "y": 3651,
+      "width": 99
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 513,
+      "y": 3689,
+      "width": 42
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 513,
+      "y": 3727,
+      "width": 56
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Services",
+      "x": 513,
+      "y": 3765,
+      "width": 55
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Contact Heading",
+      "x": 727,
+      "y": 3424,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "+1 206 555 0148",
+      "html": "+1 206 555 0148",
+      "name": "Services",
+      "x": 753,
+      "y": 3461,
+      "width": 115
+    },
+    {
+      "tag": "P",
+      "text": "contact@hyperautocare.com",
+      "html": "contact@hyperautocare.com",
+      "name": "Services",
+      "x": 753,
+      "y": 3499,
+      "width": 203
+    },
+    {
+      "tag": "P",
+      "text": "000 Harbor Avenue SW, Suite 120",
+      "html": "000 Harbor Avenue SW, Suite 120",
+      "name": "Street",
+      "x": 753,
+      "y": 3534,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Seattle, WA 98126",
+      "html": "Seattle, WA 98126",
+      "name": "City",
+      "x": 753,
+      "y": 3556,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "USA",
+      "html": "USA",
+      "name": "Country",
+      "x": 753,
+      "y": 3578,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Opening Hours",
+      "html": "Opening Hours",
+      "name": "Opening Hours Heading",
+      "x": 1046,
+      "y": 3424,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Monday - Friday",
+      "html": "Monday - Friday",
+      "name": "Days",
+      "x": 1046,
+      "y": 3458,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 6:00 PM",
+      "html": "8:00 AM - 6:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 3482,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Saturday",
+      "html": "Saturday",
+      "name": "Days",
+      "x": 1046,
+      "y": 3514,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 12:00 PM",
+      "html": "8:00 AM - 12:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 3538,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Sunday",
+      "html": "Sunday",
+      "name": "Day",
+      "x": 1046,
+      "y": 3570,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Closed",
+      "html": "Closed",
+      "name": "Status",
+      "x": 1046,
+      "y": 3594,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "© HyperAuto Care. All rights reserved.",
+      "html": "© HyperAuto Care. All rights reserved.",
+      "name": "Copyright",
+      "x": 104,
+      "y": 4255,
+      "width": 250
+    },
+    {
+      "tag": "P",
+      "text": "Designed by RedSignal.Red",
+      "html": "Designed by <!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"https://redsignal.red\" target=\"_blank\" rel=\"\">RedSignal.Red</a><!--/$-->",
+      "name": "Footer Bottom Bar",
+      "x": 363,
+      "y": 4255,
+      "width": 179
+    },
+    {
+      "tag": "P",
+      "text": "Privacy Policy",
+      "html": "Privacy Policy",
+      "name": "Services",
+      "x": 1082,
+      "y": 4257,
+      "width": 97
+    },
+    {
+      "tag": "P",
+      "text": "Terms of Service",
+      "html": "Terms of Service",
+      "name": "Services",
+      "x": 1203,
+      "y": 4257,
+      "width": 117
+    },
+    {
+      "tag": "P",
+      "text": "Get Template - Free",
+      "html": "Get Template - Free",
+      "name": "Get Free Template Button",
+      "x": 1256,
+      "y": 810,
+      "width": 138
+    },
+    {
+      "tag": "P",
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "html": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "name": "Content",
+      "x": 1335,
+      "y": 871,
+      "width": 0
+    }
+  ],
+  "images": [
+    {
+      "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+      "alt": "HyperAuto Care Logo",
+      "name": "Image Logo",
+      "y": 13,
+      "width": 146,
+      "height": 50
+    },
+    {
+      "src": "https://framerusercontent.com/images/ihf52NN3NIv9H49muw7VdKygQI.webp?width=801&height=1200",
+      "alt": "Classic black car viewed from the rear inside a dimly lit professional detailing garage",
+      "name": "Hero Image",
+      "y": 76,
+      "width": 1425,
+      "height": 400
+    },
+    {
+      "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+      "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+      "name": "Background",
+      "y": 2394,
+      "width": 1510,
+      "height": 916
+    }
+  ],
+  "videos": [],
+  "links": [
+    {
+      "text": "",
+      "href": "./"
+    },
+    {
+      "text": "Services",
+      "href": "./services"
+    },
+    {
+      "text": "Pricing",
+      "href": "./#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "./our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "./news"
+    },
+    {
+      "text": "About",
+      "href": "./about"
+    },
+    {
+      "text": "Training",
+      "href": "./#training"
+    },
+    {
+      "text": "Call Us: +1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "Contact Us",
+      "href": "./contact"
+    },
+    {
+      "text": "Get Directions",
+      "href": "https://www.google.com/maps?cid=16780304667859729852&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAMYASAF&hl=en-US&source=embed"
+    },
+    {
+      "text": "+1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "contact@hyperautocare.com",
+      "href": "mailto:contact@hyperautocare.com"
+    },
+    {
+      "text": "Contact Us",
+      "href": "./contact"
+    },
+    {
+      "text": "Call Now",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.facebook.com"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.instagram.com"
+    },
+    {
+      "text": "Home",
+      "href": "./"
+    },
+    {
+      "text": "Services",
+      "href": "./services"
+    },
+    {
+      "text": "Service Process",
+      "href": "./#Our Service Process"
+    },
+    {
+      "text": "Pricing",
+      "href": "./#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "./our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "./news"
+    },
+    {
+      "text": "About",
+      "href": "./about"
+    },
+    {
+      "text": "Training",
+      "href": "./#training"
+    },
+    {
+      "text": "Contact",
+      "href": "./contact"
+    },
+    {
+      "text": "+1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "contact@hyperautocare.com",
+      "href": "mailto:contact@hyperautocare.com"
+    },
+    {
+      "text": "RedSignal.Red",
+      "href": "https://redsignal.red"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "./privacy"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "./terms"
+    },
+    {
+      "text": "Get Template - Free",
+      "href": "https://framer.link/bqU9862"
+    },
+    {
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "href": "https://www.framer.com"
+    }
+  ],
+  "sections": [
+    {
+      "name": "Banner",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "60px"
+    },
+    {
+      "name": "Hero Image",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Hero Overlay",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Header",
+      "y": 212,
+      "height": 129,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px 32px",
+      "gap": "32px"
+    },
+    {
+      "name": "Desktop",
+      "y": 476,
+      "height": 1040,
+      "background": "rgb(244, 241, 234)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Location & Contact Content",
+      "y": 476,
+      "height": 1040,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "120px 32px",
+      "gap": "32px"
+    },
+    {
+      "name": "Desktop",
+      "y": 1516,
+      "height": 964,
+      "background": "rgb(11, 13, 15)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "FAQ Content",
+      "y": 1516,
+      "height": 964,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "120px 32px",
+      "gap": "54px"
+    },
+    {
+      "name": "Desktop",
+      "y": 2480,
+      "height": 864,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Background",
+      "y": 2394,
+      "height": 916,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Final CTA Content",
+      "y": 2709,
+      "height": 407,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px 32px",
+      "gap": "24px"
+    },
+    {
+      "name": "Desktop",
+      "y": 3344,
+      "height": 962,
+      "background": "rgb(11, 13, 15)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Footer Content",
+      "y": 3344,
+      "height": 962,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "80px 32px 28px",
+      "gap": "72px"
+    },
+    {
+      "name": "Footer Information",
+      "y": 3424,
+      "height": 362,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "44px"
+    },
+    {
+      "name": "Logo",
+      "y": 3858,
+      "height": 300,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    }
+  ]
+}

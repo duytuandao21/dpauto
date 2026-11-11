@@ -1,0 +1,3293 @@
+{
+  "pages": [
+    {
+      "url": "https://hyperautocare.framer.website/services/detail-wash",
+      "title": "Detail Wash | HyperAuto Care",
+      "headings": [
+        "Detail Wash",
+        "Overview",
+        "This Service Is Ideal For:",
+        "Service Process",
+        "Step 01",
+        "Vehicle Inspection",
+        "Step 02",
+        "Exterior Cleaning",
+        "Step 03",
+        "Detail Finishing",
+        "Step 04",
+        "Final Check",
+        "Why Choose HyperAuto Care",
+        "Protect Your Vehicle Appearance",
+        "Safer Than Automatic Washes",
+        "Maintain Long-Term Value",
+        "Refresh Your Daily Drive",
+        "Frequently Asked Questions",
+        "Detail Wash",
+        "Gallery",
+        "Ready To Refresh Your Vehicle?",
+        "Other Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 8005,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service process in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/o2dUjNf8zaSm1OA9O9k0HFYVSIU.webp",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service process in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/goYpkWeKDzA4B82FnuXUu7k24k.webp",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "employee is washing in front of the car",
+          "src": "https://framerusercontent.com/images/9mp3sQGwmY4hKIsOqhXysjuf8.webp?width=801&height=1200",
+          "width": 1440,
+          "height": 2157
+        },
+        {
+          "alt": "employee is washing the car door",
+          "src": "https://framerusercontent.com/images/YjyU4xe5fHksonoIfOWoSaXSbAg.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 60,
+          "height": 89
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 60,
+          "height": 90
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 59,
+          "height": 44
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 60,
+          "height": 80
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "Professional car wash service with technician cleaning a luxury vehicle exterior using water and foam.",
+          "src": "https://framerusercontent.com/images/IPz1ZOzMs2KRfySU3adLI7XJnvE.webp?width=1200&height=799",
+          "width": 1440,
+          "height": 958
+        },
+        {
+          "alt": "Luxury car undergoing professional detailing wash with foam cleaning at an auto care facility.",
+          "src": "https://framerusercontent.com/images/kTckAZt9vVBxcu58WMY1e0SD6Q.webp?width=1200&height=799",
+          "width": 1440,
+          "height": 958
+        },
+        {
+          "alt": "Detailing technician hand washing a vehicle surface with soap foam during exterior car cleaning.",
+          "src": "https://framerusercontent.com/images/YjyU4xe5fHksonoIfOWoSaXSbAg.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "Car detailing professional cleaning and polishing a vehicle front surface inside a workshop.",
+          "src": "https://framerusercontent.com/images/9mp3sQGwmY4hKIsOqhXysjuf8.webp?width=801&height=1200",
+          "width": 1440,
+          "height": 2157
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/services/interior-detailing",
+      "title": "Interior Detailing | HyperAuto Care",
+      "headings": [
+        "Interior Detailing",
+        "Overview",
+        "Recommended For",
+        "Service Process",
+        "Step 01",
+        "Interior Inspection",
+        "Step 02",
+        "Deep Cleaning",
+        "Step 03",
+        "Surface Treatment",
+        "Step 04",
+        "Final Interior Check",
+        "Why Choose HyperAuto Care For Interior Detailing",
+        "Refresh Your Vehicle Interior",
+        "Improve Interior Comfort",
+        "Remove Unwanted Odors",
+        "Maintain Interior Condition",
+        "Frequently Asked Questions",
+        "Interior Detailing",
+        "Gallery",
+        "Ready To Refresh Your Vehicle?",
+        "Other Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6576,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 1440,
+          "height": 2157
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service process in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/DnM1YldDlSVfSVwk0sX6MTuaI.webp",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 60,
+          "height": 90
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 59,
+          "height": 44
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 60,
+          "height": 80
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "Professional car interior detailing with technician cleaning the dashboard and interior surfaces.",
+          "src": "https://framerusercontent.com/images/gUK0YAoqK2AuZLSXJV3XZoZGg.webp?width=1200&height=675",
+          "width": 1440,
+          "height": 810
+        },
+        {
+          "alt": "Luxury vehicle interior with clean leather seats, steering wheel, and premium cabin detailing.",
+          "src": "https://framerusercontent.com/images/Zc7uRCY7t1q0icMR3iYhXwSKVjs.webp?width=800&height=1200",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/services/paint-correction",
+      "title": "Paint Correction | HyperAuto Care",
+      "headings": [
+        "Paint Correction",
+        "Overview",
+        "Service Process",
+        "Step 01",
+        "Paint Assessment",
+        "Step 02",
+        "Surface Preparation",
+        "Step 03",
+        "Paint Correction",
+        "Step 04",
+        "Final Inspection",
+        "Why Choose HyperAuto Care For Paint Correction",
+        "Remove Paint Imperfections",
+        "Restore Paint Clarity",
+        "Improve Vehicle Appearance",
+        "Prepare For Paint Protection",
+        "Frequently Asked Questions",
+        "Paint Correction",
+        "Gallery",
+        "Ready To Refresh Your Vehicle?",
+        "Other Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 7490,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 1440,
+          "height": 810
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service process in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/DtZUUfzGF1adTjqnD7pA9HwQuI.webp",
+          "width": 1440,
+          "height": 1920
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service process in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/Fl5ECyBdgsoJhzwZUZUArLKnL4.webp",
+          "width": 1440,
+          "height": 628
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 59,
+          "height": 89
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 60,
+          "height": 90
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 59,
+          "height": 44
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 60,
+          "height": 80
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "Professional paint correction process using a polishing machine to restore vehicle paint surface.",
+          "src": "https://framerusercontent.com/images/f8oemoBeKS5LAON5k9GiW9EvnEk.webp?width=800&height=1200",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "Detailer applying finishing polish to a vehicle body panel during paint correction service.",
+          "src": "https://framerusercontent.com/images/Y5b1PLfoog4o4FRNynmaX3wAw4.webp?width=900&height=1200",
+          "width": 1440,
+          "height": 1920
+        },
+        {
+          "alt": "Car paint correction specialist polishing a dark vehicle surface to remove imperfections.",
+          "src": "https://framerusercontent.com/images/R8KkQdk0M9xxBwlmC025ZztZCIM.webp?width=960&height=1200",
+          "width": 1440,
+          "height": 1800
+        },
+        {
+          "alt": "Professional detailer performing machine polishing on a luxury vehicle exterior.",
+          "src": "https://framerusercontent.com/images/Gh0hQo4UE6bTph40FSI6KJmGmvs.webp?width=900&height=1200",
+          "width": 1440,
+          "height": 1920
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/services/ceramic-coating",
+      "title": "Ceramic Coating | HyperAuto Care",
+      "headings": [
+        "Ceramic Coating",
+        "Overview",
+        "Recommended For",
+        "Service Process",
+        "Step 01",
+        "Vehicle Inspection",
+        "Step 02",
+        "Paint Preparation",
+        "Step 03",
+        "Ceramic Coating Application",
+        "Step 04",
+        "Final Inspection",
+        "Why Choose HyperAuto Care For Ceramic Coating",
+        "Protect Your Paint From Daily Contaminants",
+        "Make Your Vehicle Easier To Clean",
+        "Keep A Better Gloss Finish",
+        "Reduce Frequent Maintenance",
+        "Frequently Asked Questions",
+        "Ceramic Coating",
+        "Gallery",
+        "Ready To Refresh Your Vehicle?",
+        "Other Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 7509,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service process in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mRQvydN0sFhlvIy69qt8VDHzxWU.webp",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 59,
+          "height": 89
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 60,
+          "height": 33
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 59,
+          "height": 44
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 60,
+          "height": 80
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "Glossy black vehicle surface showing enhanced shine and paint protection after ceramic coating application.",
+          "src": "https://framerusercontent.com/images/pklzscIZDXgeaRWy0F2UHvkdhM.webp?width=800&height=1200",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "Luxury car hood with deep gloss finish and smooth protected paint surface after ceramic coating.",
+          "src": "https://framerusercontent.com/images/QI4OiRNGMKFxJhQjofa7KDJHo.webp?width=801&height=1200",
+          "width": 1440,
+          "height": 2157
+        },
+        {
+          "alt": "Black vehicle exterior with reflective paint finish after professional ceramic coating treatment.",
+          "src": "https://framerusercontent.com/images/nbl8LP1GkWusQMGapRh0EEAgR8.webp?width=800&height=1200",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "Red luxury car with high-gloss paint and ceramic coating protection under showroom lighting.",
+          "src": "https://framerusercontent.com/images/IK15jVnOMm2xkFO7ulPVtkAmoM.webp?width=1200&height=900",
+          "width": 1440,
+          "height": 1080
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+      "title": "Paint Protection Film (PPF) | HyperAuto Care",
+      "headings": [
+        "Paint Protection Film (PPF)",
+        "Overview",
+        "Ideal for drivers who want to protect their vehicle’s paint from daily road conditions.",
+        "Service Process",
+        "Step 01",
+        "Vehicle Inspection",
+        "Step 02",
+        "Surface Preparation",
+        "Step 03",
+        "Film Installation",
+        "Step 04",
+        "Final Inspection",
+        "Why Choose HyperAuto Care For Paint Protection Film",
+        "Protect Against Road Damage",
+        "Keep Your Original Paint",
+        "Reduce Paint Maintenance",
+        "Add Long-Term Protection",
+        "Frequently Asked Questions",
+        "Paint Protection Film (PPF)",
+        "Gallery",
+        "Ready To Refresh Your Vehicle?",
+        "Other Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6119,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 59,
+          "height": 89
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 60,
+          "height": 33
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 60,
+          "height": 90
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 59,
+          "height": 44
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 60,
+          "height": 80
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "Professional technician installing paint protection film on a vehicle body panel in a detailing workshop.",
+          "src": "https://framerusercontent.com/images/Mn2UT8aYN9xFKthFvjysSvpyg.webp?width=800&height=1200",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "Detailer applying paint protection film with precision tools to protect a vehicle paint surface.",
+          "src": "https://framerusercontent.com/images/S80iFnvEsZ7H3JObp2bwHvA5ptg.webp?width=800&height=1200",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/services/window-tint",
+      "title": "Window Tint | HyperAuto Care",
+      "headings": [
+        "Window Tint",
+        "Overview",
+        "A practical upgrade for drivers who want better comfort, protection, and privacy.",
+        "Service Process",
+        "Step 01",
+        "Tint Selection",
+        "Step 02",
+        "Window Preparation",
+        "Step 03",
+        "Film Installation",
+        "Step 04",
+        "Final Inspection",
+        "Why Choose HyperAuto Care For Window Tint",
+        "Reduce Heat Inside Your Vehicle",
+        "Protect Your Interior",
+        "Improve Privacy",
+        "Enjoy A More Comfortable Drive",
+        "Frequently Asked Questions",
+        "Window Tint",
+        "Gallery",
+        "Ready To Refresh Your Vehicle?",
+        "Other Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6755,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service process in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/gv0F2vE8CnjY1WUos05p1ycEuDQ.webp",
+          "width": 1440,
+          "height": 2157
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 60,
+          "height": 89
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 60,
+          "height": 90
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 59,
+          "height": 44
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 60,
+          "height": 80
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "Professional window tint installation showing a vehicle with dark tinted windows and improved privacy.",
+          "src": "https://framerusercontent.com/images/sgwUsHQ6qmie2RM5HrT7cAumf8E.webp?width=961&height=1200",
+          "width": 1440,
+          "height": 1798
+        },
+        {
+          "alt": "Close-up view of a vehicle window tint film applied for a sleek appearance and sun protection.",
+          "src": "https://framerusercontent.com/images/pLQ3nXicnWLp0AjxdBNVg72pQ4.webp?width=1200&height=799",
+          "width": 1440,
+          "height": 958
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/services/engine-bay-detailing",
+      "title": "Engine Bay Detailing | HyperAuto Care",
+      "headings": [
+        "Engine Bay Detailing",
+        "Overview",
+        "Recommended For",
+        "Service Process",
+        "Step 01",
+        "Engine Bay Inspection",
+        "Step 02",
+        "Cleaning Preparation",
+        "Step 03",
+        "Detailed Cleaning",
+        "Step 04",
+        "Final Check",
+        "Why Choose HyperAuto Care For Engine Bay Detailing",
+        "Improve Engine Bay Appearance",
+        "Make Maintenance Easier",
+        "Complete Your Vehicle Detail",
+        "Maintain Vehicle Condition",
+        "Frequently Asked Questions",
+        "Engine Bay Detailing",
+        "Gallery",
+        "Ready To Refresh Your Vehicle?",
+        "Other Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6706,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service process in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/6zYoQS2oUYkBjkdKWKYstYQ2MDk.webp",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 60,
+          "height": 89
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 60,
+          "height": 90
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 59,
+          "height": 44
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 60,
+          "height": 80
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "Professional engine bay detailing showing a clean and well-maintained vehicle engine compartment.",
+          "src": "https://framerusercontent.com/images/rOUsz1wbbUF2mfd0cQWZuOdoZf8.webp?width=800&height=1200",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "Engine bay cleaning service with technician inspecting and detailing vehicle components.",
+          "src": "https://framerusercontent.com/images/HJENAz60JExLDf6k4IKjWJ08Cg.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/services/headlight-restoration",
+      "title": "Headlight Restoration | HyperAuto Care",
+      "headings": [
+        "Headlight Restoration",
+        "Overview",
+        "Is Headlight Restoration Right For Your Vehicle?",
+        "Service Process",
+        "Step 01",
+        "Headlight Inspection",
+        "Step 02",
+        "Surface Preparation",
+        "Step 03",
+        "Restoration Process",
+        "Step 04",
+        "Final Protection & Check",
+        "Why Choose HyperAuto Care For Headlight Restoration",
+        "Improve Headlight Clarity",
+        "Improve Night Driving Visibility",
+        "Refresh Your Vehicle Appearance",
+        "Save Compared To Replacement",
+        "Frequently Asked Questions",
+        "Headlight Restoration",
+        "Gallery",
+        "Ready To Refresh Your Vehicle?",
+        "Other Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 7402,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 1440,
+          "height": 1080
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service process in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/Dt1WrpKPbW9tjgnKrZd6Rb7hY.webp",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 60,
+          "height": 89
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 60,
+          "height": 90
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 60,
+          "height": 80
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "Vehicle headlight restoration service improving clarity and appearance of a classic car headlight.",
+          "src": "https://framerusercontent.com/images/fy2JDklwLOSGMPdq4XPp4OyeY7g.webp?width=800&height=1200",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "Cloudy headlight restoration showing a cleaner and brighter vehicle lighting surface.",
+          "src": "https://framerusercontent.com/images/tiItOu7Z4DvAgNGlq59nyEnZc.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "Professional headlight restoration process restoring old vehicle headlights to a clearer finish.",
+          "src": "https://framerusercontent.com/images/Z213r16thiFvOhaHIyui6wi0Oo.webp?width=800&height=1200",
+          "width": 1440,
+          "height": 2160
+        },
+        {
+          "alt": "Restored vehicle headlight with improved clarity and a refreshed exterior appearance.",
+          "src": "https://framerusercontent.com/images/ZguhWNYifcZvgcaFLmh3X7qqc.webp?width=960&height=1200",
+          "width": 1440,
+          "height": 1800
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+      "title": "Glass & Water Spot Removal | HyperAuto Care",
+      "headings": [
+        "Glass & Water Spot Removal",
+        "Overview",
+        "Is Glass & Water Spot Removal Right For Your Vehicle?",
+        "Service Process",
+        "Step 01",
+        "Glass Inspection",
+        "Step 02",
+        "Deep Glass Cleaning",
+        "Step 03",
+        "Water Spot Removal",
+        "Step 04",
+        "Final Inspection",
+        "Why Choose HyperAuto Care For Glass Treatment",
+        "Improve Driving Visibility",
+        "Remove Stubborn Water Spots",
+        "Improve Vehicle Appearance",
+        "Maintain Glass Condition",
+        "Frequently Asked Questions",
+        "Glass & Water Spot Removal",
+        "Gallery",
+        "Ready To Refresh Your Vehicle?",
+        "Other Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6094,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 1440,
+          "height": 1920
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 60,
+          "height": 89
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 60,
+          "height": 90
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 60,
+          "height": 45
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "A gloved hand cleaning a car window with a microfiber cloth during glass detailing service",
+          "src": "https://framerusercontent.com/images/OQRMZVCk7uZWsvHAM8N53HsISY.webp?width=1200&height=557",
+          "width": 1440,
+          "height": 668
+        },
+        {
+          "alt": "Water droplets on a car window after glass treatment and water spot removal service",
+          "src": "https://framerusercontent.com/images/Ebl2PQjS8JA9hEQGY3b71agVMds.webp?width=900&height=1200",
+          "width": 1440,
+          "height": 1920
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/services/underbody-coating-protection",
+      "title": "Underbody Coating & Protection | HyperAuto Care",
+      "headings": [
+        "Underbody Coating & Protection",
+        "Overview",
+        "A practical service for owners who want additional protection beyond regular exterior care.",
+        "Service Process",
+        "Step 01",
+        "Vehicle Inspection",
+        "Step 02",
+        "Surface Preparation",
+        "Step 03",
+        "Protective Coating",
+        "Step 04",
+        "Final Inspection",
+        "Why Choose HyperAuto Care For Underbody Protection",
+        "Help Reduce Corrosion Risk",
+        "Protect Hard-To-See Areas",
+        "Support Long-Term Maintenance",
+        "Ideal For Harsh Conditions",
+        "Frequently Asked Questions",
+        "Underbody Coating & Protection",
+        "Gallery",
+        "Ready To Refresh Your Vehicle?",
+        "Other Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6148,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 1440,
+          "height": 808
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 60,
+          "height": 89
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 59,
+          "height": 33
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 60,
+          "height": 90
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 59,
+          "height": 39
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 60,
+          "height": 40
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 60,
+          "height": 45
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 60,
+          "height": 80
+        },
+        {
+          "alt": "Close-up view of a vehicle underbody showing protective coating applied to chassis components",
+          "src": "https://framerusercontent.com/images/4Ua2PBBqPzuAegeTz1rT7UC4qfQ.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "Detailed view of a car suspension and underbody components during protection treatment",
+          "src": "https://framerusercontent.com/images/OyC7RipDnEzsAy6YhWW33nguxio.webp?width=900&height=1200",
+          "width": 1440,
+          "height": 1920
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/news/seasonal-vehicle-protection-special",
+      "title": "Seasonal Vehicle Protection Special | HyperAuto Care",
+      "headings": [
+        "Seasonal Vehicle Protection Special",
+        "Eligible service concept",
+        "What customers can expect",
+        "Preparing for the appointment",
+        "How to request the offer",
+        "Sample promotion terms",
+        "More from HyperAuto Care",
+        "How to Maintain Your Car After Ceramic Coating",
+        "PPF vs. Ceramic Coating: What's the Difference?",
+        "What to Know After Getting Your Windows Tinted",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 5892,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Auto care team standing beside a vehicle with its hood open",
+          "src": "https://framerusercontent.com/images/iKL9HUDYH21SxE2ZH7w0Pxj6qc.webp?width=1200&height=800",
+          "width": 1100,
+          "height": 733
+        },
+        {
+          "alt": "Red Mazda parked in a wash bay with water and cleaning equipment nearby",
+          "src": "https://framerusercontent.com/images/kBuvCdKvxeX5gYWMkBPymSjBw.webp?width=1200&height=1200",
+          "width": 379,
+          "height": 379
+        },
+        {
+          "alt": "Gloved hands applying clear protection film to a purple hood",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 379,
+          "height": 253
+        },
+        {
+          "alt": "Black Mercedes front end covered with soap during a vehicle wash",
+          "src": "https://framerusercontent.com/images/UoFzBwa4OPzGCyKovt9UwbIgq0.webp?width=800&height=1200",
+          "width": 380,
+          "height": 570
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/news/ceramic-coating-maintenance-guide",
+        "https://hyperautocare.framer.website/news/ppf-vs-ceramic-coating",
+        "https://hyperautocare.framer.website/news/window-tint-aftercare-guide",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/news/ceramic-coating-maintenance-guide",
+      "title": "How to Maintain Your Car After Ceramic Coating | HyperAuto Care",
+      "headings": [
+        "How to Maintain Your Car After Ceramic Coating",
+        "Follow the installer’s initial aftercare instructions",
+        "Wash regularly with a safe method",
+        "Dry the vehicle instead of letting water evaporate",
+        "Watch for contamination and changing performance",
+        "Common maintenance mistakes",
+        "When professional maintenance helps",
+        "More from HyperAuto Care",
+        "PPF vs. Ceramic Coating: What's the Difference?",
+        "What to Know After Getting Your Windows Tinted",
+        "How Seattle's Wet Weather Affects Your Vehicle",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6631,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Red Mazda parked in a wash bay with water and cleaning equipment nearby",
+          "src": "https://framerusercontent.com/images/kBuvCdKvxeX5gYWMkBPymSjBw.webp?width=1200&height=1200",
+          "width": 1100,
+          "height": 1100
+        },
+        {
+          "alt": "Gloved hands applying clear protection film to a purple hood",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 379,
+          "height": 253
+        },
+        {
+          "alt": "Black Mercedes front end covered with soap during a vehicle wash",
+          "src": "https://framerusercontent.com/images/UoFzBwa4OPzGCyKovt9UwbIgq0.webp?width=800&height=1200",
+          "width": 380,
+          "height": 570
+        },
+        {
+          "alt": "Technician washing a blue vehicle covered with soap and water",
+          "src": "https://framerusercontent.com/images/Z8dTtICKLwkds3Q8LoAxK7kP2k.webp?width=1200&height=800",
+          "width": 379,
+          "height": 253
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/news/ppf-vs-ceramic-coating",
+        "https://hyperautocare.framer.website/news/window-tint-aftercare-guide",
+        "https://hyperautocare.framer.website/news/seattle-wet-weather-car-care",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/news/ppf-vs-ceramic-coating",
+      "title": "PPF vs. Ceramic Coating: What's the Difference? | HyperAuto Care",
+      "headings": [
+        "PPF vs. Ceramic Coating: What's the Difference?",
+        "What paint protection film does",
+        "What ceramic coating does",
+        "Physical protection and surface protection",
+        "Appearance and maintenance",
+        "Can PPF and ceramic coating be combined?",
+        "Questions to consider before choosing",
+        "More from HyperAuto Care",
+        "How to Maintain Your Car After Ceramic Coating",
+        "What to Know After Getting Your Windows Tinted",
+        "How Seattle's Wet Weather Affects Your Vehicle",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6566,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Gloved hands applying clear protection film to a purple hood",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 1100,
+          "height": 733
+        },
+        {
+          "alt": "Red Mazda parked in a wash bay with water and cleaning equipment nearby",
+          "src": "https://framerusercontent.com/images/kBuvCdKvxeX5gYWMkBPymSjBw.webp?width=1200&height=1200",
+          "width": 380,
+          "height": 380
+        },
+        {
+          "alt": "Black Mercedes front end covered with soap during a vehicle wash",
+          "src": "https://framerusercontent.com/images/UoFzBwa4OPzGCyKovt9UwbIgq0.webp?width=800&height=1200",
+          "width": 380,
+          "height": 570
+        },
+        {
+          "alt": "Technician washing a blue vehicle covered with soap and water",
+          "src": "https://framerusercontent.com/images/Z8dTtICKLwkds3Q8LoAxK7kP2k.webp?width=1200&height=800",
+          "width": 379,
+          "height": 253
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/news/ceramic-coating-maintenance-guide",
+        "https://hyperautocare.framer.website/news/window-tint-aftercare-guide",
+        "https://hyperautocare.framer.website/news/seattle-wet-weather-car-care",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/news/window-tint-aftercare-guide",
+      "title": "What to Know After Getting Your Windows Tinted | HyperAuto Care",
+      "headings": [
+        "What to Know After Getting Your Windows Tinted",
+        "Avoid unnecessary window movement at first",
+        "Wait before cleaning the inside glass",
+        "Temporary haze or moisture can be normal",
+        "Protect the cabin during curing",
+        "Check edges without picking at them",
+        "Contact the installer if you notice",
+        "Long-term care",
+        "More from HyperAuto Care",
+        "How to Maintain Your Car After Ceramic Coating",
+        "PPF vs. Ceramic Coating: What's the Difference?",
+        "How Seattle's Wet Weather Affects Your Vehicle",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6617,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Black Mercedes front end covered with soap during a vehicle wash",
+          "src": "https://framerusercontent.com/images/UoFzBwa4OPzGCyKovt9UwbIgq0.webp?width=800&height=1200",
+          "width": 1100,
+          "height": 1650
+        },
+        {
+          "alt": "Red Mazda parked in a wash bay with water and cleaning equipment nearby",
+          "src": "https://framerusercontent.com/images/kBuvCdKvxeX5gYWMkBPymSjBw.webp?width=1200&height=1200",
+          "width": 380,
+          "height": 380
+        },
+        {
+          "alt": "Gloved hands applying clear protection film to a purple hood",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 380,
+          "height": 253
+        },
+        {
+          "alt": "Technician washing a blue vehicle covered with soap and water",
+          "src": "https://framerusercontent.com/images/Z8dTtICKLwkds3Q8LoAxK7kP2k.webp?width=1200&height=800",
+          "width": 379,
+          "height": 253
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/news/ceramic-coating-maintenance-guide",
+        "https://hyperautocare.framer.website/news/ppf-vs-ceramic-coating",
+        "https://hyperautocare.framer.website/news/seattle-wet-weather-car-care",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/news/seattle-wet-weather-car-care",
+      "title": "How Seattle's Wet Weather Affects Your Vehicle | HyperAuto Care",
+      "headings": [
+        "How Seattle's Wet Weather Affects Your Vehicle",
+        "Lower panels and wheels collect the most grime",
+        "Clean glass supports visibility",
+        "Moisture reaches the interior too",
+        "Choose useful washing windows",
+        "Exterior protection can simplify maintenance",
+        "A practical wet-weather routine",
+        "Match the service to the condition",
+        "More from HyperAuto Care",
+        "How to Maintain Your Car After Ceramic Coating",
+        "PPF vs. Ceramic Coating: What's the Difference?",
+        "What to Know After Getting Your Windows Tinted",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6535,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Technician washing a blue vehicle covered with soap and water",
+          "src": "https://framerusercontent.com/images/Z8dTtICKLwkds3Q8LoAxK7kP2k.webp?width=1200&height=800",
+          "width": 1100,
+          "height": 733
+        },
+        {
+          "alt": "Red Mazda parked in a wash bay with water and cleaning equipment nearby",
+          "src": "https://framerusercontent.com/images/kBuvCdKvxeX5gYWMkBPymSjBw.webp?width=1200&height=1200",
+          "width": 380,
+          "height": 380
+        },
+        {
+          "alt": "Gloved hands applying clear protection film to a purple hood",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 380,
+          "height": 253
+        },
+        {
+          "alt": "Black Mercedes front end covered with soap during a vehicle wash",
+          "src": "https://framerusercontent.com/images/UoFzBwa4OPzGCyKovt9UwbIgq0.webp?width=800&height=1200",
+          "width": 380,
+          "height": 570
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/news/ceramic-coating-maintenance-guide",
+        "https://hyperautocare.framer.website/news/ppf-vs-ceramic-coating",
+        "https://hyperautocare.framer.website/news/window-tint-aftercare-guide",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/news/why-detailing-preparation-matters",
+      "title": "Inside the Shop: Why Proper Preparation Matters in Detailing | HyperAuto Care",
+      "headings": [
+        "Inside the Shop: Why Proper Preparation Matters in Detailing",
+        "Inspection comes before the recommendation",
+        "Cleaning creates a reliable starting point",
+        "Paint preparation supports correction",
+        "Lighting, masking, and work order matter",
+        "Communication is part of preparation",
+        "Products and tools are chosen for the surface",
+        "Final inspection closes the process",
+        "Preparation helps the team",
+        "More from HyperAuto Care",
+        "How to Maintain Your Car After Ceramic Coating",
+        "PPF vs. Ceramic Coating: What's the Difference?",
+        "What to Know After Getting Your Windows Tinted",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6975,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Technician cleaning a vehicle dashboard with a detailing brush",
+          "src": "https://framerusercontent.com/images/OWfOVsCaJk375CwrWG97te42K8U.webp?width=1200&height=675",
+          "width": 1100,
+          "height": 618
+        },
+        {
+          "alt": "Red Mazda parked in a wash bay with water and cleaning equipment nearby",
+          "src": "https://framerusercontent.com/images/kBuvCdKvxeX5gYWMkBPymSjBw.webp?width=1200&height=1200",
+          "width": 380,
+          "height": 380
+        },
+        {
+          "alt": "Gloved hands applying clear protection film to a purple hood",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 380,
+          "height": 253
+        },
+        {
+          "alt": "Black Mercedes front end covered with soap during a vehicle wash",
+          "src": "https://framerusercontent.com/images/UoFzBwa4OPzGCyKovt9UwbIgq0.webp?width=800&height=1200",
+          "width": 380,
+          "height": 570
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/news/ceramic-coating-maintenance-guide",
+        "https://hyperautocare.framer.website/news/ppf-vs-ceramic-coating",
+        "https://hyperautocare.framer.website/news/window-tint-aftercare-guide",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/services",
+      "title": "Car Detailing Services | HyperAuto Care",
+      "headings": [
+        "Our Services",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 8662,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Technician pouring fluid into an open vehicle engine bay during professional engine maintenance",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 1204,
+          "height": 802
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 1204,
+          "height": 1803
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 1204,
+          "height": 677
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/our-work",
+      "title": "Our Work | Car Detailing Before & After | HyperAuto Care",
+      "headings": [
+        "Our Work",
+        "See the Difference",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 6270,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Black SUV with doors open inside a detailing workshop",
+          "src": "https://framerusercontent.com/images/5jFIDmf3fDYVLCeKxRoGZM5XCA.webp?width=1200&height=582",
+          "width": 1440,
+          "height": 698
+        },
+        {
+          "alt": "Black BMW M4 paint after correction and ceramic coating with a clearer glossy finish",
+          "src": "https://framerusercontent.com/images/vg2gWMVyNoWq5x3E44Ti98Hy2o.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Black BMW M4 paint before correction with visible swirl marks and surface defects",
+          "src": "https://framerusercontent.com/images/5s0U1c3cKoxv0Lj40amECpnCFCo.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Mercedes-Benz GLC interior after full interior detailing with a cleaner cabin",
+          "src": "https://framerusercontent.com/images/LLHQqQVhQ4ev574tGB2XSo5s1HM.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Mercedes-Benz GLC interior before deep cleaning and detailing",
+          "src": "https://framerusercontent.com/images/R9dqaZrivXaREuyM4KFEmVYMv68.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Porsche Macan after front-end paint protection film installation",
+          "src": "https://framerusercontent.com/images/TFm0h0ZyJ1aiDcbDmyQkp7d7ks0.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Porsche Macan before front-end paint protection film installation",
+          "src": "https://framerusercontent.com/images/IXiQMjSIz03K7jFb17nzTQnw.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Audi A5 paint after water spot removal and exterior detailing",
+          "src": "https://framerusercontent.com/images/OHYqwDruBMjqAhJtvgBXF99myw.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Audi A5 paint before water spot removal with visible mineral deposits",
+          "src": "https://framerusercontent.com/images/hgXFpSAAl7C4Zc93QjOURpUVIhY.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Toyota Camry headlight after restoration with improved clarity",
+          "src": "https://framerusercontent.com/images/YqCNXZOXVOrNiegTPA1zmYOPOdo.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Toyota Camry headlight before restoration with cloudy and oxidized lenses",
+          "src": "https://framerusercontent.com/images/hQYW4LiqmuBWN2OZKGq80TuUnI.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Tesla Model 3 after exterior detailing with a cleaner glossy finish",
+          "src": "https://framerusercontent.com/images/SUjAJnc8gvH4xGwNXjPkWzTdA.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Tesla Model 3 before exterior detailing and paint enhancement",
+          "src": "https://framerusercontent.com/images/Sd3SMgEszzdLnKUpISOaJ2ieHg.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/news",
+      "title": "News & Car Care Tips | HyperAuto Care Seattle",
+      "headings": [
+        "Latest from HyperAuto Care",
+        "From the Workshop",
+        "Seasonal Vehicle Protection Special",
+        "All News, Guides & Offers",
+        "How to Maintain Your Car After Ceramic Coating",
+        "PPF vs. Ceramic Coating: What's the Difference?",
+        "What to Know After Getting Your Windows Tinted",
+        "How Seattle's Wet Weather Affects Your Vehicle",
+        "Inside the Shop: Why Proper Preparation Matters in Detailing",
+        "Seasonal Vehicle Protection Special",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 4628,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Vehicles parked inside a softly lit garage",
+          "src": "https://framerusercontent.com/images/L56MnHIMbagJGzflH351V7tJ5s.webp?width=1200&height=800",
+          "width": 1440,
+          "height": 960
+        },
+        {
+          "alt": "Auto care team standing beside a vehicle with its hood open",
+          "src": "https://framerusercontent.com/images/iKL9HUDYH21SxE2ZH7w0Pxj6qc.webp?width=1200&height=800",
+          "width": 582,
+          "height": 388
+        },
+        {
+          "alt": "Red Mazda parked in a wash bay with water and cleaning equipment nearby",
+          "src": "https://framerusercontent.com/images/kBuvCdKvxeX5gYWMkBPymSjBw.webp?width=1200&height=1200",
+          "width": 377,
+          "height": 377
+        },
+        {
+          "alt": "Gloved hands applying clear protection film to a purple hood",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 377,
+          "height": 251
+        },
+        {
+          "alt": "Black Mercedes front end covered with soap during a vehicle wash",
+          "src": "https://framerusercontent.com/images/UoFzBwa4OPzGCyKovt9UwbIgq0.webp?width=800&height=1200",
+          "width": 377,
+          "height": 566
+        },
+        {
+          "alt": "Technician washing a blue vehicle covered with soap and water",
+          "src": "https://framerusercontent.com/images/Z8dTtICKLwkds3Q8LoAxK7kP2k.webp?width=1200&height=800",
+          "width": 377,
+          "height": 251
+        },
+        {
+          "alt": "Technician cleaning a vehicle dashboard with a detailing brush",
+          "src": "https://framerusercontent.com/images/OWfOVsCaJk375CwrWG97te42K8U.webp?width=1200&height=675",
+          "width": 377,
+          "height": 212
+        },
+        {
+          "alt": "Auto care team standing beside a vehicle with its hood open",
+          "src": "https://framerusercontent.com/images/iKL9HUDYH21SxE2ZH7w0Pxj6qc.webp?width=1200&height=800",
+          "width": 582,
+          "height": 388
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/news/seasonal-vehicle-protection-special",
+        "https://hyperautocare.framer.website/news/ceramic-coating-maintenance-guide",
+        "https://hyperautocare.framer.website/news/ppf-vs-ceramic-coating",
+        "https://hyperautocare.framer.website/news/window-tint-aftercare-guide",
+        "https://hyperautocare.framer.website/news/seattle-wet-weather-car-care",
+        "https://hyperautocare.framer.website/news/why-detailing-preparation-matters",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/about",
+      "title": "About HyperAuto Care | Seattle Auto Detailing Team",
+      "headings": [
+        "About HyperAuto Care",
+        "HyperAuto Care started with a simple belief: better car care comes from understanding what each vehicle actually needs.",
+        "Our Approach, \nCare in Every Step",
+        "Inspect Before We Recommend",
+        "Use the Right Process",
+        "Quality Over Shortcuts",
+        "Explain the Work Clearly",
+        "Built for Professional Car Care",
+        "Professional Detailing Equipment",
+        "Quality Automotive Products",
+        "Dedicated Work Areas",
+        "Controlled Working Environment",
+        "People Who Care About the Work",
+        "Professional Detailing Training, Built on Real Workshop Experience",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 8497,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care reception counter with branded wall sign",
+          "src": "https://framerusercontent.com/images/HJT0dp7pG9JEThf0ODtTf33MG98.webp?width=1200&height=900",
+          "width": 1440,
+          "height": 1080
+        },
+        {
+          "alt": "Classic cars displayed inside a dark automotive showroom",
+          "src": "https://framerusercontent.com/images/UJPqbUzimEPlnP9IYEF2s47uvg.webp?width=800&height=1200",
+          "width": 223,
+          "height": 334
+        },
+        {
+          "alt": "Vehicles parked inside a softly lit garage",
+          "src": "https://framerusercontent.com/images/L56MnHIMbagJGzflH351V7tJ5s.webp?width=1200&height=800",
+          "width": 300,
+          "height": 200
+        },
+        {
+          "alt": "Technician inspecting a vehicle engine bay under workshop lights",
+          "src": "https://framerusercontent.com/images/gwOcY07W2lcyWTxgwH1l56cyA.webp?width=800&height=1200",
+          "width": 180,
+          "height": 270
+        },
+        {
+          "alt": "Black SUV with doors open inside a bright detailing bay",
+          "src": "https://framerusercontent.com/images/5jFIDmf3fDYVLCeKxRoGZM5XCA.webp?width=1200&height=582",
+          "width": 1216,
+          "height": 589
+        },
+        {
+          "alt": "Technician inspecting the underside of a raised vehicle",
+          "src": "https://framerusercontent.com/images/0yelIjtZmG7TXGditkLl2dKlI.webp?width=800&height=1200",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "alt": "Three HyperAuto Care team members behind the reception counter",
+          "src": "https://framerusercontent.com/images/ZPyPpnRvM7I6RsqW5tMJQeIl4.webp?width=1200&height=675",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "alt": "Two technicians practicing machine polishing on a car hood",
+          "src": "https://framerusercontent.com/images/zjHYPsqxtmahpRxuuTgh2A4r7A.webp?width=1136&height=600",
+          "width": 0,
+          "height": 0
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [
+        {
+          "src": "https://framerusercontent.com/assets/XbOBPonKt6HrPmHfmO47TD5FP4U.webm#t=0.001",
+          "poster": ""
+        }
+      ],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/contact",
+      "title": "Contact HyperAuto Care | Book Your Car Detailing Service",
+      "headings": [
+        "Contact Us",
+        "Visit HyperAuto Care",
+        "Address",
+        "Phone",
+        "Opening Hours",
+        "Email",
+        "Frequently Asked Questions",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 4306,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Classic black car viewed from the rear inside a dimly lit professional detailing garage",
+          "src": "https://framerusercontent.com/images/ihf52NN3NIv9H49muw7VdKygQI.webp?width=801&height=1200",
+          "width": 1440,
+          "height": 2157
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 1440,
+          "height": 959
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/privacy",
+      "title": "Privacy Policy | HyperAuto Care",
+      "headings": [
+        "Privacy Policy",
+        "1. Information We Collect",
+        "2. How We Use Your Information",
+        "3. Sharing Your Information",
+        "4. Cookies and Website Analytics",
+        "5. Data Security",
+        "6. Third-Party Links",
+        "7. Your Privacy Rights",
+        "8. Children's Privacy",
+        "9. Changes to This Privacy Policy",
+        "10. Contact Us"
+      ],
+      "height": 4747,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/terms",
+      "title": "Terms & Conditions | HyperAuto Care",
+      "headings": [
+        "Terms of Service",
+        "1. Website Use",
+        "2. Services",
+        "3. Service Estimates and Pricing",
+        "4. Appointments and Service Availability",
+        "5. Vehicle Responsibility",
+        "6. Results and Expectations",
+        "7. Payments",
+        "8. Intellectual Property",
+        "9. Third-Party Services",
+        "10. Limitation of Liability",
+        "11. Changes to These Terms",
+        "12. Contact Us"
+      ],
+      "height": 5196,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/404",
+      "title": "Page Not Found | HyperAuto Care",
+      "headings": [
+        "Page Not Found"
+      ],
+      "height": 1894,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Technician polishing a vehicle inside a professional detailing workshop",
+          "src": "https://framerusercontent.com/images/W7P9NeMMaW0raSzYV5sntMR8ZXs.webp?width=1200&height=699",
+          "width": 1440,
+          "height": 838
+        }
+      ],
+      "videos": [],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    },
+    {
+      "url": "https://hyperautocare.framer.website/",
+      "title": "HyperAuto Care | Seattle Car Detailing & Vehicle Protection",
+      "headings": [
+        "Professional Car Care & Auto Detailing Services",
+        "HyperAuto Care Services",
+        "Detail Wash",
+        "Interior Detailing",
+        "Paint Correction",
+        "Ceramic Coating",
+        "Paint Protection Film (PPF)",
+        "Window Tint",
+        "Engine Bay Detailing",
+        "Headlight Restoration",
+        "Glass & Water Spot Removal",
+        "Underbody Coating & Protection",
+        "How Our Service Works",
+        "Choose a Service",
+        "Contact Us Or Visit Our Shop",
+        "Vehicle Inspection & Service Confirmation",
+        "Pick Up Your Vehicle",
+        "Service Packages & Pricing",
+        "See the Difference",
+        "Why Drivers Choose HyperAuto Care",
+        "Experienced Technicians",
+        "Professional Equipment",
+        "Quality Products",
+        "Clear Service Recommendations",
+        "Satisfaction Guaranteed",
+        "Flexible Scheduling",
+        "Customer Reviews",
+        "Daniel K.",
+        "Alex R.",
+        "Jason M.",
+        "Michael R.",
+        "Sarah T.",
+        "Chris W.",
+        "Emily R.",
+        "Training & Skill Development",
+        "What You Will Get From HyperAuto Care Training",
+        "Learn From Industry Experts",
+        "Hands-On Practice With Professional Guidance",
+        "Use Professional Equipment For Free",
+        "Learn Real Workshop Experience",
+        "Build Your Career Opportunity",
+        "Start Your Detailing Journey With HyperAuto Care",
+        "Latest News from Hyper Auto Care",
+        "How to Maintain Your Car After Ceramic Coating",
+        "PPF vs. Ceramic Coating: What's the Difference?",
+        "What to Know After Getting Your Windows Tinted",
+        "Frequently Asked Questions",
+        "Visit HyperAuto Care",
+        "Address",
+        "Phone",
+        "Opening Hours",
+        "Email",
+        "Give Your Vehicle the Care It Deserves"
+      ],
+      "height": 16967,
+      "images": [
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "HyperAuto Care technician polishing a dark vehicle hood inside a professional auto detailing workshop",
+          "src": "https://framerusercontent.com/images/6IYJLmdAqFpgWnGyi3iBNwWveqs.webp?width=4096&height=2303",
+          "width": 1440,
+          "height": 810
+        },
+        {
+          "alt": "Classic black car viewed from the rear inside a dimly lit professional detailing garage",
+          "src": "https://framerusercontent.com/images/ihf52NN3NIv9H49muw7VdKygQI.webp?width=801&height=1200",
+          "width": 204,
+          "height": 305
+        },
+        {
+          "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+          "width": 261,
+          "height": 173
+        },
+        {
+          "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+          "width": 261,
+          "height": 391
+        },
+        {
+          "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+          "width": 261,
+          "height": 146
+        },
+        {
+          "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+          "width": 261,
+          "height": 391
+        },
+        {
+          "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 377,
+          "height": 251
+        },
+        {
+          "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+          "width": 261,
+          "height": 173
+        },
+        {
+          "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+          "width": 261,
+          "height": 173
+        },
+        {
+          "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+          "width": 261,
+          "height": 195
+        },
+        {
+          "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+          "width": 261,
+          "height": 348
+        },
+        {
+          "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+          "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+          "width": 261,
+          "height": 146
+        },
+        {
+          "alt": "Detailer polishing the paint on a glossy black vehicle inside a professional auto care studio",
+          "src": "https://framerusercontent.com/images/DtZUUfzGF1adTjqnD7pA9HwQuI.webp?width=900&height=1200",
+          "width": 705,
+          "height": 940
+        },
+        {
+          "alt": "HyperAuto Care Logo",
+          "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+          "width": 315,
+          "height": 108
+        },
+        {
+          "alt": "Toyota Camry headlight after restoration with improved clarity",
+          "src": "https://framerusercontent.com/images/YqCNXZOXVOrNiegTPA1zmYOPOdo.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Toyota Camry headlight before restoration with cloudy and oxidized lenses",
+          "src": "https://framerusercontent.com/images/hQYW4LiqmuBWN2OZKGq80TuUnI.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Mercedes-Benz GLC interior after full interior detailing with a cleaner cabin",
+          "src": "https://framerusercontent.com/images/LLHQqQVhQ4ev574tGB2XSo5s1HM.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Mercedes-Benz GLC interior before deep cleaning and detailing",
+          "src": "https://framerusercontent.com/images/R9dqaZrivXaREuyM4KFEmVYMv68.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Black BMW M4 paint after correction and ceramic coating with a clearer glossy finish",
+          "src": "https://framerusercontent.com/images/vg2gWMVyNoWq5x3E44Ti98Hy2o.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Black BMW M4 paint before correction with visible swirl marks and surface defects",
+          "src": "https://framerusercontent.com/images/5s0U1c3cKoxv0Lj40amECpnCFCo.png?width=1536&height=1024",
+          "width": 1439,
+          "height": 959
+        },
+        {
+          "alt": "Back Arrow",
+          "src": "https://framerusercontent.com/images/6tTbkXggWgQCAJ4DO2QEdXXmgM.svg?arrow=left",
+          "width": 40,
+          "height": 40
+        },
+        {
+          "alt": "Next Arrow",
+          "src": "https://framerusercontent.com/images/11KSGbIZoRSg4pjdnUoif6MKHI.svg?arrow=right",
+          "width": 40,
+          "height": 40
+        },
+        {
+          "alt": "Finished vehicle showcasing premium professional detailing results at HyperAuto Care",
+          "src": "https://framerusercontent.com/images/mGs8Snpdilvf4Tj97QjW0FdaAy0.webp?width=1200&height=800",
+          "width": 605,
+          "height": 404
+        },
+        {
+          "alt": "Finished vehicle showcasing premium professional detailing results at HyperAuto Care",
+          "src": "https://framerusercontent.com/images/gv0F2vE8CnjY1WUos05p1ycEuDQ.webp?width=801&height=1200",
+          "width": 401,
+          "height": 601
+        },
+        {
+          "alt": "Finished vehicle showcasing premium professional detailing results at HyperAuto Care",
+          "src": "https://framerusercontent.com/images/IPz1ZOzMs2KRfySU3adLI7XJnvE.webp?width=1200&height=799",
+          "width": 605,
+          "height": 403
+        },
+        {
+          "alt": "Finished vehicle showcasing premium professional detailing results at HyperAuto Care",
+          "src": "https://framerusercontent.com/images/o2dUjNf8zaSm1OA9O9k0HFYVSIU.webp?width=1200&height=800",
+          "width": 401,
+          "height": 267
+        },
+        {
+          "alt": "Black SUV prepared for detailing with doors and liftgate open inside a modern auto care garage",
+          "src": "https://framerusercontent.com/images/5jFIDmf3fDYVLCeKxRoGZM5XCA.webp?width=1200&height=582",
+          "width": 1400,
+          "height": 679
+        },
+        {
+          "alt": "Review 04 - Jason M. at HyperAuto Care",
+          "src": "https://framerusercontent.com/images/goYpkWeKDzA4B82FnuXUu7k24k.webp?width=1200&height=800",
+          "width": 402,
+          "height": 268
+        },
+        {
+          "alt": "Review 01 - Michael R. at HyperAuto Care",
+          "src": "https://framerusercontent.com/images/Lkhwq0ZpwZj3WdTam0yk91jo.webp?width=1200&height=800",
+          "width": 180,
+          "height": 119
+        },
+        {
+          "alt": "Car detailing instructor guiding a student using a dual-action polisher on a vehicle hood",
+          "src": "https://framerusercontent.com/images/IgURz8uFfe3CNgAaya6hHvyqaA.png?width=1536&height=1024",
+          "width": 1216,
+          "height": 810
+        },
+        {
+          "alt": "Red Mazda parked in a wash bay with water and cleaning equipment nearby",
+          "src": "https://framerusercontent.com/images/kBuvCdKvxeX5gYWMkBPymSjBw.webp?width=1200&height=1200",
+          "width": 377,
+          "height": 377
+        },
+        {
+          "alt": "Gloved hands applying clear protection film to a purple hood",
+          "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+          "width": 377,
+          "height": 251
+        },
+        {
+          "alt": "Black Mercedes front end covered with soap during a vehicle wash",
+          "src": "https://framerusercontent.com/images/UoFzBwa4OPzGCyKovt9UwbIgq0.webp?width=800&height=1200",
+          "width": 377,
+          "height": 566
+        },
+        {
+          "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+          "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "videos": [
+        {
+          "src": "https://framerusercontent.com/assets/3N4aS6LLHk8XXKgD51R21mRi8Q.webm#t=0.001",
+          "poster": ""
+        },
+        {
+          "src": "https://framerusercontent.com/assets/xReQmqj0OIZCmYSNJTLGTz63324.webm#t=0.001",
+          "poster": ""
+        }
+      ],
+      "links": [
+        "https://hyperautocare.framer.website/",
+        "https://hyperautocare.framer.website/services",
+        "https://hyperautocare.framer.website/#pricing",
+        "https://hyperautocare.framer.website/our-work",
+        "https://hyperautocare.framer.website/news",
+        "https://hyperautocare.framer.website/about",
+        "https://hyperautocare.framer.website/#training",
+        "https://hyperautocare.framer.website/contact",
+        "https://hyperautocare.framer.website/#services",
+        "https://hyperautocare.framer.website/services/detail-wash",
+        "https://hyperautocare.framer.website/services/interior-detailing",
+        "https://hyperautocare.framer.website/services/paint-correction",
+        "https://hyperautocare.framer.website/services/ceramic-coating",
+        "https://hyperautocare.framer.website/services/paint-protection-film-(ppf)",
+        "https://hyperautocare.framer.website/services/window-tint",
+        "https://hyperautocare.framer.website/services/engine-bay-detailing",
+        "https://hyperautocare.framer.website/services/headlight-restoration",
+        "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+        "https://hyperautocare.framer.website/services/underbody-coating-protection",
+        "https://hyperautocare.framer.website/news/ceramic-coating-maintenance-guide",
+        "https://hyperautocare.framer.website/news/ppf-vs-ceramic-coating",
+        "https://hyperautocare.framer.website/news/window-tint-aftercare-guide",
+        "https://hyperautocare.framer.website/#Our%20Service%20Process",
+        "https://hyperautocare.framer.website/privacy",
+        "https://hyperautocare.framer.website/terms"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "url": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Aoa83BW1jq5HjPbFpH0LRrs0vA.svg",
+      "bytes": 6072
+    },
+    {
+      "url": "https://framerusercontent.com/images/goYpkWeKDzA4B82FnuXUu7k24k.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\goYpkWeKDzA4B82FnuXUu7k24k.webp",
+      "bytes": 51830
+    },
+    {
+      "url": "https://framerusercontent.com/images/o2dUjNf8zaSm1OA9O9k0HFYVSIU.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\o2dUjNf8zaSm1OA9O9k0HFYVSIU.webp",
+      "bytes": 253098
+    },
+    {
+      "url": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\ReWvywVVtMzDGckPKyjUBJBfsM.webp",
+      "bytes": 226374
+    },
+    {
+      "url": "https://framerusercontent.com/images/9mp3sQGwmY4hKIsOqhXysjuf8.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\9mp3sQGwmY4hKIsOqhXysjuf8.webp",
+      "bytes": 87528
+    },
+    {
+      "url": "https://framerusercontent.com/images/YjyU4xe5fHksonoIfOWoSaXSbAg.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\YjyU4xe5fHksonoIfOWoSaXSbAg.webp",
+      "bytes": 246550
+    },
+    {
+      "url": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp",
+      "bytes": 70848
+    },
+    {
+      "url": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\A0eIfnJJact7BFnfF8ISi8oJlFU.webp",
+      "bytes": 216494
+    },
+    {
+      "url": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\FFTbHPn3Ccy8w34sO8LYDSSoLc.webp",
+      "bytes": 246892
+    },
+    {
+      "url": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\XpVSXsw80SzoJyEATBZvQev7g.webp",
+      "bytes": 36520
+    },
+    {
+      "url": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\mdsSIWbz1Nc7DAj5RZbUpjNViM.webp",
+      "bytes": 55788
+    },
+    {
+      "url": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\7GwzTnH1TT6KG9sET4USk0IMV0.webp",
+      "bytes": 124502
+    },
+    {
+      "url": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\lg4rvJJFKsdIWBAOpGpBIOVKNI.webp",
+      "bytes": 85736
+    },
+    {
+      "url": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\joYvkkUBNthntLen21vG2zuMWro.webp",
+      "bytes": 90228
+    },
+    {
+      "url": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\90S4sYWb5sxb3TKFKfQB1Jh1vc.webp",
+      "bytes": 94630
+    },
+    {
+      "url": "https://framerusercontent.com/images/IPz1ZOzMs2KRfySU3adLI7XJnvE.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\IPz1ZOzMs2KRfySU3adLI7XJnvE.webp",
+      "bytes": 217446
+    },
+    {
+      "url": "https://framerusercontent.com/images/kTckAZt9vVBxcu58WMY1e0SD6Q.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\kTckAZt9vVBxcu58WMY1e0SD6Q.webp",
+      "bytes": 197042
+    },
+    {
+      "url": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg",
+      "bytes": 729096
+    },
+    {
+      "url": "https://framerusercontent.com/images/DnM1YldDlSVfSVwk0sX6MTuaI.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\DnM1YldDlSVfSVwk0sX6MTuaI.webp",
+      "bytes": 54012
+    },
+    {
+      "url": "https://framerusercontent.com/images/gUK0YAoqK2AuZLSXJV3XZoZGg.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\gUK0YAoqK2AuZLSXJV3XZoZGg.webp",
+      "bytes": 66090
+    },
+    {
+      "url": "https://framerusercontent.com/images/Zc7uRCY7t1q0icMR3iYhXwSKVjs.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Zc7uRCY7t1q0icMR3iYhXwSKVjs.webp",
+      "bytes": 96150
+    },
+    {
+      "url": "https://framerusercontent.com/images/DtZUUfzGF1adTjqnD7pA9HwQuI.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\DtZUUfzGF1adTjqnD7pA9HwQuI.webp",
+      "bytes": 66494
+    },
+    {
+      "url": "https://framerusercontent.com/images/f8oemoBeKS5LAON5k9GiW9EvnEk.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\f8oemoBeKS5LAON5k9GiW9EvnEk.webp",
+      "bytes": 103748
+    },
+    {
+      "url": "https://framerusercontent.com/images/Fl5ECyBdgsoJhzwZUZUArLKnL4.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Fl5ECyBdgsoJhzwZUZUArLKnL4.webp",
+      "bytes": 132152
+    },
+    {
+      "url": "https://framerusercontent.com/images/Y5b1PLfoog4o4FRNynmaX3wAw4.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Y5b1PLfoog4o4FRNynmaX3wAw4.webp",
+      "bytes": 80606
+    },
+    {
+      "url": "https://framerusercontent.com/images/R8KkQdk0M9xxBwlmC025ZztZCIM.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\R8KkQdk0M9xxBwlmC025ZztZCIM.webp",
+      "bytes": 59524
+    },
+    {
+      "url": "https://framerusercontent.com/images/Gh0hQo4UE6bTph40FSI6KJmGmvs.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Gh0hQo4UE6bTph40FSI6KJmGmvs.webp",
+      "bytes": 39912
+    },
+    {
+      "url": "https://framerusercontent.com/images/mRQvydN0sFhlvIy69qt8VDHzxWU.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\mRQvydN0sFhlvIy69qt8VDHzxWU.webp",
+      "bytes": 53552
+    },
+    {
+      "url": "https://framerusercontent.com/images/pklzscIZDXgeaRWy0F2UHvkdhM.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\pklzscIZDXgeaRWy0F2UHvkdhM.webp",
+      "bytes": 142542
+    },
+    {
+      "url": "https://framerusercontent.com/images/QI4OiRNGMKFxJhQjofa7KDJHo.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\QI4OiRNGMKFxJhQjofa7KDJHo.webp",
+      "bytes": 52138
+    },
+    {
+      "url": "https://framerusercontent.com/images/nbl8LP1GkWusQMGapRh0EEAgR8.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\nbl8LP1GkWusQMGapRh0EEAgR8.webp",
+      "bytes": 80520
+    },
+    {
+      "url": "https://framerusercontent.com/images/IK15jVnOMm2xkFO7ulPVtkAmoM.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\IK15jVnOMm2xkFO7ulPVtkAmoM.webp",
+      "bytes": 102940
+    },
+    {
+      "url": "https://framerusercontent.com/images/gv0F2vE8CnjY1WUos05p1ycEuDQ.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\gv0F2vE8CnjY1WUos05p1ycEuDQ.webp",
+      "bytes": 97356
+    },
+    {
+      "url": "https://framerusercontent.com/images/S80iFnvEsZ7H3JObp2bwHvA5ptg.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\S80iFnvEsZ7H3JObp2bwHvA5ptg.webp",
+      "bytes": 29184
+    },
+    {
+      "url": "https://framerusercontent.com/images/Mn2UT8aYN9xFKthFvjysSvpyg.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Mn2UT8aYN9xFKthFvjysSvpyg.webp",
+      "bytes": 80506
+    },
+    {
+      "url": "https://framerusercontent.com/images/sgwUsHQ6qmie2RM5HrT7cAumf8E.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\sgwUsHQ6qmie2RM5HrT7cAumf8E.webp",
+      "bytes": 119406
+    },
+    {
+      "url": "https://framerusercontent.com/images/pLQ3nXicnWLp0AjxdBNVg72pQ4.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\pLQ3nXicnWLp0AjxdBNVg72pQ4.webp",
+      "bytes": 59568
+    },
+    {
+      "url": "https://framerusercontent.com/images/6zYoQS2oUYkBjkdKWKYstYQ2MDk.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\6zYoQS2oUYkBjkdKWKYstYQ2MDk.webp",
+      "bytes": 114144
+    },
+    {
+      "url": "https://framerusercontent.com/images/rOUsz1wbbUF2mfd0cQWZuOdoZf8.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\rOUsz1wbbUF2mfd0cQWZuOdoZf8.webp",
+      "bytes": 165430
+    },
+    {
+      "url": "https://framerusercontent.com/images/HJENAz60JExLDf6k4IKjWJ08Cg.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\HJENAz60JExLDf6k4IKjWJ08Cg.webp",
+      "bytes": 115134
+    },
+    {
+      "url": "https://framerusercontent.com/images/Dt1WrpKPbW9tjgnKrZd6Rb7hY.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Dt1WrpKPbW9tjgnKrZd6Rb7hY.webp",
+      "bytes": 77036
+    },
+    {
+      "url": "https://framerusercontent.com/images/fy2JDklwLOSGMPdq4XPp4OyeY7g.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\fy2JDklwLOSGMPdq4XPp4OyeY7g.webp",
+      "bytes": 140492
+    },
+    {
+      "url": "https://framerusercontent.com/images/tiItOu7Z4DvAgNGlq59nyEnZc.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\tiItOu7Z4DvAgNGlq59nyEnZc.webp",
+      "bytes": 91802
+    },
+    {
+      "url": "https://framerusercontent.com/images/Z213r16thiFvOhaHIyui6wi0Oo.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Z213r16thiFvOhaHIyui6wi0Oo.webp",
+      "bytes": 138116
+    },
+    {
+      "url": "https://framerusercontent.com/images/OQRMZVCk7uZWsvHAM8N53HsISY.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\OQRMZVCk7uZWsvHAM8N53HsISY.webp",
+      "bytes": 112160
+    },
+    {
+      "url": "https://framerusercontent.com/images/ZguhWNYifcZvgcaFLmh3X7qqc.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\ZguhWNYifcZvgcaFLmh3X7qqc.webp",
+      "bytes": 148230
+    },
+    {
+      "url": "https://framerusercontent.com/images/Ebl2PQjS8JA9hEQGY3b71agVMds.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Ebl2PQjS8JA9hEQGY3b71agVMds.webp",
+      "bytes": 273464
+    },
+    {
+      "url": "https://framerusercontent.com/images/4Ua2PBBqPzuAegeTz1rT7UC4qfQ.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\4Ua2PBBqPzuAegeTz1rT7UC4qfQ.webp",
+      "bytes": 82914
+    },
+    {
+      "url": "https://framerusercontent.com/images/OyC7RipDnEzsAy6YhWW33nguxio.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\OyC7RipDnEzsAy6YhWW33nguxio.webp",
+      "bytes": 115604
+    },
+    {
+      "url": "https://framerusercontent.com/images/iKL9HUDYH21SxE2ZH7w0Pxj6qc.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\iKL9HUDYH21SxE2ZH7w0Pxj6qc.webp",
+      "bytes": 140192
+    },
+    {
+      "url": "https://framerusercontent.com/images/Z8dTtICKLwkds3Q8LoAxK7kP2k.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Z8dTtICKLwkds3Q8LoAxK7kP2k.webp",
+      "bytes": 123538
+    },
+    {
+      "url": "https://framerusercontent.com/images/OWfOVsCaJk375CwrWG97te42K8U.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\OWfOVsCaJk375CwrWG97te42K8U.webp",
+      "bytes": 66528
+    },
+    {
+      "url": "https://framerusercontent.com/images/UoFzBwa4OPzGCyKovt9UwbIgq0.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\UoFzBwa4OPzGCyKovt9UwbIgq0.webp",
+      "bytes": 239038
+    },
+    {
+      "url": "https://framerusercontent.com/images/kBuvCdKvxeX5gYWMkBPymSjBw.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\kBuvCdKvxeX5gYWMkBPymSjBw.webp",
+      "bytes": 313958
+    },
+    {
+      "url": "https://framerusercontent.com/images/5jFIDmf3fDYVLCeKxRoGZM5XCA.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\5jFIDmf3fDYVLCeKxRoGZM5XCA.webp",
+      "bytes": 111904
+    },
+    {
+      "url": "https://framerusercontent.com/images/vg2gWMVyNoWq5x3E44Ti98Hy2o.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\vg2gWMVyNoWq5x3E44Ti98Hy2o.png",
+      "bytes": 432497
+    },
+    {
+      "url": "https://framerusercontent.com/images/5s0U1c3cKoxv0Lj40amECpnCFCo.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\5s0U1c3cKoxv0Lj40amECpnCFCo.png",
+      "bytes": 649692
+    },
+    {
+      "url": "https://framerusercontent.com/images/LLHQqQVhQ4ev574tGB2XSo5s1HM.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\LLHQqQVhQ4ev574tGB2XSo5s1HM.png",
+      "bytes": 570609
+    },
+    {
+      "url": "https://framerusercontent.com/images/R9dqaZrivXaREuyM4KFEmVYMv68.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\R9dqaZrivXaREuyM4KFEmVYMv68.png",
+      "bytes": 666105
+    },
+    {
+      "url": "https://framerusercontent.com/images/TFm0h0ZyJ1aiDcbDmyQkp7d7ks0.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\TFm0h0ZyJ1aiDcbDmyQkp7d7ks0.png",
+      "bytes": 444109
+    },
+    {
+      "url": "https://framerusercontent.com/images/IXiQMjSIz03K7jFb17nzTQnw.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\IXiQMjSIz03K7jFb17nzTQnw.png",
+      "bytes": 467710
+    },
+    {
+      "url": "https://framerusercontent.com/images/OHYqwDruBMjqAhJtvgBXF99myw.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\OHYqwDruBMjqAhJtvgBXF99myw.png",
+      "bytes": 493694
+    },
+    {
+      "url": "https://framerusercontent.com/images/hgXFpSAAl7C4Zc93QjOURpUVIhY.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\hgXFpSAAl7C4Zc93QjOURpUVIhY.png",
+      "bytes": 603241
+    },
+    {
+      "url": "https://framerusercontent.com/images/YqCNXZOXVOrNiegTPA1zmYOPOdo.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\YqCNXZOXVOrNiegTPA1zmYOPOdo.png",
+      "bytes": 429494
+    },
+    {
+      "url": "https://framerusercontent.com/images/hQYW4LiqmuBWN2OZKGq80TuUnI.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\hQYW4LiqmuBWN2OZKGq80TuUnI.png",
+      "bytes": 510290
+    },
+    {
+      "url": "https://framerusercontent.com/images/L56MnHIMbagJGzflH351V7tJ5s.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\L56MnHIMbagJGzflH351V7tJ5s.webp",
+      "bytes": 95670
+    },
+    {
+      "url": "https://framerusercontent.com/images/Sd3SMgEszzdLnKUpISOaJ2ieHg.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Sd3SMgEszzdLnKUpISOaJ2ieHg.png",
+      "bytes": 490301
+    },
+    {
+      "url": "https://framerusercontent.com/images/SUjAJnc8gvH4xGwNXjPkWzTdA.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\SUjAJnc8gvH4xGwNXjPkWzTdA.png",
+      "bytes": 421461
+    },
+    {
+      "url": "https://framerusercontent.com/images/HJT0dp7pG9JEThf0ODtTf33MG98.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\HJT0dp7pG9JEThf0ODtTf33MG98.webp",
+      "bytes": 78498
+    },
+    {
+      "url": "https://framerusercontent.com/images/gwOcY07W2lcyWTxgwH1l56cyA.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\gwOcY07W2lcyWTxgwH1l56cyA.webp",
+      "bytes": 104290
+    },
+    {
+      "url": "https://framerusercontent.com/images/UJPqbUzimEPlnP9IYEF2s47uvg.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\UJPqbUzimEPlnP9IYEF2s47uvg.webp",
+      "bytes": 217360
+    },
+    {
+      "url": "https://framerusercontent.com/images/0yelIjtZmG7TXGditkLl2dKlI.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\0yelIjtZmG7TXGditkLl2dKlI.webp",
+      "bytes": 89602
+    },
+    {
+      "url": "https://framerusercontent.com/images/ZPyPpnRvM7I6RsqW5tMJQeIl4.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\ZPyPpnRvM7I6RsqW5tMJQeIl4.webp",
+      "bytes": 72242
+    },
+    {
+      "url": "https://framerusercontent.com/images/zjHYPsqxtmahpRxuuTgh2A4r7A.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\zjHYPsqxtmahpRxuuTgh2A4r7A.webp",
+      "bytes": 69172
+    },
+    {
+      "url": "https://framerusercontent.com/images/W7P9NeMMaW0raSzYV5sntMR8ZXs.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\W7P9NeMMaW0raSzYV5sntMR8ZXs.webp",
+      "bytes": 54414
+    },
+    {
+      "url": "https://framerusercontent.com/images/6tTbkXggWgQCAJ4DO2QEdXXmgM.svg",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\6tTbkXggWgQCAJ4DO2QEdXXmgM.svg",
+      "bytes": 214
+    },
+    {
+      "url": "https://framerusercontent.com/images/11KSGbIZoRSg4pjdnUoif6MKHI.svg",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\11KSGbIZoRSg4pjdnUoif6MKHI.svg",
+      "bytes": 215
+    },
+    {
+      "url": "https://framerusercontent.com/images/ihf52NN3NIv9H49muw7VdKygQI.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\ihf52NN3NIv9H49muw7VdKygQI.webp",
+      "bytes": 159158
+    },
+    {
+      "url": "https://framerusercontent.com/images/mGs8Snpdilvf4Tj97QjW0FdaAy0.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\mGs8Snpdilvf4Tj97QjW0FdaAy0.webp",
+      "bytes": 71962
+    },
+    {
+      "url": "https://framerusercontent.com/images/Lkhwq0ZpwZj3WdTam0yk91jo.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\Lkhwq0ZpwZj3WdTam0yk91jo.webp",
+      "bytes": 48638
+    },
+    {
+      "url": "https://framerusercontent.com/assets/3N4aS6LLHk8XXKgD51R21mRi8Q.webm",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\3N4aS6LLHk8XXKgD51R21mRi8Q.webm",
+      "bytes": 3282692
+    },
+    {
+      "url": "https://framerusercontent.com/images/6IYJLmdAqFpgWnGyi3iBNwWveqs.webp",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\6IYJLmdAqFpgWnGyi3iBNwWveqs.webp",
+      "bytes": 504314
+    },
+    {
+      "url": "https://framerusercontent.com/assets/xReQmqj0OIZCmYSNJTLGTz63324.webm",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\xReQmqj0OIZCmYSNJTLGTz63324.webm",
+      "bytes": 6753198
+    },
+    {
+      "url": "https://framerusercontent.com/images/IgURz8uFfe3CNgAaya6hHvyqaA.png",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\IgURz8uFfe3CNgAaya6hHvyqaA.png",
+      "bytes": 528910
+    },
+    {
+      "url": "https://framerusercontent.com/assets/XbOBPonKt6HrPmHfmO47TD5FP4U.webm",
+      "file": "C:\\Users\\duytu\\AppData\\Local\\Temp\\DPAuto-HyperAuto-reference\\XbOBPonKt6HrPmHfmO47TD5FP4U.webm",
+      "bytes": 26133279
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "results": [
+    {
+      "route": "/quanly",
+      "status": 200,
+      "admin": 1,
+      "publicHeader": 0,
+      "robots": "noindex, nofollow"
+    },
+    {
+      "route": "/quanly/lich-hen/DP-0001",
+      "status": 200,
+      "admin": 1,
+      "publicHeader": 0,
+      "robots": "noindex, nofollow"
+    },
+    {
+      "route": "/quanly/website",
+      "status": 200,
+      "admin": 1,
+      "publicHeader": 0,
+      "robots": "noindex, nofollow"
+    },
+    {
+      "route": "/",
+      "status": 200,
+      "admin": 0,
+      "publicHeader": 1,
+      "robots": null
+    }
+  ],
+  "errors": []
+}

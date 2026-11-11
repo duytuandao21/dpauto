@@ -1,0 +1,634 @@
+{
+  "origin": "http://127.0.0.1:4002",
+  "checkedAt": "2026-11-11T08:00:59.307Z",
+  "results": [
+    {
+      "name": "route dashboard @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Xin chào, Quản lý!",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route lich-hen @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Quản lý lịch hẹn",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route nang-luc @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Khung giờ & năng lực phục vụ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route nhan-su @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Nhân sự & ca làm",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route dich-vu @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Danh mục dịch vụ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route khach-hang @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Khách hàng & phương tiện",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route dieu-phoi @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Điều phối xe toàn trạm",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route phieu-dich-vu @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Phiếu dịch vụ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route bao-gia @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Giám sát báo giá",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route kho @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Kho & phụ tùng",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route tai-chinh @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Tài chính & công nợ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route canh-bao @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Cảnh báo điều hành",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route bao-cao @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Báo cáo & thống kê",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route cau-hinh @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Cấu hình hệ thống",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route thong-bao @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Thông báo & Zalo OA",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route nhat-ky @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Nhật ký hoạt động",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route website/noi-dung @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Nội dung website",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route website/bai-viet @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Tin tức & bài viết",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route website/hinh-anh @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "Thư viện hình ảnh",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route website/seo @1536",
+      "pass": true,
+      "detail": {
+        "width": 1536,
+        "scroll": 1521,
+        "title": "SEO & hiển thị",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route dashboard @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Xin chào, Quản lý!",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route lich-hen @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Quản lý lịch hẹn",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route nang-luc @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Khung giờ & năng lực phục vụ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route nhan-su @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Nhân sự & ca làm",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route dich-vu @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Danh mục dịch vụ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route khach-hang @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Khách hàng & phương tiện",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route dieu-phoi @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Điều phối xe toàn trạm",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route phieu-dich-vu @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Phiếu dịch vụ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route bao-gia @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Giám sát báo giá",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route kho @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Kho & phụ tùng",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route tai-chinh @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Tài chính & công nợ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route canh-bao @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Cảnh báo điều hành",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route bao-cao @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Báo cáo & thống kê",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route cau-hinh @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Cấu hình hệ thống",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route thong-bao @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Thông báo & Zalo OA",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route nhat-ky @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Nhật ký hoạt động",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route website/noi-dung @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Nội dung website",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route website/bai-viet @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Tin tức & bài viết",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route website/hinh-anh @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "Thư viện hình ảnh",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route website/seo @820",
+      "pass": true,
+      "detail": {
+        "width": 820,
+        "scroll": 805,
+        "title": "SEO & hiển thị",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route dashboard @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Xin chào, Quản lý!",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route lich-hen @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Quản lý lịch hẹn",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route nang-luc @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Khung giờ & năng lực phục vụ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route nhan-su @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Nhân sự & ca làm",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route dich-vu @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Danh mục dịch vụ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route khach-hang @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Khách hàng & phương tiện",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route dieu-phoi @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Điều phối xe toàn trạm",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route phieu-dich-vu @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Phiếu dịch vụ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route bao-gia @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Giám sát báo giá",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route kho @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Kho & phụ tùng",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route tai-chinh @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Tài chính & công nợ",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route canh-bao @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Cảnh báo điều hành",
+        "notice": 1,
+        "broken": []
+      }
+    },
+    {
+      "name": "route bao-cao @390",
+      "pass": true,
+      "detail": {
+        "width": 390,
+        "scroll": 375,
+        "title": "Báo cáo & thống kê",
+        "notice": 1,
+        "broken": []
+      }
+    }
+  ],
+  "errors": [],
+  "status": "partial-user-stopped",
+  "stoppedByUser": true,
+  "summary": {
+    "passedRouteViewportChecks": 53,
+    "plannedRouteViewportChecks": 60,
+    "consoleErrorsObserved": 0,
+    "interactionsExecuted": false,
+    "unverified": [
+      {
+        "route": "/dieu-hanh/cau-hinh",
+        "width": 390
+      },
+      {
+        "route": "/dieu-hanh/thong-bao",
+        "width": 390
+      },
+      {
+        "route": "/dieu-hanh/nhat-ky",
+        "width": 390
+      },
+      {
+        "route": "/dieu-hanh/website/noi-dung",
+        "width": 390
+      },
+      {
+        "route": "/dieu-hanh/website/bai-viet",
+        "width": 390
+      },
+      {
+        "route": "/dieu-hanh/website/hinh-anh",
+        "width": 390
+      },
+      {
+        "route": "/dieu-hanh/website/seo",
+        "width": 390
+      }
+    ]
+  },
+  "toolingNotes": [
+    "Initial snapshot on another Windows drive could not resolve Next webpack entry paths.",
+    "Browser capture timed out after 48 passing checks.",
+    "Resume retained passing checks; waiting for the mobile settings page timed out after 53 passing checks.",
+    "User instructed stopping further browser validation."
+  ]
+}

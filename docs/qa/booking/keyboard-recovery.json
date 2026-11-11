@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "Skip link reachable with Tab",
+    "Modal focus stays inside dialog",
+    "Escape cancels confirmation",
+    "Validation focuses first invalid field",
+    "Invalid demo storage recovers with visible feedback"
+  ],
+  "passed": true
+}

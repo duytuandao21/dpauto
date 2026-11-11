@@ -1,0 +1,82 @@
+{
+  "redirects": [
+    {
+      "from": "/quanly",
+      "to": "/co-van",
+      "status": 308
+    },
+    {
+      "from": "/quanly?date=2026-11-11&status=pending",
+      "to": "/co-van?date=2026-11-11&status=pending",
+      "status": 308
+    },
+    {
+      "from": "/quanly/lich-hen?mode=week&source=Website",
+      "to": "/co-van/lich-hen?mode=week&source=Website",
+      "status": 308
+    },
+    {
+      "from": "/quanly/lich-hen/tao-moi?customer=CU-001",
+      "to": "/co-van/lich-hen/tao-moi?customer=CU-001",
+      "status": 308
+    },
+    {
+      "from": "/quanly/lich-hen/DP-0001?edit=1",
+      "to": "/co-van/lich-hen/DP-0001?edit=1",
+      "status": 308
+    },
+    {
+      "from": "/quanly/khach-hang/CU-001?q=An",
+      "to": "/co-van/khach-hang/CU-001?q=An",
+      "status": 308
+    },
+    {
+      "from": "/quanly/them",
+      "to": "/co-van/tai-khoan",
+      "status": 308
+    },
+    {
+      "from": "/quanly/cai-dat",
+      "to": "/co-van/tuy-chon",
+      "status": 308
+    },
+    {
+      "from": "/quanly/website",
+      "to": "/co-van",
+      "status": 308
+    },
+    {
+      "from": "/co-van/them",
+      "to": "/co-van/tai-khoan",
+      "status": 308
+    },
+    {
+      "from": "/co-van/cai-dat",
+      "to": "/co-van/tuy-chon",
+      "status": 308
+    }
+  ],
+  "browserChecks": [
+    {
+      "engine": "chrome",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "engine": "chrome",
+      "width": 768,
+      "passed": true
+    },
+    {
+      "engine": "chrome",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "width": 390,
+      "passed": true
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "route": "/quanly",
+    "width": 360,
+    "header": 64,
+    "card": 176,
+    "name": "14px",
+    "secondary": "12px"
+  },
+  {
+    "route": "/quanly/lich-hen",
+    "width": 360,
+    "header": 64,
+    "card": 176,
+    "name": "14px",
+    "secondary": "12px"
+  },
+  {
+    "route": "/quanly",
+    "width": 390,
+    "header": 64,
+    "card": 176,
+    "name": "14px",
+    "secondary": "12px"
+  },
+  {
+    "route": "/quanly/lich-hen",
+    "width": 390,
+    "header": 64,
+    "card": 176,
+    "name": "14px",
+    "secondary": "12px"
+  },
+  {
+    "route": "/quanly",
+    "width": 768,
+    "header": 65,
+    "card": 176,
+    "name": "14px",
+    "secondary": "12px"
+  },
+  {
+    "route": "/quanly/lich-hen",
+    "width": 768,
+    "header": 65,
+    "card": 176,
+    "name": "14px",
+    "secondary": "12px"
+  },
+  {
+    "route": "/quanly",
+    "width": 1440,
+    "header": 65,
+    "card": 172,
+    "name": "14px",
+    "secondary": "12px"
+  },
+  {
+    "route": "/quanly/lich-hen",
+    "width": 1440,
+    "header": 65,
+    "card": 172,
+    "name": "14px",
+    "secondary": "12px"
+  },
+  {
+    "check": "Weekly chart updates date, KPI and agenda",
+    "passed": true
+  },
+  {
+    "check": "Public home retains its own layout",
+    "passed": true
+  }
+]

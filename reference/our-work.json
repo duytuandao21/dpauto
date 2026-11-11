@@ -1,0 +1,1321 @@
+{
+  "url": "https://hyperautocare.framer.website/our-work",
+  "title": "Our Work | Car Detailing Before & After | HyperAuto Care",
+  "text": "Services\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nCall Us: +1 206 555 0148\n\nContact Us\n\nOur Work\nSee the Difference\n\nExplore a selection of vehicle transformations and drag each comparison to see the results before and after the work.\n\nBefore\nAfter\n\nPaint Correction & Ceramic Coating\n\nVEHICLE\n\nBMW M4\n\nDURATION\n\n2 Days\n\nSERVICES\n\nPaint Correction · Ceramic Coating · Wheel Detail\n\nLight swirl marks and surface defects were reducing the clarity of the paint. The finish was corrected to restore gloss before ceramic protection was applied.\n\nBefore\nAfter\n\nFull Interior Detail\n\nVEHICLE\n\nMercedes-Benz GLC\n\nDURATION\n\n1 Day\n\nSERVICES\n\nInterior Detail · Deep Cleaning · Interior Protection\n\nThe interior received a thorough clean across high-contact surfaces, seats, carpets, and trim to restore a fresher and better-maintained cabin.\n\nBefore\nAfter\n\nPaint Protection Film\n\nVEHICLE\n\nPorsche Macan\n\nDURATION\n\n3 Days\n\nSERVICES\n\nPaint Preparation · Front-End PPF · Final Inspection\n\nThe front of the vehicle was carefully prepared before paint protection film was installed across key high-impact areas.\n\nBefore\nAfter\n\nWater Spot Removal & Exterior Detail\n\nVEHICLE\n\nAudi A5\n\nDURATION\n\n1 Day\n\nSERVICES\n\nDetail Wash · Water Spot Removal · Exterior Finish\n\nMineral deposits and surface contamination had reduced the clarity of the finish. The exterior was cleaned and treated to restore a cleaner, more even appearance.\n\nBefore\nAfter\n\nHeadlight Restoration\n\nVEHICLE\n\nToyota Camry\n\nDURATION\n\nHalf Day\n\nSERVICES\n\nHeadlight Restoration · Surface Refinement · Protection\n\nCloudy and oxidized headlight lenses were restored to improve clarity and give the front of the vehicle a cleaner appearance.\n\nBefore\nAfter\n\nExterior Detail & Paint Enhancement\n\nVEHICLE\n\nTesla Model 3\n\nDURATION\n\n1 Day\n\nSERVICES\n\nDetail Wash · Decontamination · Paint Enhancement\n\nRoad film and light surface imperfections were affecting the finish. A complete exterior detail and paint enhancement brought back a cleaner, glossier appearance.\n\nGive Your Vehicle the Care It Deserves\n\nFrom routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.\n\nContact Us\n\nCall Now\n\nProfessional car care, detailing, paint protection, and vehicle appearance services in Seattle.\n\nHyperAuto Care\n\nHyperAuto Care\n\nNavigation\n\nHome\n\nServices\n\nService Process\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nContact\n\nContact\n\n+1 206 555 0148\n\ncontact@hyperautocare.com\n\n000 Harbor Avenue SW, Suite 120\n\nSeattle, WA 98126\n\nUSA\n\nOpening Hours\n\nMonday - Friday\n\n8:00 AM - 6:00 PM\n\nSaturday\n\n8:00 AM - 12:00 PM\n\nSunday\n\nClosed\n\n© HyperAuto Care. All rights reserved.\n\nDesigned by RedSignal.Red\n\nPrivacy Policy\n\nTerms of Service\n\nGet Template - Free\n\nCreate a free website with Framer, the website builder loved by startups, designers and agencies.\n\n ",
+  "blocks": [
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 397,
+      "y": 31,
+      "width": 57
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 496,
+      "y": 31,
+      "width": 46
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 565,
+      "y": 31,
+      "width": 62
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 651,
+      "y": 31,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 768,
+      "y": 31,
+      "width": 40
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 832,
+      "y": 31,
+      "width": 53
+    },
+    {
+      "tag": "P",
+      "text": "Call Us: +1 206 555 0148",
+      "html": "Call Us: +1 206 555 0148",
+      "name": "Label",
+      "x": 1006,
+      "y": 31,
+      "width": 174
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 1224,
+      "y": 31,
+      "width": 78
+    },
+    {
+      "tag": "H1",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Header",
+      "x": 104,
+      "y": 236,
+      "width": 750
+    },
+    {
+      "tag": "H2",
+      "text": "See the Difference",
+      "html": "See the Difference",
+      "name": "Section Title",
+      "x": 104,
+      "y": 596,
+      "width": 760
+    },
+    {
+      "tag": "P",
+      "text": "Explore a selection of vehicle transformations and drag each comparison to see the results before and after the work.",
+      "html": "Explore a selection of vehicle transformations and drag each comparison to see the results before and after the work.",
+      "name": "Introduction",
+      "x": 104,
+      "y": 671,
+      "width": 720
+    },
+    {
+      "tag": "P",
+      "text": "Paint Correction & Ceramic Coating",
+      "html": "Paint Correction &amp; Ceramic Coating",
+      "name": "Title",
+      "x": 904,
+      "y": 900,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "VEHICLE",
+      "html": "VEHICLE",
+      "name": "Vehicle Label",
+      "x": 904,
+      "y": 1000,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "BMW M4",
+      "html": "BMW M4",
+      "name": "Vehicle Value",
+      "x": 904,
+      "y": 1024,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "DURATION",
+      "html": "DURATION",
+      "name": "Duration Label",
+      "x": 1118,
+      "y": 1000,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "2 Days",
+      "html": "2 Days",
+      "name": "Duration Value",
+      "x": 1118,
+      "y": 1024,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "SERVICES",
+      "html": "SERVICES",
+      "name": "Services Label",
+      "x": 904,
+      "y": 1077,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Paint Correction · Ceramic Coating · Wheel Detail",
+      "html": "Paint Correction · Ceramic Coating · Wheel Detail",
+      "name": "Services Value",
+      "x": 904,
+      "y": 1100,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Light swirl marks and surface defects were reducing the clarity of the paint. The finish was corrected to restore gloss before ceramic protection was applied.",
+      "html": "Light swirl marks and surface defects were reducing the clarity of the paint. The finish was corrected to restore gloss before ceramic protection was applied.",
+      "name": "Description",
+      "x": 904,
+      "y": 1153,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Full Interior Detail",
+      "html": "Full Interior Detail",
+      "name": "Title",
+      "x": 904,
+      "y": 1527,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "VEHICLE",
+      "html": "VEHICLE",
+      "name": "Vehicle Label",
+      "x": 904,
+      "y": 1591,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Mercedes-Benz GLC",
+      "html": "Mercedes-Benz GLC",
+      "name": "Vehicle Value",
+      "x": 904,
+      "y": 1614,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "DURATION",
+      "html": "DURATION",
+      "name": "Duration Label",
+      "x": 1118,
+      "y": 1591,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "1 Day",
+      "html": "1 Day",
+      "name": "Duration Value",
+      "x": 1118,
+      "y": 1614,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "SERVICES",
+      "html": "SERVICES",
+      "name": "Services Label",
+      "x": 904,
+      "y": 1667,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Interior Detail · Deep Cleaning · Interior Protection",
+      "html": "Interior Detail · Deep Cleaning · Interior Protection",
+      "name": "Services Value",
+      "x": 904,
+      "y": 1691,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "The interior received a thorough clean across high-contact surfaces, seats, carpets, and trim to restore a fresher and better-maintained cabin.",
+      "html": "The interior received a thorough clean across high-contact surfaces, seats, carpets, and trim to restore a fresher and better-maintained cabin.",
+      "name": "Description",
+      "x": 904,
+      "y": 1744,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Paint Protection Film",
+      "html": "Paint Protection Film",
+      "name": "Title",
+      "x": 904,
+      "y": 2110,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "VEHICLE",
+      "html": "VEHICLE",
+      "name": "Vehicle Label",
+      "x": 904,
+      "y": 2174,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Porsche Macan",
+      "html": "Porsche Macan",
+      "name": "Vehicle Value",
+      "x": 904,
+      "y": 2198,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "DURATION",
+      "html": "DURATION",
+      "name": "Duration Label",
+      "x": 1118,
+      "y": 2174,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "3 Days",
+      "html": "3 Days",
+      "name": "Duration Value",
+      "x": 1118,
+      "y": 2198,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "SERVICES",
+      "html": "SERVICES",
+      "name": "Services Label",
+      "x": 904,
+      "y": 2251,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Paint Preparation · Front-End PPF · Final Inspection",
+      "html": "Paint Preparation · Front-End PPF · Final Inspection",
+      "name": "Services Value",
+      "x": 904,
+      "y": 2274,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "The front of the vehicle was carefully prepared before paint protection film was installed across key high-impact areas.",
+      "html": "The front of the vehicle was carefully prepared before paint protection film was installed across key high-impact areas.",
+      "name": "Description",
+      "x": 904,
+      "y": 2352,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Water Spot Removal & Exterior Detail",
+      "html": "Water Spot Removal &amp; Exterior Detail",
+      "name": "Title",
+      "x": 904,
+      "y": 2688,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "VEHICLE",
+      "html": "VEHICLE",
+      "name": "Vehicle Label",
+      "x": 904,
+      "y": 2788,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Audi A5",
+      "html": "Audi A5",
+      "name": "Vehicle Value",
+      "x": 904,
+      "y": 2812,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "DURATION",
+      "html": "DURATION",
+      "name": "Duration Label",
+      "x": 1118,
+      "y": 2788,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "1 Day",
+      "html": "1 Day",
+      "name": "Duration Value",
+      "x": 1118,
+      "y": 2812,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "SERVICES",
+      "html": "SERVICES",
+      "name": "Services Label",
+      "x": 904,
+      "y": 2865,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Detail Wash · Water Spot Removal · Exterior Finish",
+      "html": "Detail Wash · Water Spot Removal · Exterior Finish",
+      "name": "Services Value",
+      "x": 904,
+      "y": 2888,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Mineral deposits and surface contamination had reduced the clarity of the finish. The exterior was cleaned and treated to restore a cleaner, more even appearance.",
+      "html": "Mineral deposits and surface contamination had reduced the clarity of the finish. The exterior was cleaned and treated to restore a cleaner, more even appearance.",
+      "name": "Description",
+      "x": 904,
+      "y": 2941,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Headlight Restoration",
+      "html": "Headlight Restoration",
+      "name": "Title",
+      "x": 904,
+      "y": 3302,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "VEHICLE",
+      "html": "VEHICLE",
+      "name": "Vehicle Label",
+      "x": 904,
+      "y": 3366,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Toyota Camry",
+      "html": "Toyota Camry",
+      "name": "Vehicle Value",
+      "x": 904,
+      "y": 3390,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "DURATION",
+      "html": "DURATION",
+      "name": "Duration Label",
+      "x": 1118,
+      "y": 3366,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Half Day",
+      "html": "Half Day",
+      "name": "Duration Value",
+      "x": 1118,
+      "y": 3390,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "SERVICES",
+      "html": "SERVICES",
+      "name": "Services Label",
+      "x": 904,
+      "y": 3443,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Headlight Restoration · Surface Refinement · Protection",
+      "html": "Headlight Restoration · Surface Refinement · Protection",
+      "name": "Services Value",
+      "x": 904,
+      "y": 3466,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Cloudy and oxidized headlight lenses were restored to improve clarity and give the front of the vehicle a cleaner appearance.",
+      "html": "Cloudy and oxidized headlight lenses were restored to improve clarity and give the front of the vehicle a cleaner appearance.",
+      "name": "Description",
+      "x": 904,
+      "y": 3544,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Exterior Detail & Paint Enhancement",
+      "html": "Exterior Detail &amp; Paint Enhancement",
+      "name": "Title",
+      "x": 904,
+      "y": 3868,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "VEHICLE",
+      "html": "VEHICLE",
+      "name": "Vehicle Label",
+      "x": 904,
+      "y": 3968,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Tesla Model 3",
+      "html": "Tesla Model 3",
+      "name": "Vehicle Value",
+      "x": 904,
+      "y": 3992,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "DURATION",
+      "html": "DURATION",
+      "name": "Duration Label",
+      "x": 1118,
+      "y": 3968,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "1 Day",
+      "html": "1 Day",
+      "name": "Duration Value",
+      "x": 1118,
+      "y": 3992,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "SERVICES",
+      "html": "SERVICES",
+      "name": "Services Label",
+      "x": 904,
+      "y": 4044,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Detail Wash · Decontamination · Paint Enhancement",
+      "html": "Detail Wash · Decontamination · Paint Enhancement",
+      "name": "Services Value",
+      "x": 904,
+      "y": 4068,
+      "width": 384
+    },
+    {
+      "tag": "P",
+      "text": "Road film and light surface imperfections were affecting the finish. A complete exterior detail and paint enhancement brought back a cleaner, glossier appearance.",
+      "html": "Road film and light surface imperfections were affecting the finish. A complete exterior detail and paint enhancement brought back a cleaner, glossier appearance.",
+      "name": "Description",
+      "x": 904,
+      "y": 4146,
+      "width": 384
+    },
+    {
+      "tag": "H2",
+      "text": "Give Your Vehicle the Care It Deserves",
+      "html": "Give Your Vehicle the Care It Deserves",
+      "name": "Final CTA Heading",
+      "x": 706,
+      "y": 4745,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "html": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "name": "Final CTA Description",
+      "x": 706,
+      "y": 4882,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 724,
+      "y": 4975,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "Call Now",
+      "html": "Call Now",
+      "name": "Label",
+      "x": 879,
+      "y": 4975,
+      "width": 63
+    },
+    {
+      "tag": "P",
+      "text": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "html": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "name": "Brand Description",
+      "x": 104,
+      "y": 5388,
+      "width": 300
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Facebook",
+      "x": 136,
+      "y": 5486,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Instagram",
+      "x": 136,
+      "y": 5524,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "Navigation",
+      "html": "Navigation",
+      "name": "Navigation Heading",
+      "x": 513,
+      "y": 5388,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Home",
+      "html": "Home",
+      "name": "Services",
+      "x": 513,
+      "y": 5426,
+      "width": 41
+    },
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 513,
+      "y": 5464,
+      "width": 60
+    },
+    {
+      "tag": "P",
+      "text": "Service Process",
+      "html": "Service Process",
+      "name": "Services",
+      "x": 513,
+      "y": 5502,
+      "width": 112
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 513,
+      "y": 5540,
+      "width": 48
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 513,
+      "y": 5578,
+      "width": 66
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 513,
+      "y": 5616,
+      "width": 99
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 513,
+      "y": 5654,
+      "width": 42
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 513,
+      "y": 5692,
+      "width": 56
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Services",
+      "x": 513,
+      "y": 5730,
+      "width": 55
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Contact Heading",
+      "x": 727,
+      "y": 5388,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "+1 206 555 0148",
+      "html": "+1 206 555 0148",
+      "name": "Services",
+      "x": 753,
+      "y": 5426,
+      "width": 115
+    },
+    {
+      "tag": "P",
+      "text": "contact@hyperautocare.com",
+      "html": "contact@hyperautocare.com",
+      "name": "Services",
+      "x": 753,
+      "y": 5464,
+      "width": 203
+    },
+    {
+      "tag": "P",
+      "text": "000 Harbor Avenue SW, Suite 120",
+      "html": "000 Harbor Avenue SW, Suite 120",
+      "name": "Street",
+      "x": 753,
+      "y": 5499,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Seattle, WA 98126",
+      "html": "Seattle, WA 98126",
+      "name": "City",
+      "x": 753,
+      "y": 5521,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "USA",
+      "html": "USA",
+      "name": "Country",
+      "x": 753,
+      "y": 5543,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Opening Hours",
+      "html": "Opening Hours",
+      "name": "Opening Hours Heading",
+      "x": 1046,
+      "y": 5388,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Monday - Friday",
+      "html": "Monday - Friday",
+      "name": "Days",
+      "x": 1046,
+      "y": 5423,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 6:00 PM",
+      "html": "8:00 AM - 6:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 5447,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Saturday",
+      "html": "Saturday",
+      "name": "Days",
+      "x": 1046,
+      "y": 5479,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 12:00 PM",
+      "html": "8:00 AM - 12:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 5503,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Sunday",
+      "html": "Sunday",
+      "name": "Day",
+      "x": 1046,
+      "y": 5535,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Closed",
+      "html": "Closed",
+      "name": "Status",
+      "x": 1046,
+      "y": 5559,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "© HyperAuto Care. All rights reserved.",
+      "html": "© HyperAuto Care. All rights reserved.",
+      "name": "Copyright",
+      "x": 104,
+      "y": 6219,
+      "width": 250
+    },
+    {
+      "tag": "P",
+      "text": "Designed by RedSignal.Red",
+      "html": "Designed by <!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"https://redsignal.red\" target=\"_blank\" rel=\"\">RedSignal.Red</a><!--/$-->",
+      "name": "Footer Bottom Bar",
+      "x": 363,
+      "y": 6219,
+      "width": 179
+    },
+    {
+      "tag": "P",
+      "text": "Privacy Policy",
+      "html": "Privacy Policy",
+      "name": "Services",
+      "x": 1082,
+      "y": 6222,
+      "width": 97
+    },
+    {
+      "tag": "P",
+      "text": "Terms of Service",
+      "html": "Terms of Service",
+      "name": "Services",
+      "x": 1203,
+      "y": 6222,
+      "width": 117
+    },
+    {
+      "tag": "P",
+      "text": "Get Template - Free",
+      "html": "Get Template - Free",
+      "name": "Get Free Template Button",
+      "x": 1256,
+      "y": 810,
+      "width": 138
+    },
+    {
+      "tag": "P",
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "html": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "name": "Content",
+      "x": 1335,
+      "y": 871,
+      "width": 0
+    }
+  ],
+  "images": [
+    {
+      "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+      "alt": "HyperAuto Care Logo",
+      "name": "Image Logo",
+      "y": 13,
+      "width": 146,
+      "height": 50
+    },
+    {
+      "src": "https://framerusercontent.com/images/5jFIDmf3fDYVLCeKxRoGZM5XCA.webp?width=1200&height=582",
+      "alt": "Black SUV with doors open inside a detailing workshop",
+      "name": "Hero Image",
+      "y": 76,
+      "width": 1425,
+      "height": 400
+    },
+    {
+      "src": "https://framerusercontent.com/images/vg2gWMVyNoWq5x3E44Ti98Hy2o.png?width=1536&height=1024",
+      "alt": "Black BMW M4 paint after correction and ceramic coating with a clearer glossy finish",
+      "name": "Variant 1",
+      "y": 816,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/5s0U1c3cKoxv0Lj40amECpnCFCo.png?width=1536&height=1024",
+      "alt": "Black BMW M4 paint before correction with visible swirl marks and surface defects",
+      "name": "Variant 1",
+      "y": 816,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/LLHQqQVhQ4ev574tGB2XSo5s1HM.png?width=1536&height=1024",
+      "alt": "Mercedes-Benz GLC interior after full interior detailing with a cleaner cabin",
+      "name": "Variant 1",
+      "y": 1412,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/R9dqaZrivXaREuyM4KFEmVYMv68.png?width=1536&height=1024",
+      "alt": "Mercedes-Benz GLC interior before deep cleaning and detailing",
+      "name": "Variant 1",
+      "y": 1412,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/TFm0h0ZyJ1aiDcbDmyQkp7d7ks0.png?width=1536&height=1024",
+      "alt": "Porsche Macan after front-end paint protection film installation",
+      "name": "Variant 1",
+      "y": 2008,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/IXiQMjSIz03K7jFb17nzTQnw.png?width=1536&height=1024",
+      "alt": "Porsche Macan before front-end paint protection film installation",
+      "name": "Variant 1",
+      "y": 2008,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/OHYqwDruBMjqAhJtvgBXF99myw.png?width=1536&height=1024",
+      "alt": "Audi A5 paint after water spot removal and exterior detailing",
+      "name": "Variant 1",
+      "y": 2604,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/hgXFpSAAl7C4Zc93QjOURpUVIhY.png?width=1536&height=1024",
+      "alt": "Audi A5 paint before water spot removal with visible mineral deposits",
+      "name": "Variant 1",
+      "y": 2604,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/YqCNXZOXVOrNiegTPA1zmYOPOdo.png?width=1536&height=1024",
+      "alt": "Toyota Camry headlight after restoration with improved clarity",
+      "name": "Variant 1",
+      "y": 3200,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/hQYW4LiqmuBWN2OZKGq80TuUnI.png?width=1536&height=1024",
+      "alt": "Toyota Camry headlight before restoration with cloudy and oxidized lenses",
+      "name": "Variant 1",
+      "y": 3200,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/SUjAJnc8gvH4xGwNXjPkWzTdA.png?width=1536&height=1024",
+      "alt": "Tesla Model 3 after exterior detailing with a cleaner glossy finish",
+      "name": "Variant 1",
+      "y": 3796,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/Sd3SMgEszzdLnKUpISOaJ2ieHg.png?width=1536&height=1024",
+      "alt": "Tesla Model 3 before exterior detailing and paint enhancement",
+      "name": "Variant 1",
+      "y": 3796,
+      "width": 760,
+      "height": 520
+    },
+    {
+      "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+      "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+      "name": "Background",
+      "y": 4358,
+      "width": 1510,
+      "height": 916
+    }
+  ],
+  "videos": [],
+  "links": [
+    {
+      "text": "",
+      "href": "./"
+    },
+    {
+      "text": "Services",
+      "href": "./services"
+    },
+    {
+      "text": "Pricing",
+      "href": "./#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "./our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "./news"
+    },
+    {
+      "text": "About",
+      "href": "./about"
+    },
+    {
+      "text": "Training",
+      "href": "./#training"
+    },
+    {
+      "text": "Call Us: +1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "Contact Us",
+      "href": "./contact"
+    },
+    {
+      "text": "Contact Us",
+      "href": "./contact"
+    },
+    {
+      "text": "Call Now",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.facebook.com"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.instagram.com"
+    },
+    {
+      "text": "Home",
+      "href": "./"
+    },
+    {
+      "text": "Services",
+      "href": "./services"
+    },
+    {
+      "text": "Service Process",
+      "href": "./#Our Service Process"
+    },
+    {
+      "text": "Pricing",
+      "href": "./#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "./our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "./news"
+    },
+    {
+      "text": "About",
+      "href": "./about"
+    },
+    {
+      "text": "Training",
+      "href": "./#training"
+    },
+    {
+      "text": "Contact",
+      "href": "./contact"
+    },
+    {
+      "text": "+1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "contact@hyperautocare.com",
+      "href": "mailto:contact@hyperautocare.com"
+    },
+    {
+      "text": "RedSignal.Red",
+      "href": "https://redsignal.red"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "./privacy"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "./terms"
+    },
+    {
+      "text": "Get Template - Free",
+      "href": "https://framer.link/bqU9862"
+    },
+    {
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "href": "https://www.framer.com"
+    }
+  ],
+  "sections": [
+    {
+      "name": "Banner",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "60px"
+    },
+    {
+      "name": "Hero Image",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Hero Overlay",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Header",
+      "y": 212,
+      "height": 129,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px 32px",
+      "gap": "32px"
+    },
+    {
+      "name": "Before and After Introduction",
+      "y": 476,
+      "height": 272,
+      "background": "rgb(244, 241, 234)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Introduction Content",
+      "y": 476,
+      "height": 272,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "120px 32px 20px",
+      "gap": "18px"
+    },
+    {
+      "name": "Our Work Projects",
+      "y": 748,
+      "height": 3696,
+      "background": "rgb(244, 241, 234)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Projects List",
+      "y": 748,
+      "height": 3696,
+      "background": "rgb(244, 241, 234)",
+      "padding": "60px 32px 120px",
+      "gap": "60px"
+    },
+    {
+      "name": "Paint Correction and Ceramic Coating",
+      "y": 808,
+      "height": 536,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Desktop",
+      "y": 808,
+      "height": 536,
+      "background": "rgb(21, 24, 27)",
+      "padding": "8px",
+      "gap": "32px"
+    },
+    {
+      "name": "Full Interior Detail",
+      "y": 1404,
+      "height": 536,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Desktop",
+      "y": 1404,
+      "height": 536,
+      "background": "rgb(21, 24, 27)",
+      "padding": "8px",
+      "gap": "32px"
+    },
+    {
+      "name": "Paint Protection Film",
+      "y": 2000,
+      "height": 536,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Desktop",
+      "y": 2000,
+      "height": 536,
+      "background": "rgb(21, 24, 27)",
+      "padding": "8px",
+      "gap": "32px"
+    },
+    {
+      "name": "Water Spot Removal and Exterior Detail",
+      "y": 2596,
+      "height": 536,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Desktop",
+      "y": 2596,
+      "height": 536,
+      "background": "rgb(21, 24, 27)",
+      "padding": "8px",
+      "gap": "32px"
+    },
+    {
+      "name": "Headlight Restoration",
+      "y": 3192,
+      "height": 536,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Desktop",
+      "y": 3192,
+      "height": 536,
+      "background": "rgb(21, 24, 27)",
+      "padding": "8px",
+      "gap": "32px"
+    },
+    {
+      "name": "Exterior Detail and Paint Enhancement",
+      "y": 3788,
+      "height": 536,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Desktop",
+      "y": 3788,
+      "height": 536,
+      "background": "rgb(21, 24, 27)",
+      "padding": "8px",
+      "gap": "32px"
+    },
+    {
+      "name": "Desktop",
+      "y": 4444,
+      "height": 864,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Background",
+      "y": 4358,
+      "height": 916,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Final CTA Content",
+      "y": 4673,
+      "height": 407,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px 32px",
+      "gap": "24px"
+    },
+    {
+      "name": "Desktop",
+      "y": 5308,
+      "height": 962,
+      "background": "rgb(11, 13, 15)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Footer Content",
+      "y": 5308,
+      "height": 962,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "80px 32px 28px",
+      "gap": "72px"
+    },
+    {
+      "name": "Footer Information",
+      "y": 5388,
+      "height": 362,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "44px"
+    },
+    {
+      "name": "Logo",
+      "y": 5823,
+      "height": 300,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    }
+  ]
+}

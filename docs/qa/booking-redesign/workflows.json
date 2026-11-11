@@ -1,0 +1,22 @@
+{
+  "origin": "http://localhost:4002",
+  "checks": [
+    "Chromium search, filters, day/week and date selection",
+    "Chromium pending → confirmed → arrived → completed and shared KPIs",
+    "Chromium reschedule, edit, timeline and direct-link refresh persistence",
+    "Chromium form validation, create on HTTP-compatible identifiers, cancel and no-show",
+    "Chromium customer relations, create from customer, More menu, website placeholder and persistent light theme",
+    "Chromium settings, reset, empty and not-found states",
+    "WebKit search, filters, day/week and date selection",
+    "WebKit pending → confirmed → arrived → completed and shared KPIs",
+    "WebKit reschedule, edit, timeline and direct-link refresh persistence",
+    "WebKit form validation, create on HTTP-compatible identifiers, cancel and no-show",
+    "WebKit customer relations, create from customer, More menu, website placeholder and persistent light theme",
+    "WebKit settings, reset, empty and not-found states"
+  ],
+  "errors": [],
+  "toolingWarnings": [
+    "WebKit: /localhost:4002/__nextjs_original-stack-frames due to access control checks."
+  ],
+  "responsive": []
+}

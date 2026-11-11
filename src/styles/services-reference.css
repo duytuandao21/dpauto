@@ -1,0 +1,262 @@
+/* Layout and motion measurements from the reference /services page. */
+body:has(:is(.services-page, .detail-page)) {
+  font-feature-settings: "blwf", "cv03", "cv04", "cv09", "cv11";
+}
+
+.services-page {
+  overflow: clip;
+}
+
+body:has(.services-page) .nav-services > .nav-link {
+  color: var(--orange);
+}
+
+.services-page .services-banner .work-banner-image img {
+  object-position: 50% 50%;
+}
+
+.services-page .services-index {
+  padding: 0;
+  overflow: clip;
+}
+
+.services-page .services-index > .container {
+  padding-top: 80px;
+  padding-bottom: 120px;
+}
+
+.services-page .service-stack-card {
+  position: sticky;
+  top: 92px;
+  width: 100%;
+  height: 580px;
+  z-index: 1;
+}
+
+.services-page .service-list-item {
+  height: 100%;
+  min-height: 0;
+  flex-direction: row;
+  padding: 12px 18px 12px 12px;
+  border-radius: 20px;
+}
+
+.services-page .service-list-image {
+  position: absolute;
+  inset: 6px 6px 32px;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  border-radius: 16px;
+  z-index: 0;
+}
+
+.services-page .service-list-image .photo {
+  border-radius: 12px;
+}
+
+.services-page .service-list-image img,
+.services-page .service-list-item:hover .service-list-image img {
+  transform: none;
+  transition: none;
+}
+
+.services-page .service-list-copy {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  max-width: 500px;
+  min-width: 0;
+  justify-content: flex-end;
+  padding: 32px;
+  gap: 16px;
+  border-radius: 12px;
+}
+
+.services-page .service-list-copy h2 {
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -0.36px;
+}
+
+.services-page .service-list-copy .button {
+  height: 48px;
+  min-height: 48px;
+  margin-top: 0;
+}
+
+body:has(:is(.services-page, .detail-page)) .footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+body:has(:is(.services-page, .detail-page)) .footer-brand > a {
+  display: none;
+}
+
+body:has(:is(.services-page, .detail-page)) .footer-brand > p {
+  max-width: 300px;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+body:has(:is(.services-page, .detail-page)) .social-links {
+  gap: 10px;
+}
+
+body:has(:is(.services-page, .detail-page)) .social-links a {
+  height: 28px;
+  padding: 4px 8px;
+  gap: 6px;
+  font-size: 15px;
+  line-height: 18px;
+}
+
+body:has(:is(.services-page, .detail-page)) .social-links .icon {
+  width: 18px;
+  height: 18px;
+}
+
+@media (min-width: 1200px) {
+  body:has(:is(.services-page, .detail-page)) .footer-heading {
+    font-size: 15px;
+    line-height: 1.35;
+    margin-bottom: 14px;
+    color: #ffffff99;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-nav a,
+  body:has(:is(.services-page, .detail-page)) .footer-bottom > div > a {
+    font-size: 15px;
+    line-height: 18px;
+    padding: 3px 0;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-bottom {
+    position: relative;
+    border-top: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    letter-spacing: -0.14px;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-bottom::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--border-dark);
+  }
+}
+
+@media (min-width: 810px) and (max-width: 1199.98px) {
+  .services-page .services-index > .container {
+    padding-bottom: 80px;
+  }
+
+  .services-page .service-stack-card {
+    height: 450px;
+  }
+
+  .services-page .service-list-copy h2 {
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.32px;
+  }
+}
+
+@media (max-width: 809.98px) {
+  .services-page .services-index > .container {
+    padding: 64px 16px;
+  }
+
+  .services-page .services-list {
+    gap: 24px;
+  }
+
+  .services-page .service-stack-card {
+    height: 550px;
+  }
+
+  .services-page .service-list-copy h2 {
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: -0.28px;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-content {
+    padding-top: 80px;
+    gap: 32px;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-columns {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-heading {
+    font-size: 15px;
+    line-height: 1.35;
+    margin-bottom: 14px;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-nav a,
+  body:has(:is(.services-page, .detail-page))
+    .footer-columns
+    > div:nth-child(3)
+    > a,
+  body:has(:is(.services-page, .detail-page)) .footer-bottom > div > a {
+    font-size: 15px;
+    line-height: 18px;
+    padding: 3px 0;
+  }
+
+  body:has(:is(.services-page, .detail-page))
+    .footer-columns
+    > div:nth-child(3)
+    > a {
+    margin-bottom: 14px;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-columns address {
+    font-size: 15px;
+    line-height: 20.8px;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-columns .hours {
+    font-size: 15px;
+    line-height: 18px;
+    gap: 14px;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-columns .hours div {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-bottom {
+    position: relative;
+    border-top: 0;
+    padding-top: 24px;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    letter-spacing: -0.14px;
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-bottom::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--border-dark);
+  }
+
+  body:has(:is(.services-page, .detail-page)) .footer-bottom > div {
+    margin-top: 0;
+  }
+}

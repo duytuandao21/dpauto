@@ -1,0 +1,4 @@
+/* This shell has no sidebar brand, so keep the header brand at every width. */
+.shell .brand {
+  display: flex;
+}

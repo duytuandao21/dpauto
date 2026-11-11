@@ -1,0 +1,1362 @@
+{
+  "url": "https://hyperautocare.framer.website/services/glass-water-spot-removal",
+  "title": "Glass & Water Spot Removal | HyperAuto Care",
+  "text": "Services\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nCall Us: +1 206 555 0148\n\nContact Us\n\nSERVICE\n\nGlass & Water Spot Removal\n\nRemove mineral deposits and stubborn water spots from automotive glass.\n\nOverview\n\nA professional glass cleaning service designed to remove mineral deposits, water spots, and buildup that regular washing cannot remove.\n\nVehicle glass is constantly exposed to rain, water deposits, road grime, and environmental contaminants.\n\nOver time, these deposits can create cloudy spots and reduce the clean appearance of your windows.\n\nGlass & Water Spot Removal at HyperAuto Care focuses on restoring clearer glass surfaces and improving visibility while driving.\n\n\n\n\nIs Glass & Water Spot Removal Right For Your Vehicle?\n\nRemove deposits caused by repeated water exposure and weather conditions.\n\nHelp reduce buildup caused by environmental exposure and mineral deposits.\n\nRefresh glass surfaces that have lost their original clarity.\n\nPrepare glass surfaces before applying additional protection treatments.\n\nService Process\n\nOur Glass Treatment Process At HyperAuto Care\n\nStep 01\nGlass Inspection\n\nWe inspect the glass condition and identify affected areas.\n\nStep 02\nDeep Glass Cleaning\n\nSurface dirt and contaminants are removed before treatment.\n\nStep 03\nWater Spot Removal\n\nMineral deposits and stubborn marks are carefully treated.\n\nStep 04\nFinal Inspection\n\nWe check the finished glass surfaces to ensure a cleaner result.\n\nWhy Choose HyperAuto Care For Glass Treatment\n\nClean glass improves visibility, appearance, and the overall condition of your vehicle.\n\nImprove Driving Visibility\n\nRemove buildup that can affect clear vision through your windows and windshield.\n\nRemove Stubborn Water Spots\n\nTreat mineral deposits that remain after normal washing.\n\nImprove Vehicle Appearance\n\nClean glass creates a more complete and polished vehicle finish.\n\nMaintain Glass Condition\n\nRegular glass care helps prevent heavy buildup from becoming harder to remove.\n\nFrequently Asked Questions\n\nEverything you need to know about removing water spots and glass buildup.\n\nCan water spots be removed completely?\n\nDoes regular washing remove water spots?\n\nCan you treat windshield glass?\n\nCan I combine glass treatment with detailing?\n\nGlass & Water Spot Removal\nGallery\nReady To Refresh Your Vehicle?\n\nGive your car the professional care it deserves with HyperAuto Care.\n\nContact Us\n\nCall Us: +1 206 555 0148\n\nOther Services\n\nDetail Wash\n\nInterior Detailing\n\nPaint Correction\n\nCeramic Coating\n\nPaint Protection Film (PPF)\n\nWindow Tint\n\nEngine Bay Detailing\n\nHeadlight Restoration\n\nUnderbody Coating & Protection\n\nGive Your Vehicle the Care It Deserves\n\nFrom routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.\n\nContact Us\n\nCall Now\n\nProfessional car care, detailing, paint protection, and vehicle appearance services in Seattle.\n\nHyperAuto Care\n\nHyperAuto Care\n\nNavigation\n\nHome\n\nServices\n\nService Process\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nContact\n\nContact\n\n+1 206 555 0148\n\ncontact@hyperautocare.com\n\n000 Harbor Avenue SW, Suite 120\n\nSeattle, WA 98126\n\nUSA\n\nOpening Hours\n\nMonday - Friday\n\n8:00 AM - 6:00 PM\n\nSaturday\n\n8:00 AM - 12:00 PM\n\nSunday\n\nClosed\n\n© HyperAuto Care. All rights reserved.\n\nDesigned by RedSignal.Red\n\nPrivacy Policy\n\nTerms of Service\n\nGet Template - Free\n\nCreate a free website with Framer, the website builder loved by startups, designers and agencies.\n\n ",
+  "blocks": [
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 397,
+      "y": 31,
+      "width": 57
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 496,
+      "y": 31,
+      "width": 46
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 565,
+      "y": 31,
+      "width": 62
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 651,
+      "y": 31,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 768,
+      "y": 31,
+      "width": 40
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 832,
+      "y": 31,
+      "width": 53
+    },
+    {
+      "tag": "P",
+      "text": "Call Us: +1 206 555 0148",
+      "html": "Call Us: +1 206 555 0148",
+      "name": "Label",
+      "x": 1006,
+      "y": 31,
+      "width": 174
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 1224,
+      "y": 31,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "SERVICE",
+      "html": "Service",
+      "name": "Short Description",
+      "x": 112,
+      "y": 677,
+      "width": 1200
+    },
+    {
+      "tag": "H1",
+      "text": "Glass & Water Spot Removal",
+      "html": "Glass &amp; Water Spot Removal",
+      "name": "Service Name",
+      "x": 112,
+      "y": 707,
+      "width": 1200
+    },
+    {
+      "tag": "P",
+      "text": "Remove mineral deposits and stubborn water spots from automotive glass.",
+      "html": "Remove mineral deposits and stubborn water spots from automotive glass.",
+      "name": "Service Introduction",
+      "x": 112,
+      "y": 801,
+      "width": 1200
+    },
+    {
+      "tag": "H2",
+      "text": "Overview",
+      "html": "Overview",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 926,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "A professional glass cleaning service designed to remove mineral deposits, water spots, and buildup that regular washing cannot remove.",
+      "html": "<strong class=\"framer-text\">A professional glass cleaning service designed to remove mineral deposits, water spots, and buildup that regular washing cannot remove.</strong>",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1003,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Vehicle glass is constantly exposed to rain, water deposits, road grime, and environmental contaminants.",
+      "html": "Vehicle glass is constantly exposed to rain, water deposits, road grime, and environmental contaminants.",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1072,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Over time, these deposits can create cloudy spots and reduce the clean appearance of your windows.",
+      "html": "Over time, these deposits can create cloudy spots and reduce the clean appearance of your windows.",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1142,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Glass & Water Spot Removal at HyperAuto Care focuses on restoring clearer glass surfaces and improving visibility while driving.",
+      "html": "Glass &amp; Water Spot Removal at HyperAuto Care focuses on restoring clearer glass surfaces and improving visibility while driving.",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1187,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "\n",
+      "html": "<br class=\"framer-text trailing-break\">",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1256,
+      "width": 780
+    },
+    {
+      "tag": "H3",
+      "text": "Is Glass & Water Spot Removal Right For Your Vehicle?",
+      "html": "Is Glass &amp; Water Spot Removal Right For Your Vehicle?",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1301,
+      "width": 780
+    },
+    {
+      "tag": "LI",
+      "text": "Remove deposits caused by repeated water exposure and weather conditions.",
+      "html": "<p class=\"framer-text framer-styles-preset-trm574\">Remove deposits caused by repeated water exposure and weather conditions.</p>",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1362,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Remove deposits caused by repeated water exposure and weather conditions.",
+      "html": "Remove deposits caused by repeated water exposure and weather conditions.",
+      "name": "Service Overview",
+      "x": 133,
+      "y": 1362,
+      "width": 760
+    },
+    {
+      "tag": "LI",
+      "text": "Help reduce buildup caused by environmental exposure and mineral deposits.",
+      "html": "<p class=\"framer-text framer-styles-preset-trm574\">Help reduce buildup caused by environmental exposure and mineral deposits.</p>",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1387,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Help reduce buildup caused by environmental exposure and mineral deposits.",
+      "html": "Help reduce buildup caused by environmental exposure and mineral deposits.",
+      "name": "Service Overview",
+      "x": 133,
+      "y": 1387,
+      "width": 760
+    },
+    {
+      "tag": "LI",
+      "text": "Refresh glass surfaces that have lost their original clarity.",
+      "html": "<p class=\"framer-text framer-styles-preset-trm574\">Refresh glass surfaces that have lost their original clarity.</p>",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1412,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Refresh glass surfaces that have lost their original clarity.",
+      "html": "Refresh glass surfaces that have lost their original clarity.",
+      "name": "Service Overview",
+      "x": 133,
+      "y": 1412,
+      "width": 760
+    },
+    {
+      "tag": "LI",
+      "text": "Prepare glass surfaces before applying additional protection treatments.",
+      "html": "<p class=\"framer-text framer-styles-preset-trm574\">Prepare glass surfaces before applying additional protection treatments.</p>",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1436,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Prepare glass surfaces before applying additional protection treatments.",
+      "html": "Prepare glass surfaces before applying additional protection treatments.",
+      "name": "Service Overview",
+      "x": 133,
+      "y": 1436,
+      "width": 760
+    },
+    {
+      "tag": "H2",
+      "text": "Service Process",
+      "html": "Service Process",
+      "name": "Process",
+      "x": 112,
+      "y": 1521,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Our Glass Treatment Process At HyperAuto Care",
+      "html": "Our Glass Treatment Process At HyperAuto Care",
+      "name": "Process",
+      "x": 112,
+      "y": 1598,
+      "width": 780
+    },
+    {
+      "tag": "H3",
+      "text": "Step 01",
+      "html": "Step 01",
+      "name": "Number",
+      "x": 132,
+      "y": 1675,
+      "width": 61
+    },
+    {
+      "tag": "H3",
+      "text": "Glass Inspection",
+      "html": "Glass Inspection",
+      "name": "Process Name",
+      "x": 214,
+      "y": 1675,
+      "width": 659
+    },
+    {
+      "tag": "P",
+      "text": "We inspect the glass condition and identify affected areas.",
+      "html": "We inspect the glass condition and identify affected areas.",
+      "name": "Description",
+      "x": 214,
+      "y": 1712,
+      "width": 659
+    },
+    {
+      "tag": "H3",
+      "text": "Step 02",
+      "html": "Step 02",
+      "name": "Number",
+      "x": 132,
+      "y": 1809,
+      "width": 65
+    },
+    {
+      "tag": "H3",
+      "text": "Deep Glass Cleaning",
+      "html": "Deep Glass Cleaning",
+      "name": "Process Name",
+      "x": 217,
+      "y": 1809,
+      "width": 655
+    },
+    {
+      "tag": "P",
+      "text": "Surface dirt and contaminants are removed before treatment.",
+      "html": "Surface dirt and contaminants are removed before treatment.",
+      "name": "Description",
+      "x": 217,
+      "y": 1847,
+      "width": 655
+    },
+    {
+      "tag": "H3",
+      "text": "Step 03",
+      "html": "Step 03",
+      "name": "Number",
+      "x": 132,
+      "y": 1944,
+      "width": 65
+    },
+    {
+      "tag": "H3",
+      "text": "Water Spot Removal",
+      "html": "Water Spot Removal",
+      "name": "Process Name",
+      "x": 217,
+      "y": 1944,
+      "width": 655
+    },
+    {
+      "tag": "P",
+      "text": "Mineral deposits and stubborn marks are carefully treated.",
+      "html": "Mineral deposits and stubborn marks are carefully treated.",
+      "name": "Description",
+      "x": 217,
+      "y": 1982,
+      "width": 655
+    },
+    {
+      "tag": "H3",
+      "text": "Step 04",
+      "html": "Step 04",
+      "name": "Number",
+      "x": 132,
+      "y": 2078,
+      "width": 66
+    },
+    {
+      "tag": "H3",
+      "text": "Final Inspection",
+      "html": "Final Inspection",
+      "name": "Process Name",
+      "x": 219,
+      "y": 2078,
+      "width": 654
+    },
+    {
+      "tag": "P",
+      "text": "We check the finished glass surfaces to ensure a cleaner result.",
+      "html": "We check the finished glass surfaces to ensure a cleaner result.",
+      "name": "Description",
+      "x": 219,
+      "y": 2116,
+      "width": 654
+    },
+    {
+      "tag": "H2",
+      "text": "Why Choose HyperAuto Care For Glass Treatment",
+      "html": "Why Choose HyperAuto Care For Glass Treatment",
+      "name": "Why Choose Us",
+      "x": 112,
+      "y": 2221,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Clean glass improves visibility, appearance, and the overall condition of your vehicle.",
+      "html": "Clean glass improves visibility, appearance, and the overall condition of your vehicle.",
+      "name": "Why Choose Us",
+      "x": 112,
+      "y": 2354,
+      "width": 780
+    },
+    {
+      "tag": "H3",
+      "text": "Improve Driving Visibility",
+      "html": "Improve Driving Visibility",
+      "name": "Title",
+      "x": 112,
+      "y": 2501,
+      "width": 378
+    },
+    {
+      "tag": "P",
+      "text": "Remove buildup that can affect clear vision through your windows and windshield.",
+      "html": "Remove buildup that can affect clear vision through your windows and windshield.",
+      "name": "Description",
+      "x": 112,
+      "y": 2542,
+      "width": 378
+    },
+    {
+      "tag": "H3",
+      "text": "Remove Stubborn Water Spots",
+      "html": "Remove Stubborn Water Spots",
+      "name": "Title",
+      "x": 514,
+      "y": 2501,
+      "width": 378
+    },
+    {
+      "tag": "P",
+      "text": "Treat mineral deposits that remain after normal washing.",
+      "html": "Treat mineral deposits that remain after normal washing.",
+      "name": "Description",
+      "x": 514,
+      "y": 2542,
+      "width": 378
+    },
+    {
+      "tag": "H3",
+      "text": "Improve Vehicle Appearance",
+      "html": "Improve Vehicle Appearance",
+      "name": "Title",
+      "x": 112,
+      "y": 2706,
+      "width": 378
+    },
+    {
+      "tag": "P",
+      "text": "Clean glass creates a more complete and polished vehicle finish.",
+      "html": "Clean glass creates a more complete and polished vehicle finish.",
+      "name": "Description",
+      "x": 112,
+      "y": 2746,
+      "width": 378
+    },
+    {
+      "tag": "H3",
+      "text": "Maintain Glass Condition",
+      "html": "Maintain Glass Condition",
+      "name": "Title",
+      "x": 514,
+      "y": 2706,
+      "width": 378
+    },
+    {
+      "tag": "P",
+      "text": "Regular glass care helps prevent heavy buildup from becoming harder to remove.",
+      "html": "Regular glass care helps prevent heavy buildup from becoming harder to remove.",
+      "name": "Description",
+      "x": 514,
+      "y": 2746,
+      "width": 378
+    },
+    {
+      "tag": "H2",
+      "text": "Frequently Asked Questions",
+      "html": "Frequently Asked Questions",
+      "name": "FAQ",
+      "x": 112,
+      "y": 2856,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Everything you need to know about removing water spots and glass buildup.",
+      "html": "Everything you need to know about removing water spots and glass buildup.",
+      "name": "FAQ",
+      "x": 112,
+      "y": 2933,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Can water spots be removed completely?",
+      "html": "Can water spots be removed completely?",
+      "name": "Question",
+      "x": 136,
+      "y": 3016,
+      "width": 680
+    },
+    {
+      "tag": "P",
+      "text": "Does regular washing remove water spots?",
+      "html": "Does regular washing remove water spots?",
+      "name": "Question",
+      "x": 136,
+      "y": 3128,
+      "width": 680
+    },
+    {
+      "tag": "P",
+      "text": "Can you treat windshield glass?",
+      "html": "Can you treat windshield glass?",
+      "name": "Question",
+      "x": 136,
+      "y": 3240,
+      "width": 680
+    },
+    {
+      "tag": "P",
+      "text": "Can I combine glass treatment with detailing?",
+      "html": "Can I combine glass treatment with detailing?",
+      "name": "Question",
+      "x": 136,
+      "y": 3352,
+      "width": 680
+    },
+    {
+      "tag": "H2",
+      "text": "Glass & Water Spot Removal",
+      "html": "Glass &amp; Water Spot Removal",
+      "name": "Service Name",
+      "x": 112,
+      "y": 3466,
+      "width": 533
+    },
+    {
+      "tag": "H2",
+      "text": "Gallery",
+      "html": "Gallery",
+      "name": "Desktop Gallery Title",
+      "x": 657,
+      "y": 3466,
+      "width": 235
+    },
+    {
+      "tag": "H3",
+      "text": "Ready To Refresh Your Vehicle?",
+      "html": "Ready To Refresh Your Vehicle?",
+      "name": "Text",
+      "x": 984,
+      "y": 958,
+      "width": 336
+    },
+    {
+      "tag": "P",
+      "text": "Give your car the professional care it deserves with HyperAuto Care.",
+      "html": "Give your car the professional care it deserves with HyperAuto Care.",
+      "name": "Text",
+      "x": 984,
+      "y": 1007,
+      "width": 336
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 1113,
+      "y": 1099,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "Call Us: +1 206 555 0148",
+      "html": "Call Us: +1 206 555 0148",
+      "name": "Label",
+      "x": 1079,
+      "y": 1163,
+      "width": 174
+    },
+    {
+      "tag": "H3",
+      "text": "Other Services",
+      "html": "Other Services",
+      "name": "Wrapper",
+      "x": 984,
+      "y": 1280,
+      "width": 336
+    },
+    {
+      "tag": "P",
+      "text": "Detail Wash",
+      "html": "Detail Wash",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1346,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Interior Detailing",
+      "html": "Interior Detailing",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1414,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Paint Correction",
+      "html": "Paint Correction",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1482,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Ceramic Coating",
+      "html": "Ceramic Coating",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1550,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Paint Protection Film (PPF)",
+      "html": "Paint Protection Film (PPF)",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1618,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Window Tint",
+      "html": "Window Tint",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1686,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Engine Bay Detailing",
+      "html": "Engine Bay Detailing",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1754,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Headlight Restoration",
+      "html": "Headlight Restoration",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1822,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Underbody Coating & Protection",
+      "html": "Underbody Coating &amp; Protection",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1890,
+      "width": 260
+    },
+    {
+      "tag": "H2",
+      "text": "Give Your Vehicle the Care It Deserves",
+      "html": "Give Your Vehicle the Care It Deserves",
+      "name": "Final CTA Heading",
+      "x": 706,
+      "y": 4569,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "html": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "name": "Final CTA Description",
+      "x": 706,
+      "y": 4706,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 724,
+      "y": 4799,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "Call Now",
+      "html": "Call Now",
+      "name": "Label",
+      "x": 879,
+      "y": 4799,
+      "width": 63
+    },
+    {
+      "tag": "P",
+      "text": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "html": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "name": "Brand Description",
+      "x": 104,
+      "y": 5212,
+      "width": 300
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Facebook",
+      "x": 136,
+      "y": 5310,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Instagram",
+      "x": 136,
+      "y": 5348,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "Navigation",
+      "html": "Navigation",
+      "name": "Navigation Heading",
+      "x": 513,
+      "y": 5212,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Home",
+      "html": "Home",
+      "name": "Services",
+      "x": 513,
+      "y": 5249,
+      "width": 41
+    },
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 513,
+      "y": 5287,
+      "width": 60
+    },
+    {
+      "tag": "P",
+      "text": "Service Process",
+      "html": "Service Process",
+      "name": "Services",
+      "x": 513,
+      "y": 5325,
+      "width": 112
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 513,
+      "y": 5363,
+      "width": 48
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 513,
+      "y": 5401,
+      "width": 66
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 513,
+      "y": 5439,
+      "width": 99
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 513,
+      "y": 5477,
+      "width": 42
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 513,
+      "y": 5515,
+      "width": 56
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Services",
+      "x": 513,
+      "y": 5553,
+      "width": 55
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Contact Heading",
+      "x": 727,
+      "y": 5212,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "+1 206 555 0148",
+      "html": "+1 206 555 0148",
+      "name": "Services",
+      "x": 753,
+      "y": 5249,
+      "width": 115
+    },
+    {
+      "tag": "P",
+      "text": "contact@hyperautocare.com",
+      "html": "contact@hyperautocare.com",
+      "name": "Services",
+      "x": 753,
+      "y": 5287,
+      "width": 203
+    },
+    {
+      "tag": "P",
+      "text": "000 Harbor Avenue SW, Suite 120",
+      "html": "000 Harbor Avenue SW, Suite 120",
+      "name": "Street",
+      "x": 753,
+      "y": 5322,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Seattle, WA 98126",
+      "html": "Seattle, WA 98126",
+      "name": "City",
+      "x": 753,
+      "y": 5344,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "USA",
+      "html": "USA",
+      "name": "Country",
+      "x": 753,
+      "y": 5366,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Opening Hours",
+      "html": "Opening Hours",
+      "name": "Opening Hours Heading",
+      "x": 1046,
+      "y": 5212,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Monday - Friday",
+      "html": "Monday - Friday",
+      "name": "Days",
+      "x": 1046,
+      "y": 5246,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 6:00 PM",
+      "html": "8:00 AM - 6:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 5270,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Saturday",
+      "html": "Saturday",
+      "name": "Days",
+      "x": 1046,
+      "y": 5302,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 12:00 PM",
+      "html": "8:00 AM - 12:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 5326,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Sunday",
+      "html": "Sunday",
+      "name": "Day",
+      "x": 1046,
+      "y": 5358,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Closed",
+      "html": "Closed",
+      "name": "Status",
+      "x": 1046,
+      "y": 5382,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "© HyperAuto Care. All rights reserved.",
+      "html": "© HyperAuto Care. All rights reserved.",
+      "name": "Copyright",
+      "x": 104,
+      "y": 6043,
+      "width": 250
+    },
+    {
+      "tag": "P",
+      "text": "Designed by RedSignal.Red",
+      "html": "Designed by <!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"https://redsignal.red\" target=\"_blank\" rel=\"\">RedSignal.Red</a><!--/$-->",
+      "name": "Footer Bottom Bar",
+      "x": 363,
+      "y": 6043,
+      "width": 179
+    },
+    {
+      "tag": "P",
+      "text": "Privacy Policy",
+      "html": "Privacy Policy",
+      "name": "Services",
+      "x": 1082,
+      "y": 6045,
+      "width": 97
+    },
+    {
+      "tag": "P",
+      "text": "Terms of Service",
+      "html": "Terms of Service",
+      "name": "Services",
+      "x": 1203,
+      "y": 6045,
+      "width": 117
+    },
+    {
+      "tag": "P",
+      "text": "Get Template - Free",
+      "html": "Get Template - Free",
+      "name": "Get Free Template Button",
+      "x": 1256,
+      "y": 810,
+      "width": 138
+    },
+    {
+      "tag": "P",
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "html": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "name": "Content",
+      "x": 1350,
+      "y": 871,
+      "width": 0
+    }
+  ],
+  "images": [
+    {
+      "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+      "alt": "HyperAuto Care Logo",
+      "name": "Image Logo",
+      "y": 13,
+      "width": 146,
+      "height": 50
+    },
+    {
+      "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+      "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+      "name": "Main Image",
+      "y": 76,
+      "width": 1425,
+      "height": 750
+    },
+    {
+      "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1329,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+      "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1397,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+      "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1465,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+      "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1533,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1601,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1669,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1737,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+      "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1805,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+      "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1873,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/OQRMZVCk7uZWsvHAM8N53HsISY.webp?width=1200&height=557",
+      "alt": "A gloved hand cleaning a car window with a microfiber cloth during glass detailing service",
+      "name": "Image",
+      "y": 3578,
+      "width": 662,
+      "height": 650
+    },
+    {
+      "src": "https://framerusercontent.com/images/Ebl2PQjS8JA9hEQGY3b71agVMds.webp?width=900&height=1200",
+      "alt": "Water droplets on a car window after glass treatment and water spot removal service",
+      "name": "Image",
+      "y": 3578,
+      "width": 662,
+      "height": 650
+    },
+    {
+      "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+      "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+      "name": "Background",
+      "y": 4182,
+      "width": 1510,
+      "height": 916
+    }
+  ],
+  "videos": [],
+  "links": [
+    {
+      "text": "",
+      "href": "../"
+    },
+    {
+      "text": "Services",
+      "href": "../services"
+    },
+    {
+      "text": "Pricing",
+      "href": "../#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "../our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "../news"
+    },
+    {
+      "text": "About",
+      "href": "../about"
+    },
+    {
+      "text": "Training",
+      "href": "../#training"
+    },
+    {
+      "text": "Call Us: +1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "Contact Us",
+      "href": "../contact"
+    },
+    {
+      "text": "Contact Us",
+      "href": "../contact"
+    },
+    {
+      "text": "Call Us: +1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "Detail Wash",
+      "href": "./detail-wash"
+    },
+    {
+      "text": "Interior Detailing",
+      "href": "./interior-detailing"
+    },
+    {
+      "text": "Paint Correction",
+      "href": "./paint-correction"
+    },
+    {
+      "text": "Ceramic Coating",
+      "href": "./ceramic-coating"
+    },
+    {
+      "text": "Paint Protection Film (PPF)",
+      "href": "./paint-protection-film-(ppf)"
+    },
+    {
+      "text": "Window Tint",
+      "href": "./window-tint"
+    },
+    {
+      "text": "Engine Bay Detailing",
+      "href": "./engine-bay-detailing"
+    },
+    {
+      "text": "Headlight Restoration",
+      "href": "./headlight-restoration"
+    },
+    {
+      "text": "Underbody Coating & Protection",
+      "href": "./underbody-coating-protection"
+    },
+    {
+      "text": "Contact Us",
+      "href": "../contact"
+    },
+    {
+      "text": "Call Now",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.facebook.com"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.instagram.com"
+    },
+    {
+      "text": "Home",
+      "href": "../"
+    },
+    {
+      "text": "Services",
+      "href": "../services"
+    },
+    {
+      "text": "Service Process",
+      "href": "../#Our Service Process"
+    },
+    {
+      "text": "Pricing",
+      "href": "../#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "../our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "../news"
+    },
+    {
+      "text": "About",
+      "href": "../about"
+    },
+    {
+      "text": "Training",
+      "href": "../#training"
+    },
+    {
+      "text": "Contact",
+      "href": "../contact"
+    },
+    {
+      "text": "+1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "contact@hyperautocare.com",
+      "href": "mailto:contact@hyperautocare.com"
+    },
+    {
+      "text": "RedSignal.Red",
+      "href": "https://redsignal.red"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "../privacy"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "../terms"
+    },
+    {
+      "text": "Get Template - Free",
+      "href": "https://framer.link/bqU9862"
+    },
+    {
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "href": "https://www.framer.com"
+    }
+  ],
+  "sections": [
+    {
+      "name": "Image Container",
+      "y": 76,
+      "height": 750,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "60px"
+    },
+    {
+      "name": "Main Image",
+      "y": 76,
+      "height": 750,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Overlay",
+      "y": 76,
+      "height": 750,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Heading",
+      "y": 677,
+      "height": 149,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px 40px",
+      "gap": "14px"
+    },
+    {
+      "name": "Body",
+      "y": 826,
+      "height": 2736,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "100px 0px 40px",
+      "gap": "20px"
+    },
+    {
+      "name": "Desktop Gallery",
+      "y": 3562,
+      "height": 706,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "16px 40px 40px",
+      "gap": "48px"
+    },
+    {
+      "name": "Desktop",
+      "y": 4268,
+      "height": 864,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Background",
+      "y": 4182,
+      "height": 916,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Final CTA Content",
+      "y": 4497,
+      "height": 407,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px 32px",
+      "gap": "24px"
+    },
+    {
+      "name": "Desktop",
+      "y": 5132,
+      "height": 962,
+      "background": "rgb(11, 13, 15)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Footer Content",
+      "y": 5132,
+      "height": 962,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "80px 32px 28px",
+      "gap": "72px"
+    },
+    {
+      "name": "Footer Information",
+      "y": 5212,
+      "height": 362,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "44px"
+    },
+    {
+      "name": "Logo",
+      "y": 5646,
+      "height": 300,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    }
+  ]
+}

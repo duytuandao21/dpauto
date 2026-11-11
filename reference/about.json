@@ -1,0 +1,1138 @@
+{
+  "url": "https://hyperautocare.framer.website/about",
+  "title": "About HyperAuto Care | Seattle Auto Detailing Team",
+  "text": "Services\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nCall Us: +1 206 555 0148\n\nContact Us\n\nAbout HyperAuto Care\n\nOUR STORY\n\nHyperAuto Care started with a simple belief: better car care comes from understanding what each vehicle actually needs.\n\nEvery vehicle comes to us in a different condition. We take the time to inspect the car, understand what the owner wants to improve, and recommend a service that makes sense for both the vehicle and the goal.\n\nWhether it’s routine detailing, paint correction, ceramic coating, paint protection film, or window tint, our approach stays the same: prepare properly, use the right process, and pay attention to the details that matter.\n\nOur Approach, \nCare in Every Step\n\n01\n\nInspect Before We Recommend\n\nWe look at the vehicle’s condition first so we can recommend the service that actually makes sense.\n\n02\n\nUse the Right Process\n\nDifferent surfaces, materials, and vehicle conditions require different tools, products, and techniques.\n\n03\n\nQuality Over Shortcuts\n\nGood detailing takes careful preparation and attention throughout the process, not just a good-looking final photo.\n\n04\n\nExplain the Work Clearly\n\nWe explain what we recommend, what the service involves, and what customers can expect before the work begins.\n\nBuilt for Professional Car Care\n\nOur workshop is set up for professional detailing, correction, protection, and installation work. We combine hands-on experience with carefully selected tools and automotive care products to give each vehicle the attention it needs.\n\nProfessional Detailing Equipment\n\nTools and equipment selected for professional vehicle care.\n\nQuality Automotive Products\n\nTrusted products chosen for the surface, material, and service being performed.\n\nDedicated Work Areas\n\nA workspace prepared for detailing, correction, protection, and installation work.\n\nControlled Working Environment\n\nProper lighting and a clean workspace help us inspect the vehicle and work more consistently.\n\nPeople Who Care About the Work\n\nGood detailing depends on the people doing it. Our team combines practical experience, attention to detail, and a shared commitment to doing each job properly.\n\nThe work stays hands-on from preparation through the final inspection, with clear communication throughout the process.\n\nProfessional Detailing Training, Built on Real Workshop Experience\n\nDetailing techniques, tools, products, and vehicle materials continue to evolve. Our training helps students build practical skills through hands-on learning and real-world detailing methods.\n\nFrom preparation and polishing to professional processes and tool use, the focus is on skills that can be applied in everyday detailing work.\n\nAsk About Training\n\nGive Your Vehicle the Care It Deserves\n\nFrom routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.\n\nContact Us\n\nCall Now\n\nProfessional car care, detailing, paint protection, and vehicle appearance services in Seattle.\n\nHyperAuto Care\n\nHyperAuto Care\n\nNavigation\n\nHome\n\nServices\n\nService Process\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nContact\n\nContact\n\n+1 206 555 0148\n\ncontact@hyperautocare.com\n\n000 Harbor Avenue SW, Suite 120\n\nSeattle, WA 98126\n\nUSA\n\nOpening Hours\n\nMonday - Friday\n\n8:00 AM - 6:00 PM\n\nSaturday\n\n8:00 AM - 12:00 PM\n\nSunday\n\nClosed\n\n© HyperAuto Care. All rights reserved.\n\nDesigned by RedSignal.Red\n\nPrivacy Policy\n\nTerms of Service\n\nGet Template - Free\n\nCreate a free website with Framer, the website builder loved by startups, designers and agencies.\n\n ",
+  "blocks": [
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 397,
+      "y": 31,
+      "width": 57
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 496,
+      "y": 31,
+      "width": 46
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 565,
+      "y": 31,
+      "width": 62
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 651,
+      "y": 31,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 768,
+      "y": 31,
+      "width": 40
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 832,
+      "y": 31,
+      "width": 53
+    },
+    {
+      "tag": "P",
+      "text": "Call Us: +1 206 555 0148",
+      "html": "Call Us: +1 206 555 0148",
+      "name": "Label",
+      "x": 1006,
+      "y": 31,
+      "width": 174
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 1224,
+      "y": 31,
+      "width": 78
+    },
+    {
+      "tag": "H1",
+      "text": "About HyperAuto Care",
+      "html": "About HyperAuto Care",
+      "name": "Header",
+      "x": 104,
+      "y": 236,
+      "width": 750
+    },
+    {
+      "tag": "P",
+      "text": "OUR STORY",
+      "html": "OUR STORY",
+      "name": "Heading",
+      "x": 337,
+      "y": 636,
+      "width": 750
+    },
+    {
+      "tag": "H2",
+      "text": "HyperAuto Care started with a simple belief: better car care comes from understanding what each vehicle actually needs.",
+      "html": "HyperAuto Care started with a simple belief: better car care comes from understanding what each vehicle actually needs.",
+      "name": "Heading",
+      "x": 337,
+      "y": 681,
+      "width": 750
+    },
+    {
+      "tag": "P",
+      "text": "Every vehicle comes to us in a different condition. We take the time to inspect the car, understand what the owner wants to improve, and recommend a service that makes sense for both the vehicle and the goal.",
+      "html": "<span style=\"--framer-text-color:var(--token-c53850ec-a47b-41cb-a991-5a3881466372, rgb(255, 90, 31))\" class=\"framer-text\">Every vehicle comes to us in a different condition. </span>We take the time to inspect the car, understand what the owner wants to improve, and recommend a service that makes sense for both the vehicle and the goal.",
+      "name": "Content",
+      "x": 744,
+      "y": 1186,
+      "width": 576
+    },
+    {
+      "tag": "P",
+      "text": "Whether it’s routine detailing, paint correction, ceramic coating, paint protection film, or window tint, our approach stays the same: prepare properly, use the right process, and pay attention to the details that matter.",
+      "html": "Whether it’s routine detailing, paint correction, ceramic coating, paint protection film, or window tint, our approach stays the same: prepare properly, use the right process, and pay attention to the details that matter.",
+      "name": "Content",
+      "x": 744,
+      "y": 1706,
+      "width": 576
+    },
+    {
+      "tag": "H2",
+      "text": "Our Approach, \nCare in Every Step",
+      "html": "Our Approach, <br class=\"framer-text\">Care in Every Step",
+      "name": "Heading",
+      "x": 104,
+      "y": 2172,
+      "width": 760
+    },
+    {
+      "tag": "P",
+      "text": "01",
+      "html": "01",
+      "name": "Step Number",
+      "x": 180,
+      "y": 2375,
+      "width": 542
+    },
+    {
+      "tag": "H3",
+      "text": "Inspect Before We Recommend",
+      "html": "Inspect Before We Recommend",
+      "name": "Title",
+      "x": 180,
+      "y": 2461,
+      "width": 542
+    },
+    {
+      "tag": "P",
+      "text": "We look at the vehicle’s condition first so we can recommend the service that actually makes sense.",
+      "html": "We look at the vehicle’s condition first so we can recommend the service that actually makes sense.",
+      "name": "Description",
+      "x": 180,
+      "y": 2501,
+      "width": 542
+    },
+    {
+      "tag": "P",
+      "text": "02",
+      "html": "02",
+      "name": "Step Number",
+      "x": 782,
+      "y": 2375,
+      "width": 542
+    },
+    {
+      "tag": "H3",
+      "text": "Use the Right Process",
+      "html": "Use the Right Process",
+      "name": "Title",
+      "x": 782,
+      "y": 2461,
+      "width": 542
+    },
+    {
+      "tag": "P",
+      "text": "Different surfaces, materials, and vehicle conditions require different tools, products, and techniques.",
+      "html": "Different surfaces, materials, and vehicle conditions require different tools, products, and techniques.",
+      "name": "Description",
+      "x": 782,
+      "y": 2501,
+      "width": 542
+    },
+    {
+      "tag": "P",
+      "text": "03",
+      "html": "03",
+      "name": "Step Number",
+      "x": 180,
+      "y": 2606,
+      "width": 542
+    },
+    {
+      "tag": "H3",
+      "text": "Quality Over Shortcuts",
+      "html": "Quality Over Shortcuts",
+      "name": "Title",
+      "x": 180,
+      "y": 2692,
+      "width": 542
+    },
+    {
+      "tag": "P",
+      "text": "Good detailing takes careful preparation and attention throughout the process, not just a good-looking final photo.",
+      "html": "Good detailing takes careful preparation and attention throughout the process, not just a good-looking final photo.",
+      "name": "Description",
+      "x": 180,
+      "y": 2733,
+      "width": 542
+    },
+    {
+      "tag": "P",
+      "text": "04",
+      "html": "04",
+      "name": "Step Number",
+      "x": 782,
+      "y": 2606,
+      "width": 542
+    },
+    {
+      "tag": "H3",
+      "text": "Explain the Work Clearly",
+      "html": "Explain the Work Clearly",
+      "name": "Title",
+      "x": 782,
+      "y": 2692,
+      "width": 542
+    },
+    {
+      "tag": "P",
+      "text": "We explain what we recommend, what the service involves, and what customers can expect before the work begins.",
+      "html": "We explain what we recommend, what the service involves, and what customers can expect before the work begins.",
+      "name": "Description",
+      "x": 782,
+      "y": 2733,
+      "width": 542
+    },
+    {
+      "tag": "H2",
+      "text": "Built for Professional Car Care",
+      "html": "Built for Professional Car Care",
+      "name": "Heading",
+      "x": 104,
+      "y": 3053,
+      "width": 560
+    },
+    {
+      "tag": "P",
+      "text": "Our workshop is set up for professional detailing, correction, protection, and installation work. We combine hands-on experience with carefully selected tools and automotive care products to give each vehicle the attention it needs.",
+      "html": "Our workshop is set up for professional detailing, correction, protection, and installation work. We combine hands-on experience with carefully selected tools and automotive care products to give each vehicle the attention it needs.",
+      "name": "Heading",
+      "x": 820,
+      "y": 3068,
+      "width": 500
+    },
+    {
+      "tag": "H3",
+      "text": "Professional Detailing Equipment",
+      "html": "Professional Detailing Equipment",
+      "name": "Program Name",
+      "x": 188,
+      "y": 3800,
+      "width": 240
+    },
+    {
+      "tag": "P",
+      "text": "Tools and equipment selected for professional vehicle care.",
+      "html": "Tools and equipment selected for professional vehicle care.",
+      "name": "Description",
+      "x": 188,
+      "y": 3869,
+      "width": 240
+    },
+    {
+      "tag": "H3",
+      "text": "Quality Automotive Products",
+      "html": "Quality Automotive Products",
+      "name": "Program Name",
+      "x": 484,
+      "y": 3800,
+      "width": 240
+    },
+    {
+      "tag": "P",
+      "text": "Trusted products chosen for the surface, material, and service being performed.",
+      "html": "Trusted products chosen for the surface, material, and service being performed.",
+      "name": "Description",
+      "x": 484,
+      "y": 3869,
+      "width": 240
+    },
+    {
+      "tag": "H3",
+      "text": "Dedicated Work Areas",
+      "html": "Dedicated Work Areas",
+      "name": "Program Name",
+      "x": 780,
+      "y": 3800,
+      "width": 240
+    },
+    {
+      "tag": "P",
+      "text": "A workspace prepared for detailing, correction, protection, and installation work.",
+      "html": "A workspace prepared for detailing, correction, protection, and installation work.",
+      "name": "Description",
+      "x": 780,
+      "y": 3841,
+      "width": 240
+    },
+    {
+      "tag": "H3",
+      "text": "Controlled Working Environment",
+      "html": "Controlled Working Environment",
+      "name": "Program Name",
+      "x": 1076,
+      "y": 3800,
+      "width": 240
+    },
+    {
+      "tag": "P",
+      "text": "Proper lighting and a clean workspace help us inspect the vehicle and work more consistently.",
+      "html": "Proper lighting and a clean workspace help us inspect the vehicle and work more consistently.",
+      "name": "Description",
+      "x": 1076,
+      "y": 3869,
+      "width": 240
+    },
+    {
+      "tag": "H2",
+      "text": "People Who Care About the Work",
+      "html": "People Who Care About the Work",
+      "name": "Content",
+      "x": 104,
+      "y": 4412,
+      "width": 576
+    },
+    {
+      "tag": "P",
+      "text": "Good detailing depends on the people doing it. Our team combines practical experience, attention to detail, and a shared commitment to doing each job properly.",
+      "html": "Good detailing depends on the people doing it. Our team combines practical experience, attention to detail, and a shared commitment to doing each job properly.",
+      "name": "Content",
+      "x": 104,
+      "y": 4550,
+      "width": 576
+    },
+    {
+      "tag": "P",
+      "text": "The work stays hands-on from preparation through the final inspection, with clear communication throughout the process.",
+      "html": "The work stays hands-on from preparation through the final inspection, with clear communication throughout the process.",
+      "name": "Content",
+      "x": 104,
+      "y": 4660,
+      "width": 576
+    },
+    {
+      "tag": "H2",
+      "text": "Professional Detailing Training, Built on Real Workshop Experience",
+      "html": "Professional Detailing Training, Built on Real Workshop Experience",
+      "name": "Knowledge and Training",
+      "x": 744,
+      "y": 6042,
+      "width": 576
+    },
+    {
+      "tag": "P",
+      "text": "Detailing techniques, tools, products, and vehicle materials continue to evolve. Our training helps students build practical skills through hands-on learning and real-world detailing methods.",
+      "html": "Detailing techniques, tools, products, and vehicle materials continue to evolve. Our training helps students build practical skills through hands-on learning and real-world detailing methods.",
+      "name": "Knowledge and Training",
+      "x": 744,
+      "y": 6236,
+      "width": 576
+    },
+    {
+      "tag": "P",
+      "text": "From preparation and polishing to professional processes and tool use, the focus is on skills that can be applied in everyday detailing work.",
+      "html": "From preparation and polishing to professional processes and tool use, the focus is on skills that can be applied in everyday detailing work.",
+      "name": "Knowledge and Training",
+      "x": 744,
+      "y": 6334,
+      "width": 576
+    },
+    {
+      "tag": "P",
+      "text": "Ask About Training",
+      "html": "Ask About Training",
+      "name": "Label",
+      "x": 790,
+      "y": 6427,
+      "width": 135
+    },
+    {
+      "tag": "H2",
+      "text": "Give Your Vehicle the Care It Deserves",
+      "html": "Give Your Vehicle the Care It Deserves",
+      "name": "Final CTA Heading",
+      "x": 706,
+      "y": 6971,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "html": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "name": "Final CTA Description",
+      "x": 706,
+      "y": 7109,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 724,
+      "y": 7201,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "Call Now",
+      "html": "Call Now",
+      "name": "Label",
+      "x": 879,
+      "y": 7201,
+      "width": 63
+    },
+    {
+      "tag": "P",
+      "text": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "html": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "name": "Brand Description",
+      "x": 104,
+      "y": 7615,
+      "width": 300
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Facebook",
+      "x": 136,
+      "y": 7712,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Instagram",
+      "x": 136,
+      "y": 7750,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "Navigation",
+      "html": "Navigation",
+      "name": "Navigation Heading",
+      "x": 513,
+      "y": 7615,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Home",
+      "html": "Home",
+      "name": "Services",
+      "x": 513,
+      "y": 7652,
+      "width": 41
+    },
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 513,
+      "y": 7690,
+      "width": 60
+    },
+    {
+      "tag": "P",
+      "text": "Service Process",
+      "html": "Service Process",
+      "name": "Services",
+      "x": 513,
+      "y": 7728,
+      "width": 112
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 513,
+      "y": 7766,
+      "width": 48
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 513,
+      "y": 7804,
+      "width": 66
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 513,
+      "y": 7842,
+      "width": 99
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 513,
+      "y": 7880,
+      "width": 42
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 513,
+      "y": 7918,
+      "width": 56
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Services",
+      "x": 513,
+      "y": 7956,
+      "width": 55
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Contact Heading",
+      "x": 727,
+      "y": 7615,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "+1 206 555 0148",
+      "html": "+1 206 555 0148",
+      "name": "Services",
+      "x": 753,
+      "y": 7652,
+      "width": 115
+    },
+    {
+      "tag": "P",
+      "text": "contact@hyperautocare.com",
+      "html": "contact@hyperautocare.com",
+      "name": "Services",
+      "x": 753,
+      "y": 7690,
+      "width": 203
+    },
+    {
+      "tag": "P",
+      "text": "000 Harbor Avenue SW, Suite 120",
+      "html": "000 Harbor Avenue SW, Suite 120",
+      "name": "Street",
+      "x": 753,
+      "y": 7725,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Seattle, WA 98126",
+      "html": "Seattle, WA 98126",
+      "name": "City",
+      "x": 753,
+      "y": 7747,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "USA",
+      "html": "USA",
+      "name": "Country",
+      "x": 753,
+      "y": 7769,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Opening Hours",
+      "html": "Opening Hours",
+      "name": "Opening Hours Heading",
+      "x": 1046,
+      "y": 7615,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Monday - Friday",
+      "html": "Monday - Friday",
+      "name": "Days",
+      "x": 1046,
+      "y": 7649,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 6:00 PM",
+      "html": "8:00 AM - 6:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 7673,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Saturday",
+      "html": "Saturday",
+      "name": "Days",
+      "x": 1046,
+      "y": 7705,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 12:00 PM",
+      "html": "8:00 AM - 12:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 7729,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Sunday",
+      "html": "Sunday",
+      "name": "Day",
+      "x": 1046,
+      "y": 7761,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Closed",
+      "html": "Closed",
+      "name": "Status",
+      "x": 1046,
+      "y": 7785,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "© HyperAuto Care. All rights reserved.",
+      "html": "© HyperAuto Care. All rights reserved.",
+      "name": "Copyright",
+      "x": 104,
+      "y": 8446,
+      "width": 250
+    },
+    {
+      "tag": "P",
+      "text": "Designed by RedSignal.Red",
+      "html": "Designed by <!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"https://redsignal.red\" target=\"_blank\" rel=\"\">RedSignal.Red</a><!--/$-->",
+      "name": "Footer Bottom Bar",
+      "x": 363,
+      "y": 8446,
+      "width": 179
+    },
+    {
+      "tag": "P",
+      "text": "Privacy Policy",
+      "html": "Privacy Policy",
+      "name": "Services",
+      "x": 1082,
+      "y": 8448,
+      "width": 97
+    },
+    {
+      "tag": "P",
+      "text": "Terms of Service",
+      "html": "Terms of Service",
+      "name": "Services",
+      "x": 1203,
+      "y": 8448,
+      "width": 117
+    },
+    {
+      "tag": "P",
+      "text": "Get Template - Free",
+      "html": "Get Template - Free",
+      "name": "Get Free Template Button",
+      "x": 1256,
+      "y": 810,
+      "width": 138
+    },
+    {
+      "tag": "P",
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "html": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "name": "Content",
+      "x": 1335,
+      "y": 871,
+      "width": 0
+    }
+  ],
+  "images": [
+    {
+      "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+      "alt": "HyperAuto Care Logo",
+      "name": "Image Logo",
+      "y": 13,
+      "width": 146,
+      "height": 50
+    },
+    {
+      "src": "https://framerusercontent.com/images/HJT0dp7pG9JEThf0ODtTf33MG98.webp?width=1200&height=900",
+      "alt": "HyperAuto Care reception counter with branded wall sign",
+      "name": "Hero Image",
+      "y": 76,
+      "width": 1425,
+      "height": 400
+    },
+    {
+      "src": "https://framerusercontent.com/images/UJPqbUzimEPlnP9IYEF2s47uvg.webp?width=800&height=1200",
+      "alt": "Classic cars displayed inside a dark automotive showroom",
+      "name": "Detailing Work",
+      "y": 492,
+      "width": 262,
+      "height": 225
+    },
+    {
+      "src": "https://framerusercontent.com/images/L56MnHIMbagJGzflH351V7tJ5s.webp?width=1200&height=800",
+      "alt": "Vehicles parked inside a softly lit garage",
+      "name": "Detailing Work",
+      "y": 794,
+      "width": 334,
+      "height": 269
+    },
+    {
+      "src": "https://framerusercontent.com/images/gwOcY07W2lcyWTxgwH1l56cyA.webp?width=800&height=1200",
+      "alt": "Technician inspecting a vehicle engine bay under workshop lights",
+      "name": "Detailing Work",
+      "y": 1426,
+      "width": 180,
+      "height": 256
+    },
+    {
+      "src": "https://framerusercontent.com/images/5jFIDmf3fDYVLCeKxRoGZM5XCA.webp?width=1200&height=582",
+      "alt": "Black SUV with doors open inside a bright detailing bay",
+      "name": "Image",
+      "y": 3221,
+      "width": 1216,
+      "height": 800
+    },
+    {
+      "src": "https://framerusercontent.com/images/0yelIjtZmG7TXGditkLl2dKlI.webp?width=800&height=1200",
+      "alt": "Technician inspecting the underside of a raised vehicle",
+      "name": "Image",
+      "y": 4183,
+      "width": 611,
+      "height": 636
+    },
+    {
+      "src": "https://framerusercontent.com/images/ZPyPpnRvM7I6RsqW5tMJQeIl4.webp?width=1200&height=675",
+      "alt": "Three HyperAuto Care team members behind the reception counter",
+      "name": "Team",
+      "y": 4873,
+      "width": 1510,
+      "height": 986
+    },
+    {
+      "src": "https://framerusercontent.com/images/zjHYPsqxtmahpRxuuTgh2A4r7A.webp?width=1136&height=600",
+      "alt": "Two technicians practicing machine polishing on a car hood",
+      "name": "Image",
+      "y": 5873,
+      "width": 611,
+      "height": 636
+    },
+    {
+      "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+      "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+      "name": "Background",
+      "y": 6585,
+      "width": 1510,
+      "height": 916
+    }
+  ],
+  "videos": [
+    {
+      "src": "https://framerusercontent.com/assets/XbOBPonKt6HrPmHfmO47TD5FP4U.webm#t=0.001",
+      "poster": ""
+    }
+  ],
+  "links": [
+    {
+      "text": "",
+      "href": "./"
+    },
+    {
+      "text": "Services",
+      "href": "./services"
+    },
+    {
+      "text": "Pricing",
+      "href": "./#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "./our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "./news"
+    },
+    {
+      "text": "About",
+      "href": "./about"
+    },
+    {
+      "text": "Training",
+      "href": "./#training"
+    },
+    {
+      "text": "Call Us: +1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "Contact Us",
+      "href": "./contact"
+    },
+    {
+      "text": "Ask About Training",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "Contact Us",
+      "href": "./contact"
+    },
+    {
+      "text": "Call Now",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.facebook.com"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.instagram.com"
+    },
+    {
+      "text": "Home",
+      "href": "./"
+    },
+    {
+      "text": "Services",
+      "href": "./services"
+    },
+    {
+      "text": "Service Process",
+      "href": "./#Our Service Process"
+    },
+    {
+      "text": "Pricing",
+      "href": "./#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "./our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "./news"
+    },
+    {
+      "text": "About",
+      "href": "./about"
+    },
+    {
+      "text": "Training",
+      "href": "./#training"
+    },
+    {
+      "text": "Contact",
+      "href": "./contact"
+    },
+    {
+      "text": "+1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "contact@hyperautocare.com",
+      "href": "mailto:contact@hyperautocare.com"
+    },
+    {
+      "text": "RedSignal.Red",
+      "href": "https://redsignal.red"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "./privacy"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "./terms"
+    },
+    {
+      "text": "Get Template - Free",
+      "href": "https://framer.link/bqU9862"
+    },
+    {
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "href": "https://www.framer.com"
+    }
+  ],
+  "sections": [
+    {
+      "name": "Banner",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "60px"
+    },
+    {
+      "name": "Hero Image",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Hero Overlay",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Header",
+      "y": 212,
+      "height": 129,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px 32px",
+      "gap": "32px"
+    },
+    {
+      "name": "Our Story",
+      "y": 476,
+      "height": 1576,
+      "background": "rgb(244, 241, 234)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Wrapper",
+      "y": 476,
+      "height": 1576,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "120px 32px",
+      "gap": "64px"
+    },
+    {
+      "name": "Support Content",
+      "y": 1032,
+      "height": 900,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "120px 0px 80px",
+      "gap": "64px"
+    },
+    {
+      "name": "Our Approach",
+      "y": 2052,
+      "height": 882,
+      "background": "rgb(21, 24, 27)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Wrapper",
+      "y": 2052,
+      "height": 882,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "120px 32px",
+      "gap": "54px"
+    },
+    {
+      "name": "The Workshop",
+      "y": 2933,
+      "height": 1207,
+      "background": "rgb(244, 241, 234)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Wrapper",
+      "y": 2933,
+      "height": 1207,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "120px 32px",
+      "gap": "54px"
+    },
+    {
+      "name": "Heading",
+      "y": 3053,
+      "height": 113,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Image & Content",
+      "y": 3221,
+      "height": 800,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px",
+      "gap": "60px"
+    },
+    {
+      "name": "Image",
+      "y": 3221,
+      "height": 800,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Our Team",
+      "y": 4141,
+      "height": 840,
+      "background": "rgb(21, 24, 27)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Wrapper",
+      "y": 4141,
+      "height": 840,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "120px 32px",
+      "gap": "64px"
+    },
+    {
+      "name": "Full Image",
+      "y": 4981,
+      "height": 850,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "60px"
+    },
+    {
+      "name": "Team",
+      "y": 4873,
+      "height": 986,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Knowledge and Training",
+      "y": 5831,
+      "height": 840,
+      "background": "rgb(244, 241, 234)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Desktop",
+      "y": 6671,
+      "height": 864,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Background",
+      "y": 6585,
+      "height": 916,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Final CTA Content",
+      "y": 6899,
+      "height": 407,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px 32px",
+      "gap": "24px"
+    },
+    {
+      "name": "Desktop",
+      "y": 7535,
+      "height": 962,
+      "background": "rgb(11, 13, 15)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Footer Content",
+      "y": 7535,
+      "height": 962,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "80px 32px 28px",
+      "gap": "72px"
+    },
+    {
+      "name": "Footer Information",
+      "y": 7615,
+      "height": 362,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "44px"
+    },
+    {
+      "name": "Logo",
+      "y": 8049,
+      "height": 300,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    }
+  ]
+}

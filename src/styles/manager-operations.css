@@ -1,0 +1,328 @@
+.mgr-app .mgr-session-notice {
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  border: 1px solid var(--adm-border);
+  border-radius: 6px;
+  background: var(--adm-surface);
+  color: var(--adm-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.mgr-app .mgr-kpi-link {
+  display: block;
+  text-decoration: none;
+}
+.mgr-app .mgr-kpi-link:focus-visible {
+  outline: 3px solid var(--adm-accent-text);
+  outline-offset: 3px;
+}
+.mgr-ops-board {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(265px, 1fr);
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  align-items: start;
+}
+.mgr-board-column {
+  border: 1px solid var(--adm-border);
+  border-radius: 6px;
+  background: var(--adm-raised);
+  padding: 12px;
+  min-height: 200px;
+}
+.mgr-app .mgr-board-column h3 {
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.mgr-board-column h3 small {
+  font-size: 13px;
+  color: var(--adm-muted);
+}
+.mgr-vehicle-card {
+  padding: 16px;
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+.mgr-app .mgr-vehicle-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+.mgr-vehicle-card > small {
+  font-size: 12px;
+  color: var(--adm-muted);
+}
+.mgr-vehicle-card .mgr-section-toolbar {
+  margin-bottom: 8px;
+  gap: 8px;
+}
+.mgr-app .mgr-vehicle-card .adm-btn {
+  min-height: 44px;
+  font-size: 14px;
+  padding: 8px 12px;
+}
+.mgr-app .mgr-vehicle-card .adm-text-link {
+  font-size: 14px;
+}
+.mgr-ops-mobile {
+  display: none;
+}
+.mgr-calendar-mobile {
+  display: none;
+}
+.mgr-app .mgr-operation-reception {
+  color: var(--adm-blue);
+  background: var(--adm-blue-bg);
+}
+.mgr-app .mgr-operation-quote,
+.mgr-dialog .mgr-operation-quote {
+  color: var(--adm-warning);
+  background: var(--adm-warning-bg);
+}
+.mgr-app .mgr-operation-work,
+.mgr-dialog .mgr-operation-work {
+  color: var(--adm-accent-text);
+  background: var(--adm-accent-soft);
+}
+.mgr-app .mgr-operation-acceptance,
+.mgr-dialog .mgr-operation-acceptance {
+  color: var(--adm-status-arrived-text);
+  background: var(--adm-status-arrived-bg);
+}
+.mgr-app .mgr-operation-done,
+.mgr-dialog .mgr-operation-done {
+  color: var(--adm-success);
+  background: var(--adm-success-bg);
+}
+.mgr-dialog .mgr-operation-reception {
+  color: var(--adm-blue);
+  background: var(--adm-blue-bg);
+}
+.mgr-app .mgr-detail-tabs,
+.mgr-dialog .mgr-detail-tabs {
+  display: flex;
+  overflow-x: auto;
+  margin-top: 18px;
+  max-width: 100%;
+  flex: none;
+}
+.mgr-dialog .mgr-detail-tabs button {
+  min-height: 44px;
+  flex: none;
+  font-size: 14px;
+}
+.mgr-line-list {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+}
+.mgr-line-list article,
+.mgr-audit-item {
+  border: 1px solid var(--adm-border);
+  background: var(--adm-raised);
+  border-radius: 6px;
+  padding: 14px;
+  overflow-wrap: anywhere;
+}
+.mgr-line-list article strong {
+  display: block;
+}
+.mgr-line-list article p {
+  margin: 6px 0;
+}
+.mgr-audit-item {
+  margin: 12px 0;
+}
+.mgr-dialog progress {
+  width: 100%;
+  height: 8px;
+  accent-color: var(--adm-accent);
+}
+.mgr-finance-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.mgr-finance-metrics strong {
+  display: block;
+  font-size: 24px;
+  margin-top: 10px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.mgr-app .mgr-alert-link {
+  font-size: 13px;
+  color: var(--adm-accent-text);
+  flex: none;
+}
+.mgr-app .mgr-alert .mgr-pill {
+  margin-bottom: 8px;
+}
+.mgr-app .mgr-record-table td {
+  overflow-wrap: anywhere;
+}
+.mgr-app .mgr-filter {
+  max-width: 100%;
+}
+.mgr-app .mgr-panel-head > div,
+.mgr-app .mgr-panel-head > h2 {
+  min-width: 0;
+}
+.mgr-capacity-impact {
+  padding: 14px;
+  border: 1px solid var(--adm-status-pending-border);
+  background: var(--adm-warning-bg);
+  color: var(--adm-warning);
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.mgr-app .mgr-staff-load {
+  display: grid;
+  gap: 6px;
+}
+.mgr-app .mgr-kpis-operations {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (min-width: 1024px) {
+  .mgr-desktop-scale .mgr-sidebar {
+    width: 280px;
+  }
+  .mgr-app .mgr-nav-group {
+    margin-bottom: 14px;
+  }
+  .mgr-app .mgr-group-toggle {
+    min-height: 34px;
+  }
+  .mgr-app .mgr-nav-link {
+    min-height: 44px;
+  }
+}
+@media (max-width: 1199px) {
+  .mgr-finance-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1023px) {
+  .mgr-app .mgr-record-table,
+  .mgr-app .mgr-record-table tbody {
+    display: block;
+    min-width: 0;
+    width: 100%;
+  }
+  .mgr-app .mgr-record-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .mgr-app .mgr-record-table tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--adm-border);
+  }
+  .mgr-app .mgr-record-table td {
+    display: block;
+    padding: 0;
+    border: 0;
+    font-size: 14px;
+  }
+  .mgr-app .mgr-record-table td::before {
+    display: block;
+    content: attr(data-label);
+    font-size: 12px;
+    color: var(--adm-muted);
+    margin-bottom: 5px;
+  }
+  .mgr-app .mgr-record-table td:first-child {
+    grid-column: 1/-1;
+  }
+  .mgr-app .mgr-record-table td:last-child {
+    grid-column: 1/-1;
+  }
+  .mgr-app .mgr-table-scroll:has(.mgr-record-table) {
+    overflow: visible;
+  }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .mgr-app .mgr-panel-head h2 {
+    font-size: 18px;
+  }
+  .mgr-app .adm-page-heading .adm-muted {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .mgr-app .mgr-filter {
+    font-size: 13px;
+  }
+  .mgr-app .mgr-search input,
+  .mgr-app .mgr-filter input,
+  .mgr-app .mgr-filter select {
+    font-size: 16px;
+    min-height: 44px;
+  }
+  .mgr-app .adm-btn {
+    font-size: 14px;
+    min-height: 44px;
+  }
+}
+@media (max-width: 767px) {
+  .mgr-ops-board {
+    display: none;
+  }
+  .mgr-ops-mobile {
+    display: block;
+  }
+  .mgr-calendar-mobile {
+    display: block;
+  }
+  .mgr-app .mgr-calendar-scroll {
+    display: none;
+  }
+  .mgr-finance-metrics {
+    gap: 12px;
+  }
+  .mgr-finance-metrics strong {
+    font-size: 20px;
+  }
+  .mgr-app .mgr-kpis-operations {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mgr-app .mgr-alert {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .mgr-app .mgr-filter {
+    flex: 1 1 130px;
+    min-width: 0;
+  }
+  .mgr-app .mgr-tabs {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .mgr-app .mgr-form-columns,
+  .mgr-dialog .mgr-form-columns {
+    grid-template-columns: 1fr;
+  }
+  .mgr-app .mgr-session-notice {
+    font-size: 12px;
+  }
+}
+@media (max-width: 359px) {
+  .mgr-app .mgr-kpis-operations {
+    grid-template-columns: 1fr;
+  }
+  .mgr-finance-metrics {
+    grid-template-columns: 1fr;
+  }
+}

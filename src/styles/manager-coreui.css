@@ -1,0 +1,485 @@
+/* CoreUI-inspired visual system, scoped to the store manager workspace. */
+.mgr-app[data-theme="light"],
+.mgr-dialog[data-theme="light"],
+.mgr-toast[data-theme="light"] {
+  --adm-bg: #f3f4f7;
+  --adm-sidebar: #212631;
+  --adm-surface: #fff;
+  --adm-raised: #f7f8fa;
+  --adm-input: #fff;
+  --adm-border: #d9dfe8;
+  --adm-text: #252b36;
+  --adm-muted: #5b687b;
+  --adm-accent: #5856d6;
+  --adm-accent-soft: #edecfb;
+  --adm-accent-text: #4543b5;
+  --adm-success: #15783b;
+  --adm-success-bg: #e3f5e8;
+  --adm-warning: #805300;
+  --adm-warning-bg: #fff3d6;
+  --adm-blue: #1b65bf;
+  --adm-blue-bg: #e7f1ff;
+  --adm-danger: #b42332;
+  --adm-danger-bg: #fdebed;
+  --adm-status-pending-text: #805300;
+  --adm-status-pending-bg: #fff3d6;
+  --adm-status-pending-border: #efd18c;
+  --adm-status-confirmed-text: #1759af;
+  --adm-status-confirmed-bg: #e7f1ff;
+  --adm-status-confirmed-border: #b7d3f5;
+  --adm-status-arrived-text: #08796e;
+  --adm-status-arrived-bg: #dff6f1;
+  --adm-status-arrived-border: #a8ded4;
+  --adm-status-completed-text: #146c3e;
+  --adm-status-completed-bg: #e3f5e8;
+  --adm-status-completed-border: #afd9bd;
+  --adm-status-cancelled-text: #b42332;
+  --adm-status-cancelled-bg: #fdebed;
+  --adm-status-cancelled-border: #efb6be;
+  --adm-status-no-show-text: #4e5b6d;
+  --adm-status-no-show-bg: #edf1f5;
+  --adm-status-no-show-border: #cbd4df;
+  --mgr-primary-hover: #4644b5;
+  --mgr-sidebar-border: #333b49;
+  color-scheme: light;
+}
+
+.mgr-app[data-theme="dark"],
+.mgr-dialog[data-theme="dark"],
+.mgr-toast[data-theme="dark"] {
+  --adm-bg: #1b2029;
+  --adm-sidebar: #171c25;
+  --adm-surface: #252c37;
+  --adm-raised: #303846;
+  --adm-input: #202630;
+  --adm-border: #445061;
+  --adm-text: #f2f5fa;
+  --adm-muted: #b7c1d0;
+  --adm-accent: #7775e7;
+  --adm-accent-soft: #7775e72b;
+  --adm-accent-text: #b9b8ff;
+  --adm-success: #79d59a;
+  --adm-success-bg: #173d2a;
+  --adm-warning: #f5c35d;
+  --adm-warning-bg: #493713;
+  --adm-blue: #79b3ff;
+  --adm-blue-bg: #1d3759;
+  --adm-danger: #ff9a9e;
+  --adm-danger-bg: #4d292f;
+  --adm-status-pending-text: #ffd476;
+  --adm-status-pending-bg: #493713;
+  --adm-status-pending-border: #8f681c;
+  --adm-status-confirmed-text: #a9d0ff;
+  --adm-status-confirmed-bg: #1d3759;
+  --adm-status-confirmed-border: #436b9d;
+  --adm-status-arrived-text: #8ce0d1;
+  --adm-status-arrived-bg: #174139;
+  --adm-status-arrived-border: #347d70;
+  --adm-status-completed-text: #90e6ad;
+  --adm-status-completed-bg: #173d2a;
+  --adm-status-completed-border: #39845a;
+  --adm-status-cancelled-text: #ffafb3;
+  --adm-status-cancelled-bg: #4d292f;
+  --adm-status-cancelled-border: #925056;
+  --adm-status-no-show-text: #cbd3e0;
+  --adm-status-no-show-bg: #343d49;
+  --adm-status-no-show-border: #647085;
+  --mgr-primary-hover: #6866da;
+  --mgr-sidebar-border: #333b49;
+  color-scheme: dark;
+}
+
+.mgr-app,
+.mgr-dialog,
+.mgr-toast {
+  letter-spacing: 0;
+}
+
+.mgr-app,
+.mgr-app .mgr-body,
+.mgr-app .mgr-main {
+  background: var(--adm-bg);
+}
+
+.mgr-app .mgr-sidebar {
+  color: #eef1f6;
+  background: var(--adm-sidebar);
+  border-right-color: var(--mgr-sidebar-border);
+}
+
+.mgr-app .mgr-brand strong,
+.mgr-app .mgr-station strong,
+.mgr-app .mgr-sidebar-footer strong {
+  color: #f5f7fb;
+}
+
+.mgr-app .mgr-brand small,
+.mgr-app .mgr-station small,
+.mgr-app .mgr-sidebar-footer small,
+.mgr-app .mgr-group-toggle {
+  color: #b7c1d0;
+}
+
+.mgr-app .mgr-station,
+.mgr-app .mgr-sidebar-footer {
+  border-color: var(--mgr-sidebar-border);
+}
+
+.mgr-app .mgr-station .adm-feature-icon,
+.mgr-app .mgr-sidebar-footer .adm-avatar {
+  color: #fff;
+  background: #3b4555;
+  border-color: #515b6c;
+}
+
+.mgr-app .mgr-nav-link {
+  color: #d4dbe6;
+}
+
+.mgr-app .mgr-nav-link:hover,
+.mgr-app .mgr-nav-link.is-active {
+  color: #fff;
+  background: #8791af2e;
+}
+
+.mgr-app .mgr-nav-link.is-active {
+  font-weight: 600;
+}
+
+.mgr-app .mgr-nav-link > small {
+  color: #fff;
+  background: #3b4555;
+}
+
+.mgr-app .mgr-header {
+  background: var(--adm-surface);
+  border-bottom-color: var(--adm-border);
+}
+
+.mgr-app .mgr-header-actions .icon,
+.mgr-app .mgr-nav-link > .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.mgr-app .mgr-page-heading h1,
+.mgr-app .adm-page-heading h1,
+.mgr-app .mgr-panel-head h2 {
+  letter-spacing: -0.015em;
+}
+
+.mgr-app .adm-page-heading h1 {
+  font-weight: 650;
+}
+
+.mgr-app .mgr-panel,
+.mgr-app .mgr-kpi,
+.mgr-app .mgr-capacity-card,
+.mgr-app .mgr-media-card,
+.mgr-app .mgr-seo-preview,
+.mgr-app .mgr-account-menu {
+  border-radius: 6px;
+  box-shadow: 0 1px 2px #1623390a;
+}
+
+.mgr-app .mgr-panel,
+.mgr-app .mgr-capacity-card,
+.mgr-app .mgr-media-card {
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+}
+
+.mgr-app .mgr-kpi {
+  min-height: 142px;
+  color: #fff;
+  background: #5856d6;
+  border: 0;
+}
+
+.mgr-app .mgr-kpi > div,
+.mgr-app .mgr-kpi strong,
+.mgr-app .mgr-kpi p,
+.mgr-app .mgr-kpi .icon {
+  color: inherit;
+}
+
+.mgr-app .mgr-kpi p {
+  opacity: 0.88;
+}
+
+.mgr-app .mgr-kpi-icon {
+  color: inherit;
+  background: #ffffff30;
+}
+
+.mgr-app .mgr-kpi[data-tone="warning"] {
+  color: #252b36;
+  background: #f9b115;
+}
+
+.mgr-app .mgr-kpi[data-tone="warning"] .mgr-kpi-icon {
+  color: #805300;
+  background: #ffffff72;
+}
+
+.mgr-app .mgr-kpi[data-tone="blue"] {
+  background: #1b74d1;
+}
+
+.mgr-app .mgr-kpi[data-tone="danger"] {
+  background: #d94853;
+}
+
+.mgr-app .mgr-kpi[data-tone="success"] {
+  background: #15783b;
+}
+
+.mgr-app .mgr-kpi[data-tone="brand"] {
+  background: #4d5ac2;
+}
+
+.mgr-app .adm-btn,
+.mgr-dialog .adm-btn,
+.mgr-app .adm-icon-btn {
+  border-radius: 6px;
+  background: var(--adm-surface);
+}
+
+.mgr-app .adm-btn:hover,
+.mgr-dialog .adm-btn:hover,
+.mgr-app .adm-icon-btn:hover {
+  color: var(--adm-accent-text);
+  border-color: var(--adm-accent);
+  background: var(--adm-accent-soft);
+}
+
+.mgr-app .adm-btn.adm-primary,
+.mgr-dialog .adm-btn.adm-primary {
+  color: #fff;
+  border-color: #5856d6;
+  background: #5856d6;
+}
+
+.mgr-app .adm-btn.adm-primary:hover,
+.mgr-dialog .adm-btn.adm-primary:hover {
+  color: #fff;
+  border-color: var(--mgr-primary-hover);
+  background: var(--mgr-primary-hover);
+}
+
+.mgr-app .adm-btn.adm-danger,
+.mgr-dialog .adm-btn.adm-danger {
+  color: #fff;
+  border-color: #b42332;
+  background: #b42332;
+}
+
+.mgr-app .adm-btn.adm-danger:hover,
+.mgr-dialog .adm-btn.adm-danger:hover {
+  color: #fff;
+  border-color: #96212d;
+  background: #96212d;
+}
+
+.mgr-app .mgr-tabs {
+  gap: 0;
+  padding: 0 6px;
+  border-radius: 6px;
+}
+
+.mgr-app .mgr-tabs button {
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+}
+
+.mgr-app .mgr-tabs button[aria-pressed="true"] {
+  color: var(--adm-accent-text);
+  background: transparent;
+  border-bottom-color: var(--adm-accent);
+}
+
+.mgr-app
+  :is(
+    .adm-search,
+    .adm-field input,
+    .adm-field select,
+    .adm-field textarea,
+    .mgr-filter select,
+    .mgr-filter input,
+    .mgr-date-control input
+  ),
+.mgr-dialog :is(.adm-field input, .adm-field select, .adm-field textarea) {
+  color: var(--adm-text);
+  background: var(--adm-input);
+  border-color: var(--adm-border);
+  border-radius: 6px;
+}
+
+.mgr-app
+  :is(
+    .adm-search:focus-within,
+    .adm-field input:focus,
+    .adm-field select:focus,
+    .adm-field textarea:focus,
+    .mgr-filter select:focus,
+    .mgr-filter input:focus,
+    .mgr-date-control input:focus
+  ),
+.mgr-dialog
+  :is(
+    .adm-field input:focus,
+    .adm-field select:focus,
+    .adm-field textarea:focus
+  ) {
+  border-color: var(--adm-accent);
+  box-shadow: 0 0 0 3px var(--adm-accent-soft);
+  outline: none;
+}
+
+.mgr-app .mgr-table th {
+  color: var(--adm-muted);
+  background: var(--adm-raised);
+  font-weight: 600;
+}
+
+.mgr-app .mgr-table-scroll {
+  position: relative;
+}
+
+.mgr-app .mgr-table tbody tr:hover,
+.mgr-app .mgr-history-list > button:hover {
+  background: var(--adm-raised);
+}
+
+.mgr-app .adm-badge,
+.mgr-dialog .adm-badge,
+.mgr-app .mgr-pill,
+.mgr-dialog .mgr-pill {
+  border-radius: 5px;
+}
+
+.mgr-app .mgr-alert {
+  background: var(--adm-surface);
+}
+
+.mgr-app .mgr-alert[data-tone="danger"] {
+  border-left: 3px solid var(--adm-danger);
+}
+
+.mgr-app .mgr-alert[data-tone="warning"] {
+  border-left: 3px solid var(--adm-warning);
+}
+
+.mgr-app .mgr-alert[data-tone="blue"] {
+  border-left: 3px solid var(--adm-blue);
+}
+
+.mgr-app .mgr-chart-grid {
+  stroke-dasharray: 0;
+}
+
+.mgr-app .mgr-chart-line {
+  stroke-width: 3;
+}
+
+.mgr-app .mgr-chart-control button[aria-pressed="true"] {
+  color: var(--adm-accent-text);
+}
+
+.mgr-dialog,
+.mgr-toast {
+  color: var(--adm-text);
+  background: var(--adm-surface);
+  border-color: var(--adm-border);
+}
+
+.mgr-dialog .mgr-vehicle,
+.mgr-dialog .mgr-seo-preview {
+  background: var(--adm-raised);
+  border-radius: 6px;
+}
+
+.mgr-dialog:has(.mgr-mobile-menu) {
+  color: #eef1f6;
+  background: var(--adm-sidebar);
+  border-color: var(--mgr-sidebar-border);
+}
+
+.mgr-dialog:has(.mgr-mobile-menu) .mgr-modal-head {
+  border-color: var(--mgr-sidebar-border);
+}
+
+.mgr-dialog:has(.mgr-mobile-menu) .mgr-modal-head :is(h2, .adm-eyebrow) {
+  color: #f5f7fb;
+}
+
+.mgr-dialog:has(.mgr-mobile-menu) .mgr-modal-head .adm-icon-btn {
+  color: #eef1f6;
+  background: #3b4555;
+  border-color: #515b6c;
+}
+
+.mgr-dialog:has(.mgr-mobile-menu)
+  .mgr-mobile-menu
+  :is(.mgr-brand strong, .mgr-station strong, .mgr-sidebar-footer strong) {
+  color: #f5f7fb;
+}
+
+.mgr-dialog:has(.mgr-mobile-menu)
+  .mgr-mobile-menu
+  :is(
+    .mgr-brand small,
+    .mgr-station small,
+    .mgr-sidebar-footer small,
+    .mgr-group-toggle
+  ) {
+  color: #b7c1d0;
+}
+
+.mgr-dialog:has(.mgr-mobile-menu)
+  .mgr-mobile-menu
+  :is(.mgr-station, .mgr-sidebar-footer) {
+  border-color: var(--mgr-sidebar-border);
+}
+
+.mgr-dialog:has(.mgr-mobile-menu)
+  .mgr-mobile-menu
+  :is(.adm-feature-icon, .adm-avatar) {
+  color: #fff;
+  background: #3b4555;
+  border-color: #515b6c;
+}
+
+.mgr-dialog:has(.mgr-mobile-menu) .mgr-mobile-menu .mgr-nav-link {
+  color: #d4dbe6;
+}
+
+.mgr-dialog:has(.mgr-mobile-menu)
+  .mgr-mobile-menu
+  :is(.mgr-nav-link:hover, .mgr-nav-link.is-active) {
+  color: #fff;
+  background: #8791af2e;
+}
+
+.mgr-dialog:has(.mgr-mobile-menu) .mgr-mobile-menu .mgr-nav-link > small {
+  color: #fff;
+  background: #3b4555;
+}
+
+@media (max-width: 767px) {
+  .mgr-app .mgr-kpi {
+    min-height: 120px;
+  }
+
+  .mgr-app .mgr-kpi > div {
+    font-size: 14px;
+  }
+
+  .mgr-app .mgr-kpi p {
+    font-size: 12px;
+  }
+
+  .mgr-app .mgr-tabs {
+    max-width: 100%;
+  }
+}

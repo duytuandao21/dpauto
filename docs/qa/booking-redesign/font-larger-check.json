@@ -1,0 +1,226 @@
+[
+  {
+    "route": "/quanly",
+    "width": 360,
+    "overflow": false,
+    "header": 64,
+    "name": "16px",
+    "secondary": "14px"
+  },
+  {
+    "route": "/quanly/lich-hen",
+    "width": 360,
+    "overflow": false,
+    "header": 64,
+    "name": "16px",
+    "secondary": "14px"
+  },
+  {
+    "route": "/quanly/khach-hang",
+    "width": 360,
+    "overflow": false,
+    "header": 64,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/lich-hen/DP-0001",
+    "width": 360,
+    "overflow": false,
+    "header": 64,
+    "name": "16px",
+    "secondary": "14px"
+  },
+  {
+    "route": "/quanly/lich-hen/tao-moi",
+    "width": 360,
+    "overflow": false,
+    "header": 64,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/cai-dat",
+    "width": 360,
+    "overflow": false,
+    "header": 64,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/website",
+    "width": 360,
+    "overflow": false,
+    "header": 64,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly",
+    "width": 390,
+    "overflow": false,
+    "header": 64,
+    "name": "16px",
+    "secondary": "14px"
+  },
+  {
+    "route": "/quanly/lich-hen",
+    "width": 390,
+    "overflow": false,
+    "header": 64,
+    "name": "16px",
+    "secondary": "14px"
+  },
+  {
+    "route": "/quanly/khach-hang",
+    "width": 390,
+    "overflow": false,
+    "header": 64,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/lich-hen/DP-0001",
+    "width": 390,
+    "overflow": false,
+    "header": 64,
+    "name": "16px",
+    "secondary": "14px"
+  },
+  {
+    "route": "/quanly/lich-hen/tao-moi",
+    "width": 390,
+    "overflow": false,
+    "header": 64,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/cai-dat",
+    "width": 390,
+    "overflow": false,
+    "header": 64,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/website",
+    "width": 390,
+    "overflow": false,
+    "header": 64,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly",
+    "width": 768,
+    "overflow": false,
+    "header": 65,
+    "name": "15px",
+    "secondary": "13px"
+  },
+  {
+    "route": "/quanly/lich-hen",
+    "width": 768,
+    "overflow": false,
+    "header": 65,
+    "name": "15px",
+    "secondary": "13px"
+  },
+  {
+    "route": "/quanly/khach-hang",
+    "width": 768,
+    "overflow": false,
+    "header": 65,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/lich-hen/DP-0001",
+    "width": 768,
+    "overflow": false,
+    "header": 65,
+    "name": "15px",
+    "secondary": "13px"
+  },
+  {
+    "route": "/quanly/lich-hen/tao-moi",
+    "width": 768,
+    "overflow": false,
+    "header": 65,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/cai-dat",
+    "width": 768,
+    "overflow": false,
+    "header": 65,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/website",
+    "width": 768,
+    "overflow": false,
+    "header": 65,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly",
+    "width": 1440,
+    "overflow": false,
+    "header": 65,
+    "name": "15px",
+    "secondary": "13px"
+  },
+  {
+    "route": "/quanly/lich-hen",
+    "width": 1440,
+    "overflow": false,
+    "header": 65,
+    "name": "15px",
+    "secondary": "13px"
+  },
+  {
+    "route": "/quanly/khach-hang",
+    "width": 1440,
+    "overflow": false,
+    "header": 65,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/lich-hen/DP-0001",
+    "width": 1440,
+    "overflow": false,
+    "header": 65,
+    "name": "15px",
+    "secondary": "13px"
+  },
+  {
+    "route": "/quanly/lich-hen/tao-moi",
+    "width": 1440,
+    "overflow": false,
+    "header": 65,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/cai-dat",
+    "width": 1440,
+    "overflow": false,
+    "header": 65,
+    "name": null,
+    "secondary": null
+  },
+  {
+    "route": "/quanly/website",
+    "width": 1440,
+    "overflow": false,
+    "header": 65,
+    "name": null,
+    "secondary": null
+  }
+]

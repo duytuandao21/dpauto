@@ -1,0 +1,7 @@
+node_modules
+.next
+reference
+public
+docs/qa
+package-lock.json
+src/data/site-content.json

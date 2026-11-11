@@ -1,0 +1,174 @@
+/* Extend the homepage palette without changing layout or motion settings. */
+body.dpauto-theme {
+  --text-primary: #1f2937;
+  --text-secondary: #667085;
+  --on-image: #ffffff;
+  --on-image-muted: #ffffffcc;
+}
+
+/* Images retain white foregrounds and their existing contrast overlays. */
+body.dpauto-theme
+  :is(
+    .work-banner,
+    .news-page-banner,
+    .page-banner,
+    .service-hero,
+    .final-cta,
+    .not-found
+  ) {
+  color: var(--on-image);
+}
+
+body.dpauto-theme :is(.final-cta, .not-found) p {
+  color: var(--on-image-muted);
+}
+
+body.dpauto-theme .work-final-cta {
+  color: var(--on-image);
+}
+
+body.dpauto-theme .work-final-cta-panel {
+  background: #202632;
+}
+
+body.dpauto-theme .work-final-cta-inset {
+  background: #161b24;
+}
+
+body.dpauto-theme .skip-link {
+  color: #ffffff;
+}
+
+/* Shared content, cards and question states. */
+body.dpauto-theme:not(:has(.home-page))
+  :is(.about-approach, .about-team, .news-section, .faq-section) {
+  background: var(--raised);
+}
+
+body.dpauto-theme .services-page .services-index {
+  background: var(--surface);
+}
+
+body.dpauto-theme:not(:has(.home-page)) .news-card {
+  background: var(--surface);
+}
+
+body.dpauto-theme .featured-article {
+  background: var(--raised);
+}
+
+body.dpauto-theme:not(:has(.home-page))
+  :is(
+    .news-card-copy > p,
+    .news-card .article-meta,
+    .faq-heading p,
+    .faq-answer p
+  ) {
+  color: var(--text-secondary);
+}
+
+body.dpauto-theme:not(:has(.home-page)) .faq-indicator {
+  background: var(--brand-red-soft);
+}
+
+body.dpauto-theme:not(:has(.home-page)) .faq-item--open .faq-indicator {
+  background: var(--brand-red);
+  color: #ffffff;
+}
+
+body.dpauto-theme .project-card {
+  color: var(--text-primary);
+}
+
+body.dpauto-theme .project-copy p,
+body.dpauto-theme .approach-card p,
+body.dpauto-theme .about-team-copy p {
+  color: var(--text-secondary);
+}
+
+body.dpauto-theme .workshop-card::after {
+  border-color: var(--border-light);
+}
+
+/* Preserve the story heading's existing difference blend over its photos. */
+body.dpauto-theme .about-lightbox {
+  background: #1f2937e0;
+}
+
+/* Article reading surfaces and metadata. */
+body.dpauto-theme .article-detail-page .article-heading > p,
+body.dpauto-theme .article-detail-page .article-heading .article-meta,
+body.dpauto-theme .article-detail-page .article-body .rich-content,
+body.dpauto-theme .article-detail-page .back-link {
+  color: var(--text-secondary);
+}
+
+body.dpauto-theme .article-detail-page .article-body .rich-content {
+  --text-muted: var(--text-secondary);
+}
+
+body.dpauto-theme .article-detail-page .article-body .rich-content :is(h2, h3),
+body.dpauto-theme .rich-content strong {
+  color: var(--text-primary);
+}
+
+body.dpauto-theme .article-detail-page .back-link:hover {
+  color: var(--brand-red);
+}
+
+/* Service details share the homepage's pale red process cards. */
+body.dpauto-theme .service-detail-page .service-overview-content p,
+body.dpauto-theme .service-detail-page .service-overview-content p:first-child,
+body.dpauto-theme .service-detail-page .service-overview-content ul,
+body.dpauto-theme .service-detail-page .service-section-intro > p,
+body.dpauto-theme .service-detail-page .faq-compact-heading p {
+  color: var(--text-secondary);
+}
+
+body.dpauto-theme .service-detail-page .service-overview-content strong {
+  color: var(--text-primary);
+}
+
+body.dpauto-theme .service-detail-page .service-process-card {
+  background: var(--brand-red-soft);
+  box-shadow: inset 0 0 0 1px #f3b8b8;
+}
+
+body.dpauto-theme .service-detail-page .service-process-card h3 {
+  color: #b91c1c;
+}
+
+body.dpauto-theme .service-detail-page .service-process-card p {
+  color: #475467;
+}
+
+body.dpauto-theme .service-detail-page .service-benefit-icon {
+  background: var(--brand-red-soft);
+}
+
+body.dpauto-theme .service-detail-page .service-contact-card {
+  background: var(--brand-red-soft);
+}
+
+body.dpauto-theme .service-detail-page .other-services-list > a {
+  color: var(--text-primary);
+}
+
+body.dpauto-theme .service-detail-page .other-services-list > a:hover {
+  color: var(--brand-red);
+}
+
+/* Footer stays red with white text on every route, including legal and 404. */
+body.dpauto-theme .site-footer .footer-heading,
+body.dpauto-theme .site-footer .footer-brand > p {
+  color: #ffffffcc;
+}
+
+body.dpauto-theme .site-footer .footer-bottom::before {
+  background: #ffffff33;
+}
+
+body.dpauto-theme .site-footer .footer-columns .hours dt,
+body.dpauto-theme .site-footer .footer-columns .hours .muted {
+  color: #ffffffb3;
+}

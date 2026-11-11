@@ -1,0 +1,14 @@
+{
+  "origin": "http://127.0.0.1:4003",
+  "checks": [
+    "WebKit search, filters, day/week and date selection",
+    "WebKit pending → confirmed → arrived → completed and shared KPIs",
+    "WebKit reschedule, edit, timeline and direct-link refresh persistence",
+    "WebKit form validation, create on HTTP-compatible identifiers, cancel and no-show",
+    "WebKit customer relations, create from customer, More menu, website placeholder and persistent light theme",
+    "WebKit settings, reset, empty and not-found states"
+  ],
+  "errors": [],
+  "toolingWarnings": [],
+  "responsive": []
+}

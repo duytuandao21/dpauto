@@ -1,0 +1,1333 @@
+{
+  "url": "https://hyperautocare.framer.website/services",
+  "title": "Car Detailing Services | HyperAuto Care",
+  "text": "Services\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nCall Us: +1 206 555 0148\n\nContact Us\n\nOur Services\n\nDetail Wash\n\nProfessional exterior wash and finishing for a cleaner, refreshed vehicle.\n\nView Details\n\nInterior Detailing\n\nDeep cleaning for seats, carpets, trim, panels, and interior surfaces.\n\nView Details\n\nPaint Correction\n\nReduce swirl marks, light scratches, and paint imperfections to restore gloss.\n\nView Details\n\nCeramic Coating\n\nLong-lasting surface protection with enhanced gloss and easier maintenance.\n\nView Details\n\nPaint Protection Film (PPF)\n\nClear protective film designed to help protect paint from chips, scratches, and road debris.\n\nView Details\n\nWindow Tint\n\nProfessional tint installation for comfort, glare reduction, privacy, and a cleaner appearance.\n\nView Details\n\nEngine Bay Detailing\n\nProfessional cleaning and finishing for a cleaner and better-presented engine bay.\n\nView Details\n\nHeadlight Restoration\n\nRestore clarity to faded or cloudy headlights and improve their appearance.\n\nView Details\n\nGlass & Water Spot Removal\n\nRemove mineral deposits and stubborn water spots from automotive glass.\n\nView Details\n\nUnderbody Coating & Protection\n\nProtect exposed underside surfaces from moisture, road debris, and everyday wear.\n\nView Details\n\nGive Your Vehicle the Care It Deserves\n\nFrom routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.\n\nContact Us\n\nCall Now\n\nProfessional car care, detailing, paint protection, and vehicle appearance services in Seattle.\n\nHyperAuto Care\n\nHyperAuto Care\n\nNavigation\n\nHome\n\nServices\n\nService Process\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nContact\n\nContact\n\n+1 206 555 0148\n\ncontact@hyperautocare.com\n\n000 Harbor Avenue SW, Suite 120\n\nSeattle, WA 98126\n\nUSA\n\nOpening Hours\n\nMonday - Friday\n\n8:00 AM - 6:00 PM\n\nSaturday\n\n8:00 AM - 12:00 PM\n\nSunday\n\nClosed\n\n© HyperAuto Care. All rights reserved.\n\nDesigned by RedSignal.Red\n\nPrivacy Policy\n\nTerms of Service\n\nGet Template - Free\n\nCreate a free website with Framer, the website builder loved by startups, designers and agencies.\n\n ",
+  "blocks": [
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 397,
+      "y": 31,
+      "width": 57
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 496,
+      "y": 31,
+      "width": 46
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 565,
+      "y": 31,
+      "width": 62
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 651,
+      "y": 31,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 768,
+      "y": 31,
+      "width": 40
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 832,
+      "y": 31,
+      "width": 53
+    },
+    {
+      "tag": "P",
+      "text": "Call Us: +1 206 555 0148",
+      "html": "Call Us: +1 206 555 0148",
+      "name": "Label",
+      "x": 1006,
+      "y": 31,
+      "width": 174
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 1224,
+      "y": 31,
+      "width": 78
+    },
+    {
+      "tag": "H1",
+      "text": "Our Services",
+      "html": "Our Services",
+      "name": "Header",
+      "x": 104,
+      "y": 236,
+      "width": 750
+    },
+    {
+      "tag": "P",
+      "text": "Detail Wash",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"./services/detail-wash\">Detail Wash</a><!--/$-->",
+      "name": "Service Name",
+      "x": 842,
+      "y": 971,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "Professional exterior wash and finishing for a cleaner, refreshed vehicle.",
+      "html": "Professional exterior wash and finishing for a cleaner, refreshed vehicle.",
+      "name": "Service Introduction",
+      "x": 842,
+      "y": 1026,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "View Details",
+      "html": "View Details",
+      "name": "Label",
+      "x": 1192,
+      "y": 1114,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "Interior Detailing",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"./services/interior-detailing\">Interior Detailing</a><!--/$-->",
+      "name": "Service Name",
+      "x": 842,
+      "y": 1591,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "Deep cleaning for seats, carpets, trim, panels, and interior surfaces.",
+      "html": "Deep cleaning for seats, carpets, trim, panels, and interior surfaces.",
+      "name": "Service Introduction",
+      "x": 842,
+      "y": 1646,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "View Details",
+      "html": "View Details",
+      "name": "Label",
+      "x": 1192,
+      "y": 1734,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "Paint Correction",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"./services/paint-correction\">Paint Correction</a><!--/$-->",
+      "name": "Service Name",
+      "x": 842,
+      "y": 2211,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "Reduce swirl marks, light scratches, and paint imperfections to restore gloss.",
+      "html": "Reduce swirl marks, light scratches, and paint imperfections to restore gloss.",
+      "name": "Service Introduction",
+      "x": 842,
+      "y": 2266,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "View Details",
+      "html": "View Details",
+      "name": "Label",
+      "x": 1192,
+      "y": 2354,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "Ceramic Coating",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"./services/ceramic-coating\">Ceramic Coating</a><!--/$-->",
+      "name": "Service Name",
+      "x": 842,
+      "y": 2831,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "Long-lasting surface protection with enhanced gloss and easier maintenance.",
+      "html": "Long-lasting surface protection with enhanced gloss and easier maintenance.",
+      "name": "Service Introduction",
+      "x": 842,
+      "y": 2886,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "View Details",
+      "html": "View Details",
+      "name": "Label",
+      "x": 1192,
+      "y": 2974,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "Paint Protection Film (PPF)",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"./services/paint-protection-film-(ppf)\">Paint Protection Film (PPF)</a><!--/$-->",
+      "name": "Service Name",
+      "x": 842,
+      "y": 3451,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "Clear protective film designed to help protect paint from chips, scratches, and road debris.",
+      "html": "Clear protective film designed to help protect paint from chips, scratches, and road debris.",
+      "name": "Service Introduction",
+      "x": 842,
+      "y": 3506,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "View Details",
+      "html": "View Details",
+      "name": "Label",
+      "x": 1192,
+      "y": 3594,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "Window Tint",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"./services/window-tint\">Window Tint</a><!--/$-->",
+      "name": "Service Name",
+      "x": 842,
+      "y": 4071,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "Professional tint installation for comfort, glare reduction, privacy, and a cleaner appearance.",
+      "html": "Professional tint installation for comfort, glare reduction, privacy, and a cleaner appearance.",
+      "name": "Service Introduction",
+      "x": 842,
+      "y": 4126,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "View Details",
+      "html": "View Details",
+      "name": "Label",
+      "x": 1192,
+      "y": 4214,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "Engine Bay Detailing",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"./services/engine-bay-detailing\">Engine Bay Detailing</a><!--/$-->",
+      "name": "Service Name",
+      "x": 842,
+      "y": 4691,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "Professional cleaning and finishing for a cleaner and better-presented engine bay.",
+      "html": "Professional cleaning and finishing for a cleaner and better-presented engine bay.",
+      "name": "Service Introduction",
+      "x": 842,
+      "y": 4746,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "View Details",
+      "html": "View Details",
+      "name": "Label",
+      "x": 1192,
+      "y": 4834,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "Headlight Restoration",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"./services/headlight-restoration\">Headlight Restoration</a><!--/$-->",
+      "name": "Service Name",
+      "x": 842,
+      "y": 5311,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "Restore clarity to faded or cloudy headlights and improve their appearance.",
+      "html": "Restore clarity to faded or cloudy headlights and improve their appearance.",
+      "name": "Service Introduction",
+      "x": 842,
+      "y": 5366,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "View Details",
+      "html": "View Details",
+      "name": "Label",
+      "x": 1192,
+      "y": 5454,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "Glass & Water Spot Removal",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"./services/glass-water-spot-removal\">Glass &amp; Water Spot Removal</a><!--/$-->",
+      "name": "Service Name",
+      "x": 842,
+      "y": 5931,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "Remove mineral deposits and stubborn water spots from automotive glass.",
+      "html": "Remove mineral deposits and stubborn water spots from automotive glass.",
+      "name": "Service Introduction",
+      "x": 842,
+      "y": 5986,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "View Details",
+      "html": "View Details",
+      "name": "Label",
+      "x": 1192,
+      "y": 6074,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "Underbody Coating & Protection",
+      "html": "<!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"./services/underbody-coating-protection\">Underbody Coating &amp; Protection</a><!--/$-->",
+      "name": "Service Name",
+      "x": 842,
+      "y": 6551,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "Protect exposed underside surfaces from moisture, road debris, and everyday wear.",
+      "html": "Protect exposed underside surfaces from moisture, road debris, and everyday wear.",
+      "name": "Service Introduction",
+      "x": 842,
+      "y": 6606,
+      "width": 462
+    },
+    {
+      "tag": "P",
+      "text": "View Details",
+      "html": "View Details",
+      "name": "Label",
+      "x": 1192,
+      "y": 6694,
+      "width": 93
+    },
+    {
+      "tag": "H2",
+      "text": "Give Your Vehicle the Care It Deserves",
+      "html": "Give Your Vehicle the Care It Deserves",
+      "name": "Final CTA Heading",
+      "x": 706,
+      "y": 7137,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "html": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "name": "Final CTA Description",
+      "x": 706,
+      "y": 7274,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 724,
+      "y": 7367,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "Call Now",
+      "html": "Call Now",
+      "name": "Label",
+      "x": 879,
+      "y": 7367,
+      "width": 63
+    },
+    {
+      "tag": "P",
+      "text": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "html": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "name": "Brand Description",
+      "x": 104,
+      "y": 7780,
+      "width": 300
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Facebook",
+      "x": 136,
+      "y": 7877,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Instagram",
+      "x": 136,
+      "y": 7915,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "Navigation",
+      "html": "Navigation",
+      "name": "Navigation Heading",
+      "x": 513,
+      "y": 7780,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Home",
+      "html": "Home",
+      "name": "Services",
+      "x": 513,
+      "y": 7817,
+      "width": 41
+    },
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 513,
+      "y": 7855,
+      "width": 60
+    },
+    {
+      "tag": "P",
+      "text": "Service Process",
+      "html": "Service Process",
+      "name": "Services",
+      "x": 513,
+      "y": 7893,
+      "width": 112
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 513,
+      "y": 7931,
+      "width": 48
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 513,
+      "y": 7969,
+      "width": 66
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 513,
+      "y": 8007,
+      "width": 99
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 513,
+      "y": 8045,
+      "width": 42
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 513,
+      "y": 8083,
+      "width": 56
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Services",
+      "x": 513,
+      "y": 8121,
+      "width": 55
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Contact Heading",
+      "x": 727,
+      "y": 7780,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "+1 206 555 0148",
+      "html": "+1 206 555 0148",
+      "name": "Services",
+      "x": 753,
+      "y": 7817,
+      "width": 115
+    },
+    {
+      "tag": "P",
+      "text": "contact@hyperautocare.com",
+      "html": "contact@hyperautocare.com",
+      "name": "Services",
+      "x": 753,
+      "y": 7855,
+      "width": 203
+    },
+    {
+      "tag": "P",
+      "text": "000 Harbor Avenue SW, Suite 120",
+      "html": "000 Harbor Avenue SW, Suite 120",
+      "name": "Street",
+      "x": 753,
+      "y": 7890,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Seattle, WA 98126",
+      "html": "Seattle, WA 98126",
+      "name": "City",
+      "x": 753,
+      "y": 7912,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "USA",
+      "html": "USA",
+      "name": "Country",
+      "x": 753,
+      "y": 7934,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Opening Hours",
+      "html": "Opening Hours",
+      "name": "Opening Hours Heading",
+      "x": 1046,
+      "y": 7780,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Monday - Friday",
+      "html": "Monday - Friday",
+      "name": "Days",
+      "x": 1046,
+      "y": 7814,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 6:00 PM",
+      "html": "8:00 AM - 6:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 7838,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Saturday",
+      "html": "Saturday",
+      "name": "Days",
+      "x": 1046,
+      "y": 7870,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 12:00 PM",
+      "html": "8:00 AM - 12:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 7894,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Sunday",
+      "html": "Sunday",
+      "name": "Day",
+      "x": 1046,
+      "y": 7926,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Closed",
+      "html": "Closed",
+      "name": "Status",
+      "x": 1046,
+      "y": 7950,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "© HyperAuto Care. All rights reserved.",
+      "html": "© HyperAuto Care. All rights reserved.",
+      "name": "Copyright",
+      "x": 104,
+      "y": 8611,
+      "width": 250
+    },
+    {
+      "tag": "P",
+      "text": "Designed by RedSignal.Red",
+      "html": "Designed by <!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"https://redsignal.red\" target=\"_blank\" rel=\"\">RedSignal.Red</a><!--/$-->",
+      "name": "Footer Bottom Bar",
+      "x": 363,
+      "y": 8611,
+      "width": 179
+    },
+    {
+      "tag": "P",
+      "text": "Privacy Policy",
+      "html": "Privacy Policy",
+      "name": "Services",
+      "x": 1082,
+      "y": 8613,
+      "width": 97
+    },
+    {
+      "tag": "P",
+      "text": "Terms of Service",
+      "html": "Terms of Service",
+      "name": "Services",
+      "x": 1203,
+      "y": 8613,
+      "width": 117
+    },
+    {
+      "tag": "P",
+      "text": "Get Template - Free",
+      "html": "Get Template - Free",
+      "name": "Get Free Template Button",
+      "x": 1256,
+      "y": 810,
+      "width": 138
+    },
+    {
+      "tag": "P",
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "html": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "name": "Content",
+      "x": 1335,
+      "y": 871,
+      "width": 0
+    }
+  ],
+  "images": [
+    {
+      "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+      "alt": "HyperAuto Care Logo",
+      "name": "Image Logo",
+      "y": 13,
+      "width": 146,
+      "height": 50
+    },
+    {
+      "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+      "alt": "Technician pouring fluid into an open vehicle engine bay during professional engine maintenance",
+      "name": "Hero Image",
+      "y": 76,
+      "width": 1425,
+      "height": 400
+    },
+    {
+      "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+      "name": "Service Image",
+      "y": 585,
+      "width": 1276,
+      "height": 575
+    },
+    {
+      "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+      "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+      "name": "Service Image",
+      "y": 1205,
+      "width": 1276,
+      "height": 575
+    },
+    {
+      "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+      "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+      "name": "Service Image",
+      "y": 1825,
+      "width": 1276,
+      "height": 575
+    },
+    {
+      "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+      "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+      "name": "Service Image",
+      "y": 2445,
+      "width": 1276,
+      "height": 575
+    },
+    {
+      "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+      "name": "Service Image",
+      "y": 3065,
+      "width": 1276,
+      "height": 575
+    },
+    {
+      "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+      "name": "Service Image",
+      "y": 3685,
+      "width": 1276,
+      "height": 575
+    },
+    {
+      "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+      "name": "Service Image",
+      "y": 4305,
+      "width": 1276,
+      "height": 575
+    },
+    {
+      "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+      "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+      "name": "Service Image",
+      "y": 4925,
+      "width": 1276,
+      "height": 575
+    },
+    {
+      "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+      "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+      "name": "Service Image",
+      "y": 5545,
+      "width": 1276,
+      "height": 575
+    },
+    {
+      "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+      "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+      "name": "Service Image",
+      "y": 6165,
+      "width": 1276,
+      "height": 575
+    },
+    {
+      "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+      "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+      "name": "Background",
+      "y": 6750,
+      "width": 1510,
+      "height": 916
+    }
+  ],
+  "videos": [],
+  "links": [
+    {
+      "text": "",
+      "href": "./"
+    },
+    {
+      "text": "Services",
+      "href": "./services"
+    },
+    {
+      "text": "Pricing",
+      "href": "./#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "./our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "./news"
+    },
+    {
+      "text": "About",
+      "href": "./about"
+    },
+    {
+      "text": "Training",
+      "href": "./#training"
+    },
+    {
+      "text": "Call Us: +1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "Contact Us",
+      "href": "./contact"
+    },
+    {
+      "text": "Detail Wash",
+      "href": "./services/detail-wash"
+    },
+    {
+      "text": "View Details",
+      "href": "./services/detail-wash"
+    },
+    {
+      "text": "Interior Detailing",
+      "href": "./services/interior-detailing"
+    },
+    {
+      "text": "View Details",
+      "href": "./services/interior-detailing"
+    },
+    {
+      "text": "Paint Correction",
+      "href": "./services/paint-correction"
+    },
+    {
+      "text": "View Details",
+      "href": "./services/paint-correction"
+    },
+    {
+      "text": "Ceramic Coating",
+      "href": "./services/ceramic-coating"
+    },
+    {
+      "text": "View Details",
+      "href": "./services/ceramic-coating"
+    },
+    {
+      "text": "Paint Protection Film (PPF)",
+      "href": "./services/paint-protection-film-(ppf)"
+    },
+    {
+      "text": "View Details",
+      "href": "./services/paint-protection-film-(ppf)"
+    },
+    {
+      "text": "Window Tint",
+      "href": "./services/window-tint"
+    },
+    {
+      "text": "View Details",
+      "href": "./services/window-tint"
+    },
+    {
+      "text": "Engine Bay Detailing",
+      "href": "./services/engine-bay-detailing"
+    },
+    {
+      "text": "View Details",
+      "href": "./services/engine-bay-detailing"
+    },
+    {
+      "text": "Headlight Restoration",
+      "href": "./services/headlight-restoration"
+    },
+    {
+      "text": "View Details",
+      "href": "./services/headlight-restoration"
+    },
+    {
+      "text": "Glass & Water Spot Removal",
+      "href": "./services/glass-water-spot-removal"
+    },
+    {
+      "text": "View Details",
+      "href": "./services/glass-water-spot-removal"
+    },
+    {
+      "text": "Underbody Coating & Protection",
+      "href": "./services/underbody-coating-protection"
+    },
+    {
+      "text": "View Details",
+      "href": "./services/underbody-coating-protection"
+    },
+    {
+      "text": "Contact Us",
+      "href": "./contact"
+    },
+    {
+      "text": "Call Now",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.facebook.com"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.instagram.com"
+    },
+    {
+      "text": "Home",
+      "href": "./"
+    },
+    {
+      "text": "Services",
+      "href": "./services"
+    },
+    {
+      "text": "Service Process",
+      "href": "./#Our Service Process"
+    },
+    {
+      "text": "Pricing",
+      "href": "./#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "./our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "./news"
+    },
+    {
+      "text": "About",
+      "href": "./about"
+    },
+    {
+      "text": "Training",
+      "href": "./#training"
+    },
+    {
+      "text": "Contact",
+      "href": "./contact"
+    },
+    {
+      "text": "+1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "contact@hyperautocare.com",
+      "href": "mailto:contact@hyperautocare.com"
+    },
+    {
+      "text": "RedSignal.Red",
+      "href": "https://redsignal.red"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "./privacy"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "./terms"
+    },
+    {
+      "text": "Get Template - Free",
+      "href": "https://framer.link/bqU9862"
+    },
+    {
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "href": "https://www.framer.com"
+    }
+  ],
+  "sections": [
+    {
+      "name": "Banner",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "60px"
+    },
+    {
+      "name": "Hero Image",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Hero Overlay",
+      "y": 76,
+      "height": 400,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Header",
+      "y": 212,
+      "height": 129,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px 32px",
+      "gap": "32px"
+    },
+    {
+      "name": "All Services",
+      "y": 476,
+      "height": 6360,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Services Content Grid",
+      "y": 476,
+      "height": 6360,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "80px 32px 120px",
+      "gap": "46px"
+    },
+    {
+      "name": "Variant 1",
+      "y": 579,
+      "height": 615,
+      "background": "rgb(244, 241, 234)",
+      "padding": "12px 18px 12px 12px",
+      "gap": "4px"
+    },
+    {
+      "name": "Image Container",
+      "y": 585,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    },
+    {
+      "name": "Service Image",
+      "y": 585,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Variant 1",
+      "y": 1199,
+      "height": 615,
+      "background": "rgb(244, 241, 234)",
+      "padding": "12px 18px 12px 12px",
+      "gap": "4px"
+    },
+    {
+      "name": "Image Container",
+      "y": 1205,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    },
+    {
+      "name": "Service Image",
+      "y": 1205,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Variant 1",
+      "y": 1819,
+      "height": 615,
+      "background": "rgb(244, 241, 234)",
+      "padding": "12px 18px 12px 12px",
+      "gap": "4px"
+    },
+    {
+      "name": "Image Container",
+      "y": 1825,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    },
+    {
+      "name": "Service Image",
+      "y": 1825,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Variant 1",
+      "y": 2439,
+      "height": 615,
+      "background": "rgb(244, 241, 234)",
+      "padding": "12px 18px 12px 12px",
+      "gap": "4px"
+    },
+    {
+      "name": "Image Container",
+      "y": 2445,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    },
+    {
+      "name": "Service Image",
+      "y": 2445,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Variant 1",
+      "y": 3059,
+      "height": 615,
+      "background": "rgb(244, 241, 234)",
+      "padding": "12px 18px 12px 12px",
+      "gap": "4px"
+    },
+    {
+      "name": "Image Container",
+      "y": 3065,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    },
+    {
+      "name": "Service Image",
+      "y": 3065,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Variant 1",
+      "y": 3679,
+      "height": 615,
+      "background": "rgb(244, 241, 234)",
+      "padding": "12px 18px 12px 12px",
+      "gap": "4px"
+    },
+    {
+      "name": "Image Container",
+      "y": 3685,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    },
+    {
+      "name": "Service Image",
+      "y": 3685,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Variant 1",
+      "y": 4299,
+      "height": 615,
+      "background": "rgb(244, 241, 234)",
+      "padding": "12px 18px 12px 12px",
+      "gap": "4px"
+    },
+    {
+      "name": "Image Container",
+      "y": 4305,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    },
+    {
+      "name": "Service Image",
+      "y": 4305,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Variant 1",
+      "y": 4919,
+      "height": 615,
+      "background": "rgb(244, 241, 234)",
+      "padding": "12px 18px 12px 12px",
+      "gap": "4px"
+    },
+    {
+      "name": "Image Container",
+      "y": 4925,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    },
+    {
+      "name": "Service Image",
+      "y": 4925,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Variant 1",
+      "y": 5539,
+      "height": 615,
+      "background": "rgb(244, 241, 234)",
+      "padding": "12px 18px 12px 12px",
+      "gap": "4px"
+    },
+    {
+      "name": "Image Container",
+      "y": 5545,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    },
+    {
+      "name": "Service Image",
+      "y": 5545,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Variant 1",
+      "y": 6159,
+      "height": 615,
+      "background": "rgb(244, 241, 234)",
+      "padding": "12px 18px 12px 12px",
+      "gap": "4px"
+    },
+    {
+      "name": "Image Container",
+      "y": 6165,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    },
+    {
+      "name": "Service Image",
+      "y": 6165,
+      "height": 575,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Desktop",
+      "y": 6836,
+      "height": 864,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Background",
+      "y": 6750,
+      "height": 916,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Final CTA Content",
+      "y": 7065,
+      "height": 407,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px 32px",
+      "gap": "24px"
+    },
+    {
+      "name": "Desktop",
+      "y": 7700,
+      "height": 962,
+      "background": "rgb(11, 13, 15)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Footer Content",
+      "y": 7700,
+      "height": 962,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "80px 32px 28px",
+      "gap": "72px"
+    },
+    {
+      "name": "Footer Information",
+      "y": 7780,
+      "height": 362,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "44px"
+    },
+    {
+      "name": "Logo",
+      "y": 8214,
+      "height": 300,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    }
+  ]
+}

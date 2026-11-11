@@ -1,0 +1,435 @@
+{
+  "source": "https://hyperautocare.framer.website/",
+  "inspectedOn": "2026-10-30",
+  "method": "Chrome DevTools Protocol: CSS stylesheets, matched rules, platform fonts, JavaScript sources and public source maps",
+  "stack": {
+    "rendering": "Framer-generated React",
+    "animation": "framer-motion",
+    "customComponents": [
+      "AnthLayerSmoothScroll",
+      "BeforeAfter",
+      "AnthLayerVideoPlayer"
+    ]
+  },
+  "colors": {
+    "background": "#0B0D0F",
+    "surface": "#15181B",
+    "surfaceRaised": "#202428",
+    "surfaceHover": "#24282C",
+    "lightBackground": "#F4F1EA",
+    "white": "#FFFFFF",
+    "accent": "#FF5A1F",
+    "accentSecondary": "#FF7B4A",
+    "mutedOnDark": "#979DA3",
+    "mutedOnLight": "#5F666D",
+    "darkBorder": "#2D3237",
+    "lightBorder": "#E4E9EB",
+    "secondaryOnDark": "rgba(255,255,255,0.7)",
+    "heroBody": "rgba(255,255,255,0.8)"
+  },
+  "typography": {
+    "heading": {
+      "family": "Barlow Condensed",
+      "weight": 700
+    },
+    "body": {
+      "family": "Inter",
+      "weights": [
+        400,
+        500,
+        600,
+        700
+      ],
+      "size": 16,
+      "lineHeight": 1.55,
+      "letterSpacing": "-0.01em"
+    },
+    "heroBody": {
+      "size": 18,
+      "lineHeight": 1.6,
+      "weight": 400,
+      "letterSpacing": "-0.02em"
+    },
+    "h1": {
+      "letterSpacing": "-1.4px",
+      "rules": [
+        {
+          "min": 1610,
+          "size": 90,
+          "lineHeight": 0.96
+        },
+        {
+          "min": 1140,
+          "max": 1609,
+          "size": 76,
+          "lineHeight": 1.06
+        },
+        {
+          "min": 768,
+          "max": 1139,
+          "size": 60,
+          "lineHeight": 1.06
+        },
+        {
+          "max": 767,
+          "size": 44,
+          "lineHeight": 1.1
+        }
+      ],
+      "evidence": "sources/13-3-iDidfo7HM.js"
+    },
+    "h2": {
+      "letterSpacing": "-0.7px",
+      "lineHeight": 1.05,
+      "rules": [
+        {
+          "min": 1200,
+          "size": 54
+        },
+        {
+          "min": 810,
+          "max": 1199,
+          "size": 44
+        },
+        {
+          "max": 809,
+          "size": 36
+        }
+      ],
+      "evidence": "sources/14-0-MKNjtCsje.js"
+    },
+    "h3ServiceCard": {
+      "lineHeight": 1.2,
+      "rules": [
+        {
+          "min": 1200,
+          "size": 24
+        },
+        {
+          "min": 810,
+          "max": 1199,
+          "size": 22
+        },
+        {
+          "max": 809,
+          "size": 21
+        }
+      ],
+      "evidence": "sources/25-0-q4g10rEtI.js"
+    },
+    "button": {
+      "family": "Inter",
+      "size": 14,
+      "weight": 700,
+      "lineHeight": "14px",
+      "letterSpacing": "0.2px"
+    },
+    "navigation": {
+      "family": "Inter",
+      "size": 14,
+      "weight": 600,
+      "lineHeight": "14px",
+      "letterSpacing": "-0.28px"
+    },
+    "faqQuestion": {
+      "family": "Inter",
+      "size": 18,
+      "weight": 700,
+      "lineHeight": 1.55
+    }
+  },
+  "layout": {
+    "pageBreakpoints": {
+      "phone": "max-width:809.98px",
+      "tablet": "810px–1199.98px",
+      "desktop": "min-width:1200px"
+    },
+    "contentMaxWidth": 1280,
+    "contentWidthIncludesPadding": true,
+    "servicesSection": {
+      "desktop": {
+        "padding": "120px 32px",
+        "gap": 54
+      },
+      "tablet": {
+        "padding": "100px 32px",
+        "gap": 40
+      },
+      "phone": {
+        "padding": "80px 20px",
+        "gap": 32
+      }
+    },
+    "serviceGrid": {
+      "desktop": 4,
+      "tablet": 2,
+      "phone": 1
+    },
+    "header": {
+      "position": "sticky",
+      "top": 0,
+      "desktopHeight": 76,
+      "tabletHeight": 72,
+      "phoneHeight": 68
+    },
+    "serviceCard": {
+      "height": 500,
+      "minHeight": 300,
+      "padding": 5,
+      "gap": 4,
+      "radius": 16,
+      "cornerShape": "superellipse(2)"
+    },
+    "primaryButton": {
+      "padding": "14px 18px",
+      "height": 52,
+      "radius": 12,
+      "cornerShape": "superellipse(2)",
+      "shadow": "none"
+    },
+    "cornerFallbackFactor": 0.566
+  },
+  "motion": {
+    "sharedScrollSpring": {
+      "type": "spring",
+      "stiffness": 500,
+      "damping": 60,
+      "mass": 1
+    },
+    "serviceCardHover": {
+      "type": "spring",
+      "stiffness": 254,
+      "damping": 24,
+      "mass": 1,
+      "effects": [
+        "outer frame and lower surface change color",
+        "arrow-only CTA expands to show View Service"
+      ],
+      "evidence": "sources/22-24-nU2snJNAe.js"
+    },
+    "button": {
+      "type": "spring",
+      "duration": 0.4,
+      "bounce": 0.1,
+      "evidence": "sources/18-1-fqglNq0zY.js",
+      "note": "Primary Explore Our Services retained its orange background in the tested hover; icon variants have separate transforms."
+    },
+    "faq": {
+      "type": "spring",
+      "duration": 0.3,
+      "bounce": 0.2,
+      "multipleOpen": true,
+      "indicatorRotation": {
+        "closed": 90,
+        "open": 180
+      },
+      "evidence": "sources/29-2-vNEOT6JA7.js"
+    },
+    "navigation": {
+      "type": "spring",
+      "duration": 0.3,
+      "bounce": 0.2,
+      "evidence": "sources/36-6-cRethwbU5.js"
+    },
+    "mobileMenu": {
+      "type": "spring",
+      "duration": 0.4,
+      "bounce": 0.2,
+      "evidence": "sources/36-7-UL7k4hzeD.js"
+    },
+    "entryText": {
+      "type": "tween",
+      "duration": 0.65,
+      "ease": [
+        0.44,
+        0,
+        0.56,
+        1
+      ],
+      "delays": [
+        0,
+        0.2,
+        0.4,
+        0.6
+      ],
+      "offsetsY": [
+        20,
+        40,
+        60
+      ],
+      "note": "Presets applied to selected blocks; not a universal animation on every element."
+    },
+    "springEntryText": {
+      "type": "spring",
+      "bounce": 0.2,
+      "duration": [
+        0.75,
+        0.85
+      ],
+      "offsetX": 40
+    },
+    "heroBackground": {
+      "trigger": "onScroll",
+      "parallaxSpeedParameter": 30,
+      "scale": [
+        1,
+        1.4
+      ]
+    },
+    "heroCopy": {
+      "trigger": "onScrollTarget",
+      "targetScale": 1.4,
+      "targetRotateY": 50
+    },
+    "serviceCardEntry": {
+      "trigger": "onInView",
+      "from": {
+        "rotateX": 6,
+        "rotateY": 20,
+        "x": 24,
+        "y": 48
+      },
+      "to": {
+        "rotateX": 0,
+        "rotateY": 0,
+        "x": 0,
+        "y": 0
+      },
+      "spring": {
+        "stiffness": 500,
+        "damping": 60,
+        "mass": 1
+      }
+    },
+    "processImage": {
+      "trigger": "onScroll",
+      "scale": [
+        1.15,
+        1
+      ],
+      "y": [
+        -40,
+        160
+      ]
+    },
+    "beforeAfter": {
+      "implementation": "clip-path: inset(0 <100-position>% 0 0)",
+      "initialPosition": 50,
+      "desktopBreakpoint": 1024,
+      "dividerWidth": 2,
+      "handleSize": 44,
+      "autoReveal": {
+        "enabledOnHome": true,
+        "desktopOnly": true,
+        "intersectionThreshold": 0.35,
+        "durationMs": 1500,
+        "from": 100,
+        "to": 10,
+        "easing": "easeInOutCubic",
+        "reducedMotion": "jump to 10%"
+      },
+      "hoverFollow": {
+        "supported": true,
+        "enabledOnHome": false
+      },
+      "touchAction": "pan-y",
+      "keyboard": {
+        "step": 2,
+        "shiftStep": 10,
+        "home": 0,
+        "end": 100
+      },
+      "evidence": [
+        "sources/39-0-AnthLayer_BeforeAfter.js",
+        "sources/22-27-mM6_xq7bP.js",
+        "sources/22-28-X_VNUYFgT.js",
+        "sources/22-33-augiA20Il.js"
+      ]
+    },
+    "slideshow": {
+      "autoPlay": true,
+      "intervalSeconds": 5.5,
+      "drag": false,
+      "gap": 40,
+      "centered": true,
+      "spring": {
+        "stiffness": 200,
+        "damping": 40,
+        "mass": 1
+      },
+      "inactiveScale": 0.95,
+      "inactiveOpacity": 0.1,
+      "perspective": 1200,
+      "playOffscreen": false,
+      "arrowSize": 48,
+      "dotSize": 8,
+      "dotGap": 10,
+      "evidence": [
+        "sources/22-20-SlideShow.js",
+        "sources/22-33-augiA20Il.js"
+      ]
+    },
+    "reviews": {
+      "velocity": 40,
+      "gap": 12,
+      "draggable": true,
+      "topDirection": "reverse",
+      "bottomDirection": "default",
+      "hoverModifier": 100,
+      "evidence": "sources/22-33-augiA20Il.js"
+    },
+    "smoothScroll": {
+      "custom": true,
+      "intensity": 11,
+      "interpolationFactor": 0.154,
+      "stopDistancePx": 0.4,
+      "disableOnSafari": true,
+      "disableOniOS": true,
+      "disableOnMobile": true,
+      "mobileMaxWidth": 767,
+      "evidence": [
+        "sources/13-2-AnthLayer_Smooth_Scroll.js",
+        "sources/22-33-augiA20Il.js"
+      ]
+    },
+    "galleryLightbox": {
+      "background": "rgba(0,0,0,0.88)",
+      "maxWidth": 1600,
+      "padding": 20,
+      "duration": 0.35,
+      "ease": [
+        0.44,
+        0,
+        0.56,
+        1
+      ],
+      "evidence": "sources/27-2-gdioL0ind.js"
+    },
+    "video": {
+      "inline": true,
+      "customControls": [
+        "play/pause",
+        "seek",
+        "mute",
+        "fullscreen"
+      ],
+      "evidence": "sources/26-0-AnthLayer_VideoPlayer.js"
+    }
+  },
+  "evidence": {
+    "sourceIndex": "source-index.json",
+    "sourceMaps": "map-index.json",
+    "matchedRules": "matched-rules.json",
+    "fontFaces": "font-face-rules.json",
+    "fontFiles": "font-manifest.json",
+    "computedStyles": "responsive-styles-verified.json",
+    "buttonHover": "button-hover-verified.json"
+  },
+  "caveats": [
+    "Page layout breakpoints differ from H1 typography breakpoints.",
+    "Framer includes hidden responsive variants; computed values must come from the visible variant.",
+    "Bounding rectangles can be affected by active scroll transforms; use layout CSS for base dimensions.",
+    "Downloaded library code and editor/badge styles are not proof that every bundled effect is used by this website.",
+    "Physical spring parameters should be preserved rather than treated as fixed CSS transition durations."
+  ]
+}

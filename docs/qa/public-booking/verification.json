@@ -1,0 +1,212 @@
+{
+  "origin": "http://localhost:4001",
+  "checks": [
+    "chrome-390: validation, navigation, availability states/retry, disabled slots, summary/success, focus trap/restore, Escape, draft/reset, no writes",
+    "chrome-768: validation, navigation, availability states/retry, disabled slots, summary/success, focus trap/restore, Escape, draft/reset, no writes",
+    "chrome-1440: validation, navigation, availability states/retry, disabled slots, summary/success, focus trap/restore, Escape, draft/reset, no writes",
+    "webkit-390: validation, navigation, availability states/retry, disabled slots, summary/success, focus trap/restore, Escape, draft/reset, no writes"
+  ],
+  "errors": [],
+  "layouts": [
+    {
+      "name": "chrome-390-step1",
+      "width": 390,
+      "height": 844,
+      "dialogWidth": 390,
+      "dialogHeight": 844,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-390-step2",
+      "width": 390,
+      "height": 844,
+      "dialogWidth": 390,
+      "dialogHeight": 844,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-390-step3",
+      "width": 390,
+      "height": 844,
+      "dialogWidth": 390,
+      "dialogHeight": 844,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-390-error",
+      "width": 390,
+      "height": 844,
+      "dialogWidth": 390,
+      "dialogHeight": 844,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-390-success",
+      "width": 390,
+      "height": 844,
+      "dialogWidth": 390,
+      "dialogHeight": 844,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-768-step1",
+      "width": 768,
+      "height": 1000,
+      "dialogWidth": 736,
+      "dialogHeight": 780,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-768-step2",
+      "width": 768,
+      "height": 1000,
+      "dialogWidth": 736,
+      "dialogHeight": 780,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-768-step3",
+      "width": 768,
+      "height": 1000,
+      "dialogWidth": 736,
+      "dialogHeight": 780,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-768-error",
+      "width": 768,
+      "height": 1000,
+      "dialogWidth": 736,
+      "dialogHeight": 780,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-768-success",
+      "width": 768,
+      "height": 1000,
+      "dialogWidth": 736,
+      "dialogHeight": 780,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-1440-step1",
+      "width": 1440,
+      "height": 1000,
+      "dialogWidth": 860,
+      "dialogHeight": 780,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-1440-step2",
+      "width": 1440,
+      "height": 1000,
+      "dialogWidth": 860,
+      "dialogHeight": 780,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-1440-step3",
+      "width": 1440,
+      "height": 1000,
+      "dialogWidth": 860,
+      "dialogHeight": 780,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-1440-error",
+      "width": 1440,
+      "height": 1000,
+      "dialogWidth": 860,
+      "dialogHeight": 780,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "chrome-1440-success",
+      "width": 1440,
+      "height": 1000,
+      "dialogWidth": 860,
+      "dialogHeight": 780,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "webkit-390-step1",
+      "width": 390,
+      "height": 844,
+      "dialogWidth": 390,
+      "dialogHeight": 844,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "webkit-390-step2",
+      "width": 390,
+      "height": 844,
+      "dialogWidth": 390,
+      "dialogHeight": 844,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "webkit-390-step3",
+      "width": 390,
+      "height": 844,
+      "dialogWidth": 390,
+      "dialogHeight": 844,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "webkit-390-error",
+      "width": 390,
+      "height": 844,
+      "dialogWidth": 390,
+      "dialogHeight": 844,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    },
+    {
+      "name": "webkit-390-success",
+      "width": 390,
+      "height": 844,
+      "dialogWidth": 390,
+      "dialogHeight": 844,
+      "horizontalOverflow": false,
+      "contentOverflow": false,
+      "footerVisible": true
+    }
+  ]
+}

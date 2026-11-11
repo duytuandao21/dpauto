@@ -1,0 +1,1383 @@
+{
+  "url": "https://hyperautocare.framer.website/services/detail-wash",
+  "title": "Detail Wash | HyperAuto Care",
+  "text": "Services\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nCall Us: +1 206 555 0148\n\nContact Us\n\nSERVICE\n\nDetail Wash\n\nProfessional exterior wash and finishing for a cleaner, refreshed vehicle.\n\nOverview\n\nMore than a regular car wash — we carefully clean every exterior detail to help maintain your vehicle’s appearance.\n\nDetail Wash at HyperAuto Care is designed to remove everyday dirt, road grime, and surface buildup from your vehicle.\n\nOur team uses professional products and proper techniques to safely clean your paint, wheels, glass, and exterior surfaces while giving your car a cleaner finish.\n\nThis Service Is Ideal For:\n\nDaily vehicles needing regular maintenance\n\nVehicles exposed to dust, rain, and road conditions\n\nCars preparing for sale or inspection\n\nOwners who want professional exterior cleaning without advanced protection services\n\nService Process\n\nOur Detail Wash Process At HyperAuto Care.\n\nStep 01\nVehicle Inspection\n\nWe inspect your vehicle’s condition and identify areas requiring additional attention.\n\nStep 02\nExterior Cleaning\n\nThe vehicle is carefully washed using professional cleaning products and techniques.\n\nStep 03\nDetail Finishing\n\nWheels, glass, and exterior surfaces receive final cleaning and finishing touches.\n\nStep 04\nFinal Check\n\nWe review the completed work to ensure your vehicle leaves looking clean and refreshed.\n\nWhy Choose HyperAuto Care\n\nRegular professional care helps your vehicle stay cleaner, look better, and maintain its appearance for longer.\n\nProtect Your Vehicle Appearance\n\nRegular professional cleaning helps maintain the look and condition of your vehicle’s exterior.\n\nSafer Than Automatic Washes\n\nHand detailing techniques allow more attention to sensitive surfaces and vehicle finishes.\n\nMaintain Long-Term Value\n\nKeeping your vehicle clean and properly maintained helps preserve its appearance over time.\n\nRefresh Your Daily Drive\n\nA clean exterior makes your vehicle look better and provides a more enjoyable driving experience.\n\nFrequently Asked Questions\n\nHow long does a Detail Wash take?\n\nIs Detail Wash safe for my vehicle paint?\n\nHow often should I get a Detail Wash?\n\nCan I combine Detail Wash with other services?\n\nDetail Wash\nGallery\nReady To Refresh Your Vehicle?\n\nGive your car the professional care it deserves with HyperAuto Care.\n\nContact Us\n\nCall Us: +1 206 555 0148\n\nOther Services\n\nInterior Detailing\n\nPaint Correction\n\nCeramic Coating\n\nPaint Protection Film (PPF)\n\nWindow Tint\n\nEngine Bay Detailing\n\nHeadlight Restoration\n\nGlass & Water Spot Removal\n\nUnderbody Coating & Protection\n\nGive Your Vehicle the Care It Deserves\n\nFrom routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.\n\nContact Us\n\nCall Now\n\nProfessional car care, detailing, paint protection, and vehicle appearance services in Seattle.\n\nHyperAuto Care\n\nHyperAuto Care\n\nNavigation\n\nHome\n\nServices\n\nService Process\n\nPricing\n\nOur Work\n\nNews & Offers\n\nAbout\n\nTraining\n\nContact\n\nContact\n\n+1 206 555 0148\n\ncontact@hyperautocare.com\n\n000 Harbor Avenue SW, Suite 120\n\nSeattle, WA 98126\n\nUSA\n\nOpening Hours\n\nMonday - Friday\n\n8:00 AM - 6:00 PM\n\nSaturday\n\n8:00 AM - 12:00 PM\n\nSunday\n\nClosed\n\n© HyperAuto Care. All rights reserved.\n\nDesigned by RedSignal.Red\n\nPrivacy Policy\n\nTerms of Service\n\nGet Template - Free\n\nCreate a free website with Framer, the website builder loved by startups, designers and agencies.\n\n ",
+  "blocks": [
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 397,
+      "y": 31,
+      "width": 57
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 496,
+      "y": 31,
+      "width": 46
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 565,
+      "y": 31,
+      "width": 62
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 651,
+      "y": 31,
+      "width": 93
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 768,
+      "y": 31,
+      "width": 40
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 832,
+      "y": 31,
+      "width": 53
+    },
+    {
+      "tag": "P",
+      "text": "Call Us: +1 206 555 0148",
+      "html": "Call Us: +1 206 555 0148",
+      "name": "Label",
+      "x": 1006,
+      "y": 31,
+      "width": 174
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 1224,
+      "y": 31,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "SERVICE",
+      "html": "Service",
+      "name": "Short Description",
+      "x": 112,
+      "y": 677,
+      "width": 1200
+    },
+    {
+      "tag": "H1",
+      "text": "Detail Wash",
+      "html": "Detail Wash",
+      "name": "Service Name",
+      "x": 112,
+      "y": 707,
+      "width": 1200
+    },
+    {
+      "tag": "P",
+      "text": "Professional exterior wash and finishing for a cleaner, refreshed vehicle.",
+      "html": "Professional exterior wash and finishing for a cleaner, refreshed vehicle.",
+      "name": "Service Introduction",
+      "x": 112,
+      "y": 801,
+      "width": 1200
+    },
+    {
+      "tag": "H2",
+      "text": "Overview",
+      "html": "Overview",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 926,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "More than a regular car wash — we carefully clean every exterior detail to help maintain your vehicle’s appearance.",
+      "html": "<strong class=\"framer-text\">More than a regular car wash — we carefully clean every exterior detail to help maintain your vehicle’s appearance.</strong>",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1003,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Detail Wash at HyperAuto Care is designed to remove everyday dirt, road grime, and surface buildup from your vehicle.",
+      "html": "Detail Wash at HyperAuto Care is designed to remove everyday dirt, road grime, and surface buildup from your vehicle.",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1072,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Our team uses professional products and proper techniques to safely clean your paint, wheels, glass, and exterior surfaces while giving your car a cleaner finish.",
+      "html": "Our team uses professional products and proper techniques to safely clean your paint, wheels, glass, and exterior surfaces while giving your car a cleaner finish.",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1142,
+      "width": 780
+    },
+    {
+      "tag": "H3",
+      "text": "This Service Is Ideal For:",
+      "html": "This Service Is Ideal For:",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1644,
+      "width": 780
+    },
+    {
+      "tag": "LI",
+      "text": "Daily vehicles needing regular maintenance",
+      "html": "<p class=\"framer-text framer-styles-preset-trm574\">Daily vehicles needing regular maintenance</p>",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1704,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Daily vehicles needing regular maintenance",
+      "html": "Daily vehicles needing regular maintenance",
+      "name": "Service Overview",
+      "x": 133,
+      "y": 1704,
+      "width": 760
+    },
+    {
+      "tag": "LI",
+      "text": "Vehicles exposed to dust, rain, and road conditions",
+      "html": "<p class=\"framer-text framer-styles-preset-trm574\">Vehicles exposed to dust, rain, and road conditions</p>",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1729,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Vehicles exposed to dust, rain, and road conditions",
+      "html": "Vehicles exposed to dust, rain, and road conditions",
+      "name": "Service Overview",
+      "x": 133,
+      "y": 1729,
+      "width": 760
+    },
+    {
+      "tag": "LI",
+      "text": "Cars preparing for sale or inspection",
+      "html": "<p class=\"framer-text framer-styles-preset-trm574\">Cars preparing for sale or inspection</p>",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1754,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Cars preparing for sale or inspection",
+      "html": "Cars preparing for sale or inspection",
+      "name": "Service Overview",
+      "x": 133,
+      "y": 1754,
+      "width": 760
+    },
+    {
+      "tag": "LI",
+      "text": "Owners who want professional exterior cleaning without advanced protection services",
+      "html": "<p class=\"framer-text framer-styles-preset-trm574\">Owners who want professional exterior cleaning without advanced protection services</p><img alt=\"HyperAuto Care Detail Wash service process in a professional auto care workshop\" width=\"600\" height=\"400\" src=\"https://framerusercontent.com/images/goYpkWeKDzA4B82FnuXUu7k24k.webp\" srcset=\"https://framerusercontent.com/images/goYpkWeKDzA4B82FnuXUu7k24k.webp?scale-down-to=512&amp;width=1200&amp;height=800 512w,https://framerusercontent.com/images/goYpkWeKDzA4B82FnuXUu7k24k.webp?scale-down-to=1024&amp;width=1200&amp;height=800 1024w,https://framerusercontent.com/images/goYpkWeKDzA4B82FnuXUu7k24k.webp?width=1200&amp;height=800 1200w\" class=\"framer-text framer-image framer-styles-preset-186fwph\" style=\"aspect-ratio:1200 / 800\" sizes=\"(min-width: 1200px) 100vw, (min-width: 810px) and (max-width: 1199.98px) 100vw, (max-width: 809.98px) 100vw\">",
+      "name": "Service Overview",
+      "x": 112,
+      "y": 1779,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Owners who want professional exterior cleaning without advanced protection services",
+      "html": "Owners who want professional exterior cleaning without advanced protection services",
+      "name": "Service Overview",
+      "x": 133,
+      "y": 1779,
+      "width": 760
+    },
+    {
+      "tag": "H2",
+      "text": "Service Process",
+      "html": "Service Process",
+      "name": "Process",
+      "x": 112,
+      "y": 2284,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Our Detail Wash Process At HyperAuto Care.",
+      "html": "Our Detail Wash Process At HyperAuto Care.",
+      "name": "Process",
+      "x": 112,
+      "y": 2360,
+      "width": 780
+    },
+    {
+      "tag": "H3",
+      "text": "Step 01",
+      "html": "Step 01",
+      "name": "Number",
+      "x": 132,
+      "y": 2437,
+      "width": 61
+    },
+    {
+      "tag": "H3",
+      "text": "Vehicle Inspection",
+      "html": "Vehicle Inspection",
+      "name": "Process Name",
+      "x": 214,
+      "y": 2437,
+      "width": 659
+    },
+    {
+      "tag": "P",
+      "text": "We inspect your vehicle’s condition and identify areas requiring additional attention.",
+      "html": "We inspect your vehicle’s condition and identify areas requiring additional attention.",
+      "name": "Description",
+      "x": 214,
+      "y": 2475,
+      "width": 659
+    },
+    {
+      "tag": "H3",
+      "text": "Step 02",
+      "html": "Step 02",
+      "name": "Number",
+      "x": 132,
+      "y": 2812,
+      "width": 65
+    },
+    {
+      "tag": "H3",
+      "text": "Exterior Cleaning",
+      "html": "Exterior Cleaning",
+      "name": "Process Name",
+      "x": 217,
+      "y": 2812,
+      "width": 655
+    },
+    {
+      "tag": "P",
+      "text": "The vehicle is carefully washed using professional cleaning products and techniques.",
+      "html": "The vehicle is carefully washed using professional cleaning products and techniques.",
+      "name": "Description",
+      "x": 217,
+      "y": 2849,
+      "width": 655
+    },
+    {
+      "tag": "H3",
+      "text": "Step 03",
+      "html": "Step 03",
+      "name": "Number",
+      "x": 132,
+      "y": 3186,
+      "width": 65
+    },
+    {
+      "tag": "H3",
+      "text": "Detail Finishing",
+      "html": "Detail Finishing",
+      "name": "Process Name",
+      "x": 217,
+      "y": 3186,
+      "width": 655
+    },
+    {
+      "tag": "P",
+      "text": "Wheels, glass, and exterior surfaces receive final cleaning and finishing touches.",
+      "html": "Wheels, glass, and exterior surfaces receive final cleaning and finishing touches.",
+      "name": "Description",
+      "x": 217,
+      "y": 3224,
+      "width": 655
+    },
+    {
+      "tag": "H3",
+      "text": "Step 04",
+      "html": "Step 04",
+      "name": "Number",
+      "x": 132,
+      "y": 3321,
+      "width": 66
+    },
+    {
+      "tag": "H3",
+      "text": "Final Check",
+      "html": "Final Check",
+      "name": "Process Name",
+      "x": 219,
+      "y": 3321,
+      "width": 654
+    },
+    {
+      "tag": "P",
+      "text": "We review the completed work to ensure your vehicle leaves looking clean and refreshed.",
+      "html": "We review the completed work to ensure your vehicle leaves looking clean and refreshed.",
+      "name": "Description",
+      "x": 219,
+      "y": 3359,
+      "width": 654
+    },
+    {
+      "tag": "H2",
+      "text": "Why Choose HyperAuto Care",
+      "html": "Why Choose HyperAuto Care",
+      "name": "Why Choose Us",
+      "x": 112,
+      "y": 3488,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "Regular professional care helps your vehicle stay cleaner, look better, and maintain its appearance for longer.",
+      "html": "Regular professional care helps your vehicle stay cleaner, look better, and maintain its appearance for longer.",
+      "name": "Why Choose Us",
+      "x": 112,
+      "y": 3565,
+      "width": 780
+    },
+    {
+      "tag": "H3",
+      "text": "Protect Your Vehicle Appearance",
+      "html": "Protect Your Vehicle Appearance",
+      "name": "Title",
+      "x": 112,
+      "y": 3737,
+      "width": 378
+    },
+    {
+      "tag": "P",
+      "text": "Regular professional cleaning helps maintain the look and condition of your vehicle’s exterior.",
+      "html": "Regular professional cleaning helps maintain the look and condition of your vehicle’s exterior.",
+      "name": "Description",
+      "x": 112,
+      "y": 3777,
+      "width": 378
+    },
+    {
+      "tag": "H3",
+      "text": "Safer Than Automatic Washes",
+      "html": "Safer Than Automatic Washes",
+      "name": "Title",
+      "x": 514,
+      "y": 3737,
+      "width": 378
+    },
+    {
+      "tag": "P",
+      "text": "Hand detailing techniques allow more attention to sensitive surfaces and vehicle finishes.",
+      "html": "Hand detailing techniques allow more attention to sensitive surfaces and vehicle finishes.",
+      "name": "Description",
+      "x": 514,
+      "y": 3777,
+      "width": 378
+    },
+    {
+      "tag": "H3",
+      "text": "Maintain Long-Term Value",
+      "html": "Maintain Long-Term Value",
+      "name": "Title",
+      "x": 112,
+      "y": 3966,
+      "width": 378
+    },
+    {
+      "tag": "P",
+      "text": "Keeping your vehicle clean and properly maintained helps preserve its appearance over time.",
+      "html": "Keeping your vehicle clean and properly maintained helps preserve its appearance over time.",
+      "name": "Description",
+      "x": 112,
+      "y": 4007,
+      "width": 378
+    },
+    {
+      "tag": "H3",
+      "text": "Refresh Your Daily Drive",
+      "html": "Refresh Your Daily Drive",
+      "name": "Title",
+      "x": 514,
+      "y": 3966,
+      "width": 378
+    },
+    {
+      "tag": "P",
+      "text": "A clean exterior makes your vehicle look better and provides a more enjoyable driving experience.",
+      "html": "A clean exterior makes your vehicle look better and provides a more enjoyable driving experience.",
+      "name": "Description",
+      "x": 514,
+      "y": 4007,
+      "width": 378
+    },
+    {
+      "tag": "H2",
+      "text": "Frequently Asked Questions",
+      "html": "Frequently Asked Questions",
+      "name": "FAQ",
+      "x": 112,
+      "y": 4141,
+      "width": 780
+    },
+    {
+      "tag": "P",
+      "text": "How long does a Detail Wash take?",
+      "html": "How long does a Detail Wash take?",
+      "name": "Question",
+      "x": 136,
+      "y": 4256,
+      "width": 680
+    },
+    {
+      "tag": "P",
+      "text": "Is Detail Wash safe for my vehicle paint?",
+      "html": "Is Detail Wash safe for my vehicle paint?",
+      "name": "Question",
+      "x": 136,
+      "y": 4368,
+      "width": 680
+    },
+    {
+      "tag": "P",
+      "text": "How often should I get a Detail Wash?",
+      "html": "How often should I get a Detail Wash?",
+      "name": "Question",
+      "x": 136,
+      "y": 4480,
+      "width": 680
+    },
+    {
+      "tag": "P",
+      "text": "Can I combine Detail Wash with other services?",
+      "html": "Can I combine Detail Wash with other services?",
+      "name": "Question",
+      "x": 136,
+      "y": 4592,
+      "width": 680
+    },
+    {
+      "tag": "H2",
+      "text": "Detail Wash",
+      "html": "Detail Wash",
+      "name": "Service Name",
+      "x": 112,
+      "y": 4706,
+      "width": 221
+    },
+    {
+      "tag": "H2",
+      "text": "Gallery",
+      "html": "Gallery",
+      "name": "Desktop Gallery Title",
+      "x": 346,
+      "y": 4706,
+      "width": 547
+    },
+    {
+      "tag": "H3",
+      "text": "Ready To Refresh Your Vehicle?",
+      "html": "Ready To Refresh Your Vehicle?",
+      "name": "Text",
+      "x": 984,
+      "y": 958,
+      "width": 336
+    },
+    {
+      "tag": "P",
+      "text": "Give your car the professional care it deserves with HyperAuto Care.",
+      "html": "Give your car the professional care it deserves with HyperAuto Care.",
+      "name": "Text",
+      "x": 984,
+      "y": 1007,
+      "width": 336
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 1113,
+      "y": 1099,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "Call Us: +1 206 555 0148",
+      "html": "Call Us: +1 206 555 0148",
+      "name": "Label",
+      "x": 1079,
+      "y": 1163,
+      "width": 174
+    },
+    {
+      "tag": "H3",
+      "text": "Other Services",
+      "html": "Other Services",
+      "name": "Wrapper",
+      "x": 984,
+      "y": 1280,
+      "width": 336
+    },
+    {
+      "tag": "P",
+      "text": "Interior Detailing",
+      "html": "Interior Detailing",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1346,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Paint Correction",
+      "html": "Paint Correction",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1414,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Ceramic Coating",
+      "html": "Ceramic Coating",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1482,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Paint Protection Film (PPF)",
+      "html": "Paint Protection Film (PPF)",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1550,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Window Tint",
+      "html": "Window Tint",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1618,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Engine Bay Detailing",
+      "html": "Engine Bay Detailing",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1686,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Headlight Restoration",
+      "html": "Headlight Restoration",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1754,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Glass & Water Spot Removal",
+      "html": "Glass &amp; Water Spot Removal",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1822,
+      "width": 260
+    },
+    {
+      "tag": "P",
+      "text": "Underbody Coating & Protection",
+      "html": "Underbody Coating &amp; Protection",
+      "name": "Service Name",
+      "x": 1060,
+      "y": 1890,
+      "width": 260
+    },
+    {
+      "tag": "H2",
+      "text": "Give Your Vehicle the Care It Deserves",
+      "html": "Give Your Vehicle the Care It Deserves",
+      "name": "Final CTA Heading",
+      "x": 706,
+      "y": 6479,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "html": "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.",
+      "name": "Final CTA Description",
+      "x": 706,
+      "y": 6616,
+      "width": 578
+    },
+    {
+      "tag": "P",
+      "text": "Contact Us",
+      "html": "Contact Us",
+      "name": "Label",
+      "x": 724,
+      "y": 6709,
+      "width": 78
+    },
+    {
+      "tag": "P",
+      "text": "Call Now",
+      "html": "Call Now",
+      "name": "Label",
+      "x": 879,
+      "y": 6709,
+      "width": 63
+    },
+    {
+      "tag": "P",
+      "text": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "html": "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle.",
+      "name": "Brand Description",
+      "x": 104,
+      "y": 7122,
+      "width": 300
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Facebook",
+      "x": 136,
+      "y": 7220,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "HyperAuto Care",
+      "html": "HyperAuto Care",
+      "name": "Instagram",
+      "x": 136,
+      "y": 7258,
+      "width": 111
+    },
+    {
+      "tag": "P",
+      "text": "Navigation",
+      "html": "Navigation",
+      "name": "Navigation Heading",
+      "x": 513,
+      "y": 7122,
+      "width": 170
+    },
+    {
+      "tag": "P",
+      "text": "Home",
+      "html": "Home",
+      "name": "Services",
+      "x": 513,
+      "y": 7160,
+      "width": 41
+    },
+    {
+      "tag": "P",
+      "text": "Services",
+      "html": "Services",
+      "name": "Services",
+      "x": 513,
+      "y": 7198,
+      "width": 60
+    },
+    {
+      "tag": "P",
+      "text": "Service Process",
+      "html": "Service Process",
+      "name": "Services",
+      "x": 513,
+      "y": 7236,
+      "width": 112
+    },
+    {
+      "tag": "P",
+      "text": "Pricing",
+      "html": "Pricing",
+      "name": "Services",
+      "x": 513,
+      "y": 7274,
+      "width": 48
+    },
+    {
+      "tag": "P",
+      "text": "Our Work",
+      "html": "Our Work",
+      "name": "Services",
+      "x": 513,
+      "y": 7312,
+      "width": 66
+    },
+    {
+      "tag": "P",
+      "text": "News & Offers",
+      "html": "News &amp; Offers",
+      "name": "Services",
+      "x": 513,
+      "y": 7350,
+      "width": 99
+    },
+    {
+      "tag": "P",
+      "text": "About",
+      "html": "About",
+      "name": "Services",
+      "x": 513,
+      "y": 7388,
+      "width": 42
+    },
+    {
+      "tag": "P",
+      "text": "Training",
+      "html": "Training",
+      "name": "Services",
+      "x": 513,
+      "y": 7426,
+      "width": 56
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Services",
+      "x": 513,
+      "y": 7464,
+      "width": 55
+    },
+    {
+      "tag": "P",
+      "text": "Contact",
+      "html": "Contact",
+      "name": "Contact Heading",
+      "x": 727,
+      "y": 7122,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "+1 206 555 0148",
+      "html": "+1 206 555 0148",
+      "name": "Services",
+      "x": 753,
+      "y": 7160,
+      "width": 115
+    },
+    {
+      "tag": "P",
+      "text": "contact@hyperautocare.com",
+      "html": "contact@hyperautocare.com",
+      "name": "Services",
+      "x": 753,
+      "y": 7198,
+      "width": 203
+    },
+    {
+      "tag": "P",
+      "text": "000 Harbor Avenue SW, Suite 120",
+      "html": "000 Harbor Avenue SW, Suite 120",
+      "name": "Street",
+      "x": 753,
+      "y": 7233,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Seattle, WA 98126",
+      "html": "Seattle, WA 98126",
+      "name": "City",
+      "x": 753,
+      "y": 7255,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "USA",
+      "html": "USA",
+      "name": "Country",
+      "x": 753,
+      "y": 7277,
+      "width": 248
+    },
+    {
+      "tag": "P",
+      "text": "Opening Hours",
+      "html": "Opening Hours",
+      "name": "Opening Hours Heading",
+      "x": 1046,
+      "y": 7122,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Monday - Friday",
+      "html": "Monday - Friday",
+      "name": "Days",
+      "x": 1046,
+      "y": 7157,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 6:00 PM",
+      "html": "8:00 AM - 6:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 7181,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Saturday",
+      "html": "Saturday",
+      "name": "Days",
+      "x": 1046,
+      "y": 7213,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "8:00 AM - 12:00 PM",
+      "html": "8:00 AM - 12:00 PM",
+      "name": "Time",
+      "x": 1046,
+      "y": 7237,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Sunday",
+      "html": "Sunday",
+      "name": "Day",
+      "x": 1046,
+      "y": 7269,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "Closed",
+      "html": "Closed",
+      "name": "Status",
+      "x": 1046,
+      "y": 7293,
+      "width": 274
+    },
+    {
+      "tag": "P",
+      "text": "© HyperAuto Care. All rights reserved.",
+      "html": "© HyperAuto Care. All rights reserved.",
+      "name": "Copyright",
+      "x": 104,
+      "y": 7953,
+      "width": 250
+    },
+    {
+      "tag": "P",
+      "text": "Designed by RedSignal.Red",
+      "html": "Designed by <!--$--><a class=\"framer-text framer-styles-preset-ouqjvt\" data-styles-preset=\"lib2iNIG7\" href=\"https://redsignal.red\" target=\"_blank\" rel=\"\">RedSignal.Red</a><!--/$-->",
+      "name": "Footer Bottom Bar",
+      "x": 363,
+      "y": 7953,
+      "width": 179
+    },
+    {
+      "tag": "P",
+      "text": "Privacy Policy",
+      "html": "Privacy Policy",
+      "name": "Services",
+      "x": 1082,
+      "y": 7956,
+      "width": 97
+    },
+    {
+      "tag": "P",
+      "text": "Terms of Service",
+      "html": "Terms of Service",
+      "name": "Services",
+      "x": 1203,
+      "y": 7956,
+      "width": 117
+    },
+    {
+      "tag": "P",
+      "text": "Get Template - Free",
+      "html": "Get Template - Free",
+      "name": "Get Free Template Button",
+      "x": 1256,
+      "y": 810,
+      "width": 138
+    },
+    {
+      "tag": "P",
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "html": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "name": "Content",
+      "x": 1335,
+      "y": 871,
+      "width": 0
+    }
+  ],
+  "images": [
+    {
+      "src": "https://framerusercontent.com/images/Aoa83BW1jq5HjPbFpH0LRrs0vA.svg?width=315&height=108",
+      "alt": "HyperAuto Care Logo",
+      "name": "Image Logo",
+      "y": 13,
+      "width": 146,
+      "height": 50
+    },
+    {
+      "src": "https://framerusercontent.com/images/ReWvywVVtMzDGckPKyjUBJBfsM.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Detail Wash service in a professional auto care workshop",
+      "name": "Main Image",
+      "y": 76,
+      "width": 1425,
+      "height": 750
+    },
+    {
+      "src": "https://framerusercontent.com/images/o2dUjNf8zaSm1OA9O9k0HFYVSIU.webp",
+      "alt": "HyperAuto Care Detail Wash service process in a professional auto care workshop",
+      "name": "Service Overview",
+      "y": 1224,
+      "width": 600,
+      "height": 400
+    },
+    {
+      "src": "https://framerusercontent.com/images/goYpkWeKDzA4B82FnuXUu7k24k.webp",
+      "alt": "HyperAuto Care Detail Wash service process in a professional auto care workshop",
+      "name": "Service Overview",
+      "y": 1824,
+      "width": 600,
+      "height": 400
+    },
+    {
+      "src": "https://framerusercontent.com/images/9mp3sQGwmY4hKIsOqhXysjuf8.webp?width=801&height=1200",
+      "alt": "employee is washing in front of the car",
+      "name": "Image",
+      "y": 2505,
+      "width": 784,
+      "height": 233
+    },
+    {
+      "src": "https://framerusercontent.com/images/YjyU4xe5fHksonoIfOWoSaXSbAg.webp?width=1200&height=800",
+      "alt": "employee is washing the car door",
+      "name": "Image",
+      "y": 2880,
+      "width": 784,
+      "height": 233
+    },
+    {
+      "src": "https://framerusercontent.com/images/bSnnYnnPmHhwteQ5l4cO6zJ3MxQ.webp?width=801&height=1200",
+      "alt": "HyperAuto Care Interior Detailing service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1329,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/A0eIfnJJact7BFnfF8ISi8oJlFU.webp?width=1200&height=675",
+      "alt": "HyperAuto Care Paint Correction service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1397,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/FFTbHPn3Ccy8w34sO8LYDSSoLc.webp?width=800&height=1200",
+      "alt": "HyperAuto Care Ceramic Coating service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1465,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/XpVSXsw80SzoJyEATBZvQev7g.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Paint Protection Film (PPF) service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1533,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/mdsSIWbz1Nc7DAj5RZbUpjNViM.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Window Tint service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1601,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/7GwzTnH1TT6KG9sET4USk0IMV0.webp?width=1200&height=800",
+      "alt": "HyperAuto Care Engine Bay Detailing service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1669,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/90S4sYWb5sxb3TKFKfQB1Jh1vc.webp?width=1200&height=900",
+      "alt": "HyperAuto Care Headlight Restoration service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1737,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/lg4rvJJFKsdIWBAOpGpBIOVKNI.webp?width=900&height=1200",
+      "alt": "HyperAuto Care Glass & Water Spot Removal service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1805,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/joYvkkUBNthntLen21vG2zuMWro.webp?width=1200&height=674",
+      "alt": "HyperAuto Care Underbody Coating & Protection service in a professional auto care workshop",
+      "name": "Default",
+      "y": 1873,
+      "width": 60,
+      "height": 54
+    },
+    {
+      "src": "https://framerusercontent.com/images/IPz1ZOzMs2KRfySU3adLI7XJnvE.webp?width=1200&height=799",
+      "alt": "Professional car wash service with technician cleaning a luxury vehicle exterior using water and foam.",
+      "name": "Image",
+      "y": 4818,
+      "width": 662,
+      "height": 650
+    },
+    {
+      "src": "https://framerusercontent.com/images/kTckAZt9vVBxcu58WMY1e0SD6Q.webp?width=1200&height=799",
+      "alt": "Luxury car undergoing professional detailing wash with foam cleaning at an auto care facility.",
+      "name": "Image",
+      "y": 4818,
+      "width": 662,
+      "height": 650
+    },
+    {
+      "src": "https://framerusercontent.com/images/YjyU4xe5fHksonoIfOWoSaXSbAg.webp?width=1200&height=800",
+      "alt": "Detailing technician hand washing a vehicle surface with soap foam during exterior car cleaning.",
+      "name": "Image",
+      "y": 5488,
+      "width": 662,
+      "height": 650
+    },
+    {
+      "src": "https://framerusercontent.com/images/9mp3sQGwmY4hKIsOqhXysjuf8.webp?width=801&height=1200",
+      "alt": "Car detailing professional cleaning and polishing a vehicle front surface inside a workshop.",
+      "name": "Image",
+      "y": 5488,
+      "width": 662,
+      "height": 650
+    },
+    {
+      "src": "https://framerusercontent.com/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg?width=2400&height=1600",
+      "alt": "Silver Mercedes sedan displayed inside a clean professional automotive workshop",
+      "name": "Background",
+      "y": 6092,
+      "width": 1510,
+      "height": 916
+    }
+  ],
+  "videos": [],
+  "links": [
+    {
+      "text": "",
+      "href": "../"
+    },
+    {
+      "text": "Services",
+      "href": "../services"
+    },
+    {
+      "text": "Pricing",
+      "href": "../#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "../our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "../news"
+    },
+    {
+      "text": "About",
+      "href": "../about"
+    },
+    {
+      "text": "Training",
+      "href": "../#training"
+    },
+    {
+      "text": "Call Us: +1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "Contact Us",
+      "href": "../contact"
+    },
+    {
+      "text": "Contact Us",
+      "href": "../contact"
+    },
+    {
+      "text": "Call Us: +1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "Interior Detailing",
+      "href": "./interior-detailing"
+    },
+    {
+      "text": "Paint Correction",
+      "href": "./paint-correction"
+    },
+    {
+      "text": "Ceramic Coating",
+      "href": "./ceramic-coating"
+    },
+    {
+      "text": "Paint Protection Film (PPF)",
+      "href": "./paint-protection-film-(ppf)"
+    },
+    {
+      "text": "Window Tint",
+      "href": "./window-tint"
+    },
+    {
+      "text": "Engine Bay Detailing",
+      "href": "./engine-bay-detailing"
+    },
+    {
+      "text": "Headlight Restoration",
+      "href": "./headlight-restoration"
+    },
+    {
+      "text": "Glass & Water Spot Removal",
+      "href": "./glass-water-spot-removal"
+    },
+    {
+      "text": "Underbody Coating & Protection",
+      "href": "./underbody-coating-protection"
+    },
+    {
+      "text": "Contact Us",
+      "href": "../contact"
+    },
+    {
+      "text": "Call Now",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.facebook.com"
+    },
+    {
+      "text": "HyperAuto Care",
+      "href": "https://www.instagram.com"
+    },
+    {
+      "text": "Home",
+      "href": "../"
+    },
+    {
+      "text": "Services",
+      "href": "../services"
+    },
+    {
+      "text": "Service Process",
+      "href": "../#Our Service Process"
+    },
+    {
+      "text": "Pricing",
+      "href": "../#pricing"
+    },
+    {
+      "text": "Our Work",
+      "href": "../our-work"
+    },
+    {
+      "text": "News & Offers",
+      "href": "../news"
+    },
+    {
+      "text": "About",
+      "href": "../about"
+    },
+    {
+      "text": "Training",
+      "href": "../#training"
+    },
+    {
+      "text": "Contact",
+      "href": "../contact"
+    },
+    {
+      "text": "+1 206 555 0148",
+      "href": "tel:+12065550148"
+    },
+    {
+      "text": "contact@hyperautocare.com",
+      "href": "mailto:contact@hyperautocare.com"
+    },
+    {
+      "text": "RedSignal.Red",
+      "href": "https://redsignal.red"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "../privacy"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "../terms"
+    },
+    {
+      "text": "Get Template - Free",
+      "href": "https://framer.link/bqU9862"
+    },
+    {
+      "text": "Create a free website with Framer, the website builder loved by startups, designers and agencies.",
+      "href": "https://www.framer.com"
+    }
+  ],
+  "sections": [
+    {
+      "name": "Image Container",
+      "y": 76,
+      "height": 750,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "60px"
+    },
+    {
+      "name": "Main Image",
+      "y": 76,
+      "height": 750,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Overlay",
+      "y": 76,
+      "height": 750,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Heading",
+      "y": 677,
+      "height": 149,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px 40px",
+      "gap": "14px"
+    },
+    {
+      "name": "Body",
+      "y": 826,
+      "height": 3976,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "100px 0px 40px",
+      "gap": "20px"
+    },
+    {
+      "name": "Desktop Gallery",
+      "y": 4802,
+      "height": 1376,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "16px 40px 40px",
+      "gap": "48px"
+    },
+    {
+      "name": "Desktop",
+      "y": 6178,
+      "height": 864,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Background",
+      "y": 6092,
+      "height": 916,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "normal"
+    },
+    {
+      "name": "Final CTA Content",
+      "y": 6407,
+      "height": 407,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "24px 32px",
+      "gap": "24px"
+    },
+    {
+      "name": "Desktop",
+      "y": 7042,
+      "height": 962,
+      "background": "rgb(11, 13, 15)",
+      "padding": "0px",
+      "gap": "0px"
+    },
+    {
+      "name": "Footer Content",
+      "y": 7042,
+      "height": 962,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "80px 32px 28px",
+      "gap": "72px"
+    },
+    {
+      "name": "Footer Information",
+      "y": 7122,
+      "height": 362,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "44px"
+    },
+    {
+      "name": "Logo",
+      "y": 7557,
+      "height": 300,
+      "background": "rgba(0, 0, 0, 0)",
+      "padding": "0px",
+      "gap": "10px"
+    }
+  ]
+}
