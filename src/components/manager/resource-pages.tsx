@@ -11,8 +11,14 @@ import {
   ManagerSearch,
 } from "./manager-ui";
 import { ManagerOrderDrawer, OperationTime } from "./order-drawer";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveInventory } from "./live-stock";
+import { LiveFinance } from "./live-finance";
 
 export function ManagerFinancePage() {
+  return apiEnabled ? <LiveFinance /> : <LocalFinancePage />;
+}
+function LocalFinancePage() {
   const { data } = useManager();
   const [query, setQuery] = useState("");
   const [advisor, setAdvisor] = useState("");
@@ -206,6 +212,9 @@ export function ManagerFinancePage() {
 }
 
 export function ManagerInventoryPage() {
+  return apiEnabled ? <LiveInventory /> : <LocalInventoryPage />;
+}
+function LocalInventoryPage() {
   const { data } = useManager();
   const [query, setQuery] = useState("");
   const [tab, setTab] = useState("parts");

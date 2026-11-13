@@ -7,6 +7,7 @@ import { useBookings } from "@/components/admin/booking-provider";
 import { formatDate, timeLabel } from "@/lib/booking/logic";
 import { formatMoney, quoteTotals } from "@/lib/advisor/seed";
 import type { ServiceOrder, ServiceStage } from "@/lib/advisor/types";
+import { visitStages, visitStageTone, type VisitStage } from "@/lib/api/visits";
 
 export const stageLabels: Record<ServiceStage, string> = {
   quote: "Chờ báo giá",
@@ -42,11 +43,30 @@ export function StageBadge({ stage }: { stage: ServiceStage }) {
   );
 }
 
-export function OrderPerson({ order }: { order: ServiceOrder }) {
+export function VisitStageBadge({ stage }: { stage: VisitStage }) {
+  return (
+    <span className={`adm-badge adv-stage adm-status-${visitStageTone[stage]}`}>
+      {visitStages[stage]}
+    </span>
+  );
+}
+
+export function OrderPerson({
+  order,
+  customer: profile,
+  vehicle: car,
+}: {
+  order?: ServiceOrder;
+  customer?: { id: string; name: string; phone: string };
+  vehicle?: { id: string; model: string | null; plate: string | null };
+}) {
   const { data, notify } = useBookings();
-  const customer = data.customers.find((item) => item.id === order.customerId);
-  const vehicle = data.vehicles.find((item) => item.id === order.vehicleId);
+  const customer =
+    profile || data.customers.find((item) => item.id === order?.customerId);
+  const vehicle =
+    car || data.vehicles.find((item) => item.id === order?.vehicleId);
   const [contact, setContact] = useState(false);
+  const vehicleLabel = vehicle?.plate || vehicle?.model || "của bạn";
   if (!customer || !vehicle)
     return <p className="adm-muted">Không tìm thấy thông tin khách hoặc xe.</p>;
   return (
@@ -62,9 +82,9 @@ export function OrderPerson({ order }: { order: ServiceOrder }) {
           >
             {customer.name}
           </Link>
-          <span className="adm-muted">
+          <Link className="adm-muted" href={`/co-van/xe/${vehicle.id}`}>
             {vehicle.model} · {vehicle.plate}
-          </span>
+          </Link>
         </div>
       </div>
       <div className="adv-actions">
@@ -108,7 +128,7 @@ export function OrderPerson({ order }: { order: ServiceOrder }) {
           <span>Nội dung liên hệ</span>
           <p>
             Xin chào {customer.name}, Trạm dịch vụ Toàn Trung đang xử lý xe{" "}
-            {vehicle.plate}. Chúng tôi sẽ liên hệ khi có thông tin mới về dịch
+            {vehicleLabel}. Chúng tôi sẽ liên hệ khi có thông tin mới về dịch
             vụ.
           </p>
           <button
@@ -117,7 +137,7 @@ export function OrderPerson({ order }: { order: ServiceOrder }) {
             onClick={async () => {
               try {
                 await copyText(
-                  `Xin chào ${customer.name}, Trạm dịch vụ Toàn Trung đang xử lý xe ${vehicle.plate}. Chúng tôi sẽ liên hệ khi có thông tin mới về dịch vụ.`,
+                  `Xin chào ${customer.name}, Trạm dịch vụ Toàn Trung đang xử lý xe ${vehicleLabel}. Chúng tôi sẽ liên hệ khi có thông tin mới về dịch vụ.`,
                 );
                 notify("Đã sao chép nội dung.");
               } catch {

@@ -1,11 +1,12 @@
 "use client";
 
 import { bookingTime, formatDate } from "@/lib/booking/logic";
-import { bookingServices } from "@/lib/booking/seed";
+import { bookingServices as seedServices } from "@/lib/booking/seed";
 import { useBookings } from "./booking-provider";
 
 export function OverviewInsights({ date }: { date: string }) {
   const { data } = useBookings();
+  const bookingServices = data.services ?? seedServices;
   const dayBookings = data.bookings.filter(
     (b) => bookingTime(b).slice(0, 10) === date,
   );

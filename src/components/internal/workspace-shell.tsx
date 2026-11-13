@@ -6,9 +6,14 @@ import { useEffect, useState, type ReactNode } from "react";
 import { AdminIcon } from "@/components/admin/admin-icon";
 import styles from "./workspace-shell.module.css";
 
-// A shell for future workspaces, independent of the advisor's mock booking data.
 // Workspace URLs are not authentication or authorization boundaries.
-export function WorkspaceShell({ children }: { children: ReactNode }) {
+export function WorkspaceShell({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   useEffect(() => {
     document.documentElement.lang = "vi";
@@ -27,7 +32,11 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className={`adm-app ${styles.shell}`} data-theme={theme} lang="vi">
+    <div
+      className={`adm-app ${className} ${styles.shell}`}
+      data-theme={theme}
+      lang="vi"
+    >
       <a href="#workspace-main" className="adm-skip">
         Chuyển đến nội dung
       </a>

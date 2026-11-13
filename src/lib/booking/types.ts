@@ -6,10 +6,13 @@ export interface Customer {
   id: string;
   name: string;
   phone: string;
+  bookingCount?: number;
+  vehicleCount?: number;
 }
 export interface Vehicle {
   id: string;
   customerId: string;
+  customerIds?: string[];
   model: string;
   plate: string;
   year: string;
@@ -31,6 +34,18 @@ export interface BookingEvent {
 }
 export interface Booking {
   id: string;
+  code?: string;
+  version?: number;
+  scheduledAt?: string;
+  allowedActions?: string[];
+  serviceVisitId?: string | null;
+  customerSnapshot?: { name: string; phone: string };
+  vehicleSnapshot?: {
+    model: string | null;
+    plate: string | null;
+    year?: string | number | null;
+  } | null;
+  serviceNames?: Record<string, string>;
   customerId: string;
   vehicleId: string;
   serviceIds: string[];
@@ -60,6 +75,8 @@ export interface BookingData {
   customers: Customer[];
   vehicles: Vehicle[];
   capacity: CapacityConfig;
+  services?: Service[];
+  advisors?: Advisor[];
 }
 export interface BookingRepository {
   load(): BookingData | null;

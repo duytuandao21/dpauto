@@ -56,10 +56,15 @@ export function validDate(date: string) {
     localDate(new Date(`${date}T12:00:00`)) === date
   );
 }
-export const bookingTime = (b: Booking) => b.confirmedAt || b.requestedAt;
+export const bookingTime = (b: Booking) =>
+  b.scheduledAt || b.confirmedAt || b.requestedAt;
 export const terminal = (s: BookingStatus) =>
   ["completed", "cancelled", "no_show"].includes(s);
 export function allowedActions(b: Booking, now = new Date()): BookingAction[] {
+  if (b.allowedActions)
+    return b.allowedActions.filter((a): a is BookingAction =>
+      ["confirm", "arrive", "cancel", "no_show"].includes(a),
+    );
   if (b.status === "pending") return ["confirm", "cancel"];
   if (b.status === "confirmed")
     return new Date(bookingTime(b)) <= now

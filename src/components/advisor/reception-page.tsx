@@ -14,6 +14,8 @@ import { bookingTime, formatDate, timeLabel } from "@/lib/booking/logic";
 import { operationChecks } from "@/lib/advisor/seed";
 import type { ReceptionDraft } from "@/lib/advisor/types";
 import { useAdvisor } from "./advisor-provider";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveReception } from "./live-reception";
 
 const blank: ReceptionDraft = {
   odo: "",
@@ -52,6 +54,13 @@ async function preparePhoto(file: File) {
 }
 
 export function ReceptionPage({ id }: { id: string }) {
+  return apiEnabled ? (
+    <LiveReception id={id} />
+  ) : (
+    <LocalReceptionPage id={id} />
+  );
+}
+function LocalReceptionPage({ id }: { id: string }) {
   const router = useRouter();
   const { data, ready: bookingsReady } = useBookings();
   const { orders, ready, receive } = useAdvisor();

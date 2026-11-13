@@ -5,6 +5,7 @@ import {
   displayDate,
   type CustomerFields,
   type CustomerErrors,
+  type BookingService,
 } from "@/lib/public-booking/mock";
 
 export function StepIntro({
@@ -121,10 +122,12 @@ export function ServicesStep({
   selected,
   error,
   onChange,
+  services = bookingServices,
 }: {
   selected: string[];
   error: string;
   onChange: (ids: string[]) => void;
+  services?: BookingService[];
 }) {
   return (
     <>
@@ -139,7 +142,7 @@ export function ServicesStep({
           Dịch vụ cần đặt (bắt buộc chọn ít nhất một)
         </legend>
         <div className="pb-services">
-          {bookingServices.map((service) => {
+          {services.map((service) => {
             const checked = selected.includes(service.id);
             return (
               <label
@@ -192,6 +195,7 @@ export function BookingSummary({
   note,
   onEdit,
   success = false,
+  services: catalogServices = bookingServices,
 }: {
   customer: CustomerFields;
   serviceIds: string[];
@@ -200,14 +204,15 @@ export function BookingSummary({
   note: string;
   onEdit?: (step: number) => void;
   success?: boolean;
+  services?: BookingService[];
 }) {
-  const services = bookingServices.filter((service) =>
+  const services = catalogServices.filter((service) =>
     serviceIds.includes(service.id),
   );
   return (
     <section className="pb-summary" aria-label="Tóm tắt yêu cầu đặt lịch">
       <div className="pb-summary-heading">
-        <h4>{success ? "Thông tin yêu cầu mẫu" : "Thông tin đặt lịch"}</h4>
+        <h4>Thông tin đặt lịch</h4>
         {onEdit && (
           <button
             type="button"

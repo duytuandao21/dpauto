@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ManagerShell } from "@/components/manager/manager-shell";
 import "@/styles/admin.css";
+import "@/styles/advisor.css";
 import "@/styles/manager.css";
 import "@/styles/manager-coreui.css";
 import "@/styles/manager-operations.css";

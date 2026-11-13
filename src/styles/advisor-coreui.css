@@ -1,4 +1,22 @@
 /* Advisor workspace: CoreUI-inspired surface hierarchy and color roles. */
+.adm-app p:not([class]) {
+  color: inherit;
+}
+
+@media (max-width: 767px) {
+  .adm-app .adm-page-heading:has(> .adv-actions) {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .adm-app .adm-page-heading:has(> .adv-actions) > div:first-child {
+    flex: 1 0 100%;
+    min-width: 0;
+  }
+  .adm-app .adm-page-heading > .adv-actions {
+    width: 100%;
+  }
+}
+
 .adm-app[data-theme="light"],
 .adm-app[data-theme="light"] .adm-dialog,
 .adm-dialog[data-theme="light"]:not(.mgr-dialog),

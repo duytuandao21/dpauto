@@ -11,16 +11,21 @@ import { AdminLoading } from "@/components/admin/primitives";
 import { localDate, shiftDate } from "@/lib/booking/logic";
 import { createManagerData, type ManagerData } from "@/lib/manager/mock";
 import { ManagerModal } from "./manager-modal";
+import { apiEnabled } from "@/lib/api/client";
+import type { ApiPolicy } from "@/lib/api/types";
+import { RemoteManagerProvider } from "./remote-manager-provider";
 
 type Confirm = {
   title: string;
   message: string;
-  action: () => void;
+  action: () => void | Promise<void>;
   label?: string;
   danger?: boolean;
 };
-type ManagerContext = {
+export type ManagerContext = {
   data: ManagerData;
+  ready?: boolean;
+  error?: string;
   today: string;
   now: number;
   theme: "light" | "dark";
@@ -29,18 +34,34 @@ type ManagerContext = {
     change: (data: ManagerData) => ManagerData,
     message: string,
     target?: string,
-  ) => void;
+  ) => void | Promise<void>;
   notify: (message: string) => void;
   ask: (value: Confirm) => void;
+  policy?: ApiPolicy | null;
+  setRange?: (from: string, to?: string) => void;
+  refresh?: () => Promise<void>;
+  commandBooking?: (
+    id: string,
+    action: string,
+    input: Record<string, unknown>,
+  ) => Promise<void>;
+  savePolicy?: (input: Record<string, unknown>) => Promise<void>;
 };
-const Context = createContext<ManagerContext | null>(null);
+export const ManagerContext = createContext<ManagerContext | null>(null);
 export function useManager() {
-  const value = useContext(Context);
+  const value = useContext(ManagerContext);
   if (!value) throw new Error("ManagerProvider is required");
   return value;
 }
 
 export function ManagerProvider({ children }: { children: ReactNode }) {
+  return apiEnabled ? (
+    <RemoteManagerProvider>{children}</RemoteManagerProvider>
+  ) : (
+    <LocalManagerProvider>{children}</LocalManagerProvider>
+  );
+}
+function LocalManagerProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<ManagerData | null>(null);
   const [today, setToday] = useState("");
   const [now, setNow] = useState(0);
@@ -111,7 +132,7 @@ export function ManagerProvider({ children }: { children: ReactNode }) {
       </div>
     );
   return (
-    <Context.Provider
+    <ManagerContext.Provider
       value={{
         data,
         today,
@@ -154,6 +175,6 @@ export function ManagerProvider({ children }: { children: ReactNode }) {
           <p>{confirmation.message}</p>
         </ManagerModal>
       )}
-    </Context.Provider>
+    </ManagerContext.Provider>
   );
 }

@@ -14,6 +14,8 @@ import { formatDate } from "@/lib/booking/logic";
 import type { ServiceStage } from "@/lib/advisor/types";
 import { useAdvisor } from "./advisor-provider";
 import { StageBadge, stageLabels } from "./order-common";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveVisits } from "./live-visits";
 
 const normalize = (value: string) =>
   value
@@ -23,6 +25,9 @@ const normalize = (value: string) =>
     .replace(/đ/g, "d");
 
 export function OrdersPage() {
+  return apiEnabled ? <LiveVisits /> : <LocalOrdersPage />;
+}
+function LocalOrdersPage() {
   const { data } = useBookings();
   const { orders, ready } = useAdvisor();
   const [query, setQuery] = useState("");

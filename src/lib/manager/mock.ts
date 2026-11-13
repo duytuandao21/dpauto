@@ -5,8 +5,14 @@ import { createOperationsSeed } from "./operations-seed";
 
 export type ManagerBooking = {
   id: string;
+  serviceVisitId?: string | null;
+  code?: string;
+  version?: number;
+  customerSnapshot?: { name: string; phone: string };
+  vehicleSnapshot?: { model: string | null; plate: string | null } | null;
   customerId: string;
   serviceIds: string[];
+  serviceNames?: Record<string, string>;
   advisorId: string;
   date: string;
   time: string;
@@ -28,6 +34,15 @@ export type ManagerService = {
   group: string;
   duration: number;
   active: boolean;
+  code?: string;
+  version?: number;
+  bookable?: boolean;
+  requirements?: {
+    poolId: string;
+    units: number;
+    offsetMinutes: number;
+    durationMinutes: number;
+  }[];
 };
 export type ManagerStaff = {
   id: string;
@@ -36,8 +51,17 @@ export type ManagerStaff = {
   phone: string;
   email: string;
   active: boolean;
+  version?: number;
+  accountEnabled?: boolean;
+  createAccount?: boolean;
+  temporaryPassword?: string;
+  workload?: { pending: number; confirmed: number };
 };
 export type CapacitySlot = {
+  endTime?: string;
+  pending?: number;
+  confirmed?: number;
+  free?: number;
   id: string;
   time: string;
   group: string;
@@ -49,6 +73,7 @@ export type CapacitySlot = {
   date: string;
   locked?: boolean;
   reason?: string;
+  version?: number;
 };
 export type ContentItem = {
   id: string;
@@ -113,7 +138,7 @@ export const managerNavigation: {
       { path: "/dieu-phoi", label: "Điều phối xe", icon: "car" },
       { path: "/phieu-dich-vu", label: "Phiếu dịch vụ", icon: "tool" },
       { path: "/bao-gia", label: "Giám sát báo giá", icon: "website" },
-      { path: "/nang-luc", label: "Khung giờ & năng lực", icon: "time" },
+      { path: "/nang-luc", label: "Khung giờ đặt lịch", icon: "time" },
       { path: "/dich-vu", label: "Danh mục dịch vụ", icon: "tool" },
       { path: "/nhan-su", label: "Nhân sự & ca làm", icon: "customers" },
       { path: "/khach-hang", label: "Khách hàng & phương tiện", icon: "car" },
@@ -124,19 +149,6 @@ export const managerNavigation: {
     items: [
       { path: "/kho", label: "Kho & phụ tùng", icon: "tool" },
       { path: "/tai-chinh", label: "Tài chính & công nợ", icon: "overview" },
-    ],
-  },
-  {
-    title: "Quản trị website",
-    items: [
-      { path: "/website/noi-dung", label: "Nội dung website", icon: "website" },
-      {
-        path: "/website/bai-viet",
-        label: "Tin tức & bài viết",
-        icon: "website",
-      },
-      { path: "/website/hinh-anh", label: "Thư viện hình ảnh", icon: "car" },
-      { path: "/website/seo", label: "SEO & hiển thị", icon: "search" },
     ],
   },
   {
@@ -463,23 +475,21 @@ export function createManagerData(
   const operations = createOperationsSeed(today, bookings, services);
   const capacityDays = [today, shift(today, 1)].flatMap((date) =>
     capacity.flatMap((slot, i) =>
-      serviceGroups
-        .slice(1)
-        .map((group, j) => ({
-          ...slot,
-          id: `CP-${date}-${i}-${j}`,
-          date,
-          group,
-          resource:
-            group === "Bảo dưỡng"
-              ? "Khoang bảo dưỡng"
-              : group === "Chăm sóc xe"
-                ? "Khu chăm sóc"
-                : "Kỹ thuật phụ kiện",
-          total: group === "Phụ kiện" ? 180 : 240,
-          reserved: 0,
-          state: "available" as const,
-        })),
+      serviceGroups.slice(1).map((group, j) => ({
+        ...slot,
+        id: `CP-${date}-${i}-${j}`,
+        date,
+        group,
+        resource:
+          group === "Bảo dưỡng"
+            ? "Khoang bảo dưỡng"
+            : group === "Chăm sóc xe"
+              ? "Khu chăm sóc"
+              : "Kỹ thuật phụ kiện",
+        total: group === "Phụ kiện" ? 180 : 240,
+        reserved: 0,
+        state: "available" as const,
+      })),
     ),
   );
   const reservedBookings = bookings.map((b) => {

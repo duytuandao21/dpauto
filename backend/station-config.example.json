@@ -1,0 +1,16 @@
+{
+  "policy": {
+    "reason": "Thiết lập năng lực thực tế của trạm",
+    "effectiveFrom": "YYYY-MM-DDT00:00:00+07:00",
+    "bookingEnabled": false,
+    "bucketMinutes": 30,
+    "startGridMinutes": 30,
+    "leadMinutes": null,
+    "advanceDays": null,
+    "noShowGraceMinutes": null,
+    "hours": [],
+    "pools": [],
+    "resources": []
+  },
+  "services": []
+}

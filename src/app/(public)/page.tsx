@@ -15,21 +15,45 @@ import { NewsSection } from "@/components/sections/news";
 import { FAQ } from "@/components/sections/faq";
 import { LocationSection } from "@/components/sections/location";
 import { WorkFinalCTA as FinalCTA } from "@/components/sections/our-work-motion";
+import {
+  publicContent,
+  publicArticles,
+  publicMetadata,
+} from "@/lib/public-cms";
 
-export const metadata: Metadata = {
+const fallbackMetadata: Metadata = {
   title: "Chăm sóc ô tô chuyên nghiệp",
   description:
     "Dịch vụ chăm sóc ô tô, vệ sinh nội thất, hiệu chỉnh sơn, phủ ceramic và dán phim bảo vệ tại HyperAuto Care.",
 };
 
-export default function HomePage() {
+export const generateMetadata = () => publicMetadata("/", fallbackMetadata);
+export default async function HomePage() {
+  const documents = await publicContent(),
+    news = await publicArticles(true);
+  const section = (key: string) =>
+    documents.find((d) => d.kind === "PAGE" && d.key === key);
+  const hero = section("home.hero"),
+    services = section("home.services"),
+    pricing = section("home.pricing"),
+    cta = section("home.cta");
   return (
     <div className="home-page" lang="vi">
-      <Hero />
-      <ServicesSection />
+      {!hero?.withdrawn && <Hero copy={hero?.payload} />}
+      {!services?.withdrawn && (
+        <ServicesSection
+          title={services?.payload?.title}
+          description={services?.payload?.description}
+        />
+      )}
       <AccessoriesSection />
       <ProcessSection />
-      <PricingSection />
+      {!pricing?.withdrawn && (
+        <PricingSection
+          title={pricing?.payload?.title}
+          description={pricing?.payload?.description}
+        />
+      )}
       <WorkSection />
       <SocialGallery />
       <BenefitsSection />
@@ -37,6 +61,7 @@ export default function HomePage() {
       <BrandsSection />
       <NewsSection
         title="Tin mới từ HyperAuto Care"
+        items={news.slice(0, 4)}
         vietnamese
         originalImages
       />
@@ -46,7 +71,9 @@ export default function HomePage() {
         description="Giải đáp về lịch hẹn, thời gian thực hiện và chi phí dịch vụ."
       />
       <LocationSection vietnamese />
-      <FinalCTA vietnamese />
+      {!cta?.withdrawn && (
+        <FinalCTA vietnamese copy={cta?.payload || undefined} />
+      )}
     </div>
   );
 }

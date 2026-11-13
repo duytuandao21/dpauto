@@ -6,10 +6,17 @@ import { ArticleMeta, NewsSection } from "@/components/sections/news";
 import { RichContent } from "@/components/sections/shared";
 import { WorkFinalCTA } from "@/components/sections/our-work-motion";
 import { Photo } from "@/components/ui/photo";
+import {
+  publicArticles,
+  publicMetadata,
+  publicContent,
+} from "@/lib/public-cms";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 export function generateStaticParams() {
-  return articles.map((article) => ({ slug: article.slug }));
+  return process.env.NEXT_PUBLIC_API_ENABLED === "true"
+    ? []
+    : articles.map((article) => ({ slug: article.slug }));
 }
 export async function generateMetadata({
   params,
@@ -17,8 +24,15 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const article = articles.find((a) => a.slug === slug);
-  return { title: article?.title, description: article?.description };
+  const article = (await publicArticles()).find((a) => a.slug === slug);
+  const noindex = (await publicContent()).find(
+    (d) => d.kind === "NEWS" && d.key === slug,
+  )?.payload?.noindex;
+  return publicMetadata("/news/" + slug, {
+    title: article?.title,
+    description: article?.description,
+    ...(noindex ? { robots: { index: false, follow: true } } : {}),
+  });
 }
 export default async function ArticlePage({
   params,
@@ -26,6 +40,7 @@ export default async function ArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const articles = await publicArticles();
   const article = articles.find((a) => a.slug === slug);
   if (!article) notFound();
   return (

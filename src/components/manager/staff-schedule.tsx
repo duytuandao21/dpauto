@@ -10,7 +10,12 @@ import {
   ManagerEmpty,
 } from "./manager-ui";
 import { ManagerModal } from "./manager-modal";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveShifts } from "./live-operations";
 export function ManagerStaffSchedule() {
+  return apiEnabled ? <LiveShifts /> : <PrototypeStaffSchedule />;
+}
+function PrototypeStaffSchedule() {
   const { data, today, theme, update, ask } = useManager();
   const [date, setDate] = useState(today);
   const [role, setRole] = useState("");

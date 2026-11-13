@@ -5,6 +5,10 @@ import { PageHeading } from "@/components/admin/primitives";
 import { AdminIcon } from "@/components/admin/admin-icon";
 import type { ManagerSettings } from "@/lib/manager/mock";
 import { useManager } from "./manager-provider";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveNotifications } from "./live-operations";
+import { ManagerPolicyEditor } from "./policy-editor";
+import { LiveAudit } from "./live-audit";
 import {
   ManagerPanel,
   ManagerTable,
@@ -31,9 +35,8 @@ export function ManagerSettingsPage() {
       !value.name.trim() ||
       !value.address.trim() ||
       !/^0\d{9}$/.test(value.phone.replaceAll(" ", "")) ||
-      !value.open ||
-      !value.close ||
-      value.open >= value.close ||
+      (!apiEnabled &&
+        (!value.open || !value.close || value.open >= value.close)) ||
       !Number.isInteger(value.leadMinutes) ||
       value.leadMinutes < 0 ||
       value.leadMinutes > 1440 ||
@@ -63,6 +66,7 @@ export function ManagerSettingsPage() {
         title="Cấu hình hệ thống"
         description="Thông tin trạm và thiết lập vận hành."
       />
+      {apiEnabled && <ManagerPolicyEditor />}
       <form className="mgr-settings-form" onSubmit={submit} noValidate>
         <div className="mgr-settings-grid">
           <ManagerPanel title="Thông tin trạm">
@@ -92,78 +96,84 @@ export function ManagerSettingsPage() {
               </ManagerField>
             </div>
           </ManagerPanel>
-          <ManagerPanel title="Giờ hoạt động">
-            <div className="mgr-form">
-              <div className="mgr-form-columns">
-                <ManagerField label="Giờ mở cửa">
+          {!apiEnabled && (
+            <ManagerPanel title="Giờ hoạt động">
+              <div className="mgr-form">
+                <div className="mgr-form-columns">
+                  <ManagerField label="Giờ mở cửa">
+                    <input
+                      type="time"
+                      value={value.open}
+                      onChange={(event) => set("open", event.target.value)}
+                    />
+                  </ManagerField>
+                  <ManagerField label="Giờ đóng cửa">
+                    <input
+                      type="time"
+                      value={value.close}
+                      onChange={(event) => set("close", event.target.value)}
+                    />
+                  </ManagerField>
+                </div>
+              </div>
+            </ManagerPanel>
+          )}
+          {!apiEnabled && (
+            <ManagerPanel title="Thiết lập đặt lịch">
+              <div className="mgr-form">
+                <ManagerField label="Thời gian báo trước (phút)">
                   <input
-                    type="time"
-                    value={value.open}
-                    onChange={(event) => set("open", event.target.value)}
+                    type="number"
+                    min="0"
+                    max="1440"
+                    value={value.leadMinutes}
+                    onChange={(event) =>
+                      set("leadMinutes", Number(event.target.value))
+                    }
                   />
                 </ManagerField>
-                <ManagerField label="Giờ đóng cửa">
+                <ManagerField label="Khoảng đặt lịch trước (ngày)">
                   <input
-                    type="time"
-                    value={value.close}
-                    onChange={(event) => set("close", event.target.value)}
+                    type="number"
+                    min="1"
+                    max="365"
+                    value={value.advanceDays}
+                    onChange={(event) =>
+                      set("advanceDays", Number(event.target.value))
+                    }
                   />
                 </ManagerField>
               </div>
-            </div>
-          </ManagerPanel>
-          <ManagerPanel title="Thiết lập đặt lịch">
-            <div className="mgr-form">
-              <ManagerField label="Thời gian báo trước (phút)">
+            </ManagerPanel>
+          )}
+          {!apiEnabled && (
+            <ManagerPanel title="Tùy chọn thông báo">
+              <label className="adm-toggle-row">
+                <span>
+                  <strong>Lịch hẹn mới</strong>
+                  <small>Thông báo khi có yêu cầu đặt lịch</small>
+                </span>
                 <input
-                  type="number"
-                  min="0"
-                  max="1440"
-                  value={value.leadMinutes}
+                  type="checkbox"
+                  checked={value.notifyNew}
+                  onChange={(event) => set("notifyNew", event.target.checked)}
+                />
+              </label>
+              <label className="adm-toggle-row">
+                <span>
+                  <strong>Nhắc lịch sắp đến</strong>
+                  <small>Hỗ trợ chuẩn bị tiếp nhận xe</small>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={value.notifyUpcoming}
                   onChange={(event) =>
-                    set("leadMinutes", Number(event.target.value))
+                    set("notifyUpcoming", event.target.checked)
                   }
                 />
-              </ManagerField>
-              <ManagerField label="Khoảng đặt lịch trước (ngày)">
-                <input
-                  type="number"
-                  min="1"
-                  max="365"
-                  value={value.advanceDays}
-                  onChange={(event) =>
-                    set("advanceDays", Number(event.target.value))
-                  }
-                />
-              </ManagerField>
-            </div>
-          </ManagerPanel>
-          <ManagerPanel title="Tùy chọn thông báo">
-            <label className="adm-toggle-row">
-              <span>
-                <strong>Lịch hẹn mới</strong>
-                <small>Thông báo khi có yêu cầu đặt lịch</small>
-              </span>
-              <input
-                type="checkbox"
-                checked={value.notifyNew}
-                onChange={(event) => set("notifyNew", event.target.checked)}
-              />
-            </label>
-            <label className="adm-toggle-row">
-              <span>
-                <strong>Nhắc lịch sắp đến</strong>
-                <small>Hỗ trợ chuẩn bị tiếp nhận xe</small>
-              </span>
-              <input
-                type="checkbox"
-                checked={value.notifyUpcoming}
-                onChange={(event) =>
-                  set("notifyUpcoming", event.target.checked)
-                }
-              />
-            </label>
-          </ManagerPanel>
+              </label>
+            </ManagerPanel>
+          )}
         </div>
         {error && (
           <p className="adm-error-text" role="alert">
@@ -182,6 +192,9 @@ export function ManagerSettingsPage() {
 }
 
 export function ManagerNotificationsPage() {
+  return apiEnabled ? <LiveNotifications /> : <PrototypeNotificationsPage />;
+}
+function PrototypeNotificationsPage() {
   const { data, notify } = useManager();
   const [read, setRead] = useState<string[]>([]);
   const [filter, setFilter] = useState("all");
@@ -323,6 +336,9 @@ export function ManagerNotificationsPage() {
 }
 
 export function ManagerAuditPage() {
+  return apiEnabled ? <LiveAudit /> : <PrototypeAuditPage />;
+}
+function PrototypeAuditPage() {
   const { data } = useManager();
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);

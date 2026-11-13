@@ -14,10 +14,16 @@ import {
 } from "./primitives";
 import { useAdvisor } from "@/components/advisor/advisor-provider";
 import { StageBadge } from "@/components/advisor/order-common";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveVisits } from "@/components/advisor/live-visits";
+import { LegacyHistory } from "@/components/advisor/legacy-history";
 
 function CustomerDetail({ customer }: { customer: Customer }) {
   const { data } = useBookings(),
-    vehicles = data.vehicles.filter((v) => v.customerId === customer.id),
+    vehicles = data.vehicles.filter(
+      (v) =>
+        v.customerId === customer.id || v.customerIds?.includes(customer.id),
+    ),
     bookings = data.bookings
       .filter((b) => b.customerId === customer.id)
       .sort((a, b) => bookingTime(b).localeCompare(bookingTime(a)));
@@ -83,31 +89,36 @@ function CustomerDetail({ customer }: { customer: Customer }) {
           ))}
         </div>
       </div>
-      <div className="adm-detail-section">
-        <h3>Lịch sử dịch vụ</h3>
-        <div className="adm-related-bookings">
-          {serviceOrders.length ? (
-            serviceOrders.map((order) => (
-              <Link key={order.id} href={`/co-van/phieu-dich-vu/${order.id}`}>
-                <div>
-                  <strong>
-                    {order.id} · {formatDate(order.openedAt)}
-                  </strong>
-                  <small>
-                    {
-                      data.vehicles.find((item) => item.id === order.vehicleId)
-                        ?.plate
-                    }
-                  </small>
-                </div>
-                <StageBadge stage={order.stage} />
-              </Link>
-            ))
-          ) : (
-            <p className="adm-muted">Chưa có phiếu dịch vụ.</p>
-          )}
+      {apiEnabled && <LiveVisits customerId={customer.id} />}
+      {apiEnabled && <LegacyHistory id={customer.id} />}
+      {!apiEnabled && (
+        <div className="adm-detail-section">
+          <h3>Lịch sử dịch vụ</h3>
+          <div className="adm-related-bookings">
+            {serviceOrders.length ? (
+              serviceOrders.map((order) => (
+                <Link key={order.id} href={`/co-van/phieu-dich-vu/${order.id}`}>
+                  <div>
+                    <strong>
+                      {order.id} · {formatDate(order.openedAt)}
+                    </strong>
+                    <small>
+                      {
+                        data.vehicles.find(
+                          (item) => item.id === order.vehicleId,
+                        )?.plate
+                      }
+                    </small>
+                  </div>
+                  <StageBadge stage={order.stage} />
+                </Link>
+              ))
+            ) : (
+              <p className="adm-muted">Chưa có phiếu dịch vụ.</p>
+            )}
+          </div>
         </div>
-      </div>
+      )}
       <div className="adm-detail-section">
         <h3>Lịch hẹn liên quan</h3>
         <div className="adm-related-bookings">
@@ -139,7 +150,9 @@ export function CustomersWorkspace({ id }: { id?: string }) {
     filter = params.get("filter") || "all";
   const { orders } = useAdvisor();
   const customers = data.customers.filter((c) => {
-    const vs = data.vehicles.filter((v) => v.customerId === c.id),
+    const vs = data.vehicles.filter(
+        (v) => v.customerId === c.id || v.customerIds?.includes(c.id),
+      ),
       text =
         `${c.name} ${c.phone} ${vs.map((v) => v.plate).join(" ")} ${data.bookings
           .filter((b) => b.customerId === c.id)
@@ -220,7 +233,7 @@ export function CustomersWorkspace({ id }: { id?: string }) {
           <div className="adm-customer-list">
             {customers.map((c) => {
               const vehicles = data.vehicles.filter(
-                  (v) => v.customerId === c.id,
+                  (v) => v.customerId === c.id || v.customerIds?.includes(c.id),
                 ),
                 bs = data.bookings
                   .filter((b) => b.customerId === c.id)
@@ -247,7 +260,9 @@ export function CustomersWorkspace({ id }: { id?: string }) {
                       {bs[0] ? formatDate(bookingTime(bs[0])) : "Chưa có"}
                     </span>
                   </div>
-                  <span className="adm-count-pill">{bs.length} lịch</span>
+                  <span className="adm-count-pill">
+                    {c.bookingCount ?? bs.length} lịch
+                  </span>
                 </Link>
               );
             })}

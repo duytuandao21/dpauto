@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/icon";
+import { apiEnabled, request } from "@/lib/api/client";
+import { stationTime, type PublicCatalog } from "@/lib/api/types";
 import {
   addDays,
   dateKey,
@@ -16,10 +18,12 @@ function Calendar({
   today,
   value,
   onChange,
+  advanceDays = 59,
 }: {
   today: string;
   value: string;
   onChange: (value: string) => void;
+  advanceDays?: number;
 }) {
   const [month, setMonth] = useState(
     () =>
@@ -34,7 +38,7 @@ function Calendar({
     const selected = parseDate(value);
     setMonth(new Date(selected.getFullYear(), selected.getMonth(), 1, 12));
   }, [value]);
-  const end = addDays(today, 59);
+  const end = addDays(today, advanceDays);
   const days = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
   const leading = (month.getDay() + 6) % 7;
   const first = dateKey(month);
@@ -81,7 +85,7 @@ function Calendar({
           const key = dateKey(
             new Date(month.getFullYear(), month.getMonth(), i + 1, 12),
           );
-          const status = dayStatus(key, today);
+          const status = apiEnabled ? "available" : dayStatus(key, today);
           const outside = key < today || key > end;
           const disabled = outside || status === "closed" || status === "full";
           const label =
@@ -97,33 +101,37 @@ function Calendar({
               type="button"
               key={key}
               className={`pb-day ${key === value ? "is-selected" : ""}`}
-              data-status={outside ? undefined : status}
+              data-status={outside || apiEnabled ? undefined : status}
               disabled={disabled}
-              aria-label={`${displayDate(key, true)}${outside ? " · Không khả dụng" : ` · ${label}`}`}
+              aria-label={`${displayDate(key, true)}${outside ? " · Không khả dụng" : apiEnabled ? "" : ` · ${label}`}`}
               aria-pressed={key === value}
               aria-current={key === today ? "date" : undefined}
               onClick={() => onChange(key)}
             >
               <span>{i + 1}</span>
-              {!outside && <span className="pb-day-dot" aria-hidden="true" />}
+              {!outside && !apiEnabled && (
+                <span className="pb-day-dot" aria-hidden="true" />
+              )}
             </button>
           );
         })}
       </div>
-      <div className="pb-calendar-legend">
-        <span>
-          <i />
-          Còn lịch
-        </span>
-        <span>
-          <i className="is-limited" />
-          Sắp đầy
-        </span>
-        <span>
-          <i className="is-closed" />
-          Hết chỗ / nghỉ
-        </span>
-      </div>
+      {!apiEnabled && (
+        <div className="pb-calendar-legend">
+          <span>
+            <i />
+            Còn lịch
+          </span>
+          <span>
+            <i className="is-limited" />
+            Sắp đầy
+          </span>
+          <span>
+            <i className="is-closed" />
+            Hết chỗ / nghỉ
+          </span>
+        </div>
+      )}
     </section>
   );
 }
@@ -137,6 +145,7 @@ export function BookingSchedule({
   onDate,
   onTime,
   onReady,
+  catalog,
 }: {
   today: string;
   date: string;
@@ -146,6 +155,7 @@ export function BookingSchedule({
   onDate: (value: string) => void;
   onTime: (value: string) => void;
   onReady: (value: boolean) => void;
+  catalog?: PublicCatalog | null;
 }) {
   const [scenario, setScenario] = useState<DemoScenario>("normal");
   const [retry, setRetry] = useState(0);
@@ -158,12 +168,41 @@ export function BookingSchedule({
     const controller = new AbortController();
     setState({ status: "loading" });
     onReady(false);
-    loadMockAvailability({
-      date,
-      serviceIds: signature.split(","),
-      scenario,
-      signal: controller.signal,
-    })
+    const loading: Promise<Availability> =
+      apiEnabled && catalog
+        ? request<{ slots: { startAt: string; status: string }[] }>(
+            "public/availability?" +
+              new URLSearchParams({
+                date,
+                serviceIds: signature,
+                catalogVersion: String(catalog.catalogVersion),
+                policyVersion: String(catalog.policyVersion),
+              }),
+            { signal: controller.signal },
+          ).then((r) => ({
+            date,
+            serviceIds: signature.split(","),
+            scenario: "normal",
+            slots: r.data.slots.map((slot) => {
+              const time = stationTime(slot.startAt).slice(11, 16);
+              return {
+                id: time,
+                time,
+                period: time < "12:00" ? "morning" : "afternoon",
+                status: slot.status.toLowerCase() as
+                  "available" | "full" | "unavailable",
+              };
+            }),
+          }))
+        : apiEnabled
+          ? Promise.reject(new Error("Chưa tải được danh mục dịch vụ."))
+          : loadMockAvailability({
+              date,
+              serviceIds: signature.split(","),
+              scenario,
+              signal: controller.signal,
+            });
+    loading
       .then((data) => {
         setState({ status: "ready", data });
         onReady(true);
@@ -172,7 +211,7 @@ export function BookingSchedule({
         if (error.name !== "AbortError") setState({ status: "error" });
       });
     return () => controller.abort();
-  }, [date, signature, scenario, retry, onReady]);
+  }, [date, signature, scenario, retry, onReady, catalog]);
 
   const empty =
     state.status === "ready" &&
@@ -192,6 +231,7 @@ export function BookingSchedule({
           <Calendar
             today={today}
             value={date}
+            advanceDays={catalog?.bookingPolicy.advanceDays}
             onChange={(value) => {
               onTime("");
               onReady(false);
@@ -206,6 +246,16 @@ export function BookingSchedule({
         >
           <h4 className="pb-section-label">Khung giờ đến trạm</h4>
           <p className="pb-selected-date">{displayDate(date, true)}</p>
+          {apiEnabled && (
+            <button
+              type="button"
+              className="pb-text-button"
+              disabled={state.status === "loading"}
+              onClick={() => setRetry((value) => value + 1)}
+            >
+              Cập nhật khung giờ
+            </button>
+          )}
           {state.status === "loading" && (
             <div className="pb-loading" role="status">
               <span>Đang tải khung giờ…</span>
@@ -238,16 +288,8 @@ export function BookingSchedule({
               {empty && (
                 <div className="pb-empty" role="status">
                   <Icon name="clock" />
-                  <strong>
-                    {scenario === "closed"
-                      ? "Ngày nghỉ minh họa"
-                      : "Chưa còn khung giờ phù hợp"}
-                  </strong>
-                  <p>
-                    {scenario === "closed"
-                      ? "Trạm không phục vụ trong ngày mẫu này."
-                      : "Các khung giờ mẫu đã đầy. Bạn vui lòng chọn ngày khác."}
-                  </p>
+                  <strong>Chưa còn khung giờ phù hợp</strong>
+                  <p>Chưa có khung giờ phù hợp. Bạn vui lòng chọn ngày khác.</p>
                   <button
                     className="pb-text-button"
                     type="button"
@@ -255,11 +297,12 @@ export function BookingSchedule({
                       changeScenario("normal");
                       let next = addDays(date, 1);
                       while (
+                        !apiEnabled &&
                         ["closed", "full"].includes(dayStatus(next, today))
                       )
                         next = addDays(next, 1);
                       onDate(
-                        next > addDays(today, 59) ? addDays(today, 1) : next,
+                        next > addDays(today, catalog?.bookingPolicy.advanceDays ?? 59) ? addDays(today, 1) : next,
                       );
                     }}
                   >

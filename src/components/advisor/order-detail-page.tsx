@@ -21,6 +21,8 @@ import {
 } from "./order-common";
 import { QuoteEditor } from "./quote-editor";
 import { WorkEditor } from "./work-editor";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveVisitDetail } from "./live-visits";
 
 const tabs = [
   { id: "tong-quan", label: "Tổng quan" },
@@ -30,6 +32,13 @@ const tabs = [
 ] as const;
 
 export function OrderDetailPage({ id }: { id: string }) {
+  return apiEnabled ? (
+    <LiveVisitDetail id={id} />
+  ) : (
+    <LocalOrderDetailPage id={id} />
+  );
+}
+function LocalOrderDetailPage({ id }: { id: string }) {
   const { orders, ready } = useAdvisor();
   const { data } = useBookings();
   const params = useSearchParams();

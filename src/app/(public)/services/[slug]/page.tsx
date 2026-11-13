@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { services } from "@/lib/content";
 import { ServiceDetail } from "@/components/pages/service-detail";
+import { publicMetadata } from "@/lib/public-cms";
 
 export const dynamicParams = false;
 export function generateStaticParams() {
@@ -14,7 +15,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const service = services.find((s) => s.slug === slug);
-  return { title: service?.title, description: service?.description };
+  return publicMetadata("/services/" + slug, {
+    title: service?.title,
+    description: service?.description,
+  });
 }
 export default async function ServicePage({
   params,

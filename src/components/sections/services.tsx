@@ -16,14 +16,17 @@ import { Button } from "@/components/ui/button";
 import { HomeScrollFrame } from "./home-motion";
 import { HomeSectionHeading as SectionHeading } from "./home-motion";
 
-export function ServicesSection() {
+export function ServicesSection({
+  title = "Dịch vụ chăm sóc xe",
+  description = "Từ làm sạch đến bảo vệ chuyên sâu, chọn dịch vụ phù hợp cho xe của bạn.",
+}: {
+  title?: string;
+  description?: string;
+}) {
   return (
     <section className="section services-section" id="services">
       <div className="container">
-        <SectionHeading
-          title="Dịch vụ chăm sóc xe"
-          description="Từ làm sạch đến bảo vệ chuyên sâu, chọn dịch vụ phù hợp cho xe của bạn."
-        />
+        <SectionHeading title={title} description={description} />
         <div className="services-grid">
           {homeServices.map((service) => (
             <HomeScrollFrame

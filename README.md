@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Mở **http://localhost:3000**. Trên Windows PowerShell có chặn script, dùng `npm.cmd` thay cho `npm`.
+Mở **http://localhost:4001**. Trên Windows PowerShell có chặn script, dùng `npm.cmd` thay cho `npm`.
 
 ```bash
 npm run typecheck
@@ -31,7 +31,9 @@ Kết quả kiểm tra và ảnh đối chiếu: [docs/qa/verification.md](docs/
 - `/admin`: trang chờ để phát triển khu vực Admin quản trị website.
 - `/quanly/...` chuyển hướng sang đường dẫn mới, giữ nguyên query. Hai đường dẫn cũ `/quanly/them` và `/quanly/cai-dat` lần lượt chuyển sang `/co-van/tai-khoan` và `/co-van/tuy-chon`.
 
-Các khu vực hiện chưa tích hợp đăng nhập hoặc phân quyền. Dữ liệu đặt lịch vẫn là dữ liệu mẫu trên trình duyệt; việc đổi URL không thay đổi khóa lưu trữ hiện có.
+Backend Phase 1–5, migration, bootstrap tài khoản, cấu hình tài nguyên và cách bật kết nối API: [backend/README.md](backend/README.md). Cần Node.js 22+ cho backend. Hợp đồng tiếp nhận: [Phase 2](api/phase2-implementation.md); workshop: [Phase 3](api/phase3-implementation.md); kho, thu chi và bàn giao: [Phase 4](api/phase4-implementation.md); báo cáo, ca làm, CMS và thông báo: [Phase 5](api/phase5-implementation.md).
+
+Khi `NEXT_PUBLIC_API_ENABLED=true`, public, `/co-van` và `/dieu-hanh` dùng chung PostgreSQL qua `/api/v1`, đăng nhập bằng session và phân quyền ở server. Đã nối tiếp nhận, báo giá, workshop, kho và thu chi; bàn giao cần đủ tiền/phụ tùng/nghiệm thu. Quyền kho/tài chính được cấp riêng tại Nhân sự. Khi flag là `false`, giao diện cục bộ trước đây được giữ để tham khảo; dữ liệu này không được nhập vào backend.
 
 ## Cây thư mục
 

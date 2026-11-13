@@ -92,8 +92,11 @@ export function NewsSection({
   );
 }
 
-export function FeaturedArticle() {
-  const article = articles[5];
+export function FeaturedArticle({
+  article = articles[5],
+}: {
+  article?: Article;
+}) {
   return (
     <FeaturedArticleFrame
       image={article.image}

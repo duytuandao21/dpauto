@@ -4,6 +4,13 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   devIndicators: false,
+  rewrites() {
+    const backend = process.env.API_INTERNAL_URL || "http://127.0.0.1:4002";
+    return ["admin", "public"].map((area) => ({
+      source: `/api/v1/${area}/:path*`,
+      destination: `${backend}/api/v1/${area}/:path*`,
+    }));
+  },
   redirects() {
     return [
       {

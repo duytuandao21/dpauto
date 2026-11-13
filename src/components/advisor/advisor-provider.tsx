@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useBookings } from "@/components/admin/booking-provider";
 import { createAdvisorSeed, makeServiceOrder } from "@/lib/advisor/seed";
 import type { ReceptionDraft, ServiceOrder } from "@/lib/advisor/types";
+import { apiEnabled } from "@/lib/api/client";
 
 const STORAGE_KEY = "dpauto.advisor-ui.v1";
 interface AdvisorContextValue {
@@ -22,6 +23,11 @@ export function AdvisorProvider({ children }: { children: React.ReactNode }) {
   const ordersRef = useRef(orders);
 
   useEffect(() => {
+    if (apiEnabled) {
+      setOrders([]);
+      setReady(true);
+      return;
+    }
     let initial = createAdvisorSeed(data);
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -65,6 +71,7 @@ export function AdvisorProvider({ children }: { children: React.ReactNode }) {
   }
 
   function receive(bookingId: string, draft: ReceptionDraft) {
+    if (apiEnabled) throw new Error("Tiếp nhận xe chưa khả dụng.");
     const booking = data.bookings.find((item) => item.id === bookingId);
     if (!booking || !["confirmed", "arrived"].includes(booking.status))
       throw new Error("Chỉ tiếp nhận lịch đã xác nhận.");
@@ -77,6 +84,7 @@ export function AdvisorProvider({ children }: { children: React.ReactNode }) {
   }
 
   function saveOrder(order: ServiceOrder, message: string) {
+    if (apiEnabled) throw new Error("Cập nhật phiếu dịch vụ chưa khả dụng.");
     if (!ordersRef.current.some((item) => item.id === order.id))
       throw new Error("Không tìm thấy phiếu dịch vụ.");
     persist(

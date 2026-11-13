@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   AdminLoading,
@@ -15,6 +15,7 @@ import {
   validDate,
 } from "@/lib/booking/logic";
 import { useManager } from "./manager-provider";
+import { managerBookingNeedsAdvisor } from "@/lib/api/manager-presentation";
 import {
   FilterSelect,
   ManagerPanel,
@@ -33,7 +34,7 @@ export function ManagerBookingsPage() {
 }
 function BookingsContent() {
   const params = useSearchParams();
-  const { data, today } = useManager();
+  const { data, today, setRange } = useManager();
   const requestedDate = params.get("date") || params.get("from") || today;
   const requestedEnd = params.get("to") || today;
   const [view, setView] = useState("table");
@@ -44,7 +45,7 @@ function BookingsContent() {
   const [endDate, setEndDate] = useState(
     validDate(requestedEnd) ? requestedEnd : today,
   );
-  const [advisor, setAdvisor] = useState("");
+  const [advisor, setAdvisor] = useState(params.get("advisor") || "");
   const [group, setGroup] = useState("");
   const [change, setChange] = useState("");
   const [query, setQuery] = useState("");
@@ -53,6 +54,12 @@ function BookingsContent() {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(params.get("selected") || "");
   const week = Array.from({ length: 7 }, (_, i) => shiftDate(date, i));
+  useEffect(() => {
+    setRange?.(
+      date,
+      mode === "week" ? shiftDate(date, 6) : mode === "range" ? endDate : date,
+    );
+  }, [setRange, date, endDate, mode]);
   const filtered = data.bookings
     .filter((booking) => {
       const customer = data.customers.find(
@@ -70,7 +77,7 @@ function BookingsContent() {
             : booking.status === status)) &&
         (!advisor ||
           (advisor === "unassigned"
-            ? !booking.advisorId
+            ? managerBookingNeedsAdvisor(booking)
             : booking.advisorId === advisor)) &&
         (!group ||
           data.services.some(
@@ -78,7 +85,7 @@ function BookingsContent() {
           )) &&
         (!change || (booking.changeKind || "new") === change) &&
         (!service || booking.serviceIds.includes(service)) &&
-        `${booking.id} ${customer?.name} ${customer?.phone} ${customer?.plate}`
+        `${booking.code || booking.id} ${booking.customerSnapshot?.name || customer?.name || ""} ${booking.customerSnapshot?.phone || customer?.phone || ""} ${booking.vehicleSnapshot?.plate || customer?.plate || ""}`
           .toLocaleLowerCase("vi")
           .includes(query.toLocaleLowerCase("vi"))
       );

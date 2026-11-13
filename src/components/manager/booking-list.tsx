@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { apiEnabled } from "@/lib/api/client";
+import { BookingCommunication } from "@/components/admin/booking-communication";
 import Link from "next/link";
 import {
   validateBookingChange,
@@ -44,9 +46,21 @@ export function ManagerBookingTable({
         </thead>
         <tbody>
           {bookings.map((booking) => {
-            const customer = data.customers.find(
+            const profile = data.customers.find(
               (item) => item.id === booking.customerId,
             );
+            const customer = {
+              ...profile,
+              ...booking.customerSnapshot,
+              model:
+                booking.vehicleSnapshot === null
+                  ? ""
+                  : booking.vehicleSnapshot?.model || profile?.model,
+              plate:
+                booking.vehicleSnapshot === null
+                  ? ""
+                  : booking.vehicleSnapshot?.plate || profile?.plate,
+            };
             return (
               <tr key={booking.id}>
                 <td data-label="Khách hàng">
@@ -54,7 +68,7 @@ export function ManagerBookingTable({
                     className="mgr-id-link"
                     onClick={() => onSelect(booking.id)}
                   >
-                    {booking.id}
+                    {booking.code || booking.id}
                   </button>
                   <strong>{customer?.name}</strong>
                   <small>{customer?.phone}</small>
@@ -64,9 +78,12 @@ export function ManagerBookingTable({
                   <small>{customer?.plate}</small>
                 </td>
                 <td data-label="Dịch vụ">
-                  {data.services
-                    .filter((item) => booking.serviceIds.includes(item.id))
-                    .map((item) => item.name)
+                  {booking.serviceIds
+                    .map(
+                      (id) =>
+                        booking.serviceNames?.[id] ||
+                        data.services.find((item) => item.id === id)?.name,
+                    )
                     .join(", ")}
                 </td>
                 <td data-label="Ngày giờ">
@@ -110,7 +127,7 @@ export function ManagerBookingDetail({
   id: string;
   onClose: () => void;
 }) {
-  const { data, theme, update, ask } = useManager();
+  const { data, theme, update, ask, commandBooking } = useManager();
   const booking = data.bookings.find((item) => item.id === id);
   const [advisorId, setAdvisorId] = useState(booking?.advisorId ?? "");
   const [action, setAction] = useState<BookingChange | null>(null);
@@ -130,12 +147,25 @@ export function ManagerBookingDetail({
         <p>Lịch không có trong danh sách hiện tại. Đóng chi tiết để tìm lại.</p>
       </ManagerModal>
     );
-  const customer = data.customers.find(
-    (item) => item.id === booking.customerId,
-  );
-  const terminal = ["completed", "cancelled", "no_show"].includes(
-    booking.status,
-  );
+  const profile = data.customers.find((item) => item.id === booking.customerId);
+  const customer = {
+    ...profile,
+    ...booking.customerSnapshot,
+    model:
+      booking.vehicleSnapshot === null
+        ? ""
+        : booking.vehicleSnapshot?.model || profile?.model,
+    plate:
+      booking.vehicleSnapshot === null
+        ? ""
+        : booking.vehicleSnapshot?.plate || profile?.plate,
+  };
+  const terminal = [
+    "completed",
+    "cancelled",
+    "no_show",
+    ...(apiEnabled ? ["arrived"] : []),
+  ].includes(booking.status);
   function assign() {
     if (!assignmentReason.trim()) {
       setError("Nhập lý do phân công hoặc chuyển cố vấn.");
@@ -156,8 +186,17 @@ export function ManagerBookingDetail({
       title: "Xác nhận phân công",
       message: `Giao lịch ${id}: ${data.staff.find((s) => s.id === booking?.advisorId)?.name || "Chưa phân công"} → ${data.staff.find((item) => item.id === advisorId)?.name}. ${assignmentReason.trim()}`,
       label: "Phân công",
-      action: () =>
-        update(
+      action: async () => {
+        if (apiEnabled && commandBooking) {
+          await commandBooking(id, booking?.advisorId ? "transfer" : "assign", {
+            ...(booking?.advisorId
+              ? { toAdvisorId: advisorId }
+              : { advisorId }),
+            reason: assignmentReason.trim(),
+          });
+          return;
+        }
+        await update(
           (previous) => ({
             ...previous,
             bookings: previous.bookings.map((item) =>
@@ -181,20 +220,27 @@ export function ManagerBookingDetail({
           }),
           "Đã cập nhật người phụ trách",
           `${id} · ${booking?.advisorId || "Chưa phân công"} → ${advisorId} · ${assignmentReason.trim()}`,
-        ),
+        );
+      },
     });
   }
   function applyAction() {
     if (!booking || !action) return;
-    const message = validateBookingChange(
-      data,
-      booking,
-      action,
-      date,
-      time,
-      reason,
-      agreed,
-    );
+    const message = apiEnabled
+      ? !reason.trim()
+        ? "Vui lòng nhập lý do."
+        : action !== "cancel" && !agreed
+          ? "Vui lòng xác nhận đã thống nhất với khách."
+          : ""
+      : validateBookingChange(
+          data,
+          booking,
+          action,
+          date,
+          time,
+          reason,
+          agreed,
+        );
     if (message) {
       setError(message);
       return;
@@ -210,12 +256,32 @@ export function ManagerBookingDetail({
       message: `${id} · ${booking.date} ${booking.time}${action === "reschedule" ? ` → ${date} ${time}` : ""}. ${reason.trim()}`,
       danger: action === "cancel",
       label,
-      action: () => {
-        update(
-          (d) => applyBookingChange(d, booking, action, date, time),
-          `Đã ${label.toLocaleLowerCase("vi")}`,
-          `${id} · ${booking.date} ${booking.time}${action === "reschedule" ? ` → ${date} ${time}` : ""} · ${reason.trim()}`,
-        );
+      action: async () => {
+        if (apiEnabled && commandBooking) {
+          const currentPolicy = (await import("@/lib/api/client")).request;
+          const metadata = await currentPolicy("admin/services?limit=1");
+          await commandBooking(id, action, {
+            reason: reason.trim(),
+            ...(action === "confirm"
+              ? {
+                  confirmedStartAt: `${date}T${time}:00+07:00`,
+                  customerAgreed: true,
+                  policyVersion: metadata.meta.policyVersion,
+                }
+              : action === "reschedule"
+                ? {
+                    newStartAt: `${date}T${time}:00+07:00`,
+                    customerAgreed: true,
+                    policyVersion: metadata.meta.policyVersion,
+                  }
+                : {}),
+          });
+        } else
+          await update(
+            (d) => applyBookingChange(d, booking, action, date, time),
+            `Đã ${label.toLocaleLowerCase("vi")}`,
+            `${id} · ${booking.date} ${booking.time}${action === "reschedule" ? ` → ${date} ${time}` : ""} · ${reason.trim()}`,
+          );
         setAction(null);
         setReason("");
         setError("");
@@ -224,7 +290,7 @@ export function ManagerBookingDetail({
   }
   return (
     <ManagerModal
-      title={`Chi tiết ${id}`}
+      title={`Chi tiết ${booking.code || id}`}
       theme={theme}
       onClose={onClose}
       drawer
@@ -240,6 +306,22 @@ export function ManagerBookingDetail({
           {booking.time} · {formatDate(booking.date)}
         </span>
       </div>
+      {apiEnabled && booking.status === "confirmed" && (
+        <Link
+          className="adm-btn adm-primary adm-action-arrive"
+          href={`/dieu-hanh/tiep-nhan/${id}`}
+        >
+          Tiếp nhận xe
+        </Link>
+      )}
+      {booking.serviceVisitId && (
+        <Link
+          className="adm-btn adm-primary"
+          href={`/dieu-hanh/phieu-dich-vu/${booking.serviceVisitId}`}
+        >
+          Xem phiếu dịch vụ
+        </Link>
+      )}
       <section className="mgr-detail-section">
         <h3>Khách hàng & phương tiện</h3>
         <h2>{customer?.name}</h2>
@@ -258,6 +340,14 @@ export function ManagerBookingDetail({
           </div>
         </div>
       </section>
+      {apiEnabled &&
+        booking.version &&
+        ["pending", "confirmed"].includes(booking.status) && (
+          <BookingCommunication
+            bookingId={booking.id}
+            version={booking.version}
+          />
+        )}
       {["pending", "confirmed"].includes(booking.status) && (
         <section className="mgr-detail-section">
           <h3>Xử lý lịch hẹn</h3>
@@ -382,7 +472,11 @@ export function ManagerBookingDetail({
           Lưu phân công
         </button>
         {terminal && (
-          <p className="adm-muted">Lịch đã kết thúc, chỉ xem thông tin.</p>
+          <p className="adm-muted">
+            {booking.status === "arrived"
+              ? "Điều phối cố vấn trên phiếu dịch vụ."
+              : "Lịch đã kết thúc, chỉ xem thông tin."}
+          </p>
         )}
       </section>
       {error && (

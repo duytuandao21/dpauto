@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { WorkspaceShell } from "@/components/internal/workspace-shell";
 import "@/styles/admin.css";
+import "@/styles/advisor.css";
+import "@/styles/manager.css";
+import "@/styles/manager-coreui.css";
+import { CmsShell } from "@/components/manager/cms-shell";
 
 export const metadata: Metadata = {
   title: { absolute: "DPAuto | Quản trị website" },
@@ -12,5 +16,11 @@ export default function WebsiteAdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <WorkspaceShell>{children}</WorkspaceShell>;
+  return (
+    <CmsShell>
+      <WorkspaceShell className="mgr-app mgr-desktop-scale">
+        {children}
+      </WorkspaceShell>
+    </CmsShell>
+  );
 }

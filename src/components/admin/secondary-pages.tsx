@@ -4,9 +4,12 @@ import Link from "next/link";
 import { useBookings } from "./booking-provider";
 import { AdminIcon } from "./admin-icon";
 import { AdminLoading, PageHeading } from "./primitives";
+import { apiEnabled } from "@/lib/api/client";
+import { signOut, useSession } from "./auth-gate";
 
 export function MorePage() {
   const { ask, data } = useBookings();
+  const session = useSession();
   return (
     <>
       <PageHeading
@@ -17,11 +20,29 @@ export function MorePage() {
       <div className="adm-more-profile adm-panel">
         <span className="adm-avatar adm-avatar-lg">CV</span>
         <div>
-          <h2>Cố vấn dịch vụ</h2>
+          <h2>{session?.staff.name || "Cố vấn dịch vụ"}</h2>
           <p className="adm-muted">Trạm dịch vụ Toàn Trung</p>
         </div>
       </div>
       <div className="adm-more-menu adm-panel">
+        {apiEnabled && session?.roles.includes("ADVISOR") && (
+          <Link href="/co-van/lich-su">
+            <AdminIcon name="time" />
+            <span>
+              <strong>Lịch đã bàn giao</strong>
+              <small>Lịch sử công việc của bạn</small>
+            </span>
+            <AdminIcon name="arrow" />
+          </Link>
+        )}
+        {apiEnabled && (
+          <button onClick={() => void signOut()}>
+            <AdminIcon name="logout" />
+            <span>
+              <strong>Đăng xuất</strong>
+            </span>
+          </button>
+        )}
         <Link href="/co-van/tuy-chon">
           <AdminIcon name="settings" />
           <span>
@@ -30,23 +51,34 @@ export function MorePage() {
           </span>
           <AdminIcon name="arrow" />
         </Link>
-        <button
-          onClick={() =>
-            ask({
-              title: "Thông báo lịch hẹn",
-              message: `Có ${data.bookings.filter((booking) => booking.status === "pending").length} lịch đang chờ xác nhận. Bạn có thể xem và xử lý tại mục Lịch hẹn.`,
-              label: "Đã hiểu",
-              onConfirm: () => {},
-            })
-          }
-        >
-          <AdminIcon name="bell" />
-          <span>
-            <strong>Thông báo</strong>
-            <small>Cập nhật lịch hẹn và nhắc tiếp nhận</small>
-          </span>
-          <AdminIcon name="arrow" />
-        </button>
+        {apiEnabled ? (
+          <Link href="/co-van/thong-bao">
+            <AdminIcon name="bell" />
+            <span>
+              <strong>Thông báo</strong>
+              <small>Cập nhật lịch hẹn và nhắc tiếp nhận</small>
+            </span>
+            <AdminIcon name="arrow" />
+          </Link>
+        ) : (
+          <button
+            onClick={() =>
+              ask({
+                title: "Thông báo lịch hẹn",
+                message: `Có ${data.bookings.filter((booking) => booking.status === "pending").length} lịch đang chờ xác nhận. Bạn có thể xem và xử lý tại mục Lịch hẹn.`,
+                label: "Đã hiểu",
+                onConfirm: () => {},
+              })
+            }
+          >
+            <AdminIcon name="bell" />
+            <span>
+              <strong>Thông báo</strong>
+              <small>Cập nhật lịch hẹn và nhắc tiếp nhận</small>
+            </span>
+            <AdminIcon name="arrow" />
+          </button>
+        )}
         <Link href="/">
           <AdminIcon name="logout" />
           <span>

@@ -6,8 +6,17 @@ import { operationAlerts } from "@/lib/manager/operations";
 import { useManager } from "./manager-provider";
 import { FilterSelect, ManagerEmpty, ManagerPanel } from "./manager-ui";
 import { OperationTime } from "./order-drawer";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveAlerts } from "./live-operations";
 
 export function ManagerAlertList({ limit }: { limit?: number }) {
+  return apiEnabled ? (
+    <LiveAlerts limit={limit} />
+  ) : (
+    <PrototypeAlertList limit={limit} />
+  );
+}
+function PrototypeAlertList({ limit }: { limit?: number }) {
   const { data, now } = useManager();
   const [priority, setPriority] = useState("");
   const [type, setType] = useState("");
@@ -94,9 +103,13 @@ export function ManagerAlertsPage() {
         title="Cảnh báo điều hành"
         description="Ưu tiên xử lý lịch hẹn, tiến độ xe và nguồn lực toàn trạm."
       />
-      <ManagerPanel title="Công việc cần chú ý">
+      {apiEnabled ? (
         <ManagerAlertList />
-      </ManagerPanel>
+      ) : (
+        <ManagerPanel title="Công việc cần chú ý">
+          <ManagerAlertList />
+        </ManagerPanel>
+      )}
     </>
   );
 }

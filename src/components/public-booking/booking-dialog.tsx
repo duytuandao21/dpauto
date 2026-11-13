@@ -17,7 +17,11 @@ import {
   validateCustomer,
   type CustomerFields,
   type CustomerErrors,
+  bookingServices,
+  type BookingService,
 } from "@/lib/public-booking/mock";
+import { apiEnabled, request, command, ApiFailure } from "@/lib/api/client";
+import type { PublicCatalog } from "@/lib/api/types";
 import {
   BookingSummary,
   CustomerStep,
@@ -77,6 +81,20 @@ function BookingDialog({
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [catalog, setCatalog] = useState<PublicCatalog | null>(null);
+  const [catalogError, setCatalogError] = useState("");
+  const [catalogRetry, setCatalogRetry] = useState(0);
+  const [acknowledged, setAcknowledged] = useState(false);
+  const [receiptCode, setReceiptCode] = useState("");
+  const services: BookingService[] = apiEnabled
+    ? catalog?.services.map((s) => ({
+        id: s.id,
+        name: s.name,
+        description: s.description || "",
+        durationLabel: s.estimatedDurationLabel,
+        icon: "tool",
+      })) || []
+    : bookingServices;
   const dialog = useRef<HTMLDialogElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const submitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -87,6 +105,25 @@ function BookingDialog({
   useEffect(() => {
     setMounted(true);
   }, []);
+  useEffect(() => {
+    if (!apiEnabled || !open) return;
+    const controller = new AbortController();
+    setCatalogError("");
+    request<PublicCatalog>("public/services", { signal: controller.signal })
+      .then((r) => {
+        setCatalog(r.data);
+        setServiceIds((ids) =>
+          ids.filter((id) => r.data.services.some((s) => s.id === id)),
+        );
+      })
+      .catch((e) => {
+        if (e.name !== "AbortError") {
+          setCatalog(null);
+          setCatalogError(e.message);
+        }
+      });
+    return () => controller.abort();
+  }, [open, catalogRetry]);
   useEffect(() => {
     if (!mounted || !open || !dialog.current) return;
     const element = dialog.current;
@@ -156,9 +193,11 @@ function BookingDialog({
     setReady(false);
     setDate(addDays(stationToday(), 1));
     setSuccess(false);
+    setAcknowledged(false);
+    setReceiptCode("");
   }
   function requestClose() {
-    if (closing) return;
+    if (closing || submitting) return;
     if (submitTimer.current) clearTimeout(submitTimer.current);
     setSubmitting(false);
     setClosing(true);
@@ -189,7 +228,7 @@ function BookingDialog({
         [field]: validateCustomer(next)[field],
       }));
   }
-  function submit(event: FormEvent) {
+  async function submit(event: FormEvent) {
     event.preventDefault();
     if (submitting || closing || success) return;
     if (step === 1) {
@@ -202,7 +241,7 @@ function BookingDialog({
       }
       goTo(2);
     } else if (step === 2) {
-      if (!serviceIds.length) {
+      if (!serviceIds.length || (apiEnabled && !catalog)) {
         setServiceError("Chọn ít nhất một dịch vụ để tiếp tục.");
         dialog.current
           ?.querySelector<HTMLElement>('input[name="services"]')
@@ -213,6 +252,68 @@ function BookingDialog({
     } else {
       if (!time || !ready) {
         setTimeError("Bạn vui lòng chọn một khung giờ còn chỗ.");
+        return;
+      }
+      if (apiEnabled) {
+        if (!catalog || !acknowledged) {
+          setTimeError("Vui lòng xác nhận thông tin đặt lịch.");
+          return;
+        }
+        setSubmitting(true);
+        try {
+          const channelToken = new URLSearchParams(window.location.search).get(
+            "channelToken",
+          );
+          const receipt = await command<{ bookingCode: string }>(
+            "public/bookings",
+            {
+              customer: { name: customer.name.trim(), phone: customer.phone },
+              vehicle:
+                customer.vehicle.trim() || customer.plate.trim()
+                  ? {
+                      ...(customer.vehicle.trim()
+                        ? { model: customer.vehicle.trim() }
+                        : {}),
+                      ...(customer.plate.trim()
+                        ? { plate: customer.plate.trim() }
+                        : {}),
+                    }
+                  : null,
+              serviceIds,
+              requestedStartAt: `${date}T${time}:00+07:00`,
+              catalogVersion: catalog.catalogVersion,
+              policyVersion: catalog.policyVersion,
+              notice: {
+                privacyNoticeVersion:
+                  catalog.bookingPolicy.privacyNoticeVersion,
+                privacyNoticeAcknowledged: true,
+                marketingConsent: false,
+              },
+              ...(note.trim() ? { note: note.trim() } : {}),
+              ...(channelToken ? { channelToken } : {}),
+            },
+          );
+          setReceiptCode(receipt.data.bookingCode);
+          setSuccess(true);
+          requestAnimationFrame(focusStep);
+        } catch (e) {
+          setTimeError(e instanceof Error ? e.message : "Chưa thể đặt lịch.");
+          if (
+            e instanceof ApiFailure &&
+            [
+              "CAPACITY_FULL",
+              "POLICY_VERSION_CONFLICT",
+              "CATALOG_VERSION_CONFLICT",
+              "NOTICE_VERSION_CONFLICT",
+            ].includes(e.code)
+          ) {
+            setTime("");
+            setReady(false);
+            setCatalogRetry((n) => n + 1);
+          }
+        } finally {
+          setSubmitting(false);
+        }
         return;
       }
       // Deliberately no fetch, persistence, admin booking mutation or analytics payload.
@@ -235,7 +336,7 @@ function BookingDialog({
       className={`pb-dialog ${closing ? "is-closing" : ""}`}
       lang="vi"
       aria-labelledby="pb-dialog-title"
-      aria-describedby="pb-demo-notice"
+      aria-describedby={apiEnabled ? undefined : "pb-demo-notice"}
       onCancel={(event) => {
         event.preventDefault();
         requestClose();
@@ -319,10 +420,18 @@ function BookingDialog({
           </nav>
         )}
         <div className="pb-scroll" ref={content} data-native-scroll>
-          <div className="pb-demo-notice" id="pb-demo-notice">
-            <span>Bản xem thử</span>
-            <p>Chưa tạo lịch hẹn thực tế.</p>
-          </div>
+          {apiEnabled && catalogError && (
+            <p className="pb-error" role="alert">
+              {catalogError}{" "}
+              <button
+                type="button"
+                className="pb-text-button"
+                onClick={() => setCatalogRetry((n) => n + 1)}
+              >
+                Thử lại
+              </button>
+            </p>
+          )}
           <AnimatePresence
             initial={false}
             mode="wait"
@@ -349,12 +458,14 @@ function BookingDialog({
                   </motion.div>
                   <span className="pb-status-badge">
                     <Icon name="clock" />
-                    Chờ xác nhận · Minh họa
+                    {apiEnabled ? "Chờ xác nhận" : "Chờ xác nhận · Minh họa"}
                   </span>
                   <h3 tabIndex={-1} data-step-heading>
                     Đã tiếp nhận yêu cầu đặt lịch!
                   </h3>
+                  {receiptCode && <p>{receiptCode}</p>}
                   <BookingSummary
+                    services={services}
                     customer={customer}
                     serviceIds={serviceIds}
                     date={date}
@@ -377,6 +488,7 @@ function BookingDialog({
                 />
               ) : step === 2 ? (
                 <ServicesStep
+                  services={services}
                   selected={serviceIds}
                   error={serviceError}
                   onChange={(ids) => {
@@ -390,6 +502,7 @@ function BookingDialog({
                 <>
                   <StepIntro title="Chọn thời gian phù hợp" />
                   <BookingSchedule
+                    catalog={catalog}
                     today={today}
                     date={date}
                     serviceIds={serviceIds}
@@ -418,6 +531,7 @@ function BookingDialog({
                     />
                   </div>
                   <BookingSummary
+                    services={services}
                     customer={customer}
                     serviceIds={serviceIds}
                     date={date}
@@ -425,6 +539,26 @@ function BookingDialog({
                     note={note}
                     onEdit={goTo}
                   />
+                  {apiEnabled && catalog && (
+                    <label className="pb-field">
+                      <span>
+                        <input
+                          type="checkbox"
+                          checked={acknowledged}
+                          onChange={(e) => setAcknowledged(e.target.checked)}
+                        />{" "}
+                        Tôi đã đọc{" "}
+                        <a
+                          href={catalog.bookingPolicy.privacyNoticeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          thông tin đặt lịch
+                        </a>{" "}
+                        và đồng ý để trạm liên hệ xác nhận.
+                      </span>
+                    </label>
+                  )}
                 </>
               )}
             </motion.div>
@@ -468,13 +602,19 @@ function BookingDialog({
                   type="submit"
                   className="pb-next"
                   disabled={
-                    submitting || closing || (step === 3 && (!time || !ready))
+                    submitting ||
+                    closing ||
+                    (step === 2 &&
+                      apiEnabled &&
+                      (!catalog || !services.length)) ||
+                    (step === 3 &&
+                      (!time || !ready || (apiEnabled && !acknowledged)))
                   }
                 >
                   {submitting ? (
                     <>
                       <span className="pb-spinner" aria-hidden="true" />
-                      Đang xác nhận mẫu…
+                      {apiEnabled ? "Đang gửi yêu cầu…" : "Đang xác nhận mẫu…"}
                     </>
                   ) : step === 3 ? (
                     "Xác nhận đặt lịch"

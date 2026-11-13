@@ -1,6 +1,9 @@
 "use client";
 import Link from "next/link";
-import { advisors, bookingServices } from "@/lib/booking/seed";
+import {
+  advisors as seedAdvisors,
+  bookingServices as seedServices,
+} from "@/lib/booking/seed";
 import { bookingTime, formatDate, timeLabel } from "@/lib/booking/logic";
 import type { Booking } from "@/lib/booking/types";
 import { useBookings } from "./booking-provider";
@@ -12,6 +15,8 @@ import {
 } from "./booking-actions";
 import { AdminIcon } from "./admin-icon";
 import { useAdvisor } from "@/components/advisor/advisor-provider";
+import { apiEnabled } from "@/lib/api/client";
+import { BookingCommunication } from "./booking-communication";
 
 export function BookingDetail({
   booking,
@@ -21,8 +26,15 @@ export function BookingDetail({
   embedded?: boolean;
 }) {
   const { data } = useBookings(),
-    customer = data.customers.find((c) => c.id === booking.customerId)!,
-    vehicle = data.vehicles.find((v) => v.id === booking.vehicleId);
+    customer = {
+      ...data.customers.find((c) => c.id === booking.customerId)!,
+      ...booking.customerSnapshot,
+    },
+    vehicle =
+      booking.vehicleSnapshot ||
+      data.vehicles.find((v) => v.id === booking.vehicleId);
+  const advisors = data.advisors ?? seedAdvisors,
+    bookingServices = data.services ?? seedServices;
   const { orders } = useAdvisor();
   const order = orders.find((item) => item.bookingId === booking.id);
   return (
@@ -95,7 +107,8 @@ export function BookingDetail({
           {booking.serviceIds.map((id) => (
             <span key={id}>
               <AdminIcon name="tool" />
-              {bookingServices.find((s) => s.id === id)?.name}
+              {booking.serviceNames?.[id] ||
+                bookingServices.find((s) => s.id === id)?.name}
             </span>
           ))}
         </div>
@@ -119,6 +132,17 @@ export function BookingDetail({
           <p>{booking.internalNote || "Chưa có ghi chú nội bộ."}</p>
         </div>
       </div>
+      {apiEnabled &&
+        booking.version &&
+        ["pending", "confirmed"].includes(booking.status) && (
+          <details className="adm-detail-section adv-advanced">
+            <summary className="adm-btn">Ghi nhận liên hệ khách hàng</summary>
+            <BookingCommunication
+              bookingId={booking.id}
+              version={booking.version}
+            />
+          </details>
+        )}
       <div className="adm-detail-section">
         <div className="adm-section-line">
           <h3>Lịch sử thao tác</h3>

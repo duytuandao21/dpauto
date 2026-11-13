@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { site } from "@/lib/content";
 import { BookingLauncher } from "@/components/public-booking/booking-dialog";
+import type { CmsPayload } from "@/lib/api/cms";
 
 const features: { icon: IconName; text: string }[] = [
   {
@@ -41,7 +42,7 @@ function subscribeDesktop(notify: () => void) {
   return () => query.removeEventListener("change", notify);
 }
 
-export function Hero() {
+export function Hero({ copy }: { copy?: CmsPayload | null }) {
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const desktop = useSyncExternalStore(
@@ -91,7 +92,11 @@ export function Hero() {
         style={reduced ? undefined : { scale, y: desktop ? y : 0 }}
       >
         <Photo
-          src="/images/hero-dpauto-1.png"
+          src={
+            copy?.imageId
+              ? `/api/v1/public/cms/assets/${copy.imageId}`
+              : "/images/hero-dpauto-1.png"
+          }
           alt="Kỹ thuật viên Toàn Trung thi công phim cách nhiệt cho ô tô"
           priority
           unoptimized
@@ -127,10 +132,10 @@ export function Hero() {
             </span>
             <span className="google-review-rating">5/5</span>
           </motion.a>
-          <motion.h1>Chăm sóc ô tô chuyên nghiệp</motion.h1>
+          <motion.h1>{copy?.title || "Chăm sóc ô tô chuyên nghiệp"}</motion.h1>
           <motion.p>
-            Giữ xe sạch đẹp, sáng bóng và bền lâu với dịch vụ vệ sinh, phủ
-            ceramic, dán phim cách nhiệt và bảo vệ sơn.
+            {copy?.description ??
+              "Giữ xe sạch đẹp, sáng bóng và bền lâu với dịch vụ vệ sinh, phủ ceramic, dán phim cách nhiệt và bảo vệ sơn."}
           </motion.p>
           <motion.div className="button-row">
             <Button href={site.phoneHref} variant="secondary" icon="phone">

@@ -16,8 +16,22 @@ import { ManagerBookingTable, ManagerBookingDetail } from "./booking-list";
 import { ManagerAlertList } from "./alerts-page";
 import { ManagerOperationalOverview } from "./operational-overview";
 import { operationStages, orderAmounts } from "@/lib/manager/operations";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveManagerDashboard } from "./live-dashboard";
+import { LiveOperations } from "./live-operations";
 
 export function ManagerDashboard({ report = false }: { report?: boolean }) {
+  return apiEnabled ? (
+    report ? (
+      <LiveOperations report />
+    ) : (
+      <LiveManagerDashboard />
+    )
+  ) : (
+    <PrototypeDashboard report={report} />
+  );
+}
+function PrototypeDashboard({ report = false }: { report?: boolean }) {
   const { data, today, notify } = useManager();
   const [range, setRange] = useState(1);
   const [query, setQuery] = useState("");
@@ -117,7 +131,6 @@ export function ManagerDashboard({ report = false }: { report?: boolean }) {
   function exportReport() {
     const rows = [
       ["Báo cáo DPAuto", `${start} - ${today}`],
-      ["Nguồn dữ liệu", "Dữ liệu mô phỏng trong phiên hiện tại"],
       ...kpis.map((kpi) => [kpi.label, String(kpi.value)]),
       ...Object.entries(operationStages).map(([stage, label]) => [
         label,

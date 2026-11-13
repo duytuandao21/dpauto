@@ -12,6 +12,9 @@ import {
 import { bookingTime, formatDate, timeLabel } from "@/lib/booking/logic";
 import { useAdvisor } from "./advisor-provider";
 import { StageBadge } from "./order-common";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveVisits } from "./live-visits";
+import { LegacyHistory } from "./legacy-history";
 
 export function VehicleProfile({ id }: { id: string }) {
   const { data, ready: bookingsReady } = useBookings();
@@ -90,35 +93,41 @@ export function VehicleProfile({ id }: { id: string }) {
             <dt>Năm sản xuất</dt>
             <dd>{vehicle.year || "Chưa có"}</dd>
           </div>
-          <div>
-            <dt>ODO gần nhất</dt>
-            <dd>{lastOdo ? `${lastOdo} km` : "Chưa ghi"}</dd>
-          </div>
+          {!apiEnabled && (
+            <div>
+              <dt>ODO gần nhất</dt>
+              <dd>{lastOdo ? `${lastOdo} km` : "Chưa ghi"}</dd>
+            </div>
+          )}
         </dl>
       </section>
-      <section className="adm-panel">
-        <div className="adm-section-line">
-          <h2>Phiếu dịch vụ</h2>
-          <span className="adm-muted">{history.length} phiếu</span>
-        </div>
-        <div className="adm-related-bookings adv-vehicle-bookings">
-          {history.length ? (
-            history.map((order) => (
-              <Link key={order.id} href={`/co-van/phieu-dich-vu/${order.id}`}>
-                <div>
-                  <strong>{order.id}</strong>
-                  <small>
-                    {formatDate(order.openedAt)} · {order.request}
-                  </small>
-                </div>
-                <StageBadge stage={order.stage} />
-              </Link>
-            ))
-          ) : (
-            <p className="adm-muted">Chưa có phiếu dịch vụ.</p>
-          )}
-        </div>
-      </section>
+      {apiEnabled && <LiveVisits vehicleId={id} />}
+      {apiEnabled && <LegacyHistory id={id} vehicle />}
+      {!apiEnabled && (
+        <section className="adm-panel">
+          <div className="adm-section-line">
+            <h2>Phiếu dịch vụ</h2>
+            <span className="adm-muted">{history.length} phiếu</span>
+          </div>
+          <div className="adm-related-bookings adv-vehicle-bookings">
+            {history.length ? (
+              history.map((order) => (
+                <Link key={order.id} href={`/co-van/phieu-dich-vu/${order.id}`}>
+                  <div>
+                    <strong>{order.id}</strong>
+                    <small>
+                      {formatDate(order.openedAt)} · {order.request}
+                    </small>
+                  </div>
+                  <StageBadge stage={order.stage} />
+                </Link>
+              ))
+            ) : (
+              <p className="adm-muted">Chưa có phiếu dịch vụ.</p>
+            )}
+          </div>
+        </section>
+      )}
       <section className="adm-panel">
         <div className="adm-section-line">
           <h2>Lịch hẹn</h2>
@@ -143,32 +152,34 @@ export function VehicleProfile({ id }: { id: string }) {
           )}
         </div>
       </section>
-      <section className="adm-panel">
-        <div className="adm-section-line">
-          <h2>Phụ tùng đã thay</h2>
-          <span className="adm-muted">{parts.length} hạng mục</span>
-        </div>
-        <div className="adm-related-bookings adv-vehicle-bookings">
-          {parts.length ? (
-            parts.map((part) => (
-              <Link
-                key={`${part.orderId}-${part.id}`}
-                href={`/co-van/phieu-dich-vu/${part.orderId}`}
-              >
-                <div>
-                  <strong>{part.name}</strong>
-                  <small>
-                    {part.quantity} {part.unit} · {formatDate(part.at)} ·{" "}
-                    {part.orderId}
-                  </small>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <p className="adm-muted">Chưa ghi nhận phụ tùng đã thay.</p>
-          )}
-        </div>
-      </section>
+      {!apiEnabled && (
+        <section className="adm-panel">
+          <div className="adm-section-line">
+            <h2>Phụ tùng đã thay</h2>
+            <span className="adm-muted">{parts.length} hạng mục</span>
+          </div>
+          <div className="adm-related-bookings adv-vehicle-bookings">
+            {parts.length ? (
+              parts.map((part) => (
+                <Link
+                  key={`${part.orderId}-${part.id}`}
+                  href={`/co-van/phieu-dich-vu/${part.orderId}`}
+                >
+                  <div>
+                    <strong>{part.name}</strong>
+                    <small>
+                      {part.quantity} {part.unit} · {formatDate(part.at)} ·{" "}
+                      {part.orderId}
+                    </small>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <p className="adm-muted">Chưa ghi nhận phụ tùng đã thay.</p>
+            )}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

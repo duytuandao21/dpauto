@@ -20,8 +20,11 @@ import {
 } from "./manager-ui";
 import { ManagerModal } from "./manager-modal";
 import { ManagerBookingDetail } from "./booking-list";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveManagerCustomers } from "./live-customers";
 
 export function ManagerCustomersPage() {
+  if (apiEnabled) return <LiveManagerCustomers />;
   return (
     <Suspense fallback={<AdminLoading />}>
       <CustomersContent />

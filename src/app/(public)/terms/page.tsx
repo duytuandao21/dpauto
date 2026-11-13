@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
 import { legal } from "@/lib/content";
 import { LegalContent } from "@/components/pages/legal-content";
+import { publicPage, publicMetadata } from "@/lib/public-cms";
+import { CmsPage } from "@/components/sections/cms-page";
+import { notFound } from "next/navigation";
 
-export const metadata: Metadata = { title: "Terms of Service" };
-export default function TermsPage() {
+export const generateMetadata = (): Promise<Metadata> =>
+  publicMetadata("/terms", { title: "Terms of Service" });
+export default async function TermsPage() {
+  const content = await publicPage("terms");
+  if (content?.withdrawn) notFound();
   return (
     <section className="legal-page">
-      <LegalContent blocks={legal.terms} />
+      {content?.payload ? (
+        <CmsPage content={content.payload} />
+      ) : (
+        <LegalContent blocks={legal.terms} />
+      )}
     </section>
   );
 }

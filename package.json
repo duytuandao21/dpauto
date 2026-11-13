@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "api:dev": "npm --prefix backend run dev",
+    "api:start": "npm --prefix backend start",
+    "api:migrate": "npm --prefix backend run db:migrate",
+    "api:bootstrap": "npm --prefix backend run db:bootstrap",
     "dev": "next dev --hostname 0.0.0.0 --port 4001",
     "build": "next build",
     "start": "next start --hostname 0.0.0.0 --port 4001",

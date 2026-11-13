@@ -18,6 +18,9 @@ import {
   ManagerField,
 } from "./manager-ui";
 import { ManagerModal } from "./manager-modal";
+import { apiEnabled } from "@/lib/api/client";
+import { useSession } from "@/components/admin/auth-gate";
+import { SensitiveGrants } from "./sensitive-grants";
 
 export function ManagerServicesPage() {
   const { data, theme, update, ask } = useManager();
@@ -33,7 +36,7 @@ export function ManagerServicesPage() {
         .includes(query.toLocaleLowerCase("vi")) &&
       (!filter || (filter === "active" ? service.active : !service.active)),
   );
-  function save(event: FormEvent) {
+  async function save(event: FormEvent) {
     event.preventDefault();
     if (!editing) return;
     if (
@@ -46,19 +49,32 @@ export function ManagerServicesPage() {
       return;
     }
     const value = { ...editing, name: editing.name.trim() };
-    update(
-      (previous) => ({
-        ...previous,
-        services: previous.services.some((item) => item.id === value.id)
-          ? previous.services.map((item) =>
-              item.id === value.id ? value : item,
-            )
-          : [...previous.services, value],
-      }),
-      "Đã lưu dịch vụ",
-      value.name,
-    );
-    setEditing(null);
+    if (
+      apiEnabled &&
+      (!editing.code || !/^[A-Z0-9_-]{3,50}$/.test(editing.code))
+    ) {
+      setError(
+        "Nhập mã dịch vụ hợp lệ (3–50 ký tự, gồm chữ in hoa, số, gạch ngang hoặc gạch dưới).",
+      );
+      return;
+    }
+    try {
+      await update(
+        (previous) => ({
+          ...previous,
+          services: previous.services.some((item) => item.id === value.id)
+            ? previous.services.map((item) =>
+                item.id === value.id ? value : item,
+              )
+            : [...previous.services, value],
+        }),
+        "Đã lưu dịch vụ",
+        value.name,
+      );
+      setEditing(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Chưa thể lưu.");
+    }
   }
   return (
     <>
@@ -75,6 +91,9 @@ export function ManagerServicesPage() {
               group: "Bảo dưỡng",
               duration: 60,
               active: true,
+              ...(apiEnabled
+                ? { code: "", bookable: false, requirements: [] }
+                : {}),
             });
             setError("");
           }}
@@ -122,7 +141,7 @@ export function ManagerServicesPage() {
                 <tr key={service.id}>
                   <td>
                     <strong>{service.name}</strong>
-                    <small>{service.id}</small>
+                    <small>{service.code || service.id}</small>
                   </td>
                   <td>{service.group}</td>
                   <td>{service.duration} phút</td>
@@ -200,6 +219,22 @@ export function ManagerServicesPage() {
           onClose={() => setEditing(null)}
         >
           <form className="mgr-form" onSubmit={save} noValidate>
+            {apiEnabled && (
+              <ManagerField label="Mã dịch vụ *">
+                <input
+                  required
+                  readOnly={data.services.some((s) => s.id === editing.id)}
+                  value={editing.code || ""}
+                  maxLength={50}
+                  onChange={(e) =>
+                    setEditing({
+                      ...editing,
+                      code: e.target.value.toUpperCase(),
+                    })
+                  }
+                />
+              </ManagerField>
+            )}
             <ManagerField label="Tên dịch vụ *">
               <input
                 autoFocus
@@ -217,9 +252,11 @@ export function ManagerServicesPage() {
                   setEditing({ ...editing, group: event.target.value })
                 }
               >
-                {["Bảo dưỡng", "Chăm sóc xe", "Phụ kiện"].map((group) => (
-                  <option key={group}>{group}</option>
-                ))}
+                {["Bảo dưỡng", "Chăm sóc xe", "Phụ kiện", "Khác"].map(
+                  (group) => (
+                    <option key={group}>{group}</option>
+                  ),
+                )}
               </select>
             </ManagerField>
             <ManagerField label="Thời lượng dự kiến (phút) *">
@@ -236,6 +273,20 @@ export function ManagerServicesPage() {
                 }
               />
             </ManagerField>
+            {apiEnabled && (
+              <div>
+                <label className="adm-toggle-row">
+                  <span>Cho phép đặt lịch</span>
+                  <input
+                    type="checkbox"
+                    checked={editing.bookable || false}
+                    onChange={(e) =>
+                      setEditing({ ...editing, bookable: e.target.checked })
+                    }
+                  />
+                </label>
+              </div>
+            )}
             <label className="adm-toggle-row">
               <span>Đang hoạt động</span>
               <input
@@ -267,6 +318,7 @@ export function ManagerStaffPage() {
   const [role, setRole] = useState("");
   const [editing, setEditing] = useState<ManagerStaff | null>(null);
   const [error, setError] = useState("");
+  const session = useSession();
   const staff = data.staff.filter(
     (item) =>
       (!role || item.role === role) &&
@@ -289,8 +341,8 @@ export function ManagerStaffPage() {
     ask({
       title: "Lưu hồ sơ nhân sự?",
       message: "Xác nhận lưu thông tin hồ sơ nhân sự?",
-      action: () => {
-        update(
+      action: async () => {
+        await update(
           (previous) => ({
             ...previous,
             staff: previous.staff.some((item) => item.id === value.id)
@@ -390,28 +442,46 @@ export function ManagerStaffPage() {
                     <small>{item.email}</small>
                   </td>
                   <td>
-                    <div className="mgr-staff-load">
-                      <strong>
-                        {staffWorkload(data, item.id, now).orders.length} xe ·{" "}
-                        {staffWorkload(data, item.id, now).tasks} việc chưa xong
-                      </strong>
-                      <small>
-                        {staffWorkload(data, item.id, now).bookings} lịch đang
-                        phụ trách · {staffWorkload(data, item.id, now).overdue}{" "}
-                        xe quá hạn
-                      </small>
-                      <Link
-                        className="adm-text-link"
-                        href={`/dieu-hanh/dieu-phoi?${item.role === "technician" ? "technician" : "advisor"}=${item.id}`}
-                      >
-                        Xem phân công ↗
-                      </Link>
-                      {staffWorkload(data, item.id, now).orders.length > 3 && (
-                        <span className="mgr-pill mgr-pill-warning">
-                          ⚠ Tải cao
-                        </span>
-                      )}
-                    </div>
+                    {apiEnabled ? (
+                      <div className="mgr-staff-load">
+                        <strong>
+                          {(item.workload?.pending || 0) +
+                            (item.workload?.confirmed || 0)}{" "}
+                          lịch đang phụ trách
+                        </strong>
+                        <Link
+                          className="adm-text-link"
+                          href={`/dieu-hanh/lich-hen?advisor=${item.id}`}
+                        >
+                          Xem lịch hẹn
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="mgr-staff-load">
+                        <strong>
+                          {staffWorkload(data, item.id, now).orders.length} xe ·{" "}
+                          {staffWorkload(data, item.id, now).tasks} việc chưa
+                          xong
+                        </strong>
+                        <small>
+                          {staffWorkload(data, item.id, now).bookings} lịch đang
+                          phụ trách ·{" "}
+                          {staffWorkload(data, item.id, now).overdue} xe quá hạn
+                        </small>
+                        <Link
+                          className="adm-text-link"
+                          href={`/dieu-hanh/dieu-phoi?${item.role === "technician" ? "technician" : "advisor"}=${item.id}`}
+                        >
+                          Xem phân công ↗
+                        </Link>
+                        {staffWorkload(data, item.id, now).orders.length >
+                          3 && (
+                          <span className="mgr-pill mgr-pill-warning">
+                            ⚠ Tải cao
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </td>
                   <td>
                     <span
@@ -511,6 +581,44 @@ export function ManagerStaffPage() {
                 <option value="technician">Kỹ thuật viên</option>
               </select>
             </ManagerField>
+            {apiEnabled &&
+              session?.permissions.includes("roles.manage") &&
+              !editing.accountEnabled &&
+              editing.role !== "technician" && (
+                <>
+                  <label className="adm-toggle-row">
+                    <span>Tạo tài khoản đăng nhập bằng email trên</span>
+                    <input
+                      type="checkbox"
+                      checked={editing.createAccount || false}
+                      onChange={(e) =>
+                        setEditing({
+                          ...editing,
+                          createAccount: e.target.checked,
+                          temporaryPassword: "",
+                        })
+                      }
+                    />
+                  </label>
+                  {editing.createAccount && (
+                    <ManagerField label="Mật khẩu tạm (ít nhất 15 ký tự)">
+                      <input
+                        type="password"
+                        autoComplete="new-password"
+                        minLength={15}
+                        maxLength={128}
+                        value={editing.temporaryPassword || ""}
+                        onChange={(e) =>
+                          setEditing({
+                            ...editing,
+                            temporaryPassword: e.target.value,
+                          })
+                        }
+                      />
+                    </ManagerField>
+                  )}
+                </>
+              )}
             <label className="adm-toggle-row">
               <span>Đang hoạt động</span>
               <input
@@ -530,6 +638,9 @@ export function ManagerStaffPage() {
               Lưu hồ sơ
             </button>
           </form>
+          {apiEnabled &&
+            session?.permissions.includes("roles.manage") &&
+            editing.accountEnabled && <SensitiveGrants id={editing.id} />}
         </ManagerModal>
       )}
     </>

@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { AdminIcon, type AdminIconName } from "./admin-icon";
 import { BookingProvider, useBookings } from "./booking-provider";
 import { AdvisorProvider } from "@/components/advisor/advisor-provider";
+import { AuthGate } from "./auth-gate";
+import { AdminLoading } from "./primitives";
 
 const nav: { href: string; label: string; icon: AdminIconName }[] = [
   { href: "/co-van", label: "Tổng quan", icon: "overview" },
@@ -14,10 +16,11 @@ const nav: { href: string; label: string; icon: AdminIconName }[] = [
   { href: "/co-van/phieu-dich-vu", label: "Xe dịch vụ", icon: "car" },
   { href: "/co-van/khach-hang", label: "Khách hàng", icon: "customers" },
   { href: "/co-van/tai-khoan", label: "Tài khoản", icon: "user" },
+  { href: "/co-van/thong-bao", label: "Thông báo", icon: "bell" },
 ];
 function ShellContent({ children }: { children: React.ReactNode }) {
   const path = usePathname(),
-    { data, ask, theme, toggleTheme } = useBookings();
+    { data, theme, toggleTheme, ready, error, reset } = useBookings();
   const [collapsed, setCollapsed] = useState(false);
   useEffect(() => {
     document.documentElement.lang = "vi";
@@ -31,12 +34,15 @@ function ShellContent({ children }: { children: React.ReactNode }) {
       ? { label: "Hồ sơ xe", icon: "car" as const }
       : active("/co-van/tuy-chon")
         ? { label: "Tùy chọn cá nhân", icon: "settings" as const }
-        : [...nav].reverse().find((item) => active(item.href)) || nav[0];
+        : active("/co-van/lich-su")
+          ? { label: "Lịch đã bàn giao", icon: "time" as const }
+          : [...nav].reverse().find((item) => active(item.href)) || nav[0];
   const selectedNav = (href: string) =>
     active(href) ||
     (href === "/co-van/lich-hen" && active("/co-van/tiep-nhan")) ||
     (href === "/co-van/khach-hang" && active("/co-van/xe")) ||
-    (href === "/co-van/tai-khoan" && active("/co-van/tuy-chon"));
+    (href === "/co-van/tai-khoan" &&
+      (active("/co-van/tuy-chon") || active("/co-van/lich-su")));
   return (
     <div
       className={`adm-app ${collapsed ? "adm-collapsed" : ""}`}
@@ -153,21 +159,13 @@ function ShellContent({ children }: { children: React.ReactNode }) {
             >
               <AdminIcon name={theme === "dark" ? "sun" : "moon"} />
             </button>
-            <button
+            <Link
               className="adm-icon-btn adm-notification"
               aria-label="Thông báo"
-              onClick={() =>
-                ask({
-                  title: "Thông báo lịch hẹn",
-                  message: `Có ${pending} lịch đang chờ xác nhận. Bạn có thể xem và xử lý tại mục Lịch hẹn.`,
-                  label: "Đã hiểu",
-                  onConfirm: () => {},
-                })
-              }
+              href="/co-van/thong-bao"
             >
               <AdminIcon name="bell" />
-              {pending > 0 && <i />}
-            </button>
+            </Link>
             <Link
               href="/co-van/tai-khoan"
               className="adm-avatar"
@@ -178,12 +176,27 @@ function ShellContent({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         <main id="admin-main" className="adm-main" tabIndex={-1}>
-          {children}
+          {!ready ? (
+            <AdminLoading />
+          ) : error ? (
+            <section className="adm-panel" role="alert">
+              <h1>Không tải được dữ liệu</h1>
+              <p>{error}</p>
+              <button className="adm-btn" onClick={reset}>
+                Tải lại
+              </button>
+            </section>
+          ) : (
+            children
+          )}
         </main>
       </div>
       <nav className="adm-bottom-nav" aria-label="Điều hướng trên điện thoại">
         {nav
-          .filter((item) => item.href !== "/co-van/tai-khoan")
+          .filter(
+            (item) =>
+              !["/co-van/tai-khoan", "/co-van/thong-bao"].includes(item.href),
+          )
           .map((item) => {
             const selected = selectedNav(item.href);
             return (
@@ -204,10 +217,12 @@ function ShellContent({ children }: { children: React.ReactNode }) {
 }
 export function AdminShell({ children }: { children: React.ReactNode }) {
   return (
-    <BookingProvider>
-      <AdvisorProvider>
-        <ShellContent>{children}</ShellContent>
-      </AdvisorProvider>
-    </BookingProvider>
+    <AuthGate>
+      <BookingProvider>
+        <AdvisorProvider>
+          <ShellContent>{children}</ShellContent>
+        </AdvisorProvider>
+      </BookingProvider>
+    </AuthGate>
   );
 }

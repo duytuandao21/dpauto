@@ -1,4 +1,15 @@
 /* CoreUI-inspired visual system, scoped to the store manager workspace. */
+.mgr-app p:not([class]),
+.mgr-dialog p:not([class]) {
+  color: inherit;
+}
+.mgr-app .adv-page {
+  max-width: none;
+  margin: 0;
+}
+.mgr-app .mgr-tabs {
+  flex-wrap: wrap;
+}
 .mgr-app[data-theme="light"],
 .mgr-dialog[data-theme="light"],
 .mgr-toast[data-theme="light"] {

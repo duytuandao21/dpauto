@@ -14,6 +14,8 @@ import {
   ManagerField,
 } from "./manager-ui";
 import { ManagerModal } from "./manager-modal";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveCms } from "./live-cms";
 
 const descriptions = {
   content: {
@@ -34,6 +36,13 @@ const descriptions = {
   },
 };
 export function ManagerContentPage({ kind }: { kind: ContentItem["kind"] }) {
+  return apiEnabled ? (
+    <LiveCms kind={kind} />
+  ) : (
+    <PrototypeContentPage kind={kind} />
+  );
+}
+function PrototypeContentPage({ kind }: { kind: ContentItem["kind"] }) {
   const { data, theme, update, ask } = useManager();
   const [query, setQuery] = useState("");
   const [editing, setEditing] = useState<ContentItem | null>(null);

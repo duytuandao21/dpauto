@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { advisors, bookingServices } from "@/lib/booking/seed";
+import {
+  advisors as seedAdvisors,
+  bookingServices as seedServices,
+} from "@/lib/booking/seed";
 import {
   bookingTime,
   formatDate,
@@ -29,6 +32,7 @@ import { BookingDetail } from "./booking-detail";
 import { BookingForm } from "./booking-form";
 import { OverviewInsights } from "./overview-insights";
 import { OverviewTasks } from "@/components/advisor/overview-tasks";
+import { apiEnabled } from "@/lib/api/client";
 
 export function BookingCard({
   booking,
@@ -40,8 +44,14 @@ export function BookingCard({
   href: string;
 }) {
   const { data } = useBookings(),
-    customer = data.customers.find((c) => c.id === booking.customerId),
-    vehicle = data.vehicles.find((v) => v.id === booking.vehicleId);
+    customer =
+      booking.customerSnapshot ||
+      data.customers.find((c) => c.id === booking.customerId),
+    vehicle =
+      booking.vehicleSnapshot ||
+      data.vehicles.find((v) => v.id === booking.vehicleId);
+  const advisors = data.advisors ?? seedAdvisors,
+    bookingServices = data.services ?? seedServices;
   return (
     <article
       className={`adm-booking-card ${selected ? "is-selected" : ""}`}
@@ -77,7 +87,11 @@ export function BookingCard({
         <p className="adm-card-service">
           <AdminIcon name="tool" />
           {booking.serviceIds
-            .map((id) => bookingServices.find((s) => s.id === id)?.name)
+            .map(
+              (id) =>
+                booking.serviceNames?.[id] ||
+                bookingServices.find((s) => s.id === id)?.name,
+            )
             .join(", ")}
           <span className="adm-card-assignee">
             · {advisors.find((a) => a.id === booking.advisorId)?.name}
@@ -108,6 +122,8 @@ export function BookingsWorkspace({
   const { data, ready, selectedDate, setSelectedDate } = useBookings(),
     params = useSearchParams(),
     router = useRouter();
+  const advisors = data.advisors ?? seedAdvisors,
+    bookingServices = data.services ?? seedServices;
   const [advanced, setAdvanced] = useState(false);
   const selected = data.bookings.find((b) => b.id === id);
   const queryDate = params.get("date");
@@ -214,14 +230,21 @@ export function BookingsWorkspace({
               : "Sắp xếp lịch và tiếp nhận xe."
           }
         >
-          <Link
-            href="/co-van/lich-hen/tao-moi"
-            className="adm-btn adm-primary"
-            aria-label="Tạo lịch hẹn"
-          >
-            <AdminIcon name="plus" />
-            <span>Tạo lịch hẹn</span>
-          </Link>
+          <div className="adv-actions">
+            {apiEnabled && (
+              <Link href="/co-van/tiep-nhan/truc-tiep" className="adm-btn">
+                Tiếp nhận xe trực tiếp
+              </Link>
+            )}
+            <Link
+              href="/co-van/lich-hen/tao-moi"
+              className="adm-btn adm-primary"
+              aria-label="Tạo lịch hẹn"
+            >
+              <AdminIcon name="plus" />
+              <span>Tạo lịch hẹn</span>
+            </Link>
+          </div>
         </PageHeading>
       </div>
       {overview && (

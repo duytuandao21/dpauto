@@ -89,7 +89,7 @@ export function RichContent({
   blocks: ContentBlock[];
   className?: string;
 }) {
-  // Markup is generated exclusively from the archived reference, never user input.
+  // Archived markup is trusted; CMS text is escaped at the publication boundary.
   const html = blocks
     .map(
       (b) =>

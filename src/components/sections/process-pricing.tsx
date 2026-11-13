@@ -30,14 +30,17 @@ const pricing = [
   },
 ];
 
-export function PricingSection() {
+export function PricingSection({
+  title = "Dịch vụ & bảng giá",
+  description = "Giá tùy vào kích thước, tình trạng xe và hạng mục thực hiện. Liên hệ để nhận báo giá chính xác.",
+}: {
+  title?: string;
+  description?: string;
+}) {
   return (
     <section className="section pricing-section" id="pricing">
       <div className="container">
-        <SectionHeading
-          title="Dịch vụ & bảng giá"
-          description="Giá tùy vào kích thước, tình trạng xe và hạng mục thực hiện. Liên hệ để nhận báo giá chính xác."
-        />
+        <SectionHeading title={title} description={description} />
         <HomeScrollFrame className="pricing-menu" from={{ scale: 1.06 }}>
           <div className="pricing-title">
             <Image

@@ -27,8 +27,10 @@ import type {
   BookingDraft,
   CapacityConfig,
 } from "@/lib/booking/types";
+import { apiEnabled } from "@/lib/api/client";
+import { RemoteBookingProvider } from "./remote-booking-provider";
 
-type Confirmation = {
+export type Confirmation = {
   title: string;
   message: string;
   label?: string;
@@ -36,22 +38,23 @@ type Confirmation = {
   buttonTone?: "confirm" | "arrive" | "complete";
   onConfirm: () => void;
 };
-interface Context {
+export interface BookingContextValue {
   theme: "dark" | "light";
   toggleTheme: () => void;
   data: BookingData;
   ready: boolean;
+  error?: string;
   selectedDate: string;
   setSelectedDate: (date: string) => void;
   notify: (message: string) => void;
   ask: (confirmation: Confirmation) => void;
   act: (id: string, action: BookingAction) => void;
-  saveBooking: (draft: BookingDraft, id?: string) => Booking;
-  reschedule: (id: string, date: string, time: string) => void;
+  saveBooking: (draft: BookingDraft, id?: string) => Booking | Promise<Booking>;
+  reschedule: (id: string, date: string, time: string) => void | Promise<void>;
   saveSettings: (value: CapacityConfig) => void;
   reset: () => void;
 }
-const BookingContext = createContext<Context | null>(null);
+export const BookingContext = createContext<BookingContextValue | null>(null);
 const empty: BookingData = {
   version: 1,
   bookings: [],
@@ -70,6 +73,13 @@ const empty: BookingData = {
 };
 
 export function BookingProvider({ children }: { children: React.ReactNode }) {
+  return apiEnabled ? (
+    <RemoteBookingProvider>{children}</RemoteBookingProvider>
+  ) : (
+    <LocalBookingProvider>{children}</LocalBookingProvider>
+  );
+}
+function LocalBookingProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState(empty),
     [ready, setReady] = useState(false),
     [selectedDate, setSelectedDate] = useState("");

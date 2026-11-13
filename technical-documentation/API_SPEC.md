@@ -1,3 +1,5 @@
+> Cập nhật 13/11/2026: [Đặt lịch V1 theo số chỗ mỗi khung giờ](../api/booking-slots-v1.md) thay thế cơ chế phân bổ tài nguyên và cấu hình năng lực trong tài liệu này. Quản trị website nằm tại `/admin`.
+
 # DPAuto – API SPECIFICATION
 
 > **Mã:** DPA-API-001  

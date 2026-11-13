@@ -1,0 +1,45 @@
+{
+  "name": "dpauto-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=.env src/main.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node --env-file-if-exists=.env dist/main.js",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts",
+    "db:bootstrap": "node --env-file-if-exists=.env --import tsx scripts/bootstrap.ts",
+    "db:configure": "node --env-file-if-exists=.env --import tsx scripts/configure.ts",
+    "test:phase1": "tsx scripts/test-phase1.ts",
+    "test:booking": "tsx scripts/test-phase1.ts test/booking-slots.integration.test.ts",
+    "test:phase2": "tsx scripts/test-phase1.ts test/phase2.integration.test.ts",
+    "test:phase3": "tsx scripts/test-phase1.ts test/phase3.integration.test.ts",
+    "test:phase4": "tsx scripts/test-phase1.ts test/phase4.integration.test.ts",
+    "test:phase5": "tsx scripts/test-phase1.ts test/phase5.integration.test.ts test/operations-utils.test.ts",
+    "notifications:work": "node --env-file-if-exists=.env --import tsx scripts/notifications.ts",
+    "legacy": "node --env-file-if-exists=.env --import tsx scripts/legacy.ts",
+    "ops": "node --env-file-if-exists=.env --import tsx scripts/ops.ts",
+    "test:phase6": "tsx scripts/test-phase1.ts test/phase6.integration.test.ts test/legacy-file.test.ts"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@fastify/cookie": "11.1.5",
+    "@nestjs/common": "11.2.9",
+    "@nestjs/core": "11.2.9",
+    "@nestjs/platform-fastify": "11.2.9",
+    "drizzle-orm": "0.45.4",
+    "fastify": "5.12.8",
+    "pg": "8.23.1",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "@types/pg": "8.23.1",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  }
+}

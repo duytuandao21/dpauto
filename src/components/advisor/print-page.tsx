@@ -7,8 +7,23 @@ import { formatDate } from "@/lib/booking/logic";
 import { formatMoney, quoteTotals } from "@/lib/advisor/seed";
 import type { QuoteLine } from "@/lib/advisor/types";
 import { useAdvisor } from "./advisor-provider";
+import { apiEnabled } from "@/lib/api/client";
+import { WorkflowPrint } from "./workflow-print";
 
 export function AdvisorPrintPage({
+  id,
+  kind,
+}: {
+  id: string;
+  kind: "quote" | "acceptance";
+}) {
+  return apiEnabled ? (
+    <WorkflowPrint id={id} kind={kind} />
+  ) : (
+    <LocalPrintPage id={id} kind={kind} />
+  );
+}
+function LocalPrintPage({
   id,
   kind,
 }: {

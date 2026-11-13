@@ -1,4 +1,4 @@
-import { ManagerContentPage } from "@/components/manager/content-page";
-export default function MediaPage() {
-  return <ManagerContentPage kind="media" />;
+import { redirect } from "next/navigation";
+export default function Page() {
+  redirect("/admin?tab=media");
 }

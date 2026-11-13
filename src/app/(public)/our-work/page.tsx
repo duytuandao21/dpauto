@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { projects } from "@/lib/content";
 import { BeforeAfter } from "@/components/media/before-after";
+import { publicMetadata } from "@/lib/public-cms";
 import {
   WorkBanner,
   WorkFinalCTA,
 } from "@/components/sections/our-work-motion";
 
-export const metadata: Metadata = { title: "Our Work" };
+export const generateMetadata = (): Promise<Metadata> =>
+  publicMetadata("/our-work", { title: "Our Work" });
 export default function OurWorkPage() {
   return (
     <div className="our-work-page">

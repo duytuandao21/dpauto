@@ -44,7 +44,13 @@ export function WorkBanner({
   );
 }
 
-export function WorkFinalCTA({ vietnamese = false }: { vietnamese?: boolean }) {
+export function WorkFinalCTA({
+  vietnamese = false,
+  copy,
+}: {
+  vietnamese?: boolean;
+  copy?: { title: string; description: string; imageId: string | null };
+}) {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -61,7 +67,11 @@ export function WorkFinalCTA({ vietnamese = false }: { vietnamese?: boolean }) {
         style={reduced ? undefined : { scale, y }}
       >
         <Photo
-          src="/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg"
+          src={
+            copy?.imageId
+              ? `/api/v1/public/cms/assets/${copy.imageId}`
+              : "/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg"
+          }
           alt={
             vietnamese
               ? "Xe Mercedes màu bạc trong xưởng chăm sóc ô tô"
@@ -75,14 +85,16 @@ export function WorkFinalCTA({ vietnamese = false }: { vietnamese?: boolean }) {
         <div className="work-final-cta-panel">
           <div className="work-final-cta-inset" aria-hidden="true" />
           <h2>
-            {vietnamese
-              ? "Chăm chút xứng tầm cho xe của bạn"
-              : "Give Your Vehicle the Care It Deserves"}
+            {copy?.title ??
+              (vietnamese
+                ? "Chăm chút xứng tầm cho xe của bạn"
+                : "Give Your Vehicle the Care It Deserves")}
           </h2>
           <p>
-            {vietnamese
-              ? "Từ làm sạch đến bảo vệ lâu dài, HyperAuto Care luôn đồng hành để xe bạn bền đẹp."
-              : "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best."}
+            {copy?.description ??
+              (vietnamese
+                ? "Từ làm sạch đến bảo vệ lâu dài, HyperAuto Care luôn đồng hành để xe bạn bền đẹp."
+                : "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.")}
           </p>
           <div className="work-final-cta-actions">
             <Button href="/contact">

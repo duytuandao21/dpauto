@@ -26,12 +26,25 @@ import {
   OperationTime,
 } from "./order-drawer";
 import { ManagerBookingDetail } from "./booking-list";
+import { apiEnabled } from "@/lib/api/client";
+import { LiveManagerVisits } from "./live-visits";
+import { LiveQuotes } from "./live-quotes";
 
 type Mode = "board" | "orders" | "quotes";
 export function ManagerOperationsPage({ mode }: { mode: Mode }) {
   return (
     <Suspense fallback={<AdminLoading />}>
-      <OperationsContent mode={mode} />
+      {apiEnabled ? (
+        mode === "quotes" ? (
+          <LiveQuotes />
+        ) : (
+          <div className="adv-stack">
+            <LiveManagerVisits board={mode === "board"} />
+          </div>
+        )
+      ) : (
+        <OperationsContent mode={mode} />
+      )}
     </Suspense>
   );
 }

@@ -45,6 +45,15 @@ export function BookingActions({
       onConfirm: () => act(booking.id, action),
     });
   }
+  if (booking.serviceVisitId)
+    return (
+      <Link
+        className="adm-btn adm-primary adm-booking-action adm-action-arrive"
+        href={`/co-van/phieu-dich-vu/${booking.serviceVisitId}`}
+      >
+        Xem phiếu dịch vụ
+      </Link>
+    );
   if (terminal(booking.status))
     return (
       <span
@@ -126,9 +135,9 @@ export function RescheduleButton({ booking }: { booking: Booking }) {
       title: "Xác nhận đổi lịch?",
       message: `${formatDate(bookingTime(booking))} ${timeLabel(bookingTime(booking))} → ${formatDate(date)} ${time}. Thời gian cũ và mới sẽ được ghi vào lịch sử thao tác.`,
       label: "Đổi lịch",
-      onConfirm: () => {
+      onConfirm: async () => {
         try {
-          reschedule(booking.id, date, time);
+          await reschedule(booking.id, date, time);
           router.replace(`/co-van/lich-hen/${booking.id}?date=${date}`);
         } catch (e) {
           notify(e instanceof Error ? e.message : "Không đổi được lịch.");
@@ -204,7 +213,7 @@ export function RescheduleButton({ booking }: { booking: Booking }) {
   );
 }
 export function EditBookingLink({ booking }: { booking: Booking }) {
-  if (terminal(booking.status)) return null;
+  if (!["pending", "confirmed"].includes(booking.status)) return null;
   return (
     <Link className="adm-btn" href={`/co-van/lich-hen/${booking.id}?edit=1`}>
       Sửa thông tin

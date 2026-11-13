@@ -1,7 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { bookingServices, advisors } from "@/lib/booking/seed";
+import {
+  bookingServices as seedServices,
+  advisors as seedAdvisors,
+} from "@/lib/booking/seed";
+import { apiEnabled } from "@/lib/api/client";
+import { useSession } from "./auth-gate";
 import {
   bookingTime,
   localDate,
@@ -47,25 +52,36 @@ function FormContent({ existing }: { existing?: Booking }) {
   const { data, saveBooking, ask, notify } = useBookings(),
     router = useRouter(),
     params = useSearchParams();
+  const bookingServices = data.services ?? seedServices,
+    advisors = data.advisors ?? seedAdvisors;
+  const session = useSession();
   const selectedCustomer = data.customers.find(
       (c) => c.id === (existing?.customerId || params.get("customer")),
     ),
     selectedVehicle =
       data.vehicles.find((v) => v.id === existing?.vehicleId) ||
-      data.vehicles.find((v) => v.customerId === selectedCustomer?.id);
+      data.vehicles.find(
+        (v) =>
+          v.customerId === selectedCustomer?.id ||
+          (!!selectedCustomer && v.customerIds?.includes(selectedCustomer.id)),
+      );
   const initial: BookingDraft = {
     customerId: selectedCustomer?.id || "",
-    name: selectedCustomer?.name || "",
-    phone: selectedCustomer?.phone || "",
+    name: existing?.customerSnapshot?.name || selectedCustomer?.name || "",
+    phone: existing?.customerSnapshot?.phone || selectedCustomer?.phone || "",
     vehicleId: selectedVehicle?.id || "",
-    model: selectedVehicle?.model || "",
-    plate: selectedVehicle?.plate || "",
+    model: existing?.vehicleSnapshot?.model || selectedVehicle?.model || "",
+    plate: existing?.vehicleSnapshot?.plate || selectedVehicle?.plate || "",
     serviceIds: existing?.serviceIds || [],
-    date: existing?.requestedAt.slice(0, 10) || localDate(),
-    time: existing?.requestedAt.slice(11, 16) || "09:00",
+    date: existing ? bookingTime(existing).slice(0, 10) : localDate(),
+    time: existing ? bookingTime(existing).slice(11, 16) : "09:00",
     confirmedDate: existing?.confirmedAt?.slice(0, 10) || "",
     confirmedTime: existing?.confirmedAt?.slice(11, 16) || "",
-    advisorId: existing?.advisorId || advisors[0].id,
+    advisorId:
+      existing?.advisorId ||
+      (session?.roles.includes("ADVISOR")
+        ? session.staff.id
+        : advisors[0]?.id || ""),
     source: existing?.source || "Điện thoại",
     customerNote: existing?.customerNote || "",
     internalNote: existing?.internalNote || "",
@@ -73,6 +89,7 @@ function FormContent({ existing }: { existing?: Booking }) {
   const [draft, setDraft] = useState(initial),
     [errors, setErrors] = useState<Record<string, string>>({}),
     [saving, setSaving] = useState(false);
+  const [noticeAcknowledged, setNoticeAcknowledged] = useState(false);
   const baseline = useRef(JSON.stringify(initial)),
     form = useRef<HTMLFormElement>(null),
     saved = useRef(false),
@@ -93,7 +110,9 @@ function FormContent({ existing }: { existing?: Booking }) {
   }
   function customerChange(id: string) {
     const c = data.customers.find((c) => c.id === id),
-      v = data.vehicles.find((v) => v.customerId === id);
+      v = data.vehicles.find(
+        (v) => v.customerId === id || v.customerIds?.includes(id),
+      );
     setDraft((d) => ({
       ...d,
       customerId: id,
@@ -105,10 +124,10 @@ function FormContent({ existing }: { existing?: Booking }) {
     }));
     setErrors({});
   }
-  function save() {
+  async function save() {
     setSaving(true);
     try {
-      const booking = saveBooking(draft, existing?.id);
+      const booking = await saveBooking(draft, existing?.id);
       saved.current = true;
       router.push(
         `/co-van/lich-hen/${booking.id}?date=${bookingTime(booking).slice(0, 10)}`,
@@ -120,6 +139,10 @@ function FormContent({ existing }: { existing?: Booking }) {
   }
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (apiEnabled && !existing && !noticeAcknowledged) {
+      notify("Vui lòng xác nhận đã cung cấp thông tin đặt lịch cho khách.");
+      return;
+    }
     const validation = validateDraft(draft, localDate(), existing);
     if (Object.keys(validation).length) {
       setErrors(validation);
@@ -145,7 +168,7 @@ function FormContent({ existing }: { existing?: Booking }) {
         (b) =>
           b.advisorId === draft.advisorId || b.vehicleId === draft.vehicleId,
       ) || overlaps.length >= data.capacity.carsPerSlot;
-    if (conflict) {
+    if (conflict && !apiEnabled) {
       ask({
         title: "Khung giờ có thể bị trùng",
         message: `Có ${overlaps.length} lịch gần thời gian này, trùng cố vấn/xe hoặc có thể vượt giới hạn tiếp nhận. Bạn vẫn muốn lưu lịch?`,
@@ -222,6 +245,7 @@ function FormContent({ existing }: { existing?: Booking }) {
                 {...inputProps("name")}
                 autoComplete="name"
                 value={draft.name}
+                readOnly={apiEnabled && !existing && !!draft.customerId}
                 onChange={(e) => set("name", e.target.value)}
                 placeholder="Nhập họ tên khách hàng"
               />
@@ -233,6 +257,7 @@ function FormContent({ existing }: { existing?: Booking }) {
                 inputMode="tel"
                 autoComplete="tel"
                 value={draft.phone}
+                readOnly={apiEnabled && !existing && !!draft.customerId}
                 onChange={(e) => set("phone", e.target.value)}
                 placeholder="09xx xxx xxx"
               />
@@ -257,7 +282,11 @@ function FormContent({ existing }: { existing?: Booking }) {
                 >
                   <option value="">+ Thêm xe khác</option>
                   {data.vehicles
-                    .filter((v) => v.customerId === draft.customerId)
+                    .filter(
+                      (v) =>
+                        v.customerId === draft.customerId ||
+                        v.customerIds?.includes(draft.customerId),
+                    )
                     .map((v) => (
                       <option key={v.id} value={v.id}>
                         {v.model} · {v.plate || "Chưa có biển số"}
@@ -270,6 +299,7 @@ function FormContent({ existing }: { existing?: Booking }) {
               <input
                 {...inputProps("model")}
                 value={draft.model}
+                readOnly={apiEnabled && !!draft.vehicleId}
                 onChange={(e) => set("model", e.target.value)}
                 placeholder="VD: Toyota Vios"
               />
@@ -278,6 +308,7 @@ function FormContent({ existing }: { existing?: Booking }) {
               <input
                 id="plate"
                 value={draft.plate}
+                readOnly={apiEnabled && !!draft.vehicleId}
                 onChange={(e) => set("plate", e.target.value)}
                 placeholder="VD: 51G-123.45"
               />
@@ -335,6 +366,7 @@ function FormContent({ existing }: { existing?: Booking }) {
                 type="date"
                 min={existing ? undefined : localDate()}
                 value={draft.date}
+                readOnly={apiEnabled && !!existing}
                 onChange={(e) => set("date", e.target.value)}
               />
             </Field>
@@ -343,39 +375,46 @@ function FormContent({ existing }: { existing?: Booking }) {
                 {...inputProps("time")}
                 type="time"
                 value={draft.time}
+                readOnly={apiEnabled && !!existing}
                 onChange={(e) => set("time", e.target.value)}
               />
             </Field>
-            <Field
-              label="Ngày xác nhận (tùy chọn)"
-              name="confirmedDate"
-              error={errors.confirmedDate}
-            >
-              <input
-                {...inputProps("confirmedDate")}
-                type="date"
-                min={existing ? undefined : localDate()}
-                value={draft.confirmedDate}
-                onChange={(e) => set("confirmedDate", e.target.value)}
-              />
-            </Field>
-            <Field
-              label="Giờ xác nhận (tùy chọn)"
-              name="confirmedTime"
-              error={errors.confirmedTime}
-            >
-              <input
-                {...inputProps("confirmedTime")}
-                type="time"
-                value={draft.confirmedTime}
-                onChange={(e) => set("confirmedTime", e.target.value)}
-              />
-            </Field>
+            {!apiEnabled && (
+              <Field
+                label="Ngày xác nhận (tùy chọn)"
+                name="confirmedDate"
+                error={errors.confirmedDate}
+              >
+                <input
+                  {...inputProps("confirmedDate")}
+                  type="date"
+                  min={existing ? undefined : localDate()}
+                  value={draft.confirmedDate}
+                  onChange={(e) => set("confirmedDate", e.target.value)}
+                />
+              </Field>
+            )}
+            {!apiEnabled && (
+              <Field
+                label="Giờ xác nhận (tùy chọn)"
+                name="confirmedTime"
+                error={errors.confirmedTime}
+              >
+                <input
+                  {...inputProps("confirmedTime")}
+                  type="time"
+                  value={draft.confirmedTime}
+                  onChange={(e) => set("confirmedTime", e.target.value)}
+                />
+              </Field>
+            )}
           </div>
-          <p className="adm-field-help">
-            Lịch mới có đủ ngày giờ xác nhận sẽ ở trạng thái “Đã xác nhận”. Bỏ
-            trống để chờ xác nhận.
-          </p>
+          {!apiEnabled && (
+            <p className="adm-field-help">
+              Lịch mới có đủ ngày giờ xác nhận sẽ ở trạng thái “Đã xác nhận”. Bỏ
+              trống để chờ xác nhận.
+            </p>
+          )}
         </section>
         <section className="adm-panel">
           <div className="adm-form-section-title">
@@ -394,6 +433,10 @@ function FormContent({ existing }: { existing?: Booking }) {
               <select
                 {...inputProps("advisorId")}
                 value={draft.advisorId}
+                disabled={
+                  apiEnabled &&
+                  (session?.roles.includes("ADVISOR") || !!existing)
+                }
                 onChange={(e) => set("advisorId", e.target.value)}
               >
                 {advisors.map((a) => (
@@ -406,14 +449,22 @@ function FormContent({ existing }: { existing?: Booking }) {
             <Field label="Nguồn đặt lịch" name="source">
               <select
                 id="source"
+                disabled={apiEnabled && !!existing}
                 value={draft.source}
                 onChange={(e) =>
                   set("source", e.target.value as BookingDraft["source"])
                 }
               >
-                {sources.map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
+                {sources
+                  .filter(
+                    (s) =>
+                      !apiEnabled ||
+                      !!existing ||
+                      !["Website", "QR"].includes(s),
+                  )
+                  .map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
               </select>
             </Field>
             <Field label="Ghi chú khách hàng" name="customerNote">
@@ -436,6 +487,26 @@ function FormContent({ existing }: { existing?: Booking }) {
             </Field>
           </div>
         </section>
+        {apiEnabled && !existing && (
+          <label className="adm-toggle-row">
+            <span>
+              Đã cung cấp{" "}
+              <a
+                href="/chinh-sach-dat-lich"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                thông tin đặt lịch
+              </a>{" "}
+              và thông báo việc liên hệ xác nhận cho khách.
+            </span>
+            <input
+              type="checkbox"
+              checked={noticeAcknowledged}
+              onChange={(e) => setNoticeAcknowledged(e.target.checked)}
+            />
+          </label>
+        )}
         <div className="adm-form-footer">
           <span className="adm-muted">
             {dirty ? "Có thay đổi chưa lưu" : "* Thông tin bắt buộc"}
