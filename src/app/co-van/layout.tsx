@@ -5,6 +5,7 @@ import { AdminLoading } from "@/components/admin/primitives";
 import "@/styles/admin.css";
 import "@/styles/advisor.css";
 import "@/styles/advisor-coreui.css";
+import "@/styles/advisor-redesign.css";
 
 export const metadata: Metadata = {
   title: { absolute: "DPAuto | Cố vấn dịch vụ" },

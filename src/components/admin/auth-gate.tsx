@@ -7,6 +7,7 @@ import {
   type ReactNode,
   type FormEvent,
 } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { apiEnabled, request, command, ApiFailure } from "@/lib/api/client";
@@ -64,7 +65,10 @@ export function AuthGate({
     [password, setPassword] = useState(""),
     [next, setNext] = useState(""),
     [confirm, setConfirm] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [reveal, setReveal] = useState(false);
+  const advisor = !manager && !cms,
+    secret = advisor && reveal ? "text" : "password";
   useEffect(() => {
     if (!apiEnabled) return;
     let active = true;
@@ -139,11 +143,29 @@ export function AuthGate({
     );
   if (!session || session.mustChangePassword)
     return (
-      <div className="adm-app" data-theme="light">
+      <div
+        className={`adm-app${advisor ? " adv-ui adv-login" : ""}`}
+        data-theme="light"
+      >
         <main className="adm-main">
           <section className="adm-panel adm-form-page">
+            {advisor && (
+              <Image
+                className="adv-login-logo"
+                src="/images/logo-dpauto.png"
+                alt="Trạm dịch vụ Toàn Trung"
+                width={1448}
+                height={1086}
+                sizes="120px"
+                priority
+              />
+            )}
             <h1>{session ? "Đổi mật khẩu" : "Đăng nhập"}</h1>
-            <p>Trạm dịch vụ Toàn Trung</p>
+            <p>
+              {advisor
+                ? "Cố vấn dịch vụ · Trạm dịch vụ Toàn Trung"
+                : "Trạm dịch vụ Toàn Trung"}
+            </p>
             <form onSubmit={submit} className="adm-booking-form">
               {!session && (
                 <label className="adm-field">
@@ -160,7 +182,7 @@ export function AuthGate({
               <label className="adm-field">
                 {session ? "Mật khẩu hiện tại" : "Mật khẩu"}
                 <input
-                  type="password"
+                  type={secret}
                   autoComplete="current-password"
                   required
                   value={password}
@@ -172,7 +194,7 @@ export function AuthGate({
                   <label className="adm-field">
                     Mật khẩu mới
                     <input
-                      type="password"
+                      type={secret}
                       autoComplete="new-password"
                       minLength={15}
                       maxLength={128}
@@ -184,7 +206,7 @@ export function AuthGate({
                   <label className="adm-field">
                     Nhập lại mật khẩu mới
                     <input
-                      type="password"
+                      type={secret}
                       autoComplete="new-password"
                       required
                       value={confirm}
@@ -193,6 +215,16 @@ export function AuthGate({
                   </label>
                   <p className="adm-field-help">Từ 15 đến 128 ký tự.</p>
                 </>
+              )}
+              {advisor && (
+                <label className="adv-login-reveal">
+                  <input
+                    type="checkbox"
+                    checked={reveal}
+                    onChange={(e) => setReveal(e.target.checked)}
+                  />
+                  Hiện mật khẩu
+                </label>
               )}
               {error && (
                 <p className="adm-error-text" role="alert">

@@ -291,7 +291,6 @@ export function BookingsWorkspace({
           ))}
         </div>
       )}
-      {overview && <OverviewInsights date={date} />}
       {overview && <OverviewTasks />}
       <div className="adm-master-detail">
         <section className="adm-master" aria-label="Danh sách lịch hẹn">
@@ -589,6 +588,7 @@ export function BookingsWorkspace({
           )}
         </aside>
       </div>
+      {overview && <OverviewInsights date={date} />}
     </div>
   );
 }

@@ -7,23 +7,40 @@ import { useEffect, useState } from "react";
 import { AdminIcon, type AdminIconName } from "./admin-icon";
 import { BookingProvider, useBookings } from "./booking-provider";
 import { AdvisorProvider } from "@/components/advisor/advisor-provider";
-import { AuthGate } from "./auth-gate";
+import { AuthGate, signOut, useSession } from "./auth-gate";
 import { AdminLoading } from "./primitives";
+import { apiEnabled } from "@/lib/api/client";
 
 const nav: { href: string; label: string; icon: AdminIconName }[] = [
   { href: "/co-van", label: "Tổng quan", icon: "overview" },
   { href: "/co-van/lich-hen", label: "Lịch hẹn", icon: "calendar" },
   { href: "/co-van/phieu-dich-vu", label: "Xe dịch vụ", icon: "car" },
   { href: "/co-van/khach-hang", label: "Khách hàng", icon: "customers" },
-  { href: "/co-van/tai-khoan", label: "Tài khoản", icon: "user" },
   { href: "/co-van/thong-bao", label: "Thông báo", icon: "bell" },
+  { href: "/co-van/tai-khoan", label: "Tài khoản", icon: "user" },
 ];
+const initials = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(-2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase() || "CV";
 function ShellContent({ children }: { children: React.ReactNode }) {
   const path = usePathname(),
     { data, theme, toggleTheme, ready, error, reset } = useBookings();
   const [collapsed, setCollapsed] = useState(false);
+  const sessionName = useSession()?.staff.name,
+    staffName = sessionName || "Cố vấn dịch vụ",
+    avatar = sessionName ? initials(sessionName) : "CV";
   useEffect(() => {
     document.documentElement.lang = "vi";
+    // Scopes the advisor redesign styles to this workspace only.
+    document.body.dataset.workspace = "advisor";
+    return () => {
+      delete document.body.dataset.workspace;
+    };
   }, []);
   const active = (href: string) =>
     href === "/co-van" ? path === href : path.startsWith(href);
@@ -45,7 +62,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
       (active("/co-van/tuy-chon") || active("/co-van/lich-su")));
   return (
     <div
-      className={`adm-app ${collapsed ? "adm-collapsed" : ""}`}
+      className={`adm-app adv-ui ${collapsed ? "adm-collapsed" : ""}`}
       data-theme={theme}
       lang="vi"
     >
@@ -103,9 +120,20 @@ function ShellContent({ children }: { children: React.ReactNode }) {
             title="Xem website"
             aria-label="Xem website"
           >
-            <AdminIcon name="logout" />
+            <AdminIcon name="website" />
             <span className="adm-sidebar-label">Xem website</span>
           </Link>
+          {apiEnabled && (
+            <button
+              className="adm-nav-link"
+              onClick={() => void signOut()}
+              title="Đăng xuất"
+              aria-label="Đăng xuất"
+            >
+              <AdminIcon name="logout" />
+              <span className="adm-sidebar-label">Đăng xuất</span>
+            </button>
+          )}
           <button
             className="adm-nav-link adm-collapse"
             onClick={() => setCollapsed(!collapsed)}
@@ -116,10 +144,12 @@ function ShellContent({ children }: { children: React.ReactNode }) {
             <span className="adm-sidebar-label">Thu gọn</span>
           </button>
           <div className="adm-advisor">
-            <span className="adm-avatar">CV</span>
+            <span className="adm-avatar" aria-hidden="true">
+              {avatar}
+            </span>
             <span className="adm-sidebar-label">
-              <strong>Cố vấn dịch vụ</strong>
-              <small>Không gian làm việc</small>
+              <strong>{staffName}</strong>
+              <small>Cố vấn dịch vụ</small>
             </span>
           </div>
         </div>
@@ -142,7 +172,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
           </Link>
           <div className="adm-header-breadcrumb">
             <AdminIcon name={current.icon} />
-            <span>Không gian quản lý</span>
+            <span>Cố vấn dịch vụ</span>
             <span className="adm-crumb-divider">/</span>
             <strong>{current.label}</strong>
           </div>
@@ -169,9 +199,10 @@ function ShellContent({ children }: { children: React.ReactNode }) {
             <Link
               href="/co-van/tai-khoan"
               className="adm-avatar"
-              aria-label="Tài khoản cố vấn"
+              aria-label={`Tài khoản: ${staffName}`}
+              title={staffName}
             >
-              CV
+              {avatar}
             </Link>
           </div>
         </header>

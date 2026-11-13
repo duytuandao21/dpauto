@@ -1,0 +1,306 @@
+/*
+ * Advisor workspace redesign (/co-van only).
+ * Every rule is scoped to .adv-ui (set by AdminShell and the advisor login),
+ * so /dieu-hanh and /admin keep their current look.
+ * Brand values come from src/styles/home-theme.css (--brand-red*).
+ */
+
+.adm-app.adv-ui[data-theme="light"],
+.adm-app.adv-ui[data-theme="light"] .adm-dialog,
+body[data-workspace="advisor"] .adm-toast[data-theme="light"]:not(.mgr-toast) {
+  --adv-brand: #e20000;
+  --adv-brand-hover: #c31829;
+  --adm-accent: #e20000;
+  --adm-accent-soft: #fff1f1;
+  --adm-accent-text: #c31829;
+  --adv-primary-hover: #c31829;
+  --adm-bg: #f4f5f7;
+  --adm-sidebar: #1d222b;
+  --adm-text: #1f2937;
+  --adm-muted: #556070;
+}
+
+.adm-app.adv-ui[data-theme="dark"],
+.adm-app.adv-ui[data-theme="dark"] .adm-dialog,
+body[data-workspace="advisor"] .adm-toast[data-theme="dark"]:not(.mgr-toast) {
+  --adv-brand: #e20000;
+  --adv-brand-hover: #c31829;
+  --adm-accent: #ff9a9e;
+  --adm-accent-soft: #e2000029;
+  --adm-accent-text: #ff9a9e;
+  --adv-primary-hover: #c31829;
+}
+
+/* ---------- Buttons: one primary color, destructive stays outlined ---------- */
+.adm-app.adv-ui .adm-btn.adm-primary,
+.adm-app.adv-ui .adm-dialog .adm-btn.adm-primary,
+.adm-app.adv-ui .adm-btn.adm-booking-action {
+  color: #fff;
+  border-color: var(--adv-brand);
+  background: var(--adv-brand);
+  font-weight: 600;
+}
+
+.adm-app.adv-ui .adm-btn.adm-primary:hover,
+.adm-app.adv-ui .adm-dialog .adm-btn.adm-primary:hover,
+.adm-app.adv-ui .adm-btn.adm-booking-action:hover {
+  color: #fff;
+  border-color: var(--adv-brand-hover);
+  background: var(--adv-brand-hover);
+  filter: none;
+}
+
+.adm-app.adv-ui .adm-btn.adm-danger,
+.adm-app.adv-ui .adm-dialog .adm-btn.adm-danger {
+  color: var(--adm-danger);
+  border-color: var(--adm-danger);
+  background: var(--adm-surface);
+}
+
+.adm-app.adv-ui .adm-btn.adm-danger:hover,
+.adm-app.adv-ui .adm-dialog .adm-btn.adm-danger:hover {
+  color: #fff;
+  border-color: var(--adm-danger);
+  background: var(--adm-danger);
+}
+
+.adm-app.adv-ui .adm-btn:focus-visible,
+.adm-app.adv-ui .adm-nav-link:focus-visible,
+.adm-app.adv-ui .adm-icon-btn:focus-visible,
+.adm-app.adv-ui a:focus-visible {
+  outline: 3px solid var(--adm-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- KPI cards: calm surfaces, color only as an accent ---------- */
+.adm-app.adv-ui .adm-kpi,
+.adm-app.adv-ui .adm-kpi-pending,
+.adm-app.adv-ui .adm-kpi-confirmed,
+.adm-app.adv-ui .adm-kpi-done {
+  --adv-kpi: var(--adm-muted);
+  min-height: 0;
+  padding: 16px 18px;
+  color: var(--adm-text);
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-left: 4px solid var(--adv-kpi);
+  border-radius: 8px;
+}
+
+.adm-app.adv-ui .adm-kpi-pending {
+  --adv-kpi: var(--adm-status-pending-border);
+}
+.adm-app.adv-ui .adm-kpi-confirmed {
+  --adv-kpi: var(--adm-status-confirmed-text);
+}
+.adm-app.adv-ui .adm-kpi-done {
+  --adv-kpi: var(--adm-status-completed-text);
+}
+.adm-app.adv-ui .adm-kpi:first-child {
+  --adv-kpi: var(--adv-brand);
+}
+
+.adm-app.adv-ui .adm-kpi > div {
+  color: var(--adm-muted);
+  font-weight: 600;
+}
+
+.adm-app.adv-ui .adm-kpi .icon {
+  color: var(--adv-kpi);
+}
+
+.adm-app.adv-ui .adm-kpi strong {
+  color: var(--adm-text);
+  font-size: 32px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Sidebar ---------- */
+.adm-app.adv-ui .adm-sidebar .adm-nav-link {
+  position: relative;
+  min-height: 44px;
+  width: 100%;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.adm-app.adv-ui .adm-sidebar .adm-nav-link.is-active {
+  color: #fff;
+  background: #ffffff14;
+}
+
+.adm-app.adv-ui .adm-sidebar .adm-nav-link.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 8px auto 8px 0;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--adv-brand);
+}
+
+.adm-app.adv-ui .adm-sidebar .adm-nav-count {
+  background: var(--adv-brand);
+}
+
+/* Divider belongs above the "Cá nhân" group (5th item), not above Khách hàng. */
+.adm-app.adv-ui .adm-sidebar nav > div:nth-child(4) {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+.adm-app.adv-ui .adm-sidebar nav > div:nth-child(5) {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--adv-sidebar-border);
+}
+
+.adm-app.adv-ui .adm-sidebar .adm-avatar,
+.adm-app.adv-ui .adm-header .adm-avatar {
+  color: #fff;
+  border-color: transparent;
+  background: var(--adv-brand);
+  font-weight: 700;
+}
+
+.adm-app.adv-ui .adm-sidebar .adm-advisor strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Header, tabs, filters ---------- */
+.adm-app.adv-ui .adm-header-breadcrumb strong {
+  font-weight: 700;
+}
+
+.adm-app.adv-ui .adm-date-strip button.is-active {
+  color: #fff;
+  border-color: var(--adv-brand);
+  background: var(--adv-brand);
+}
+
+.adm-app.adv-ui .adm-bottom-nav .is-active {
+  color: var(--adm-accent-text);
+  font-weight: 600;
+}
+
+/* ---------- Cards and lists ---------- */
+.adm-app.adv-ui .adm-panel,
+.adm-app.adv-ui .adm-booking-list,
+.adm-app.adv-ui .adm-customer-list,
+.adm-app.adv-ui .adv-order-list {
+  border-radius: 8px;
+}
+
+.adm-app.adv-ui .adm-booking-card.is-selected,
+.adm-app.adv-ui .adm-booking-card[aria-current="true"] {
+  box-shadow: inset 3px 0 0 var(--adv-brand);
+}
+
+/* ---------- Login (advisor only) ---------- */
+.adm-app.adv-login,
+.adm-app.adv-login .adm-main {
+  min-height: 100dvh;
+  background: var(--adm-bg);
+}
+
+.adm-app.adv-login .adm-main {
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+}
+
+.adm-app.adv-login .adm-form-page {
+  width: 100%;
+  max-width: 420px;
+  margin: 0;
+  padding: 32px 28px;
+  border-radius: 12px;
+  border-top: 4px solid var(--adv-brand);
+  box-shadow: 0 8px 24px #1623391a;
+  text-align: left;
+}
+
+.adm-app.adv-login .adv-login-logo {
+  display: block;
+  width: 96px;
+  height: auto;
+  margin: 0 0 16px;
+}
+
+.adm-app.adv-login .adm-form-page h1 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.25;
+}
+
+.adm-app.adv-login .adm-form-page > p {
+  margin: 4px 0 24px;
+  color: var(--adm-muted);
+}
+
+.adm-app.adv-login .adm-booking-form {
+  display: grid;
+  gap: 16px;
+}
+
+.adm-app.adv-login .adm-field input {
+  min-height: 48px;
+  font-size: 16px;
+}
+
+.adm-app.adv-login .adv-login-reveal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--adm-muted);
+  cursor: pointer;
+}
+
+.adm-app.adv-login .adv-login-reveal input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--adv-brand);
+}
+
+.adm-app.adv-login .adm-btn.adm-primary {
+  min-height: 48px;
+  font-size: 16px;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 767.98px) {
+  .adm-app.adv-ui .adm-kpis {
+    gap: 8px;
+  }
+
+  .adm-app.adv-ui .adm-kpi {
+    padding: 12px 14px;
+  }
+
+  .adm-app.adv-ui .adm-kpi strong {
+    font-size: 26px;
+  }
+
+  .adm-app.adv-ui .adm-kpi small {
+    display: none;
+  }
+
+  .adm-app.adv-ui .adm-btn {
+    min-height: 44px;
+  }
+
+  .adm-app.adv-ui .adm-bottom-nav a {
+    min-height: 56px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .adm-app.adv-login {
+    background: var(--adm-bg);
+  }
+}
