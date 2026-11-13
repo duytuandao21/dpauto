@@ -1,7 +1,7 @@
 /*
  * Advisor workspace redesign (/co-van only).
- * Every rule is scoped to .adv-ui (set by AdminShell and the advisor login),
- * so /dieu-hanh and /admin keep their current look.
+ * Every rule is scoped to .adv-ui (set by AdminShell and the shared
+ * advisor/manager login), so the /dieu-hanh shell and /admin keep their look.
  * Brand values come from src/styles/home-theme.css (--brand-red*).
  */
 

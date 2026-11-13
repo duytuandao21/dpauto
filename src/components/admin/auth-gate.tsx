@@ -67,7 +67,8 @@ export function AuthGate({
     [confirm, setConfirm] = useState(""),
     [busy, setBusy] = useState(false),
     [reveal, setReveal] = useState(false);
-  const advisor = !manager && !cms,
+  // Advisor and manager share the redesigned login; /admin (cms) keeps the old one.
+  const advisor = !cms,
     secret = advisor && reveal ? "text" : "password";
   useEffect(() => {
     if (!apiEnabled) return;
@@ -163,7 +164,7 @@ export function AuthGate({
             <h1>{session ? "Đổi mật khẩu" : "Đăng nhập"}</h1>
             <p>
               {advisor
-                ? "Cố vấn dịch vụ · Trạm dịch vụ Toàn Trung"
+                ? `${manager ? "Quản lý cửa hàng" : "Cố vấn dịch vụ"} · Trạm dịch vụ Toàn Trung`
                 : "Trạm dịch vụ Toàn Trung"}
             </p>
             <form onSubmit={submit} className="adm-booking-form">

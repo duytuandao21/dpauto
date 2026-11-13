@@ -5,6 +5,8 @@ import "@/styles/advisor.css";
 import "@/styles/manager.css";
 import "@/styles/manager-coreui.css";
 import "@/styles/manager-operations.css";
+// Only the shared login screen uses .adv-ui here; the manager shell is .mgr-app.
+import "@/styles/advisor-redesign.css";
 
 export const metadata: Metadata = {
   title: { absolute: "DPAuto | Điều hành cửa hàng" },
