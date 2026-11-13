@@ -135,6 +135,10 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
         >(`admin/audit-logs?from=${today}&to=${today}&limit=100`, { signal }),
       ]);
       const p = policyResponse?.data || null;
+      const vehicleOf = new Map<string, ApiVehicle>();
+      for (const v of vehicles)
+        for (const x of v.customerContacts)
+          if (!vehicleOf.has(x.customerId)) vehicleOf.set(x.customerId, v);
       const result: ManagerData = {
         ...empty,
         bookings: bookings.map((b) => {
@@ -162,9 +166,7 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
           };
         }),
         customers: customers.map((c) => {
-          const vehicle = vehicles.find((v) =>
-            v.customerContacts.some((x) => x.customerId === c.id),
-          );
+          const vehicle = vehicleOf.get(c.id);
           return {
             id: c.id,
             name: c.name,
@@ -274,17 +276,23 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
     } catch {}
   }, []);
   useEffect(() => {
+    let last = Date.now();
     const refresh = () => {
+      last = Date.now();
       setToday(stationToday());
       setNow(Date.now());
       void load().catch((e) => setError(e.message));
     };
+    // Tab focus fires often; skip reloading the full station data again within 15s.
+    const focus = () => {
+      if (Date.now() - last >= 15000) refresh();
+    };
     const timer = setInterval(refresh, 60000);
-    window.addEventListener("focus", refresh);
+    window.addEventListener("focus", focus);
     window.addEventListener("dpauto-data-updated", refresh);
     return () => {
       clearInterval(timer);
-      window.removeEventListener("focus", refresh);
+      window.removeEventListener("focus", focus);
       window.removeEventListener("dpauto-data-updated", refresh);
     };
   }, [load]);

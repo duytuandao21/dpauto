@@ -13,17 +13,19 @@
 .mgr-app[data-theme="light"],
 .mgr-dialog[data-theme="light"],
 .mgr-toast[data-theme="light"] {
-  --adm-bg: #f3f4f7;
-  --adm-sidebar: #212631;
+  /* Same brand tokens as /co-van (src/styles/advisor-redesign.css). */
+  --mgr-brand: #e20000;
+  --adm-bg: #f4f5f7;
+  --adm-sidebar: #1d222b;
   --adm-surface: #fff;
   --adm-raised: #f7f8fa;
   --adm-input: #fff;
   --adm-border: #d9dfe8;
-  --adm-text: #252b36;
-  --adm-muted: #5b687b;
-  --adm-accent: #5856d6;
-  --adm-accent-soft: #edecfb;
-  --adm-accent-text: #4543b5;
+  --adm-text: #1f2937;
+  --adm-muted: #556070;
+  --adm-accent: #e20000;
+  --adm-accent-soft: #fff1f1;
+  --adm-accent-text: #c31829;
   --adm-success: #15783b;
   --adm-success-bg: #e3f5e8;
   --adm-warning: #805300;
@@ -50,7 +52,7 @@
   --adm-status-no-show-text: #4e5b6d;
   --adm-status-no-show-bg: #edf1f5;
   --adm-status-no-show-border: #cbd4df;
-  --mgr-primary-hover: #4644b5;
+  --mgr-primary-hover: #c31829;
   --mgr-sidebar-border: #333b49;
   color-scheme: light;
 }
@@ -66,9 +68,10 @@
   --adm-border: #445061;
   --adm-text: #f2f5fa;
   --adm-muted: #b7c1d0;
-  --adm-accent: #7775e7;
-  --adm-accent-soft: #7775e72b;
-  --adm-accent-text: #b9b8ff;
+  --mgr-brand: #e20000;
+  --adm-accent: #ff9a9e;
+  --adm-accent-soft: #e2000029;
+  --adm-accent-text: #ff9a9e;
   --adm-success: #79d59a;
   --adm-success-bg: #173d2a;
   --adm-warning: #f5c35d;
@@ -95,7 +98,7 @@
   --adm-status-no-show-text: #cbd3e0;
   --adm-status-no-show-bg: #343d49;
   --adm-status-no-show-border: #647085;
-  --mgr-primary-hover: #6866da;
+  --mgr-primary-hover: #c31829;
   --mgr-sidebar-border: #333b49;
   color-scheme: dark;
 }
@@ -150,16 +153,26 @@
 .mgr-app .mgr-nav-link:hover,
 .mgr-app .mgr-nav-link.is-active {
   color: #fff;
-  background: #8791af2e;
+  background: #ffffff14;
 }
 
 .mgr-app .mgr-nav-link.is-active {
+  position: relative;
   font-weight: 600;
+}
+
+.mgr-app .mgr-nav-link.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 8px auto 8px 0;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--mgr-brand);
 }
 
 .mgr-app .mgr-nav-link > small {
   color: #fff;
-  background: #3b4555;
+  background: var(--mgr-brand);
 }
 
 .mgr-app .mgr-header {
@@ -200,53 +213,57 @@
   border: 1px solid var(--adm-border);
 }
 
+/* KPI cards match /co-van: calm surface, tone only as a left bar and icon. */
 .mgr-app .mgr-kpi {
-  min-height: 142px;
-  color: #fff;
-  background: #5856d6;
-  border: 0;
+  --mgr-kpi: var(--mgr-brand);
+  min-height: 0;
+  color: var(--adm-text);
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-left: 4px solid var(--mgr-kpi);
+  border-radius: 8px;
 }
 
 .mgr-app .mgr-kpi > div,
-.mgr-app .mgr-kpi strong,
-.mgr-app .mgr-kpi p,
-.mgr-app .mgr-kpi .icon {
-  color: inherit;
+.mgr-app .mgr-kpi strong {
+  color: var(--adm-text);
+}
+
+.mgr-app .mgr-kpi strong {
+  font-variant-numeric: tabular-nums;
 }
 
 .mgr-app .mgr-kpi p {
-  opacity: 0.88;
+  color: var(--adm-muted);
 }
 
-.mgr-app .mgr-kpi-icon {
-  color: inherit;
-  background: #ffffff30;
+.mgr-app .mgr-kpi-icon,
+.mgr-app .mgr-kpi .icon {
+  color: var(--mgr-kpi);
+  background: transparent;
 }
 
 .mgr-app .mgr-kpi[data-tone="warning"] {
-  color: #252b36;
-  background: #f9b115;
+  --mgr-kpi: var(--adm-status-pending-border);
 }
-
 .mgr-app .mgr-kpi[data-tone="warning"] .mgr-kpi-icon {
-  color: #805300;
-  background: #ffffff72;
+  color: var(--adm-warning);
 }
 
 .mgr-app .mgr-kpi[data-tone="blue"] {
-  background: #1b74d1;
+  --mgr-kpi: var(--adm-status-confirmed-text);
 }
 
 .mgr-app .mgr-kpi[data-tone="danger"] {
-  background: #d94853;
+  --mgr-kpi: var(--adm-danger);
 }
 
 .mgr-app .mgr-kpi[data-tone="success"] {
-  background: #15783b;
+  --mgr-kpi: var(--adm-status-completed-text);
 }
 
 .mgr-app .mgr-kpi[data-tone="brand"] {
-  background: #4d5ac2;
+  --mgr-kpi: var(--adm-muted);
 }
 
 .mgr-app .adm-btn,
@@ -267,8 +284,9 @@
 .mgr-app .adm-btn.adm-primary,
 .mgr-dialog .adm-btn.adm-primary {
   color: #fff;
-  border-color: #5856d6;
-  background: #5856d6;
+  border-color: var(--mgr-brand);
+  background: var(--mgr-brand);
+  font-weight: 600;
 }
 
 .mgr-app .adm-btn.adm-primary:hover,
@@ -278,18 +296,25 @@
   background: var(--mgr-primary-hover);
 }
 
+/* Destructive stays outlined so it never looks like the red primary action. */
 .mgr-app .adm-btn.adm-danger,
 .mgr-dialog .adm-btn.adm-danger {
-  color: #fff;
-  border-color: #b42332;
-  background: #b42332;
+  color: var(--adm-danger);
+  border-color: var(--adm-danger);
+  background: var(--adm-surface);
 }
 
 .mgr-app .adm-btn.adm-danger:hover,
 .mgr-dialog .adm-btn.adm-danger:hover {
   color: #fff;
-  border-color: #96212d;
-  background: #96212d;
+  border-color: var(--adm-danger);
+  background: var(--adm-danger);
+}
+
+.mgr-app :is(.adm-btn, .adm-icon-btn, .mgr-nav-link, a):focus-visible,
+.mgr-dialog :is(.adm-btn, .adm-icon-btn, a):focus-visible {
+  outline: 3px solid var(--adm-accent);
+  outline-offset: 2px;
 }
 
 .mgr-app .mgr-tabs {
