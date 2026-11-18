@@ -202,7 +202,7 @@ export class Auth {
       if (req.headers.referer) referer = new URL(req.headers.referer).origin;
     } catch {}
     if (
-      (origin || referer) !== this.config.origin ||
+      !this.config.allowedOrigins.includes(origin || referer || "") ||
       req.headers["sec-fetch-site"] === "cross-site" ||
       !session ||
       typeof req.headers["x-csrf-token"] !== "string" ||
@@ -213,7 +213,8 @@ export class Auth {
   origin(req: FastifyRequest) {
     if (
       req.headers["sec-fetch-site"] === "cross-site" ||
-      (req.headers.origin && req.headers.origin !== this.config.origin)
+      (req.headers.origin &&
+        !this.config.allowedOrigins.includes(req.headers.origin))
     )
       fail(403, "FORBIDDEN");
   }

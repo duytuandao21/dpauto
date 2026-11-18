@@ -4,14 +4,15 @@ import { page, scope, fail, normalize, type Context } from "./common";
 
 export class Directory {
   constructor(readonly config: Config) {}
+  // Deleted intake records retain customer/vehicle lookup access for their advisor.
   customerScope(ctx: Context) {
-    return sql`(EXISTS(SELECT 1 FROM bookings b WHERE b.customer_id=c.id AND ${scope(ctx)}) OR EXISTS(SELECT 1 FROM service_visits sv WHERE sv.customer_id=c.id AND ${scope(ctx, "sv")}) ${ctx.actor?.role === "MANAGER" ? sql`OR EXISTS(SELECT 1 FROM cash_entries e WHERE e.customer_id=c.id AND e.station_id=${ctx.station.id}) OR EXISTS(SELECT 1 FROM legacy_identities i WHERE i.customer_id=c.id AND i.entity_type='CUSTOMER' AND i.station_id=${ctx.station.id})` : sql``})`;
+    return sql`(EXISTS(SELECT 1 FROM bookings b WHERE b.customer_id=c.id AND ${scope(ctx)}) OR EXISTS(SELECT 1 FROM service_visits sv WHERE sv.customer_id=c.id AND ${scope(ctx, "sv", true)}) ${ctx.actor?.role === "MANAGER" ? sql`OR EXISTS(SELECT 1 FROM cash_entries e WHERE e.customer_id=c.id AND e.station_id=${ctx.station.id}) OR EXISTS(SELECT 1 FROM legacy_identities i WHERE i.customer_id=c.id AND i.entity_type='CUSTOMER' AND i.station_id=${ctx.station.id})` : sql``})`;
   }
   vehicleScope(ctx: Context) {
-    return sql`(EXISTS(SELECT 1 FROM bookings b WHERE b.vehicle_id=v.id AND ${scope(ctx)}) OR EXISTS(SELECT 1 FROM service_visits sv WHERE sv.vehicle_id=v.id AND ${scope(ctx, "sv")}) ${ctx.actor?.role==='MANAGER'?sql`OR EXISTS(SELECT 1 FROM legacy_identities i WHERE i.vehicle_id=v.id AND i.entity_type='VEHICLE' AND i.station_id=${ctx.station.id})`:sql``})`;
+    return sql`(EXISTS(SELECT 1 FROM bookings b WHERE b.vehicle_id=v.id AND ${scope(ctx)}) OR EXISTS(SELECT 1 FROM service_visits sv WHERE sv.vehicle_id=v.id AND ${scope(ctx, "sv", true)}) ${ctx.actor?.role==='MANAGER'?sql`OR EXISTS(SELECT 1 FROM legacy_identities i WHERE i.vehicle_id=v.id AND i.entity_type='VEHICLE' AND i.station_id=${ctx.station.id})`:sql``})`;
   }
   relatedVehicles(ctx: Context) {
-    return sql`SELECT b.vehicle_id FROM bookings b WHERE b.customer_id=c.id AND b.vehicle_id IS NOT NULL AND ${scope(ctx)} UNION SELECT sv.vehicle_id FROM service_visits sv WHERE sv.customer_id=c.id AND ${scope(ctx, "sv")} ${ctx.actor?.role==='MANAGER'?sql`UNION SELECT l.vehicle_id FROM customer_vehicle_links l WHERE l.customer_id=c.id AND l.source='MIGRATION'`:sql``}`;
+    return sql`SELECT b.vehicle_id FROM bookings b WHERE b.customer_id=c.id AND b.vehicle_id IS NOT NULL AND ${scope(ctx)} UNION SELECT sv.vehicle_id FROM service_visits sv WHERE sv.customer_id=c.id AND ${scope(ctx, "sv", true)} ${ctx.actor?.role==='MANAGER'?sql`UNION SELECT l.vehicle_id FROM customer_vehicle_links l WHERE l.customer_id=c.id AND l.source='MIGRATION'`:sql``}`;
   }
   async customers(c: Conn, ctx: Context, q: Row) {
     const key =
@@ -52,7 +53,7 @@ export class Directory {
       this.config,
       ctx,
       sql`SELECT v.*,${key} AS cursor_key FROM vehicles v WHERE ${this.vehicleScope(ctx)}
-      ${q.customerId ? sql`AND (EXISTS(SELECT 1 FROM bookings b WHERE b.vehicle_id=v.id AND b.customer_id=${q.customerId} AND ${scope(ctx)}) OR EXISTS(SELECT 1 FROM service_visits sv WHERE sv.vehicle_id=v.id AND sv.customer_id=${q.customerId} AND ${scope(ctx, "sv")}) ${ctx.actor?.role==='MANAGER'?sql`OR EXISTS(SELECT 1 FROM customer_vehicle_links l WHERE l.vehicle_id=v.id AND l.customer_id=${q.customerId} AND l.source='MIGRATION')`:sql``})` : sql``}
+      ${q.customerId ? sql`AND (EXISTS(SELECT 1 FROM bookings b WHERE b.vehicle_id=v.id AND b.customer_id=${q.customerId} AND ${scope(ctx)}) OR EXISTS(SELECT 1 FROM service_visits sv WHERE sv.vehicle_id=v.id AND sv.customer_id=${q.customerId} AND ${scope(ctx, "sv", true)}) ${ctx.actor?.role==='MANAGER'?sql`OR EXISTS(SELECT 1 FROM customer_vehicle_links l WHERE l.vehicle_id=v.id AND l.customer_id=${q.customerId} AND l.source='MIGRATION')`:sql``})` : sql``}
       ${q.q ? sql`AND (v.plate_normalized ILIKE ${"%" + q.q + "%"} OR v.normalized_model LIKE ${"%" + normalize(q.q) + "%"})` : sql``}`,
       q,
       q.sort,
@@ -65,7 +66,7 @@ export class Directory {
   async vehicleView(c: Conn, ctx: Context, v: Row) {
     const contacts = await rows(
       c,
-      sql`SELECT DISTINCT c.id,c.name FROM bookings b JOIN customers c ON c.id=b.customer_id WHERE b.vehicle_id=${v.id} AND ${scope(ctx)} UNION SELECT c.id,c.name FROM service_visits sv JOIN customers c ON c.id=sv.customer_id WHERE sv.vehicle_id=${v.id} AND ${scope(ctx, "sv")} ${ctx.actor?.role==='MANAGER'?sql`UNION SELECT c.id,c.name FROM customer_vehicle_links l JOIN customers c ON c.id=l.customer_id WHERE l.vehicle_id=${v.id} AND l.source='MIGRATION' AND ${this.customerScope(ctx)}`:sql``}`,
+      sql`SELECT DISTINCT c.id,c.name FROM bookings b JOIN customers c ON c.id=b.customer_id WHERE b.vehicle_id=${v.id} AND ${scope(ctx)} UNION SELECT c.id,c.name FROM service_visits sv JOIN customers c ON c.id=sv.customer_id WHERE sv.vehicle_id=${v.id} AND ${scope(ctx, "sv", true)} ${ctx.actor?.role==='MANAGER'?sql`UNION SELECT c.id,c.name FROM customer_vehicle_links l JOIN customers c ON c.id=l.customer_id WHERE l.vehicle_id=${v.id} AND l.source='MIGRATION' AND ${this.customerScope(ctx)}`:sql``}`,
     );
     return {
       id: v.id,

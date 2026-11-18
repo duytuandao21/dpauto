@@ -42,7 +42,7 @@ export function AboutBanner() {
       </motion.div>
       <div className="work-banner-overlay" />
       <div className="container work-banner-heading">
-        <h1>About HyperAuto Care</h1>
+        <h1>Về HyperAuto Care</h1>
       </div>
     </section>
   );
@@ -202,7 +202,7 @@ export function AboutVideo({ src }: { src: string }) {
           onError={() => setError(true)}
         />
         <button
-          aria-label={playing ? "Pause video" : "Play video"}
+          aria-label={playing ? "Tạm dừng video" : "Phát video"}
           onClick={() => {
             if (!video.current) return;
             if (video.current.paused)
@@ -221,7 +221,7 @@ export function AboutVideo({ src }: { src: string }) {
         </span>
         {error && (
           <a className="about-video-error" href={src}>
-            Open video
+            Mở video
           </a>
         )}
       </motion.div>

@@ -1,0 +1,38 @@
+{
+  "390-light": {
+    "width": 390,
+    "overflow": false,
+    "rowDisplay": "grid",
+    "headers": 7,
+    "rows": 9,
+    "tableScroll": false,
+    "passed": true
+  },
+  "820-light": {
+    "width": 820,
+    "overflow": false,
+    "rowDisplay": "table-row",
+    "headers": 7,
+    "rows": 9,
+    "tableScroll": true,
+    "passed": true
+  },
+  "1440-light": {
+    "width": 1440,
+    "overflow": false,
+    "rowDisplay": "table-row",
+    "headers": 7,
+    "rows": 9,
+    "tableScroll": false,
+    "passed": true
+  },
+  "1440-dark": {
+    "width": 1440,
+    "overflow": false,
+    "rowDisplay": "table-row",
+    "headers": 7,
+    "rows": 9,
+    "tableScroll": false,
+    "passed": true
+  }
+}

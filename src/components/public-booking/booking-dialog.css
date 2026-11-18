@@ -56,32 +56,13 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 24px 32px 20px;
+  padding: 20px 32px 16px;
   flex: none;
-}
-.pb-title-icon {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--brand-red-soft);
-  color: var(--brand-red);
-  flex: none;
-}
-.pb-title-copy {
-  min-width: 0;
-}
-.pb-brand {
-  display: block;
-  color: var(--muted-light);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
 }
 .pb-dialog .pb-header h2 {
-  margin-top: 2px;
-  font-size: 34px;
+  min-width: 0;
+  margin: 0;
+  font-size: 28px;
   line-height: 1.15;
   letter-spacing: normal;
 }
@@ -115,25 +96,27 @@
   padding: 0 32px 20px;
   flex: none;
 }
+/* Connectors sit in the row: they run from each label to the next step and stay centred on the circles. */
 .pb-progress ol {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
   gap: 16px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 .pb-progress li {
-  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   min-width: 0;
 }
 .pb-progress li:not(:last-child)::after {
   content: "";
-  position: absolute;
-  top: 16px;
-  left: calc(50% + 44px);
-  right: -22px;
-  height: 1px;
+  flex: 1 1 auto;
+  min-width: 12px;
+  height: 2px;
+  border-radius: 1px;
   background: var(--border-light);
 }
 .pb-progress li.is-complete::after {
@@ -252,7 +235,7 @@
   color: var(--muted-light);
   font-weight: 400;
 }
-.pb-field input,
+.pb-field input:not([type="checkbox"]),
 .pb-field textarea,
 .pb-demo-scenarios select {
   width: 100%;
@@ -286,6 +269,30 @@
 }
 .pb-field input[aria-invalid="true"] {
   border-color: var(--brand-red);
+}
+.pb-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 12px 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+.pb-consent > input {
+  -webkit-appearance: checkbox;
+  appearance: auto;
+  accent-color: var(--brand-red);
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  flex: none;
+  cursor: pointer;
+}
+.pb-consent > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .pb-dialog .pb-error {
   font-size: 13px;
@@ -427,8 +434,11 @@
 }
 .pb-schedule-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  gap: 24px;
   align-items: start;
 }
 .pb-dialog .pb-section-label {
@@ -493,7 +503,8 @@
     color 180ms;
 }
 .pb-day[aria-current="date"] {
-  border-color: var(--border-light);
+  border-color: var(--muted-light);
+  box-shadow: inset 0 0 0 1px var(--muted-light);
 }
 .pb-day:disabled {
   color: var(--muted-light);
@@ -505,6 +516,10 @@
 .pb-day.is-selected {
   background: var(--brand-red);
   color: var(--white);
+}
+.pb-day.is-selected[aria-current="date"] {
+  border-color: var(--brand-red-deep);
+  box-shadow: inset 0 0 0 1px var(--brand-red-deep);
 }
 .pb-day-dot {
   width: 4px;
@@ -554,12 +569,23 @@
 .pb-calendar-legend .is-closed {
   background: var(--muted-light);
 }
+.pb-times-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-bottom: 12px;
+}
+.pb-times-heading .pb-section-label {
+  margin-bottom: 0;
+}
 .pb-selected-date {
   font-size: 14px;
   text-transform: capitalize;
 }
 .pb-times > .pb-caption {
-  margin-top: 4px;
+  margin-top: 12px;
 }
 .pb-slot-group {
   margin-top: 20px;
@@ -572,7 +598,7 @@
 }
 .pb-slot-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 .pb-slot {
@@ -835,8 +861,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 16px;
-  padding-top: 8px;
+  gap: 12px;
+  padding-top: 16px;
 }
 .pb-success-icon {
   display: grid;
@@ -851,24 +877,9 @@
   width: 34px;
   height: 34px;
 }
-.pb-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--raised);
-  border: 1px solid var(--border-light);
-  border-radius: 24px;
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 500;
-}
-.pb-status-badge .icon {
-  width: 14px;
-  height: 14px;
-}
 .pb-success h3 {
   font-size: 32px;
-  max-width: 480px;
+  max-width: 560px;
 }
 .pb-success > p {
   max-width: 560px;
@@ -883,7 +894,7 @@
 .pb-success .pb-summary {
   width: 100%;
   text-align: left;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 .pb-sr-only {
   position: absolute;
@@ -907,12 +918,20 @@
     border-color: var(--brand-red);
   }
 }
+@media (min-width: 810px) {
+  .pb-dialog:is([data-step="3"], [data-step="4"]) {
+    width: min(640px, calc(100% - 48px));
+  }
+  .pb-dialog[data-step="3"] .pb-schedule-layout {
+    max-width: none;
+  }
+}
 @media (max-width: 809.98px) {
   .pb-dialog {
     width: calc(100% - 32px);
   }
   .pb-header {
-    padding: 20px 24px;
+    padding: 16px 24px;
   }
   .pb-progress {
     padding-right: 24px;
@@ -943,32 +962,23 @@
     border-radius: 0;
   }
   .pb-header {
-    padding: max(16px, env(safe-area-inset-top)) 20px 16px;
+    padding: max(12px, env(safe-area-inset-top)) 20px 12px;
     gap: 10px;
   }
-  .pb-title-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-  }
-  .pb-title-icon .icon {
-    width: 22px;
-    height: 22px;
-  }
   .pb-dialog .pb-header h2 {
-    font-size: 28px;
-  }
-  .pb-brand {
-    font-size: 9px;
-    letter-spacing: 0.7px;
+    font-size: 24px;
   }
   .pb-progress {
     padding: 0 20px 12px;
   }
   .pb-progress ol {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
   }
   .pb-progress button {
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
     gap: 6px;
     font-size: 12px;
   }
@@ -977,10 +987,11 @@
     height: 28px;
     font-size: 12px;
   }
+  .pb-progress li {
+    gap: 8px;
+  }
   .pb-progress li:not(:last-child)::after {
-    left: calc(100% - 4px);
-    right: -8px;
-    top: 22px;
+    display: none;
   }
   .pb-scroll {
     padding: 20px;
@@ -1092,9 +1103,6 @@
   .pb-footer {
     padding-left: 16px;
     padding-right: 16px;
-  }
-  .pb-title-icon {
-    display: none;
   }
   .pb-progress {
     padding-left: 16px;

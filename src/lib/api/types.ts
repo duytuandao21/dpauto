@@ -7,6 +7,8 @@ export type AuthSession = {
   csrfToken: string;
 };
 export type ApiService = {
+  qualityChecks?: string[];
+  technicianRequired?: boolean;
   id: string;
   code: string;
   name: string;
@@ -33,6 +35,8 @@ export type ApiBooking = {
   vehicle: { id: string; model: string | null; plate: string | null } | null;
   services: { id: string; name: string }[];
   requestedStartAt: string;
+  requestedPeriod?: "MORNING" | "AFTERNOON" | null;
+  originalRequestedPeriod?: "MORNING" | "AFTERNOON" | null;
   scheduledStartAt: string;
   confirmedStartAt: string | null;
   assignedAdvisor: { id: string; name: string } | null;
@@ -45,6 +49,9 @@ export type ApiBooking = {
   createdAt?: string;
   allowedActions?: string[];
   serviceVisitId?: string | null;
+  lastContactOutcome?: string | null;
+  contactAttempts?: number;
+  callbackAt?: string | null;
 };
 export type ApiStaff = {
   id: string;

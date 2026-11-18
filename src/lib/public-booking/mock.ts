@@ -117,7 +117,8 @@ export function displayDate(value: string, weekday = false): string {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-  }).format(parseDate(value));
+    timeZone: "Asia/Ho_Chi_Minh",
+  }).format(new Date(`${value}T12:00:00+07:00`));
 }
 export function dayStatus(
   value: string,

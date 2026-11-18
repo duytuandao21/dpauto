@@ -24,7 +24,7 @@ export class Finance {
   async obligation(c: Conn, id: string) {
     const r = await one(
       c,
-      sql`SELECT count(*)::int AS n,COALESCE(sum(total),0)::text AS total FROM quote_revisions WHERE visit_id=${id} AND status='APPROVED'`,
+      sql`SELECT count(*)::int AS n,COALESCE(sum(COALESCE(approved_total,total)),0)::text AS total FROM quote_revisions WHERE visit_id=${id} AND status='APPROVED'`,
     );
     if (r!.n) {
       const credits = await one(
@@ -69,7 +69,7 @@ export class Finance {
     };
   }
   async credit(c: Conn, ctx: Context, id: string, input: Row) {
-    const v = await scopedVisit(c, ctx, id, true);
+    const v = await scopedVisit(c, ctx, id, true, ctx.actor!.role === "MANAGER");
     expectVersion(v, input.expectedVersion);
     const current = await this.obligation(c, id);
     if (!current.assessed || BigInt(input.amount) > BigInt(current.total!))
@@ -178,7 +178,13 @@ export class Finance {
   }
   async log(c: Conn, ctx: Context, p: Row, type: string, reason: string) {
     if (p.visit_id) {
-      const v = await scopedVisit(c, ctx, p.visit_id);
+      const v = await scopedVisit(
+        c,
+        ctx,
+        p.visit_id,
+        false,
+        ctx.actor!.role === "MANAGER",
+      );
       await this.visits.bump(c, ctx, v);
       return {
         ...this.visits.receipt(
@@ -211,9 +217,18 @@ export class Finance {
       vehicle: Row | null = null,
       visitCode: string | null = null;
     if (input.visitId) {
-      subject = await scopedVisit(c, ctx, input.visitId, true);
+      subject = await scopedVisit(
+        c,
+        ctx,
+        input.visitId,
+        true,
+        ctx.actor!.role === "MANAGER",
+      );
       expectVersion(subject, input.expectedVersion);
-      if (["HANDED_OVER", "ABORTED"].includes(subject.stage))
+      if (
+        !subject.deleted_at &&
+        ["HANDED_OVER", "COMPLETED", "ABORTED"].includes(subject.stage)
+      )
         fail(409, "VISIT_CLOSED");
       customerId = subject.customer_id;
       vehicle = subject.vehicle_snapshot;
@@ -318,9 +333,16 @@ export class Finance {
   async allocate(c: Conn, ctx: Context, id: string, input: Row) {
     const p = await this.payment(c, ctx, id);
     if (p.original_id) fail(422, "PAYMENT_SUBJECT_INVALID");
-    const v = await scopedVisit(c, ctx, input.visitId, true);
+    const v = await scopedVisit(
+      c,
+      ctx,
+      input.visitId,
+      true,
+      ctx.actor!.role === "MANAGER",
+    );
     expectVersion(v, input.expectedVersion);
-    if (["HANDED_OVER", "ABORTED"].includes(v.stage)) fail(409, "VISIT_CLOSED");
+    if (!v.deleted_at && ["HANDED_OVER", "COMPLETED", "ABORTED"].includes(v.stage))
+      fail(409, "VISIT_CLOSED");
     if (
       p.customer_id
         ? p.customer_id !== v.customer_id
@@ -404,10 +426,10 @@ export class Finance {
       if (x.visitId)
         perVisit.set(x.visitId, (perVisit.get(x.visitId) || 0n) + x.amount);
     for (const [visitId, reduction] of perVisit) {
-      const v = await scopedVisit(c, ctx, visitId),
+      const v = await scopedVisit(c, ctx, visitId, false, ctx.actor!.role === "MANAGER"),
         balance = await this.balance(c, visitId);
       if (
-        v.stage === "HANDED_OVER" &&
+        ["HANDED_OVER", "COMPLETED"].includes(v.stage) &&
         BigInt(balance.netReceived) - reduction < BigInt(balance.total || "0")
       )
         fail(
@@ -426,7 +448,13 @@ export class Finance {
       );
     for (const visitId of perVisit.keys())
       if (visitId !== p.visit_id) {
-        const v = await scopedVisit(c, ctx, visitId);
+        const v = await scopedVisit(
+          c,
+          ctx,
+          visitId,
+          false,
+          ctx.actor!.role === "MANAGER",
+        );
         await this.visits.bump(c, ctx, v);
         await this.visits.log(
           c,
@@ -444,7 +472,7 @@ export class Finance {
       c,
       this.config,
       ctx,
-      sql`SELECT v.*,v.received_at AS cursor_key FROM service_visits v WHERE v.station_id=${ctx.station.id} ${q.visitId ? sql`AND v.id=${q.visitId}` : sql``} ${q.q ? sql`AND (v.code ILIKE ${"%" + q.q + "%"} OR v.contact_snapshot->>'name' ILIKE ${"%" + q.q + "%"} OR v.vehicle_snapshot->>'plate' ILIKE ${"%" + q.q + "%"})` : sql``} ${q.outstandingOnly ? sql`AND COALESCE((SELECT sum(total) FROM quote_revisions WHERE visit_id=v.id AND status='APPROVED'),0)-COALESCE((SELECT sum(amount) FROM obligation_credits WHERE visit_id=v.id),0)>COALESCE((SELECT sum(a.amount-COALESCE((SELECT sum(r.amount) FROM cash_reductions r WHERE r.allocation_id=a.id),0)) FROM cash_allocations a WHERE a.visit_id=v.id),0)` : sql``}`,
+      sql`SELECT v.*,v.received_at AS cursor_key FROM service_visits v WHERE v.station_id=${ctx.station.id} ${q.visitId ? sql`AND v.id=${q.visitId}` : sql``} ${q.q ? sql`AND (v.code ILIKE ${"%" + q.q + "%"} OR v.contact_snapshot->>'name' ILIKE ${"%" + q.q + "%"} OR v.vehicle_snapshot->>'plate' ILIKE ${"%" + q.q + "%"})` : sql``} ${q.outstandingOnly ? sql`AND COALESCE((SELECT sum(COALESCE(approved_total,total)) FROM quote_revisions WHERE visit_id=v.id AND status='APPROVED'),0)-COALESCE((SELECT sum(amount) FROM obligation_credits WHERE visit_id=v.id),0)>COALESCE((SELECT sum(a.amount-COALESCE((SELECT sum(r.amount) FROM cash_reductions r WHERE r.allocation_id=a.id),0)) FROM cash_allocations a WHERE a.visit_id=v.id),0)` : sql``}`,
       q,
       "receivedAt:desc",
       true,
@@ -456,6 +484,7 @@ export class Finance {
         code: v.code,
         version: v.version,
         stage: v.stage,
+        deletedAt: v.deleted_at ? iso(v.deleted_at) : null,
         customer: v.contact_snapshot,
         vehicle: v.vehicle_snapshot,
         balance: await this.balance(c, v.id),
@@ -470,11 +499,11 @@ export class Finance {
       ),
       quotes = await one(
         c,
-        sql`SELECT COALESCE(sum(q.total),0)::text AS quoted FROM quote_revisions q JOIN service_visits v ON v.id=q.visit_id WHERE v.station_id=${ctx.station.id} AND q.status='APPROVED' AND q.decided_at>=${dates.from} AND q.decided_at<${dates.to}`,
+        sql`SELECT COALESCE(sum(COALESCE(q.approved_total,q.total)),0)::text AS quoted FROM quote_revisions q JOIN service_visits v ON v.id=q.visit_id WHERE v.station_id=${ctx.station.id} AND q.status='APPROVED' AND q.decided_at>=${dates.from} AND q.decided_at<${dates.to}`,
       );
     const outstanding = await one(
       c,
-      sql`SELECT COALESCE(sum(GREATEST(0,COALESCE((SELECT sum(q.total) FROM quote_revisions q WHERE q.visit_id=v.id AND q.status='APPROVED'),0)-COALESCE((SELECT sum(amount) FROM obligation_credits WHERE visit_id=v.id),0)-COALESCE((SELECT sum(a.amount-COALESCE((SELECT sum(x.amount) FROM cash_reductions x WHERE x.allocation_id=a.id),0)) FROM cash_allocations a WHERE a.visit_id=v.id),0))),0)::text AS amount FROM service_visits v WHERE v.station_id=${ctx.station.id}`,
+      sql`SELECT COALESCE(sum(GREATEST(0,COALESCE((SELECT sum(COALESCE(q.approved_total,q.total)) FROM quote_revisions q WHERE q.visit_id=v.id AND q.status='APPROVED'),0)-COALESCE((SELECT sum(amount) FROM obligation_credits WHERE visit_id=v.id),0)-COALESCE((SELECT sum(a.amount-COALESCE((SELECT sum(x.amount) FROM cash_reductions x WHERE x.allocation_id=a.id),0)) FROM cash_allocations a WHERE a.visit_id=v.id),0))),0)::text AS amount FROM service_visits v WHERE v.station_id=${ctx.station.id}`,
     );
     return {
       from: q.from,

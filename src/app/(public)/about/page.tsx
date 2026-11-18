@@ -7,7 +7,7 @@ import { CmsPage } from "@/components/sections/cms-page";
 import { notFound } from "next/navigation";
 
 export const generateMetadata = (): Promise<Metadata> =>
-  publicMetadata("/about", { title: "About HyperAuto Care" });
+  publicMetadata("/about", { title: "Giới thiệu HyperAuto Care" });
 export default async function AboutPage() {
   const content = await publicPage("about");
   if (content?.withdrawn) notFound();

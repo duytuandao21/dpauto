@@ -74,7 +74,7 @@ export class Inventory {
         if (
           await one(
             c,
-            sql`SELECT r.id FROM stock_requests r JOIN service_visits v ON v.id=r.visit_id WHERE ${warehouse ? sql`r.warehouse_id=${id}` : sql`r.part_id=${id}`} AND v.stage NOT IN ('HANDED_OVER','ABORTED') LIMIT 1`,
+            sql`SELECT r.id FROM stock_requests r JOIN service_visits v ON v.id=r.visit_id WHERE ${warehouse ? sql`r.warehouse_id=${id}` : sql`r.part_id=${id}`} AND v.deleted_at IS NULL AND v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') LIMIT 1`,
           )
         )
           fail(409, "STOCK_REQUESTS_REMAIN");
@@ -294,7 +294,7 @@ export class Inventory {
     await scopedVisit(c, ctx, id);
     const ls = await rows(
         c,
-        sql`SELECT l.id,l.name,l.quantity,l.unit FROM quote_lines l JOIN quote_revisions q ON q.id=l.revision_id WHERE q.visit_id=${id} AND q.status='APPROVED' AND l.kind='PART' ORDER BY q.revision_no,l.sequence_no`,
+        sql`SELECT l.id,l.name,l.quantity,l.unit FROM authorized_quote_lines l JOIN quote_revisions q ON q.id=l.revision_id WHERE q.visit_id=${id} AND q.status='APPROVED' AND l.kind='PART' ORDER BY q.revision_no,l.sequence_no`,
       ),
       result = [];
     for (const l of ls) {
@@ -338,10 +338,11 @@ export class Inventory {
     // shortcut: one part and warehouse per approved line; split requests when fulfillment across warehouses is required.
     const v = await scopedVisit(c, ctx, id, true);
     expectVersion(v, input.expectedVersion);
-    if (["HANDED_OVER", "ABORTED"].includes(v.stage)) fail(409, "VISIT_CLOSED");
+    if (["HANDED_OVER", "COMPLETED", "ABORTED"].includes(v.stage))
+      fail(409, "VISIT_CLOSED");
     const l = await one(
       c,
-      sql`SELECT l.* FROM quote_lines l JOIN quote_revisions q ON q.id=l.revision_id WHERE l.id=${input.quoteLineId} AND q.visit_id=${id} AND q.status='APPROVED' AND l.kind='PART'`,
+      sql`SELECT l.* FROM authorized_quote_lines l JOIN quote_revisions q ON q.id=l.revision_id WHERE l.id=${input.quoteLineId} AND q.visit_id=${id} AND q.status='APPROVED' AND l.kind='PART'`,
     );
     const p = await one(
         c,
@@ -380,7 +381,16 @@ export class Inventory {
     if (!r) fail(404, "NOT_FOUND");
     expectVersion(r, input.expectedVersion);
     const v = await scopedVisit(c, ctx, r.visit_id, true);
-    if (["HANDED_OVER", "ABORTED"].includes(v.stage)) fail(409, "VISIT_CLOSED");
+    if (["HANDED_OVER", "COMPLETED", "ABORTED"].includes(v.stage))
+      fail(409, "VISIT_CLOSED");
+    if (
+      input.action === "RESERVE" &&
+      !(await one(
+        c,
+        sql`SELECT id FROM authorized_quote_lines WHERE id=${r.quote_line_id}`,
+      ))
+    )
+      fail(409, "QUOTE_LINE_NOT_AUTHORIZED");
     const b = await this.balance(c, r.warehouse_id, r.part_id),
       q = quantity(input.quantity),
       current = quantity(r.reserved),
@@ -464,8 +474,15 @@ export class Inventory {
         if (!r || r.warehouse_id !== d.warehouse_id || r.part_id !== l.part_id)
           fail(422, "STOCK_REFERENCE_INVALID");
         const v = await scopedVisit(c, ctx, r.visit_id);
-        if (["HANDED_OVER", "ABORTED"].includes(v.stage))
+        if (["HANDED_OVER", "COMPLETED", "ABORTED"].includes(v.stage))
           fail(409, "VISIT_CLOSED");
+        if (
+          !(await one(
+            c,
+            sql`SELECT id FROM authorized_quote_lines WHERE id=${r.quote_line_id}`,
+          ))
+        )
+          fail(409, "QUOTE_LINE_NOT_AUTHORIZED");
         if (
           qty >
             quantity(r.quantity) -
@@ -495,8 +512,8 @@ export class Inventory {
           original.warehouse_id !== d.warehouse_id
         )
           fail(422, "STOCK_REFERENCE_INVALID");
-        const v = await scopedVisit(c, ctx, original.visit_id);
-        if (v.stage === "HANDED_OVER")
+        const v = await scopedVisit(c, ctx, original.visit_id, false, true);
+        if (["HANDED_OVER", "COMPLETED"].includes(v.stage))
           fail(
             409,
             "POST_HANDOVER_RETURN_BLOCKED",
@@ -556,8 +573,8 @@ export class Inventory {
       sql`UPDATE stock_documents SET status='POSTED',version=version+1,posted_by=${ctx.actor!.userId},posted_at=${ctx.now} WHERE id=${id}`,
     );
     for (const visitId of visits) {
-      const v = await scopedVisit(c, ctx, visitId);
-      if (["QUALITY_CHECK", "READY"].includes(v.stage)) {
+      const v = await scopedVisit(c, ctx, visitId, false, d.kind === "RETURN");
+      if (!v.deleted_at && ["QUALITY_CHECK", "READY"].includes(v.stage)) {
         await c.execute(
           sql`UPDATE work_orders SET scope_version=scope_version+1,status='PAUSED',finished_at=NULL WHERE visit_id=${visitId}`,
         );

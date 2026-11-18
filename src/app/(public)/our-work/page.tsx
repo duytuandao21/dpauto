@@ -8,17 +8,17 @@ import {
 } from "@/components/sections/our-work-motion";
 
 export const generateMetadata = (): Promise<Metadata> =>
-  publicMetadata("/our-work", { title: "Our Work" });
+  publicMetadata("/our-work", { title: "Thành quả" });
 export default function OurWorkPage() {
   return (
     <div className="our-work-page">
       <WorkBanner />
       <section className="light projects-section">
         <div className="container work-introduction">
-          <h2>See the Difference</h2>
+          <h2>Thấy rõ sự khác biệt</h2>
           <p>
-            Explore a selection of vehicle transformations and drag each
-            comparison to see the results before and after the work.
+            Khám phá những chiếc xe đã được chăm sóc và kéo thanh so sánh để
+            thấy rõ kết quả trước và sau khi thực hiện.
           </p>
         </div>
         <div className="container projects-list">
@@ -36,15 +36,15 @@ export default function OurWorkPage() {
                 <h3>{project.title}</h3>
                 <dl>
                   <div>
-                    <dt>VEHICLE</dt>
+                    <dt>XE</dt>
                     <dd>{project.vehicle}</dd>
                   </div>
                   <div>
-                    <dt>DURATION</dt>
+                    <dt>THỜI GIAN</dt>
                     <dd>{project.duration}</dd>
                   </div>
                   <div>
-                    <dt>SERVICES</dt>
+                    <dt>DỊCH VỤ</dt>
                     <dd>{project.services}</dd>
                   </div>
                 </dl>

@@ -264,6 +264,8 @@ const routes: Record<string, Endpoint> = {
     permission: "quotes.decide",
     write: true,
   },
+  quoteClose: { schema: workflow.quoteClose, permission: "quotes.decide", write: true },
+  quoteVoid: { schema: workflow.quoteVoid, permission: "quotes.write", write: true },
   quotePrint: { permission: "quotes.read" },
   acceptancePrint: { permission: "visits.read" },
   workExempt: {
@@ -304,7 +306,7 @@ const routes: Record<string, Endpoint> = {
     write: true,
   },
   workFinish: {
-    schema: workflow.reasonCommand,
+    schema: workflow.finishCommand,
     permission: "work.write",
     write: true,
   },
@@ -333,6 +335,11 @@ const routes: Record<string, Endpoint> = {
   visitAbort: {
     schema: workflow.abort,
     permission: "visits.abort",
+    write: true,
+  },
+  visitDelete: {
+    schema: visits.visitDelete,
+    permission: "visits.update",
     write: true,
   },
   resourceExtend: {
@@ -415,6 +422,8 @@ const routes: Record<string, Endpoint> = {
   vehicle: { schema: v.relatedQuery, permission: "customers.read" },
   bookings: { schema: v.bookingQuery },
   booking: {},
+  bookingPreview: { schema: v.bookingPreviewInput },
+  bookingCreatePreview: { schema: v.bookingCreatePreviewInput, permission: "booking.create" },
   bookingCreate: {
     schema: v.bookingCreate,
     permission: "booking.create",
@@ -699,7 +708,17 @@ export class Api {
         }
         if (cached?.state === "COMPLETED") {
           if (cached.resource_type === "visit" && ctx.actor)
-            await scopedVisit(c, ctx, cached.resource_id);
+            await scopedVisit(
+              c,
+              ctx,
+              cached.resource_id,
+              false,
+              key === "visitDelete" ||
+                !!(
+                  endpoint.manager &&
+                  ["cashCreate", "cashAllocate", "cashRefund", "obligationCredit"].includes(key)
+                ),
+            );
           if (cached.resource_type === "booking" && ctx.actor)
             await scopedBooking(c, ctx, cached.resource_id);
           replayed = true;
@@ -867,6 +886,10 @@ export class Api {
         return this.workflow.saveQuote(c, ctx, id, input);
       case "quoteSubmit":
         return this.workflow.submit(c, ctx, id, input);
+      case "quoteClose":
+        return this.workflow.closeQuote(c, ctx, id, input);
+      case "quoteVoid":
+        return this.workflow.voidQuote(c, ctx, id, input);
       case "quoteDecision":
         return this.workflow.decide(c, ctx, id, input);
       case "quotePrint":
@@ -899,6 +922,8 @@ export class Api {
         return this.workflow.handover(c, ctx, id, input);
       case "visitAbort":
         return this.workflow.abort(c, ctx, id, input);
+      case "visitDelete":
+        return this.workflow.remove(c, ctx, id, input);
       case "resourceExtend":
         return this.workflow.extend(c, ctx, id, input);
       case "resourceRelease":
@@ -985,6 +1010,10 @@ export class Api {
         return this.bookings.list(c, ctx, input);
       case "booking":
         return this.bookings.detail(c, ctx, id);
+      case "bookingPreview":
+        return this.bookings.preview(c, ctx, id, input);
+      case "bookingCreatePreview":
+        return this.bookings.previewCreate(c, ctx, input);
       case "bookingCreate":
         return this.bookings.create(c, ctx, input);
       case "bookingPatch":

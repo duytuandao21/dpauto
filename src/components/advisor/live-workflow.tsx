@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, type ReactNode } from "react";
 import { request, command, collection, ApiFailure } from "@/lib/api/client";
 import type { ApiService, ApiStaff } from "@/lib/api/types";
 import type { VisitDetail } from "@/lib/api/visits";
@@ -18,8 +18,11 @@ import { WorkflowQuote, EvidenceFields } from "./workflow-quote";
 import { WorkflowWork } from "./workflow-work";
 import { VisitSettlement } from "./visit-settlement";
 import { OrderPerson } from "./order-common";
+import { ServiceWorkflowPanel } from "./service-workflow-panel";
 
 export function LiveWorkflow(props: {
+  vehicleContent?: ReactNode;
+  historyContent?: ReactNode;
   visit: VisitDetail;
   root: string;
   onCommitted: () => void;
@@ -32,11 +35,15 @@ export function LiveWorkflow(props: {
   );
 }
 function WorkflowContent({
+  vehicleContent,
+  historyContent,
   visit,
   root,
   onCommitted,
   onDirty,
 }: {
+  vehicleContent?: ReactNode;
+  historyContent?: ReactNode;
   visit: VisitDetail;
   root: string;
   onCommitted: () => void;
@@ -163,6 +170,23 @@ function WorkflowContent({
   const selected =
       data.quotes.find((q) => q.id === revisionId) || data.quotes.at(-1),
     closed = !data.allowedActions.length;
+  if (data.workflowVersion === 2)
+    return (
+      <ServiceWorkflowPanel
+        vehicleContent={vehicleContent}
+        historyContent={historyContent}
+        visit={visit}
+        root={root}
+        data={data}
+        services={services}
+        staff={staff}
+        run={run}
+        busy={busy}
+        onDirty={markDirty}
+        error={error}
+        onReload={onCommitted}
+      />
+    );
   return (
     <div className="adv-stack">
       <nav className="adv-tabs" aria-label="Quy trình phiếu dịch vụ">
@@ -422,7 +446,7 @@ function WorkflowContent({
     </div>
   );
 }
-function FreeWork({
+export function FreeWork({
   data,
   run,
   busy,
@@ -517,7 +541,7 @@ function FreeWork({
     </section>
   );
 }
-function Quality({
+export function Quality({
   data,
   staff,
   run,
@@ -544,6 +568,7 @@ function Quality({
     [moved, setMoved] = useState(false),
     [reason, setReason] = useState("");
   const stockPending = !data.stock.fulfilled;
+  const collectOnHandover = root === "/co-van" && data.workflowVersion === 2;
   const closed = !data.allowedActions.length,
     items = data.work?.items.filter((i) => i.status !== "SKIPPED") || [];
   return (
@@ -690,94 +715,104 @@ function Quality({
             </button>
           )}
       </section>
-      {data.stage === "READY" && (
-        <section className="adm-panel">
-          <h2>Bàn giao xe</h2>
-          {!data.obligation.assessed ? (
-            <p className="adm-error-text">
-              Chưa xác định nghĩa vụ theo báo giá.
-            </p>
-          ) : data.settlement.outstanding !== "0" ? (
-            <p className="adm-error-text">
-              Phiếu còn phải thu {vnd(data.settlement.outstanding!)}. Cần thu đủ
-              và phân bổ tiền trước khi bàn giao.
-            </p>
-          ) : null}
-          {stockPending && (
-            <p className="adm-error-text">
-              Cần đối soát phụ tùng trước khi bàn giao.
-            </p>
-          )}
-          <form
-            className="adm-booking-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              void run(`admin/service-visits/${data.visitId}/handover`, {
-                recipientName: recipient,
-                evidenceNote: proof,
-                vehicleMoved: moved,
-                paymentBasis:
-                  data.settlement.total === "0" &&
-                  data.settlement.netReceived === "0"
-                    ? "NO_CHARGE"
-                    : "SETTLED",
-                reason: "Bàn giao xe sau nghiệm thu và đối soát",
-              });
-            }}
-          >
-            <fieldset disabled={busy} className="adv-stack adv-checks">
-              <legend>Xác nhận giao xe thực tế</legend>
-              <label className="adm-field">
-                Người nhận xe *
-                <input
-                  required
-                  maxLength={100}
-                  value={recipient}
-                  onChange={(e) => {
-                    setRecipient(e.target.value);
-                    onDirty(true);
-                  }}
-                />
-              </label>
-              <label className="adm-field">
-                Ghi nhận bàn giao *
-                <textarea
-                  required
-                  maxLength={2000}
-                  rows={3}
-                  value={proof}
-                  onChange={(e) => {
-                    setProof(e.target.value);
-                    onDirty(true);
-                  }}
-                />
-              </label>
-              <label className="adv-checks">
-                <input
-                  required
-                  type="checkbox"
-                  checked={moved}
-                  onChange={(e) => {
-                    setMoved(e.target.checked);
-                    onDirty(true);
-                  }}
-                />{" "}
-                Đã kiểm tra xe và sẵn sàng bàn giao
-              </label>
-              <button
-                className="adm-btn adm-primary"
-                disabled={
-                  !data.obligation.assessed ||
-                  data.settlement.outstanding !== "0" ||
-                  stockPending
-                }
-              >
-                Hoàn tất bàn giao
-              </button>
-            </fieldset>
-          </form>
-        </section>
-      )}
+      {["READY", "HANDOVER"].includes(data.stage) &&
+        session.permissions.includes("visits.handover") && (
+          <section className="adm-panel">
+            <h2>Bàn giao xe</h2>
+            {!data.obligation.assessed ? (
+              <p className="adm-error-text">
+                Chưa xác định nghĩa vụ theo báo giá.
+              </p>
+            ) : collectOnHandover ? (
+              <p className="adm-muted">
+                Bấm Hoàn thành phiếu xác nhận khách đã thanh toán đủ 100% chi
+                phí. Hệ thống ghi nhận phần còn phải thu khi hoàn thành.
+              </p>
+            ) : data.settlement.outstanding !== "0" ? (
+              <p className="adm-error-text">
+                Phiếu còn phải thu {vnd(data.settlement.outstanding!)}. Cần thu
+                đủ và phân bổ tiền trước khi bàn giao.
+              </p>
+            ) : null}
+            {stockPending && (
+              <p className="adm-error-text">
+                Cần đối soát phụ tùng trước khi bàn giao.
+              </p>
+            )}
+            <form
+              className="adm-booking-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                void run(`admin/service-visits/${data.visitId}/handover`, {
+                  recipientName: recipient,
+                  evidenceNote: proof,
+                  vehicleMoved: moved,
+                  ...(collectOnHandover ? { paymentReceived: true } : {}),
+                  paymentBasis:
+                    data.settlement.total === "0" &&
+                    data.settlement.netReceived === "0"
+                      ? "NO_CHARGE"
+                      : "SETTLED",
+                  reason: "Bàn giao xe sau nghiệm thu và đối soát",
+                });
+              }}
+            >
+              <fieldset disabled={busy} className="adv-stack adv-checks">
+                <legend>Xác nhận giao xe thực tế</legend>
+                <label className="adm-field">
+                  Người nhận xe *
+                  <input
+                    required
+                    maxLength={100}
+                    value={recipient}
+                    onChange={(e) => {
+                      setRecipient(e.target.value);
+                      onDirty(true);
+                    }}
+                  />
+                </label>
+                <label className="adm-field">
+                  Ghi nhận bàn giao *
+                  <textarea
+                    required
+                    maxLength={2000}
+                    rows={3}
+                    value={proof}
+                    onChange={(e) => {
+                      setProof(e.target.value);
+                      onDirty(true);
+                    }}
+                  />
+                </label>
+                <label className="adv-checks">
+                  <input
+                    required
+                    type="checkbox"
+                    checked={moved}
+                    onChange={(e) => {
+                      setMoved(e.target.checked);
+                      onDirty(true);
+                    }}
+                  />{" "}
+                  Đã kiểm tra xe và sẵn sàng bàn giao
+                </label>
+                <button
+                  className="adm-btn adm-primary"
+                  disabled={
+                    !data.obligation.assessed ||
+                    (!collectOnHandover &&
+                      data.settlement.outstanding !== "0") ||
+                    stockPending
+                  }
+                >
+                  {data.workflowVersion === 2
+                    ? "Hoàn thành phiếu"
+                    : "Hoàn tất bàn giao"}
+                </button>
+              </fieldset>
+            </form>
+          </section>
+        )}
       {data.handover && (
         <section className="adm-panel">
           <h2>Đã bàn giao</h2>

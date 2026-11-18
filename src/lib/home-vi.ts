@@ -85,12 +85,6 @@ export const homeArticles = articles.map((article, i) => ({
   title: articleCopy[i][0],
   description: articleCopy[i][1],
   date: articleCopy[i][2],
-  category:
-    article.category === "CAR CARE"
-      ? "CHĂM SÓC XE"
-      : article.category === "NEWS"
-        ? "TIN TỨC"
-        : "ƯU ĐÃI",
   image: { ...article.image, alt: articleCopy[i][0] },
 }));
 

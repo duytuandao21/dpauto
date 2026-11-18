@@ -29,7 +29,7 @@ export function ServiceHero({ service }: { service: Service }) {
         <div className="service-hero-shade" />
       </motion.div>
       <div className="container service-hero-copy">
-        <span className="eyebrow">SERVICE</span>
+        <span className="eyebrow">DỊCH VỤ</span>
         <h1>{service.title}</h1>
         <p>{service.description}</p>
       </div>

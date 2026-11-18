@@ -1,10 +1,16 @@
 "use client";
+import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import Link from "next/link";
 import {
   advisors as seedAdvisors,
   bookingServices as seedServices,
 } from "@/lib/booking/seed";
-import { bookingTime, formatDate, timeLabel } from "@/lib/booking/logic";
+import {
+  bookingTime,
+  formatDate,
+  periodLabels,
+  timeLabel,
+} from "@/lib/booking/logic";
 import type { Booking } from "@/lib/booking/types";
 import { useBookings } from "./booking-provider";
 import { StatusBadge } from "./primitives";
@@ -15,8 +21,6 @@ import {
 } from "./booking-actions";
 import { AdminIcon } from "./admin-icon";
 import { useAdvisor } from "@/components/advisor/advisor-provider";
-import { apiEnabled } from "@/lib/api/client";
-import { BookingCommunication } from "./booking-communication";
 
 export function BookingDetail({
   booking,
@@ -37,31 +41,53 @@ export function BookingDetail({
     bookingServices = data.services ?? seedServices;
   const { orders } = useAdvisor();
   const order = orders.find((item) => item.bookingId === booking.id);
+  const phone = formatPhone(customer.phone);
   return (
     <section className="adm-detail adm-panel" aria-label="Chi tiết lịch hẹn">
       <div className="adm-detail-title">
         <div>
           <span className="adm-eyebrow">CHI TIẾT LỊCH HẸN</span>
-          <h2>{booking.id}</h2>
+          <h2>{booking.code || booking.id}</h2>
         </div>
         <StatusBadge status={booking.status} />
       </div>
-      <div className="adm-person">
+      <div className="adm-person adm-booking-person">
         <span className="adm-avatar adm-avatar-lg">
           {customer.name.split(" ").at(-1)?.slice(0, 1)}
         </span>
-        <div>
+        <div className="adm-booking-person-info">
           <Link
             href={`/co-van/khach-hang/${customer.id}`}
             className="adm-person-name"
           >
             {customer.name}
           </Link>
-          <a href={`tel:${customer.phone}`} className="adm-phone">
+          <a href={`tel:${phone}`} className="adm-phone">
             <AdminIcon name="phone" />
-            {customer.phone.replace(/(\d{4})(\d{3})(\d{3})/, "$1 $2 $3")}
+            {phone}
           </a>
         </div>
+        {phone && (
+          <div className="adm-booking-contact-actions">
+            <a
+              className="adm-btn"
+              href={`tel:${phone}`}
+              aria-label={`Gọi ${customer.name}`}
+            >
+              <AdminIcon name="phone" />
+              Gọi
+            </a>
+            <a
+              className="adm-btn"
+              href={`https://zalo.me/${phone}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Mở Zalo của ${customer.name}`}
+            >
+              Zalo
+            </a>
+          </div>
+        )}
       </div>
       <div className="adm-detail-section">
         <h3>Thông tin tiếp nhận</h3>
@@ -74,13 +100,15 @@ export function BookingDetail({
           </div>
           <div>
             <dt>Biển số</dt>
-            <dd>{vehicle?.plate || "Chưa cung cấp"}</dd>
+            <dd>{formatPlate(vehicle?.plate) || "Chưa cung cấp"}</dd>
           </div>
           <div>
-            <dt>Giờ mong muốn</dt>
+            <dt>Khách yêu cầu</dt>
             <dd>
-              {timeLabel(booking.requestedAt)} ·{" "}
-              {formatDate(booking.requestedAt)}
+              {booking.originalPeriod
+                ? periodLabels[booking.originalPeriod]
+                : timeLabel(booking.requestedAt)}{" "}
+              · {formatDate(booking.requestedAt)}
             </dd>
           </div>
           <div>
@@ -93,7 +121,10 @@ export function BookingDetail({
           </div>
           <div>
             <dt>Phụ trách</dt>
-            <dd>{advisors.find((a) => a.id === booking.advisorId)?.name}</dd>
+            <dd>
+              {advisors.find((a) => a.id === booking.advisorId)?.name ||
+                "Chưa phân công"}
+            </dd>
           </div>
           <div>
             <dt>Nguồn đặt lịch</dt>
@@ -132,17 +163,6 @@ export function BookingDetail({
           <p>{booking.internalNote || "Chưa có ghi chú nội bộ."}</p>
         </div>
       </div>
-      {apiEnabled &&
-        booking.version &&
-        ["pending", "confirmed"].includes(booking.status) && (
-          <details className="adm-detail-section adv-advanced">
-            <summary className="adm-btn">Ghi nhận liên hệ khách hàng</summary>
-            <BookingCommunication
-              bookingId={booking.id}
-              version={booking.version}
-            />
-          </details>
-        )}
       <div className="adm-detail-section">
         <div className="adm-section-line">
           <h3>Lịch sử thao tác</h3>

@@ -39,6 +39,7 @@ export function useApiPage<T>(path: string, reload: number) {
   }, [path, cursor, reload]);
   return {
     data,
+    pageNumber: previous.length + 1,
     loading,
     error,
     canPrevious: !!previous.length,

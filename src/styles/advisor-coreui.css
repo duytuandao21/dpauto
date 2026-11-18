@@ -498,3 +498,40 @@
     background: #fff !important;
   }
 }
+
+.adm-app .adm-booking-menu {
+  margin-left: auto;
+  min-width: 0;
+}
+.adm-app .adm-booking-menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.adm-app .adm-booking-menu > summary::-webkit-details-marker {
+  display: none;
+}
+.adm-app .adm-card-footer:has(.adm-booking-menu[open]) {
+  flex-wrap: wrap;
+}
+.adm-app .adm-booking-menu[open] {
+  flex-basis: 100%;
+}
+.adm-app .adm-booking-menu[open] > summary {
+  width: fit-content;
+  margin-left: auto;
+}
+.adm-app .adm-booking-menu .adv-actions {
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.adm-app .adm-booking-card > .adm-muted {
+  overflow-wrap: anywhere;
+  margin-block: 8px;
+}
+.adm-app .adm-booking-card > .adm-phone {
+  display: inline-flex;
+  margin-block: 8px;
+}
+.adm-app .adm-quick-filters {
+  flex-wrap: wrap;
+}

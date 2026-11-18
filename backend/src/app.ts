@@ -409,6 +409,14 @@ class ApiController {
   ) {
     return this.api.run("quotePrint", req, reply);
   }
+  @Post("admin/quote-revisions/:id/close")
+  quoteClose(@Req() req: FastifyRequest, @Res({passthrough:true}) reply: FastifyReply) {
+    return this.api.run("quoteClose", req, reply);
+  }
+  @Post("admin/quote-revisions/:id/void")
+  quoteVoid(@Req() req: FastifyRequest, @Res({passthrough:true}) reply: FastifyReply) {
+    return this.api.run("quoteVoid", req, reply);
+  }
   @Get("admin/acceptances/:id/print")
   acceptancePrint(
     @Req() req: FastifyRequest,
@@ -506,6 +514,13 @@ class ApiController {
     @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     return this.api.run("visitAbort", req, reply);
+  }
+  @Delete("admin/service-visits/:id")
+  visitDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("visitDelete", req, reply);
   }
   @Post("admin/service-visits/:id/resources/extend")
   resourceExtend(
@@ -749,6 +764,11 @@ class ApiController {
   ) {
     return this.api.run("booking", req, reply);
   }
+  @Get("admin/bookings/create-preview")
+  @HttpCode(200)
+  bookingCreatePreview(@Req() req: FastifyRequest, @Res({ passthrough: true }) reply: FastifyReply) {
+    return this.api.run("bookingCreatePreview", req, reply);
+  }
   @Post("admin/bookings")
   @HttpCode(200)
   bookingCreate(
@@ -772,6 +792,11 @@ class ApiController {
     @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     return this.api.run("confirm", req, reply);
+  }
+  @Get("admin/bookings/:id/preview")
+  @HttpCode(200)
+  bookingPreview(@Req() req: FastifyRequest, @Res({ passthrough: true }) reply: FastifyReply) {
+    return this.api.run("bookingPreview", req, reply);
   }
   @Post("admin/bookings/:id/reschedule")
   @HttpCode(200)

@@ -115,6 +115,19 @@ async function bookingPayload(
     ...extra,
   };
 }
+// Customers send a day + period instead of an exact time.
+async function publicPayload(date = "2026-11-20", time = "09:00", extra: any = {}) {
+  const { requestedStartAt, policyVersion, ...rest } = await bookingPayload(
+    date,
+    time,
+    extra,
+  );
+  return {
+    ...rest,
+    requestedDate: date,
+    requestedPeriod: time < "12:00" ? "MORNING" : "AFTERNOON",
+  };
+}
 async function createBooking(
   date: string,
   time = "09:00",
@@ -227,27 +240,22 @@ test("public catalog, availability, real pending receipt and atomic side effects
     catalog = await client.call("GET", "public/services");
   assert.equal(catalog.status, 200);
   assert.equal(catalog.body.data.services.length, 14);
-  const versions = await settingsVersion(),
-    query = new URLSearchParams({
-      date: "2026-11-20",
-      serviceIds: service,
-      ...Object.fromEntries(
-        Object.entries(versions).map(([k, v]) => [k, String(v)]),
-      ),
-    });
-  const availability = await client.call("GET", "public/availability?" + query);
+  const availability = await client.call(
+    "GET",
+    "public/availability?date=2026-11-20",
+  );
   assert.equal(availability.status, 200);
   assert(
-    availability.body.data.slots.some((s: any) => s.status === "AVAILABLE"),
+    availability.body.data.periods.some((p: any) => p.status === "AVAILABLE"),
   );
   const r = await client.call(
     "POST",
     "public/bookings",
-    await bookingPayload(),
+    await publicPayload(),
   );
   assert.equal(r.status, 201, JSON.stringify(r.body));
   assert.equal(r.body.data.status, "PENDING");
-  assert.equal(r.body.data.reservationStatus, "ACTIVE");
+  assert.equal(r.body.data.requestedPeriod, "MORNING");
   assert(!JSON.stringify(r.body.data).includes("phone"));
   const integrity = await one(
     api.db.db,
@@ -256,7 +264,7 @@ test("public catalog, availability, real pending receipt and atomic side effects
   assert.deepEqual(integrity, { holds: 1, consents: 1, events: 1, outbox: 1 });
 });
 test("idempotency concurrent replay creates once; changed payload conflicts", async () => {
-  const payload = await bookingPayload("2026-11-22"),
+  const payload = await publicPayload("2026-11-22"),
     key = randomUUID(),
     client = new Client();
   const result = await Promise.all([
@@ -378,7 +386,7 @@ test("strict boundary validation, role checks, wrong origin and scoped cursors",
     403,
   );
   const bad = await new Client().call("POST", "public/bookings", {
-    ...(await bookingPayload("2026-11-28")),
+    ...(await publicPayload("2026-11-28")),
     status: "CONFIRMED",
   });
   assert.equal(bad.status, 400);
@@ -386,9 +394,7 @@ test("strict boundary validation, role checks, wrong origin and scoped cursors",
     (
       await new Client().call(
         "GET",
-        "public/availability?date=2026-02-30&serviceIds=" +
-          service +
-          "&catalogVersion=1&policyVersion=1",
+        "public/availability?date=2026-02-30",
       )
     ).status,
     400,

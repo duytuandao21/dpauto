@@ -42,18 +42,23 @@ export const sources = [
   "Zalo",
 ] as const;
 export function localDate(value: Date = new Date()) {
-  return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(value);
 }
 export function shiftDate(date: string, days: number) {
-  const d = new Date(`${date}T12:00:00`);
-  d.setDate(d.getDate() + days);
+  const d = new Date(`${date}T12:00:00+07:00`);
+  d.setUTCDate(d.getUTCDate() + days);
   return localDate(d);
 }
 export function validDate(date: string) {
   return (
     /^\d{4}-\d{2}-\d{2}$/.test(date) &&
-    !Number.isNaN(new Date(`${date}T12:00:00`).getTime()) &&
-    localDate(new Date(`${date}T12:00:00`)) === date
+    !Number.isNaN(new Date(`${date}T12:00:00+07:00`).getTime()) &&
+    localDate(new Date(`${date}T12:00:00+07:00`)) === date
   );
 }
 export const bookingTime = (b: Booking) =>
@@ -100,11 +105,40 @@ export const formatDate = (
   value: string,
   options?: Intl.DateTimeFormatOptions,
 ) =>
-  new Intl.DateTimeFormat(
-    "vi-VN",
-    options || { day: "2-digit", month: "2-digit", year: "numeric" },
-  ).format(new Date(value.length === 10 ? `${value}T12:00:00` : value));
-export const timeLabel = (value: string) => value.slice(11, 16);
+  new Intl.DateTimeFormat("vi-VN", {
+    ...(options || { day: "2-digit", month: "2-digit", year: "numeric" }),
+    timeZone: "Asia/Ho_Chi_Minh",
+  }).format(stationDate(value));
+const stationDate = (value: string) =>
+  new Date(
+    value.length === 10
+      ? `${value}T12:00:00+07:00`
+      : /(?:Z|[+-]\d{2}:\d{2})$/.test(value)
+        ? value
+        : `${value}+07:00`,
+  );
+export const timeLabel = (value: string) =>
+  new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    hourCycle: "h23",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(stationDate(value));
+export const periodLabels = { morning: "Buổi sáng", afternoon: "Buổi chiều" };
+const warningLabels: Record<string, string> = {
+  SLOT_OVERLOADED: "khung giờ đã vượt số xe khuyến nghị",
+  ADVISOR_TIME_CONFLICT: "cố vấn có lịch khác trong khoảng thời gian dự kiến",
+  SLOT_CLOSED: "khung giờ đang tạm đóng",
+  OUTSIDE_HOURS: "giờ hẹn ngoài giờ làm việc",
+};
+/** Capacity warnings are advisory; preview them before committing where possible. */
+export const warningText = (codes: string[] = []) =>
+  codes.length
+    ? " Lưu ý: " + codes.map((c) => warningLabels[c] || c).join("; ") + "."
+    : "";
+/** "Buổi sáng"/"Buổi chiều" for a pending day+period request, otherwise the exact time. */
+export const slotLabel = (b: Booking) =>
+  b.period ? periodLabels[b.period] : timeLabel(bookingTime(b));
 export function validateDraft(
   draft: BookingDraft,
   today = localDate(),
@@ -117,9 +151,14 @@ export function validateDraft(
     errors.phone = "Nhập số điện thoại Việt Nam hợp lệ (10 số hoặc +84).";
   if (!draft.model.trim()) errors.model = "Nhập dòng xe.";
   if (!draft.serviceIds.length) errors.serviceIds = "Chọn ít nhất một dịch vụ.";
+  if (draft.serviceIds.length > 10)
+    errors.serviceIds = "Chọn tối đa 10 dịch vụ cho một lịch hẹn.";
   if (!validDate(draft.date) || (!existing && draft.date < today))
     errors.date = "Chọn ngày hợp lệ từ hôm nay.";
-  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(draft.time))
+  if (
+    !(draft.period && !draft.confirmNow) &&
+    !/^([01]\d|2[0-3]):[0-5]\d$/.test(draft.time)
+  )
     errors.time = "Chọn giờ hẹn hợp lệ.";
   if (Boolean(draft.confirmedDate) !== Boolean(draft.confirmedTime))
     errors.confirmedTime =
@@ -135,6 +174,7 @@ export function validateDraft(
     !/^([01]\d|2[0-3]):[0-5]\d$/.test(draft.confirmedTime)
   )
     errors.confirmedTime = "Giờ xác nhận không hợp lệ.";
-  if (!draft.advisorId) errors.advisorId = "Chọn cố vấn phụ trách.";
+  if (!draft.advisorId && !existing && draft.confirmNow)
+    errors.advisorId = "Chọn cố vấn phụ trách.";
   return errors;
 }

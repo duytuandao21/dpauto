@@ -26,7 +26,7 @@ export function AboutContent() {
               unoptimized
               className="story-floating-image story-floating-image--two"
             />
-            <p className="story-label">OUR STORY</p>
+            <p className="story-label">CÂU CHUYỆN</p>
             <div className="story-title">
               <h2>{b[1].text}</h2>
             </div>
@@ -36,10 +36,12 @@ export function AboutContent() {
             <div className="story-copy">
               <p className="story-lead">
                 <span>
-                  Every vehicle comes to us in a different condition.{" "}
+                  Mỗi chiếc xe đến với chúng tôi trong một tình trạng khác
+                  nhau.{" "}
                 </span>
                 {b[2].text.slice(
-                  "Every vehicle comes to us in a different condition. ".length,
+                  "Mỗi chiếc xe đến với chúng tôi trong một tình trạng khác nhau. "
+                    .length,
                 )}
               </p>
               <Photo
@@ -55,9 +57,9 @@ export function AboutContent() {
       <section className="about-approach">
         <div className="container">
           <h2>
-            Our Approach,
+            Cách chúng tôi làm việc,
             <br />
-            Care in Every Step
+            Tận tâm từng bước
           </h2>
           <div className="approach-grid">
             {about.approach.map((item, i) => (
@@ -77,9 +79,9 @@ export function AboutContent() {
       <section className="light about-workshop">
         <div className="container">
           <div className="about-workshop-heading">
-            <h2>Built for Professional Car Care</h2>
+            <h2>Xưởng chăm sóc xe chuyên nghiệp</h2>
             <p>
-              {b.find((e) => e.text.startsWith("Our workshop is set up"))?.text}
+              {b.find((e) => e.text.startsWith("Xưởng của chúng tôi"))?.text}
             </p>
           </div>
           <div className="workshop-panel">
@@ -107,11 +109,14 @@ export function AboutContent() {
       <section className="about-team">
         <div className="container team-layout">
           <div className="about-team-copy">
-            <h2>People Who Care About the Work</h2>
+            <h2>Những con người tận tâm với công việc</h2>
             <p className="about-team-lead">
-              {b.find((e) => e.text.startsWith("Good detailing depends"))?.text}
+              {
+                b.find((e) => e.text.startsWith("Chăm sóc xe tốt phụ thuộc"))
+                  ?.text
+              }
             </p>
-            <p>{b.find((e) => e.text.startsWith("The work stays"))?.text}</p>
+            <p>{b.find((e) => e.text.startsWith("Mọi công đoạn"))?.text}</p>
           </div>
           <AboutGalleryImage image={about.images[6]} />
         </div>
@@ -122,13 +127,12 @@ export function AboutContent() {
           <AboutGalleryImage image={about.images[8]} />
           <div className="about-training-copy">
             <h2>
-              Professional Detailing Training, Built on Real Workshop Experience
+              Đào tạo chăm sóc xe chuyên nghiệp, dựa trên kinh nghiệm thực tế
+              tại xưởng
             </h2>
-            <p>
-              {b.find((e) => e.text.startsWith("Detailing techniques"))?.text}
-            </p>
-            <p>{b.find((e) => e.text.startsWith("From preparation"))?.text}</p>
-            <Button href={site.phoneHref}>Ask About Training</Button>
+            <p>{b.find((e) => e.text.startsWith("Kỹ thuật, dụng cụ"))?.text}</p>
+            <p>{b.find((e) => e.text.startsWith("Từ chuẩn bị"))?.text}</p>
+            <Button href={site.phoneHref}>Tìm hiểu khóa đào tạo</Button>
           </div>
         </div>
       </section>

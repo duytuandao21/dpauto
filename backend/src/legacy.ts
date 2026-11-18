@@ -163,7 +163,7 @@ export class Legacy {
       if (d.kind === "DEBT" && type === "VISIT") {
         const v = await one(
           c,
-          sql`SELECT id,customer_id,version,received_at FROM service_visits WHERE id=${id} AND station_id=${ctx.station.id}`,
+          sql`SELECT id,customer_id,version,received_at FROM service_visits WHERE id=${id} AND station_id=${ctx.station.id} AND deleted_at IS NULL`,
         );
         if (!v) fail(404, "NOT_FOUND");
         const balance = await this.finance.balance(c, id);
@@ -178,7 +178,7 @@ export class Legacy {
     if (r.entity_type === "ACTIVE_ORDER" && type === "VISIT") {
       const v = await one(
         c,
-        sql`SELECT v.id,v.customer_id,v.vehicle_id,v.version,v.assigned_advisor_id FROM service_visits v JOIN staff_profiles s ON s.id=v.assigned_advisor_id WHERE v.id=${id} AND v.station_id=${ctx.station.id} AND v.stage NOT IN ('HANDED_OVER','ABORTED') AND s.active AND EXISTS(SELECT 1 FROM capacity_reservations r WHERE r.visit_id=v.id AND r.status='ACTIVE')`,
+        sql`SELECT v.id,v.customer_id,v.vehicle_id,v.version,v.assigned_advisor_id FROM service_visits v JOIN staff_profiles s ON s.id=v.assigned_advisor_id WHERE v.id=${id} AND v.station_id=${ctx.station.id} AND v.deleted_at IS NULL AND v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') AND s.active AND EXISTS(SELECT 1 FROM capacity_reservations r WHERE r.visit_id=v.id AND r.status='ACTIVE')`,
       );
       if (!v) fail(422, "LEGACY_VISIT_PROOF_MISMATCH");
       return v;

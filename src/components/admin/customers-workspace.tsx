@@ -1,7 +1,8 @@
 "use client";
+import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { bookingTime, formatDate, timeLabel } from "@/lib/booking/logic";
+import { bookingTime, formatDate, slotLabel } from "@/lib/booking/logic";
 import type { Customer } from "@/lib/booking/types";
 import { useBookings } from "./booking-provider";
 import { AdminIcon } from "./admin-icon";
@@ -17,6 +18,7 @@ import { StageBadge } from "@/components/advisor/order-common";
 import { apiEnabled } from "@/lib/api/client";
 import { LiveVisits } from "@/components/advisor/live-visits";
 import { LegacyHistory } from "@/components/advisor/legacy-history";
+import { WorkspaceDrawer } from "@/components/advisor/workspace-drawer";
 
 function CustomerDetail({ customer }: { customer: Customer }) {
   const { data } = useBookings(),
@@ -43,9 +45,9 @@ function CustomerDetail({ customer }: { customer: Customer }) {
         </span>
         <div>
           <h2>{customer.name}</h2>
-          <a className="adm-phone" href={`tel:${customer.phone}`}>
+          <a className="adm-phone" href={`tel:${formatPhone(customer.phone)}`}>
             <AdminIcon name="phone" />
-            {customer.phone}
+            {formatPhone(customer.phone)}
           </a>
         </div>
       </div>
@@ -57,7 +59,7 @@ function CustomerDetail({ customer }: { customer: Customer }) {
         Tạo lịch hẹn cho khách này
       </Link>
       <div className="adv-actions">
-        <a className="adm-btn" href={`tel:${customer.phone}`}>
+        <a className="adm-btn" href={`tel:${formatPhone(customer.phone)}`}>
           Gọi khách
         </a>
         <a
@@ -83,7 +85,7 @@ function CustomerDetail({ customer }: { customer: Customer }) {
                 <strong>
                   {v.model} {v.year}
                 </strong>
-                <p>{v.plate || "Chưa có biển số"}</p>
+                <p>{formatPlate(v.plate) || "Chưa có biển số"}</p>
               </div>
             </Link>
           ))}
@@ -103,11 +105,11 @@ function CustomerDetail({ customer }: { customer: Customer }) {
                       {order.id} · {formatDate(order.openedAt)}
                     </strong>
                     <small>
-                      {
+                      {formatPlate(
                         data.vehicles.find(
                           (item) => item.id === order.vehicleId,
-                        )?.plate
-                      }
+                        )?.plate,
+                      )}
                     </small>
                   </div>
                   <StageBadge stage={order.stage} />
@@ -127,7 +129,7 @@ function CustomerDetail({ customer }: { customer: Customer }) {
               <Link key={b.id} href={`/co-van/lich-hen/${b.id}`}>
                 <div>
                   <strong>
-                    {formatDate(bookingTime(b))} · {timeLabel(bookingTime(b))}
+                    {formatDate(bookingTime(b))} · {slotLabel(b)}
                   </strong>
                   <small>{b.id}</small>
                 </div>
@@ -154,7 +156,7 @@ export function CustomersWorkspace({ id }: { id?: string }) {
         (v) => v.customerId === c.id || v.customerIds?.includes(c.id),
       ),
       text =
-        `${c.name} ${c.phone} ${vs.map((v) => v.plate).join(" ")} ${data.bookings
+        `${c.name} ${c.phone} ${formatPhone(c.phone)} ${vs.map((v) => `${v.plate} ${formatPlate(v.plate)}`).join(" ")} ${data.bookings
           .filter((b) => b.customerId === c.id)
           .map((b) => b.id)
           .join(" ")} ${orders
@@ -182,15 +184,6 @@ export function CustomersWorkspace({ id }: { id?: string }) {
   if (id && !selected) return <NotFoundState kind="khách hàng" />;
   return (
     <div className={`adm-workspace-page ${id ? "has-detail" : ""}`}>
-      {id && (
-        <Link
-          href={`/co-van/khach-hang?${params}`}
-          className="adm-mobile-back adm-text-link"
-        >
-          <AdminIcon name="back" />
-          Khách hàng
-        </Link>
-      )}
       <div className="adm-list-heading">
         <PageHeading
           eyebrow="CỐ VẤN DỊCH VỤ"
@@ -198,7 +191,7 @@ export function CustomersWorkspace({ id }: { id?: string }) {
           description="Hồ sơ khách hàng, phương tiện và lịch sử đặt lịch."
         />
       </div>
-      <div className="adm-master-detail adm-customer-workspace">
+      <div className="adm-master-detail adm-customer-workspace adv-list-workspace">
         <section className="adm-master" aria-label="Danh sách khách hàng">
           <div className="adm-search-row">
             <label className="adm-search">
@@ -230,42 +223,68 @@ export function CustomersWorkspace({ id }: { id?: string }) {
               <option value="multiple">Có nhiều xe</option>
             </select>
           </div>
-          <div className="adm-customer-list">
-            {customers.map((c) => {
-              const vehicles = data.vehicles.filter(
-                  (v) => v.customerId === c.id || v.customerIds?.includes(c.id),
-                ),
-                bs = data.bookings
-                  .filter((b) => b.customerId === c.id)
-                  .sort((a, b) => bookingTime(b).localeCompare(bookingTime(a)));
-              return (
-                <Link
-                  href={`/co-van/khach-hang/${c.id}?${params}`}
-                  key={c.id}
-                  className={`adm-customer-card ${selected?.id === c.id ? "is-selected" : ""}`}
-                >
-                  <span className="adm-avatar">
-                    {c.name.split(" ").at(-1)?.slice(0, 1)}
-                  </span>
-                  <div>
-                    <h3>{c.name}</h3>
-                    <p>{c.phone}</p>
-                    <small>
-                      <AdminIcon name="car" />
-                      {vehicles[0]?.model || "Chưa có xe"}
-                      {vehicles.length > 1 && ` +${vehicles.length - 1}`}
-                    </small>
-                    <span className="adm-customer-last">
-                      Lịch gần nhất:{" "}
-                      {bs[0] ? formatDate(bookingTime(bs[0])) : "Chưa có"}
-                    </span>
-                  </div>
-                  <span className="adm-count-pill">
-                    {c.bookingCount ?? bs.length} lịch
-                  </span>
-                </Link>
-              );
-            })}
+          <div
+            className="adv-data-scroll"
+            role="region"
+            aria-label="Bảng khách hàng"
+            tabIndex={0}
+          >
+            <table className="adv-data-table adv-customers-table">
+              <thead>
+                <tr>
+                  <th scope="col">Khách hàng</th>
+                  <th scope="col">Số điện thoại</th>
+                  <th scope="col">Xe</th>
+                  <th scope="col">Lịch gần nhất</th>
+                  <th scope="col">Tổng lịch hẹn</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customers.map((c) => {
+                  const vehicles = data.vehicles.filter(
+                      (v) =>
+                        v.customerId === c.id || v.customerIds?.includes(c.id),
+                    ),
+                    bs = data.bookings
+                      .filter((b) => b.customerId === c.id)
+                      .sort((a, b) =>
+                        bookingTime(b).localeCompare(bookingTime(a)),
+                      );
+                  return (
+                    <tr
+                      key={c.id}
+                      className={id === c.id ? "is-selected" : undefined}
+                    >
+                      <td>
+                        <Link
+                          className="adm-text-link"
+                          href={`/co-van/khach-hang/${c.id}?${params}`}
+                          scroll={false}
+                        >
+                          <strong>{c.name}</strong>
+                        </Link>
+                      </td>
+                      <td>
+                        <a href={`tel:${formatPhone(c.phone)}`}>
+                          {formatPhone(c.phone)}
+                        </a>
+                      </td>
+                      <td>
+                        {vehicles[0]?.model || "Chưa có xe"}
+                        {vehicles.length > 1 && ` +${vehicles.length - 1}`}
+                        {vehicles[0]?.plate && (
+                          <small>{formatPlate(vehicles[0].plate)}</small>
+                        )}
+                      </td>
+                      <td>
+                        {bs[0] ? formatDate(bookingTime(bs[0])) : "Chưa có"}
+                      </td>
+                      <td>{c.bookingCount ?? bs.length} lịch</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
             {!customers.length && (
               <EmptyState
                 title="Không tìm thấy khách hàng"
@@ -275,19 +294,14 @@ export function CustomersWorkspace({ id }: { id?: string }) {
             )}
           </div>
         </section>
-        <aside className={`adm-detail-pane ${id ? "is-open" : ""}`}>
-          {selected ? (
+        {id && selected && (
+          <WorkspaceDrawer
+            title="Hồ sơ khách hàng"
+            closeHref={`/co-van/khach-hang?${params}`}
+          >
             <CustomerDetail customer={selected} />
-          ) : (
-            <div className="adm-panel">
-              <EmptyState
-                title="Chọn một khách hàng"
-                description="Thông tin xe và lịch hẹn sẽ xuất hiện tại đây."
-                create={false}
-              />
-            </div>
-          )}
-        </aside>
+          </WorkspaceDrawer>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,854 @@
+{
+  "quote": {
+    "stage": "QUOTING",
+    "width": 1440,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 333.6875,
+    "passed": true
+  },
+  "waiting": {
+    "stage": "WAITING_FOR_WORK",
+    "width": 1440,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 333.6875,
+    "passed": true
+  },
+  "work": {
+    "stage": "IN_PROGRESS",
+    "width": 1440,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 320.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 105.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 44,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 68,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "pause": {
+    "stage": "IN_PROGRESS",
+    "width": 820,
+    "theme": "dark",
+    "overflow": false,
+    "overlaps": [],
+    "header": 320.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 105.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 44,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 68,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "vehicle": {
+    "stage": "IN_PROGRESS",
+    "width": 390,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 533.5,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 188,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 73,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 129,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 73.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px 0px 8px"
+      }
+    ],
+    "passed": true
+  },
+  "handover": {
+    "stage": "HANDOVER",
+    "width": 820,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 320.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 105.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 44,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 68,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "blocked": {
+    "stage": "HANDOVER",
+    "width": 390,
+    "theme": "dark",
+    "overflow": false,
+    "overlaps": [],
+    "header": 533.5,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 188,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 73,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 129,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 73.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px 0px 8px"
+      }
+    ],
+    "passed": true
+  },
+  "completed": {
+    "stage": "COMPLETED",
+    "width": 1440,
+    "theme": "dark",
+    "overflow": false,
+    "overlaps": [],
+    "header": 320.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 105.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 44,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 68,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "aborted": {
+    "stage": "ABORTED",
+    "width": 390,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 500,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 188,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 125,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 129,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      }
+    ],
+    "passed": true
+  },
+  "readonly": {
+    "stage": "IN_PROGRESS",
+    "width": 820,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 320.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 105.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 44,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 68,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "error": {
+    "stage": "QUOTING",
+    "width": 390,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 533.5,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 188,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 73,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 129,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 73.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px 0px 8px"
+      }
+    ],
+    "passed": true
+  },
+  "quote-close": {
+    "stage": "QUOTING",
+    "width": 820,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 277.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 68,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "pending": {
+    "stage": "QUOTING",
+    "width": 1440,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 277.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 68,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "extra": {
+    "stage": "IN_PROGRESS",
+    "width": 1440,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 277.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 68,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "layout-desktop": {
+    "stage": "IN_PROGRESS",
+    "width": 1440,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 193.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 55,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "4px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "layout-tablet": {
+    "stage": "IN_PROGRESS",
+    "width": 820,
+    "theme": "dark",
+    "overflow": false,
+    "overlaps": [],
+    "header": 277.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 68,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "layout-mobile": {
+    "stage": "IN_PROGRESS",
+    "width": 390,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 384.5,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 168,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 50,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 62,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 34.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px 0px 8px"
+      }
+    ],
+    "passed": true
+  },
+  "vehicle-layout": {
+    "stage": "IN_PROGRESS",
+    "width": 1440,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 277.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 68,
+        "margin": "12px 0px 0px",
+        "padding": "12px 0px 0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "intake-desktop": {
+    "stage": "IN_PROGRESS",
+    "width": 1440,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 171.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 58,
+        "margin": "16px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "4px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "intake-tablet": {
+    "stage": "IN_PROGRESS",
+    "width": 820,
+    "theme": "dark",
+    "overflow": false,
+    "overlaps": [],
+    "header": 249.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 58,
+        "margin": "16px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "intake-mobile": {
+    "stage": "IN_PROGRESS",
+    "width": 390,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 335.5,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 146,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 50,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 49,
+        "margin": "16px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 34.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px 0px 8px"
+      }
+    ],
+    "passed": true
+  },
+  "money-desktop": {
+    "stage": "QUOTING",
+    "width": 1440,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 171.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 91,
+        "margin": "16px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "4px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "money-tablet": {
+    "stage": "QUOTING",
+    "width": 820,
+    "theme": "dark",
+    "overflow": false,
+    "overlaps": [],
+    "header": 249.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 58,
+        "margin": "16px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "money-mobile": {
+    "stage": "QUOTING",
+    "width": 390,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 335.5,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 146,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 50,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 49,
+        "margin": "16px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 34.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px 0px 8px"
+      }
+    ],
+    "passed": true
+  },
+  "money-readonly-desktop": {
+    "stage": "QUOTING",
+    "width": 1440,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 171.6875,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 85.1875,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 21,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 91,
+        "margin": "16px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 29.5,
+        "margin": "4px 0px 0px",
+        "padding": "0px"
+      }
+    ],
+    "passed": true
+  },
+  "money-readonly-mobile": {
+    "stage": "QUOTING",
+    "width": 390,
+    "theme": "light",
+    "overflow": false,
+    "overlaps": [],
+    "header": 335.5,
+    "headerLayout": [
+      {
+        "tag": "adm-section-line",
+        "height": 146,
+        "margin": "0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-meta",
+        "height": 50,
+        "margin": "12px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-totals",
+        "height": 49,
+        "margin": "16px 0px 0px",
+        "padding": "0px"
+      },
+      {
+        "tag": "adv-service-progress",
+        "height": 34.5,
+        "margin": "12px 0px 0px",
+        "padding": "0px 0px 8px"
+      }
+    ],
+    "passed": true
+  }
+}

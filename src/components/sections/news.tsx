@@ -19,7 +19,7 @@ export function NewsCard({
   article,
   className,
   originalImages = false,
-  vietnamese = false,
+  vietnamese = true,
 }: {
   article: Article;
   className?: string;
@@ -51,7 +51,7 @@ export function NewsSection({
   items,
   more = true,
   originalImages = false,
-  vietnamese = false,
+  vietnamese = true,
 }: {
   title?: string;
   items?: Article[];
@@ -102,8 +102,8 @@ export function FeaturedArticle({
       image={article.image}
       heading={
         <>
-          <span className="eyebrow">FEATURED</span>
-          <h2>From the Workshop</h2>
+          <span className="eyebrow">NỔI BẬT</span>
+          <h2>Từ xưởng của chúng tôi</h2>
         </>
       }
     >
@@ -112,7 +112,7 @@ export function FeaturedArticle({
         <Link href={`/news/${article.slug}`}>{article.title}</Link>
       </h3>
       <p>{article.description}</p>
-      <Button href={`/news/${article.slug}`}>Read More</Button>
+      <Button href={`/news/${article.slug}`}>Đọc tiếp</Button>
     </FeaturedArticleFrame>
   );
 }

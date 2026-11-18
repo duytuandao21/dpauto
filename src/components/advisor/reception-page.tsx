@@ -1,4 +1,5 @@
 "use client";
+import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,12 +11,13 @@ import {
   NotFoundState,
   PageHeading,
 } from "@/components/admin/primitives";
-import { bookingTime, formatDate, timeLabel } from "@/lib/booking/logic";
+import { bookingTime, formatDate, slotLabel } from "@/lib/booking/logic";
 import { operationChecks } from "@/lib/advisor/seed";
 import type { ReceptionDraft } from "@/lib/advisor/types";
 import { useAdvisor } from "./advisor-provider";
 import { apiEnabled } from "@/lib/api/client";
 import { LiveReception } from "./live-reception";
+import { OdometerInput } from "@/components/ui/odometer-input";
 
 const blank: ReceptionDraft = {
   odo: "",
@@ -155,7 +157,7 @@ function LocalReceptionPage({ id }: { id: string }) {
     }
     if (
       !window.confirm(
-        `Tiếp nhận xe ${vehicle?.plate || "này"} và tạo phiếu dịch vụ?`,
+        `Tiếp nhận xe ${formatPlate(vehicle?.plate) || "này"} và tạo phiếu dịch vụ?`,
       )
     )
       return;
@@ -206,11 +208,11 @@ function LocalReceptionPage({ id }: { id: string }) {
       </section>
     );
   return (
-    <div className="adm-form-page adv-page">
+    <div className="adm-form-page adv-page adv-detail-page">
       <PageHeading
         eyebrow="CỐ VẤN / TIẾP NHẬN XE"
         title="Tiếp nhận xe"
-        description={`${id} · ${formatDate(bookingTime(booking))} ${timeLabel(bookingTime(booking))}`}
+        description={`${id} · ${formatDate(bookingTime(booking))} ${slotLabel(booking)}`}
       />
       <form className="adm-booking-form" onSubmit={submit} noValidate>
         <section className="adm-panel">
@@ -229,7 +231,9 @@ function LocalReceptionPage({ id }: { id: string }) {
             <div>
               <dt>Số điện thoại</dt>
               <dd>
-                <a href={`tel:${customer.phone}`}>{customer.phone}</a>
+                <a href={`tel:${formatPhone(customer.phone)}`}>
+                  {formatPhone(customer.phone)}
+                </a>
               </dd>
             </div>
             <div>
@@ -240,7 +244,7 @@ function LocalReceptionPage({ id }: { id: string }) {
             </div>
             <div>
               <dt>Biển số</dt>
-              <dd>{vehicle.plate || "Chưa có"}</dd>
+              <dd>{formatPlate(vehicle.plate) || "Chưa có"}</dd>
             </div>
           </dl>
         </section>
@@ -255,12 +259,10 @@ function LocalReceptionPage({ id }: { id: string }) {
           <div className="adm-form-grid">
             <label className="adm-field">
               ODO hiện tại (km) *
-              <input
-                inputMode="numeric"
-                pattern="[0-9]*"
+              <OdometerInput
                 value={draft.odo}
-                onChange={(event) => change("odo", event.target.value)}
-                placeholder="Ví dụ: 38250"
+                onValueChange={(digits) => change("odo", digits)}
+                placeholder="Ví dụ: 38.250"
               />
             </label>
             <label className="adm-field">

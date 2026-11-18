@@ -116,7 +116,7 @@ export function FAQ({
   items,
   compact = false,
   description,
-  title = "Frequently Asked Questions",
+  title = "Câu hỏi thường gặp",
 }: {
   items: FAQItem[];
   compact?: boolean;
@@ -152,7 +152,7 @@ export function FAQ({
           <h2>{title}</h2>
           <p>
             {description ??
-              "Clear answers about appointments, timing, pricing, and service availability."}
+              "Giải đáp về lịch hẹn, thời gian thực hiện và chi phí dịch vụ."}
           </p>
         </div>
         {list}

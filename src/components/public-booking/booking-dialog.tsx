@@ -37,7 +37,7 @@ const initialCustomer: CustomerFields = {
   plate: "",
   vehicle: "",
 };
-const steps = ["Thông tin", "Dịch vụ", "Thời gian"];
+const steps = ["Thông tin", "Dịch vụ", "Thời gian", "Xem lại"];
 
 export function BookingLauncher() {
   const [open, setOpen] = useState(false);
@@ -85,7 +85,6 @@ function BookingDialog({
   const [catalogError, setCatalogError] = useState("");
   const [catalogRetry, setCatalogRetry] = useState(0);
   const [acknowledged, setAcknowledged] = useState(false);
-  const [receiptCode, setReceiptCode] = useState("");
   const services: BookingService[] = apiEnabled
     ? catalog?.services.map((s) => ({
         id: s.id,
@@ -194,7 +193,6 @@ function BookingDialog({
     setDate(addDays(stationToday(), 1));
     setSuccess(false);
     setAcknowledged(false);
-    setReceiptCode("");
   }
   function requestClose() {
     if (closing || submitting) return;
@@ -210,6 +208,7 @@ function BookingDialog({
     );
   }
   function goTo(next: number) {
+    if (next < 4) setAcknowledged(false);
     setDirection(next > step ? 1 : -1);
     setStep(next);
   }
@@ -249,9 +248,22 @@ function BookingDialog({
         return;
       }
       goTo(3);
-    } else {
+    } else if (step === 3) {
       if (!time || !ready) {
-        setTimeError("Bạn vui lòng chọn một khung giờ còn chỗ.");
+        setTimeError("Bạn vui lòng chọn buổi sáng hoặc buổi chiều.");
+        return;
+      }
+      setTimeError("");
+      goTo(4);
+    } else {
+      if (!serviceIds.length || (apiEnabled && !catalog)) {
+        setServiceError("Chọn ít nhất một dịch vụ để tiếp tục.");
+        goTo(2);
+        return;
+      }
+      if (!time || !ready) {
+        setTimeError("Bạn vui lòng chọn buổi sáng hoặc buổi chiều.");
+        goTo(3);
         return;
       }
       if (apiEnabled) {
@@ -264,36 +276,32 @@ function BookingDialog({
           const channelToken = new URLSearchParams(window.location.search).get(
             "channelToken",
           );
-          const receipt = await command<{ bookingCode: string }>(
-            "public/bookings",
-            {
-              customer: { name: customer.name.trim(), phone: customer.phone },
-              vehicle:
-                customer.vehicle.trim() || customer.plate.trim()
-                  ? {
-                      ...(customer.vehicle.trim()
-                        ? { model: customer.vehicle.trim() }
-                        : {}),
-                      ...(customer.plate.trim()
-                        ? { plate: customer.plate.trim() }
-                        : {}),
-                    }
-                  : null,
-              serviceIds,
-              requestedStartAt: `${date}T${time}:00+07:00`,
-              catalogVersion: catalog.catalogVersion,
-              policyVersion: catalog.policyVersion,
-              notice: {
-                privacyNoticeVersion:
-                  catalog.bookingPolicy.privacyNoticeVersion,
-                privacyNoticeAcknowledged: true,
-                marketingConsent: false,
-              },
-              ...(note.trim() ? { note: note.trim() } : {}),
-              ...(channelToken ? { channelToken } : {}),
+          await command<{ bookingCode: string }>("public/bookings", {
+            customer: { name: customer.name.trim(), phone: customer.phone },
+            vehicle:
+              customer.vehicle.trim() || customer.plate.trim()
+                ? {
+                    ...(customer.vehicle.trim()
+                      ? { model: customer.vehicle.trim() }
+                      : {}),
+                    ...(customer.plate.trim()
+                      ? { plate: customer.plate.trim() }
+                      : {}),
+                  }
+                : null,
+            serviceIds,
+            // Day + period only; the advisor agrees the exact time with the customer.
+            requestedDate: date,
+            requestedPeriod: time === "morning" ? "MORNING" : "AFTERNOON",
+            catalogVersion: catalog.catalogVersion,
+            notice: {
+              privacyNoticeVersion: catalog.bookingPolicy.privacyNoticeVersion,
+              privacyNoticeAcknowledged: true,
+              marketingConsent: false,
             },
-          );
-          setReceiptCode(receipt.data.bookingCode);
+            ...(note.trim() ? { note: note.trim() } : {}),
+            ...(channelToken ? { channelToken } : {}),
+          });
           setSuccess(true);
           requestAnimationFrame(focusStep);
         } catch (e) {
@@ -301,7 +309,7 @@ function BookingDialog({
           if (
             e instanceof ApiFailure &&
             [
-              "CAPACITY_FULL",
+              "PERIOD_UNAVAILABLE",
               "POLICY_VERSION_CONFLICT",
               "CATALOG_VERSION_CONFLICT",
               "NOTICE_VERSION_CONFLICT",
@@ -310,6 +318,8 @@ function BookingDialog({
             setTime("");
             setReady(false);
             setCatalogRetry((n) => n + 1);
+            setAcknowledged(false);
+            goTo(e.code === "CATALOG_VERSION_CONFLICT" ? 2 : 3);
           }
         } finally {
           setSubmitting(false);
@@ -328,12 +338,19 @@ function BookingDialog({
       );
     }
   }
-  const count = serviceIds.length;
+  const count = serviceIds.length,
+    periodText =
+      time === "morning"
+        ? "Buổi sáng"
+        : time === "afternoon"
+          ? "Buổi chiều"
+          : "";
   if (!mounted) return null;
   return createPortal(
     <dialog
       ref={dialog}
       className={`pb-dialog ${closing ? "is-closing" : ""}`}
+      data-step={success ? undefined : step}
       lang="vi"
       aria-labelledby="pb-dialog-title"
       aria-describedby={apiEnabled ? undefined : "pb-demo-notice"}
@@ -372,13 +389,7 @@ function BookingDialog({
     >
       <form className="pb-shell" onSubmit={submit} noValidate>
         <header className="pb-header">
-          <div className="pb-title-icon">
-            <Icon name="clock" />
-          </div>
-          <div className="pb-title-copy">
-            <span className="pb-brand">DPAUTO · TOÀN TRUNG</span>
-            <h2 id="pb-dialog-title">Đặt lịch dịch vụ</h2>
-          </div>
+          <h2 id="pb-dialog-title">Đặt lịch dịch vụ</h2>
           <button
             type="button"
             className="pb-icon-button pb-close"
@@ -450,26 +461,26 @@ function BookingDialog({
                 <div className="pb-success">
                   <motion.div
                     className="pb-success-icon"
+                    aria-hidden="true"
                     initial={reduced ? false : { scale: 0.85, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.25 }}
                   >
                     <Icon name="check" />
                   </motion.div>
-                  <span className="pb-status-badge">
-                    <Icon name="clock" />
-                    {apiEnabled ? "Chờ xác nhận" : "Chờ xác nhận · Minh họa"}
-                  </span>
                   <h3 tabIndex={-1} data-step-heading>
                     Đã tiếp nhận yêu cầu đặt lịch!
                   </h3>
-                  {receiptCode && <p>{receiptCode}</p>}
+                  <p>
+                    Cố vấn dịch vụ sẽ liên hệ với bạn để xác nhận giờ hẹn cụ
+                    thể.
+                  </p>
                   <BookingSummary
                     services={services}
                     customer={customer}
                     serviceIds={serviceIds}
                     date={date}
-                    time={time}
+                    time={periodText}
                     note={note}
                     success
                   />
@@ -498,7 +509,7 @@ function BookingDialog({
                     setReady(false);
                   }}
                 />
-              ) : (
+              ) : step === 3 ? (
                 <>
                   <StepIntro title="Chọn thời gian phù hợp" />
                   <BookingSchedule
@@ -530,23 +541,30 @@ function BookingDialog({
                       placeholder="Mô tả tình trạng xe hoặc yêu cầu thêm…"
                     />
                   </div>
+                </>
+              ) : (
+                <>
+                  <StepIntro title="Xem lại thông tin đặt lịch" />
                   <BookingSummary
                     services={services}
                     customer={customer}
                     serviceIds={serviceIds}
                     date={date}
-                    time={time}
+                    time={periodText}
                     note={note}
                     onEdit={goTo}
                   />
                   {apiEnabled && catalog && (
-                    <label className="pb-field">
+                    <label className="pb-consent">
+                      <input
+                        type="checkbox"
+                        checked={acknowledged}
+                        onChange={(e) => {
+                          setAcknowledged(e.target.checked);
+                          setTimeError("");
+                        }}
+                      />
                       <span>
-                        <input
-                          type="checkbox"
-                          checked={acknowledged}
-                          onChange={(e) => setAcknowledged(e.target.checked)}
-                        />{" "}
                         Tôi đã đọc{" "}
                         <a
                           href={catalog.bookingPolicy.privacyNoticeUrl}
@@ -559,6 +577,11 @@ function BookingDialog({
                       </span>
                     </label>
                   )}
+                  {timeError && (
+                    <p className="pb-error" role="alert">
+                      {timeError}
+                    </p>
+                  )}
                 </>
               )}
             </motion.div>
@@ -567,7 +590,9 @@ function BookingDialog({
         <footer className="pb-footer">
           {!success && (
             <div className="pb-footer-meta">
-              <span>Bước {step}/3</span>
+              <span>
+                Bước {step}/{steps.length}
+              </span>
               <span aria-live="polite">
                 {step === 1
                   ? "* Thông tin bắt buộc"
@@ -576,8 +601,8 @@ function BookingDialog({
                       ? `Đã chọn ${count} dịch vụ`
                       : "Có thể chọn nhiều dịch vụ"
                     : time
-                      ? `${time} · ${date.split("-").reverse().join("/")}`
-                      : "Chọn một khung giờ để tiếp tục"}
+                      ? `${periodText} · ${date.split("-").reverse().join("/")}`
+                      : "Chọn buổi để tiếp tục"}
               </span>
             </div>
           )}
@@ -607,8 +632,11 @@ function BookingDialog({
                     (step === 2 &&
                       apiEnabled &&
                       (!catalog || !services.length)) ||
-                    (step === 3 &&
-                      (!time || !ready || (apiEnabled && !acknowledged)))
+                    (step === 3 && (!time || !ready)) ||
+                    (step === 4 &&
+                      (!time ||
+                        !ready ||
+                        (apiEnabled && (!catalog || !acknowledged))))
                   }
                 >
                   {submitting ? (
@@ -616,8 +644,10 @@ function BookingDialog({
                       <span className="pb-spinner" aria-hidden="true" />
                       {apiEnabled ? "Đang gửi yêu cầu…" : "Đang xác nhận mẫu…"}
                     </>
-                  ) : step === 3 ? (
+                  ) : step === 4 ? (
                     "Xác nhận đặt lịch"
+                  ) : step === 3 ? (
+                    "Xem lại thông tin"
                   ) : (
                     "Tiếp tục"
                   )}

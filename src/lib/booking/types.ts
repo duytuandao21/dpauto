@@ -21,6 +21,8 @@ export interface Service {
   id: string;
   name: string;
   duration: number;
+  active?: boolean;
+  bookable?: boolean;
 }
 export interface Advisor {
   id: string;
@@ -50,8 +52,14 @@ export interface Booking {
   vehicleId: string;
   serviceIds: string[];
   requestedAt: string;
+  /** Half-day the customer asked for; set while the advisor has not fixed an exact time. */
+  period?: "morning" | "afternoon";
+  originalPeriod?: "morning" | "afternoon";
   confirmedAt?: string;
   createdAt: string;
+  lastContactOutcome?: string | null;
+  contactAttempts?: number;
+  callbackAt?: string | null;
   status: BookingStatus;
   source: BookingSource;
   advisorId: string;
@@ -86,6 +94,8 @@ export interface BookingRepository {
 export type BookingAction =
   "confirm" | "arrive" | "complete" | "cancel" | "no_show";
 export interface BookingDraft {
+  confirmNow?: boolean;
+  period?: "morning" | "afternoon";
   customerId: string;
   name: string;
   phone: string;

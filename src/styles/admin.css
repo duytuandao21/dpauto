@@ -413,9 +413,6 @@ html:has(.adm-app) {
 .adm-kpi-done .icon {
   color: var(--adm-status-completed-text);
 }
-.adm-overview-insights {
-  display: none;
-}
 .adm-overview .adm-search-row {
   display: none;
 }
@@ -595,6 +592,16 @@ html:has(.adm-app) {
   font-size: calc(14px + var(--adm-font-increase));
   line-height: calc(20px + var(--adm-font-increase));
   outline-offset: 0;
+}
+.adm-app .adm-search input:focus,
+.adm-dialog .adm-search input:focus {
+  outline: none;
+  box-shadow: none;
+}
+.adm-app.adv-ui .adm-search:focus-within,
+.adm-app.mgr-app .adm-search:focus-within {
+  border-color: var(--adm-muted);
+  box-shadow: none;
 }
 .adm-search button {
   min-width: 32px;
@@ -1333,6 +1340,14 @@ html:has(.adm-app) {
   flex-direction: column;
   gap: 16px;
 }
+.adm-booking-form textarea,
+.adm-booking-time-form textarea {
+  font-family: inherit;
+}
+.adm-booking-form .adm-quick-filters {
+  margin-block: 16px;
+  flex-wrap: wrap;
+}
 .adm-form-section-title {
   display: flex;
   align-items: center;
@@ -1364,6 +1379,21 @@ html:has(.adm-app) {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 16px;
+}
+.adm-booking-time-form .adm-booking-fields {
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.adm-booking-time-form .adm-note {
+  margin-block: 16px;
+  overflow-wrap: anywhere;
+}
+.adm-booking-time-form .adm-dialog-actions {
+  flex-wrap: wrap;
+}
+.adm-booking-time-form .adm-dialog-actions .adm-btn {
+  white-space: normal;
 }
 .adm-field {
   display: flex;
@@ -2223,22 +2253,6 @@ html:has(.adm-app) {
   .adm-kpi small {
     font-size: calc(12px + var(--adm-font-increase));
   }
-  .adm-overview-insights {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  .adm-overview-insights .adm-panel {
-    padding: 14px 16px;
-  }
-  .adm-overview-insights h2 {
-    font-size: calc(13px + var(--adm-font-increase));
-    line-height: calc(20px + var(--adm-font-increase));
-  }
-  .adm-overview-insights .adm-muted {
-    font-size: calc(11px + var(--adm-font-increase));
-  }
   .adm-volume-chart {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -2279,46 +2293,6 @@ html:has(.adm-app) {
   }
   .adm-volume-count {
     font-size: calc(11px + var(--adm-font-increase));
-  }
-  .adm-service-breakdown {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 6px;
-    min-height: 88px;
-    margin-top: 12px;
-  }
-  .adm-service-breakdown > div {
-    display: grid;
-    grid-template-columns: minmax(0, 1.3fr) minmax(40px, 1fr) 18px;
-    align-items: center;
-    gap: 10px;
-    font-size: calc(11px + var(--adm-font-increase));
-    line-height: calc(18px + var(--adm-font-increase));
-  }
-  .adm-service-breakdown > div > span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .adm-service-breakdown > div > div {
-    height: 5px;
-    overflow: hidden;
-    background: var(--adm-raised);
-    border-radius: 3px;
-  }
-  .adm-service-breakdown i {
-    display: block;
-    min-width: 4px;
-    height: 100%;
-    background: var(--adm-accent);
-    border-radius: 3px;
-  }
-  .adm-service-breakdown strong {
-    color: var(--adm-muted);
-    text-align: right;
-    font-size: calc(11px + var(--adm-font-increase));
-    font-weight: 400;
   }
   .adm-master-detail {
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);

@@ -1,3 +1,4 @@
+import { useLegacyVisitFixtures } from "./legacy-visit-fixture";
 import { before, beforeEach, after, test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
@@ -157,6 +158,7 @@ const grants = [
 before(async () => {
   await migrate(url!);
   ({ app, api } = await createApp(config));
+  useLegacyVisitFixtures(api);
   await bootstrap(api.db, config, {
     name: "Store Manager",
     email: "manager@example.test",

@@ -31,7 +31,7 @@ export function NewsBanner() {
       </motion.div>
       <div className="news-page-banner-overlay" />
       <div className="container news-page-banner-heading">
-        <h1>Latest from HyperAuto Care</h1>
+        <h1>Tin tức từ HyperAuto Care</h1>
       </div>
     </section>
   );

@@ -1,9 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { request } from "@/lib/api/client";
-import { stationTime } from "@/lib/api/types";
+import { workflowTime } from "@/lib/api/workflow";
+import { DateInput } from "@/components/advisor/date-input";
 import { stationToday, addDays } from "@/lib/public-booking/mock";
 import { PageHeading, AdminLoading } from "./primitives";
+import { AdminIcon } from "./admin-icon";
 type Assignment = {
   assignmentId: string;
   bookingId: string;
@@ -53,11 +55,10 @@ export function AssignmentHistory() {
         <div className="adm-form-grid">
           <label className="adm-field">
             Từ ngày
-            <input
-              type="date"
+            <DateInput
               value={from}
-              onChange={(e) => {
-                setFrom(e.target.value);
+              onValueChange={(value) => {
+                setFrom(value);
                 setCursor("");
                 setPrevious([]);
               }}
@@ -65,11 +66,10 @@ export function AssignmentHistory() {
           </label>
           <label className="adm-field">
             Đến ngày
-            <input
-              type="date"
+            <DateInput
               value={to}
-              onChange={(e) => {
-                setTo(e.target.value);
+              onValueChange={(value) => {
+                setTo(value);
                 setCursor("");
                 setPrevious([]);
               }}
@@ -88,42 +88,52 @@ export function AssignmentHistory() {
             <article key={a.assignmentId} className="adm-booking-card">
               <h3>{a.bookingCode}</h3>
               <p>{a.serviceNames.join(", ")}</p>
-              <p>
-                Giờ hẹn khi bàn giao:{" "}
-                {stationTime(a.startAtSnapshot).slice(0, 16).replace("T", " ")}
-              </p>
-              <p>
-                Bàn giao:{" "}
-                {stationTime(a.endedAt).slice(0, 16).replace("T", " ")}
-              </p>
+              <p>Giờ hẹn khi bàn giao: {workflowTime(a.startAtSnapshot)}</p>
+              <p>Bàn giao: {workflowTime(a.endedAt)}</p>
               <p>{a.ownEventCount} thao tác của bạn</p>
             </article>
           ))
         ) : (
           <p>Chưa có lịch đã bàn giao trong khoảng này.</p>
         )}
-        <div className="adm-action-row">
+        <nav
+          className="adv-pagination"
+          aria-label="Phân trang lịch đã bàn giao"
+        >
           <button
             className="adm-btn"
+            type="button"
+            aria-label="Trang trước"
             disabled={!previous.length || loading}
             onClick={() => {
               setCursor(previous.at(-1) || "");
               setPrevious(previous.slice(0, -1));
             }}
           >
-            Trang trước
+            <AdminIcon name="back" />
+            Trước
           </button>
+          <span
+            className="adv-pagination-current"
+            aria-current="page"
+            aria-live="polite"
+          >
+            Trang {previous.length + 1}
+          </span>
           <button
             className="adm-btn"
+            type="button"
+            aria-label="Trang sau"
             disabled={!next || loading}
             onClick={() => {
               setPrevious([...previous, cursor]);
               setCursor(next || "");
             }}
           >
-            Trang sau
+            Tiếp
+            <AdminIcon name="back" />
           </button>
-        </div>
+        </nav>
       </section>
     </>
   );

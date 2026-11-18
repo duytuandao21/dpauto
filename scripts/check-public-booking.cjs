@@ -121,7 +121,7 @@ async function workflow(browser, engine, width) {
   await dialog.locator(".pb-times").waitFor();
   assert.equal(
     await dialog
-      .getByRole("button", { name: "Xác nhận đặt lịch", exact: true })
+      .getByRole("button", { name: "Xem lại thông tin", exact: true })
       .isDisabled(),
     true,
   );
@@ -151,10 +151,19 @@ async function workflow(browser, engine, width) {
   await dialog.locator("#pb-note").fill("Kiểm tra phanh giúp tôi.");
   assert.equal(
     await dialog
-      .getByRole("button", { name: "Xác nhận đặt lịch", exact: true })
+      .getByRole("button", { name: "Xem lại thông tin", exact: true })
       .isEnabled(),
     true,
   );
+  await dialog
+    .getByRole("button", { name: "Xem lại thông tin", exact: true })
+    .click();
+  await dialog.locator(".pb-summary").waitFor();
+  assert.match(
+    await dialog.locator(".pb-summary").innerText(),
+    /Kiểm tra phanh giúp tôi/,
+  );
+  await layout(page, name + "-step4");
   // Focus stays inside the dialog at both ends of the keyboard tab sequence.
   const close = dialog.getByRole("button", {
     name: "Đóng đặt lịch",
@@ -183,17 +192,22 @@ async function workflow(browser, engine, width) {
   await trigger.click();
   await dialog.waitFor();
   assert.equal(
-    await dialog.locator("#pb-note").inputValue(),
-    "Kiểm tra phanh giúp tôi.",
+    await dialog
+      .locator(".pb-summary")
+      .innerText()
+      .then((text) => text.includes("Kiểm tra phanh giúp tôi.")),
+    true,
   );
   await dialog
     .getByRole("button", { name: "Xác nhận đặt lịch", exact: true })
     .click();
   await dialog.locator(".pb-success").waitFor();
   assert.match(
-    await dialog.locator(".pb-status-badge").innerText(),
-    /Chờ xác nhận/,
+    await dialog.locator(".pb-success h3").innerText(),
+    /Đã tiếp nhận yêu cầu đặt lịch/,
   );
+  assert.equal(await dialog.locator(".pb-success-icon .icon").count(), 1);
+  assert.equal(await dialog.locator(".pb-status-badge").count(), 0);
   assert.match(
     await dialog.locator(".pb-summary").innerText(),
     /Nguyễn Văn An/,

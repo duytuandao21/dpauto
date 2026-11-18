@@ -1,4 +1,5 @@
 "use client";
+import { formatOdometer, formatPlate } from "@/lib/advisor/formats";
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -68,12 +69,12 @@ function LocalOrderDetailPage({ id }: { id: string }) {
         className="adm-mobile-back adm-text-link"
       >
         <AdminIcon name="back" />
-        Xe dịch vụ
+        Phiếu dịch vụ
       </Link>
       <PageHeading
         eyebrow="CỐ VẤN / PHIẾU DỊCH VỤ"
         title={order.id}
-        description={`${vehicle?.plate || "Xe chưa có biển số"} · Tiếp nhận ${formatDate(order.openedAt)} · ${advisor?.name || "Chưa phân công"}`}
+        description={`${formatPlate(vehicle?.plate) || "Xe chưa có biển số"} · Tiếp nhận ${formatDate(order.openedAt)} · ${advisor?.name || "Chưa phân công"}`}
       >
         <StageBadge stage={order.stage} />
       </PageHeading>
@@ -110,7 +111,7 @@ function LocalOrderDetailPage({ id }: { id: string }) {
               </div>
               <div>
                 <dt>ODO</dt>
-                <dd>{order.odo ? `${order.odo} km` : "Chưa ghi"}</dd>
+                <dd>{order.odo ? `${formatOdometer(order.odo)} km` : "Chưa ghi"}</dd>
               </div>
               <div>
                 <dt>Ngoại thất</dt>

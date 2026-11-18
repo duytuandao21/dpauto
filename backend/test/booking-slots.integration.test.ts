@@ -95,8 +95,9 @@ async function payload(date: string, time = "08:30") {
       phone: "0900" + String(++phone).padStart(6, "0"),
     },
     serviceIds: [service],
-    requestedStartAt: `${date}T${time}:00+07:00`,
-    ...(await versions()),
+    requestedDate: date,
+    requestedPeriod: time < "12:00" ? "MORNING" : "AFTERNOON",
+    catalogVersion: (await versions()).catalogVersion,
     notice: {
       privacyNoticeVersion: "BOOKING_V1",
       privacyNoticeAcknowledged: true,
@@ -234,37 +235,77 @@ test("default hours and catalog work without any resource configuration", async 
   assert.ok(created.id);
 });
 
-test("six concurrent public submissions commit at most five; retries do not use another place", async () => {
+test("customers request a day + period only: unlimited, nothing held, pending until an advisor confirms", async () => {
+  const open = expect(
+    await guest.call("GET", "public/availability?date=2026-11-20"),
+    200,
+  );
+  assert.deepEqual(
+    open.periods.map((p: any) => [p.period, p.status]),
+    [
+      ["MORNING", "AVAILABLE"],
+      ["AFTERNOON", "AVAILABLE"],
+    ],
+  );
+  const past = expect(
+    await guest.call("GET", "public/availability?date=2026-11-12"),
+    200,
+  );
+  assert.ok(past.periods.every((p: any) => p.status === "UNAVAILABLE"));
+  // More requests than the old per-slot limit (5) are all accepted.
   const requests = await Promise.all(
-    Array.from({ length: 6 }, () => payload("2026-11-20")),
+    Array.from({ length: 7 }, () => payload("2026-11-20")),
   );
   const keys = requests.map(() => randomUUID());
   const responses = await Promise.all(
     requests.map((p, i) => guest.call("POST", "public/bookings", p, keys[i])),
   );
-  assert.equal(responses.filter((r) => r.status === 201).length, 5);
-  assert.equal(
-    responses.filter(
-      (r) => r.status === 409 && r.body.error.code === "CAPACITY_FULL",
-    ).length,
-    1,
-  );
-  const index = responses.findIndex((r) => r.status === 201);
+  assert.equal(responses.filter((r) => r.status === 201).length, 7);
   const replay = expect(
-    await guest.call("POST", "public/bookings", requests[index], keys[index]),
+    await guest.call("POST", "public/bookings", requests[0], keys[0]),
     201,
   );
-  assert.equal(replay.bookingId, responses[index].body.data.bookingId);
-  const slot = (await calendar("2026-11-20")).find(
-    (s: any) => s.startAt === "2026-11-20T01:30:00.000Z",
+  assert.equal(replay.bookingId, responses[0].body.data.bookingId);
+  assert.equal(replay.status, "PENDING");
+  assert.equal(replay.requestedPeriod, "MORNING");
+  const stored = expect(
+    await manager.call("GET", "admin/bookings/" + replay.bookingId),
+    200,
   );
-  assert.equal(slot.heldUnits, 5);
-  assert.equal(slot.pendingCount, 5);
-  assert.equal(slot.freeUnits, 0);
+  assert.equal(stored.requestedPeriod, "MORNING");
+  assert.equal(stored.scheduledStartAt, "2026-11-20T00:30:00.000Z");
+  assert.equal(stored.confirmedStartAt, null);
+  const slot = (await calendar("2026-11-20")).find(
+    (s: any) => s.startAt === "2026-11-20T00:30:00.000Z",
+  );
+  assert.equal(slot.pendingCount, 7);
+  assert.equal(slot.confirmedCount, 0);
+  assert.equal(slot.freeUnits, 5);
+  const afternoon = expect(
+    await guest.call(
+      "POST",
+      "public/bookings",
+      await payload("2026-11-20", "14:00"),
+    ),
+    201,
+  );
+  assert.equal(
+    expect(
+      await manager.call("GET", "admin/bookings/" + afternoon.bookingId),
+      200,
+    ).scheduledStartAt,
+    "2026-11-20T05:30:00.000Z",
+  );
+  // An exact time from the customer is no longer accepted.
+  const exact = await guest.call("POST", "public/bookings", {
+    ...(await payload("2026-11-20")),
+    requestedStartAt: "2026-11-20T08:30:00+07:00",
+  });
+  assert.equal(exact.status, 400);
 });
 
-test("confirmation preserves five places; cancellation opens one immediately and rescheduling rolls back on full", async () => {
-  for (let i = 0; i < 5; i++) await book("2026-11-25");
+test("advisor sets the official time; overload and same-time conflicts warn but never block; cancel and reschedule", async () => {
+  for (let i = 0; i < 6; i++) await book("2026-11-25");
   const list = expect(
     await manager.call(
       "GET",
@@ -272,10 +313,21 @@ test("confirmation preserves five places; cancellation opens one immediately and
     ),
     200,
   );
-  for (const b of list) await confirm(b.id, b.scheduledStartAt);
-  let slot = (await calendar("2026-11-25")).find((s: any) => s.heldUnits === 5);
+  assert.equal(list.length, 6);
+  const receipts = [];
+  // Off-grid exact time (09:00 inside the 08:30 slot) is allowed.
+  for (const b of list)
+    receipts.push(await confirm(b.id, "2026-11-25T09:00:00+07:00"));
+  assert.ok(receipts.every((r) => r.status === "CONFIRMED"));
+  assert.equal(receipts[0].confirmedStartAt, "2026-11-25T02:00:00.000Z");
+  assert.deepEqual(receipts[0].warnings, []);
+  assert.ok(receipts[1].warnings.includes("ADVISOR_TIME_CONFLICT"));
+  assert.ok(receipts[5].warnings.includes("SLOT_OVERLOADED"));
+  let slot = (await calendar("2026-11-25")).find(
+    (s: any) => s.startAt === "2026-11-25T01:30:00.000Z",
+  );
+  assert.equal(slot.confirmedCount, 6);
   assert.equal(slot.pendingCount, 0);
-  assert.equal(slot.confirmedCount, 5);
   assert.equal(slot.freeUnits, 0);
   const key = randomUUID(),
     input = { expectedVersion: 3, reason: "Khách hủy lịch" };
@@ -300,46 +352,77 @@ test("confirmation preserves five places; cancellation opens one immediately and
   slot = (await calendar("2026-11-25")).find(
     (s: any) => s.startAt === slot.startAt,
   );
-  assert.equal(slot.heldUnits, 4);
-  assert.equal(slot.freeUnits, 1);
-  const replacement = await book("2026-11-25");
+  assert.equal(slot.confirmedCount, 5);
+  // Still pending: move to another day and period agreed with the customer.
   const source = await book("2026-11-26");
-  const failed = await manager.call(
-    "POST",
-    `admin/bookings/${source.bookingId}/reschedule`,
-    {
-      expectedVersion: 1,
-      reason: "Đổi giờ theo khách",
-      customerAgreed: true,
-      newStartAt: "2026-11-25T08:30:00+07:00",
-      policyVersion: (await versions()).policyVersion,
-    },
-  );
-  assert.equal(failed.status, 409);
-  assert.equal(failed.body.error.code, "CAPACITY_FULL");
-  const unchanged = expect(
-    await manager.call("GET", "admin/bookings/" + source.bookingId),
-    200,
-  );
-  assert.equal(unchanged.scheduledStartAt, "2026-11-26T01:30:00.000Z");
-  expect(
+  const movedPeriod = expect(
     await manager.call(
       "POST",
-      `admin/bookings/${replacement.bookingId}/reschedule`,
+      `admin/bookings/${source.bookingId}/reschedule`,
       {
         expectedVersion: 1,
-        reason: "Đổi sang giờ còn chỗ",
+        reason: "Khách đổi sang chiều hôm sau",
         customerAgreed: true,
-        newStartAt: "2026-11-25T09:30:00+07:00",
+        requestedDate: "2026-11-27",
+        requestedPeriod: "AFTERNOON",
+      },
+    ),
+    200,
+  );
+  assert.equal(movedPeriod.status, "PENDING");
+  assert.equal(movedPeriod.requestedPeriod, "AFTERNOON");
+  assert.equal(movedPeriod.scheduledStartAt, "2026-11-27T05:30:00.000Z");
+  // Period changes are only for pending requests.
+  const confirmedPeriod = await manager.call(
+    "POST",
+    `admin/bookings/${list[1].id}/reschedule`,
+    {
+      expectedVersion: 3,
+      reason: "Đổi buổi",
+      customerAgreed: true,
+      requestedDate: "2026-11-27",
+      requestedPeriod: "MORNING",
+    },
+  );
+  assert.equal(confirmedPeriod.status, 409);
+  assert.equal(confirmedPeriod.body.error.code, "INVALID_TRANSITION");
+  // A confirmed booking moved into a full slot is saved, with a warning.
+  const other = await book("2026-11-26");
+  await confirm(other.bookingId, "2026-11-26T10:00:00+07:00");
+  const moved = expect(
+    await manager.call("POST", `admin/bookings/${other.bookingId}/reschedule`, {
+      expectedVersion: 3,
+      reason: "Đổi giờ theo khách",
+      customerAgreed: true,
+      newStartAt: "2026-11-25T09:15:00+07:00",
+      policyVersion: (await versions()).policyVersion,
+    }),
+    200,
+  );
+  assert.equal(moved.scheduledStartAt, "2026-11-25T02:15:00.000Z");
+  assert.ok(moved.warnings.includes("SLOT_OVERLOADED"));
+  // Giving a pending request an exact time clears its period.
+  const exact = expect(
+    await manager.call(
+      "POST",
+      `admin/bookings/${source.bookingId}/reschedule`,
+      {
+        expectedVersion: movedPeriod.version,
+        reason: "Hẹn giờ cụ thể",
+        customerAgreed: true,
+        newStartAt: "2026-11-27T14:00:00+07:00",
         policyVersion: (await versions()).policyVersion,
       },
     ),
     200,
   );
-  slot = (await calendar("2026-11-25")).find(
-    (s: any) => s.startAt === slot.startAt,
+  assert.equal(exact.requestedPeriod, null);
+  const neither = await manager.call(
+    "POST",
+    `admin/bookings/${source.bookingId}/reschedule`,
+    { expectedVersion: exact.version, reason: "Thiếu", customerAgreed: true },
   );
-  assert.equal(slot.freeUnits, 1);
+  assert.equal(neither.status, 400);
 });
 
 test("receiving a booked car keeps its original place; walk-in intake has no resource prerequisite", async () => {
@@ -406,13 +489,18 @@ test("slot/day closures keep bookings; reopening and validation use the new sett
     }),
     200,
   );
-  const rejected = await guest.call(
-    "POST",
-    "public/bookings",
-    await payload(date),
+  // A closed slot no longer rejects the morning; the request lands on the next open slot.
+  const shifted = expect(
+    await guest.call("POST", "public/bookings", await payload(date)),
+    201,
   );
-  assert.equal(rejected.status, 409);
-  assert.equal(rejected.body.error.code, "SLOT_CLOSED");
+  assert.equal(
+    expect(
+      await manager.call("GET", "admin/bookings/" + shifted.bookingId),
+      200,
+    ).scheduledStartAt,
+    "2026-11-23T01:30:00.000Z",
+  );
   assert.equal(
     (await calendar(date)).find((s: any) => s.id === slot.id).heldUnits,
     1,
@@ -436,6 +524,19 @@ test("slot/day closures keep bookings; reopening and validation use the new sett
     201,
   );
   assert.ok((await calendar(date)).every((s: any) => s.closed));
+  const closedDay = await guest.call(
+    "POST",
+    "public/bookings",
+    await payload(date, "14:00"),
+  );
+  assert.equal(closedDay.status, 422);
+  assert.equal(closedDay.body.error.code, "PERIOD_UNAVAILABLE");
+  assert.ok(
+    expect(
+      await guest.call("GET", "public/availability?date=" + date),
+      200,
+    ).periods.every((p: any) => p.status === "UNAVAILABLE"),
+  );
   expect(
     await manager.call("DELETE", "admin/capacity/blocks/" + block.id, {
       expectedVersion: block.version,
@@ -443,9 +544,10 @@ test("slot/day closures keep bookings; reopening and validation use the new sett
     }),
     204,
   );
+  // Pending requests do not consume the slot.
   assert.equal(
     (await calendar(date)).find((s: any) => s.id === slot.id).freeUnits,
-    4,
+    5,
   );
   const p = expect(await manager.call("GET", "admin/capacity/policy"), 200);
   const invalid = await manager.call("PUT", "admin/capacity/policy", {
@@ -457,12 +559,6 @@ test("slot/day closures keep bookings; reopening and validation use the new sett
     hours: [...p.hours, p.hours[0]],
   });
   assert.equal(invalid.status, 400);
-  const offGrid = await guest.call(
-    "POST",
-    "public/bookings",
-    await payload("2026-11-24", "09:00"),
-  );
-  assert.equal(offGrid.status, 422);
 });
 
 test("advisor cannot change booking limits and CMS accounts cannot operate bookings", async () => {
@@ -515,5 +611,102 @@ test("advisor cannot change booking limits and CMS accounts cannot operate booki
   assert.equal(
     (await cms.call("GET", "admin/cms/documents?kind=PAGE")).status,
     200,
+  );
+});
+test("web requests form a shared queue: the advisor who confirms claims it; a manager must name one", async () => {
+  const a = new Client();
+  await a.login("advisor@example.test", password);
+  expect(
+    await manager.call("POST", "admin/staff", {
+      name: "Cố vấn 2",
+      phone: "0901234579",
+      email: "advisor2@example.test",
+      jobRole: "ADVISOR",
+      active: true,
+      account: {
+        email: "advisor2@example.test",
+        temporaryPassword: initialPassword,
+        role: "ADVISOR",
+        permissions: [],
+      },
+    }),
+    201,
+  );
+  const other = new Client();
+  await other.login("advisor2@example.test");
+  expect(
+    await other.call("POST", "admin/auth/change-password", {
+      currentPassword: initialPassword,
+      newPassword: password,
+    }),
+    200,
+  );
+  const r1 = await book("2026-11-26"),
+    r2 = await book("2026-11-26", "14:00");
+  const ids = async (c: Client) =>
+    expect(
+      await c.call("GET", "admin/bookings?from=2026-11-26&to=2026-11-26"),
+      200,
+    ).map((b: any) => b.id);
+  assert.ok((await ids(a)).includes(r1.bookingId));
+  assert.ok((await ids(other)).includes(r1.bookingId));
+  assert.ok(
+    expect(
+      await a.call("GET", `admin/bookings/${r1.bookingId}`),
+      200,
+    ).allowedActions.includes("confirm"),
+  );
+  const body = (at: string) => ({
+    expectedVersion: 1,
+    reason: "Khách đồng ý",
+    customerAgreed: true,
+    confirmedStartAt: at,
+  });
+  expect(
+    await a.call(
+      "POST",
+      `admin/bookings/${r1.bookingId}/confirm`,
+      body("2026-11-26T09:15:00+07:00"),
+    ),
+    200,
+  );
+  const claimed = expect(
+    await manager.call("GET", `admin/bookings/${r1.bookingId}`),
+    200,
+  );
+  assert.equal(claimed.status, "CONFIRMED");
+  assert.equal(claimed.assignedAdvisor.id, advisor);
+  assert.ok(!(await ids(other)).includes(r1.bookingId));
+  assert.equal(
+    (await other.call("GET", `admin/bookings/${r1.bookingId}`)).status,
+    404,
+  );
+  const m = body("2026-11-26T14:30:00+07:00");
+  assert.equal(
+    (
+      await a.call("POST", `admin/bookings/${r2.bookingId}/confirm`, {
+        ...m,
+        advisorId: advisor,
+      })
+    ).status,
+    403,
+  );
+  const missing = await manager.call(
+    "POST",
+    `admin/bookings/${r2.bookingId}/confirm`,
+    m,
+  );
+  assert.equal(missing.body.error?.code, "ADVISOR_REQUIRED");
+  expect(
+    await manager.call("POST", `admin/bookings/${r2.bookingId}/confirm`, {
+      ...m,
+      advisorId: advisor,
+    }),
+    200,
+  );
+  assert.equal(
+    expect(await manager.call("GET", `admin/bookings/${r2.bookingId}`), 200)
+      .assignedAdvisor.id,
+    advisor,
   );
 });

@@ -1,0 +1,586 @@
+{
+  "overview-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Tổng quan",
+    "errors": [],
+    "motion": []
+  },
+  "overview-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Tổng quan",
+    "errors": [],
+    "motion": []
+  },
+  "overview-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Tổng quan",
+    "errors": [],
+    "motion": []
+  },
+  "bookings-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Lịch hẹn",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "drawer",
+        "animation": "adv-drawer-in",
+        "firstX": 390,
+        "lastX": 0
+      },
+      {
+        "kind": "close",
+        "animation": "adv-drawer-out",
+        "firstX": 0,
+        "lastX": 337.635
+      },
+      {
+        "kind": "drawer",
+        "animation": "none",
+        "firstX": 0,
+        "lastX": 0
+      }
+    ]
+  },
+  "bookings-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Lịch hẹn",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "drawer",
+        "animation": "adv-drawer-in",
+        "firstX": 733,
+        "lastX": 0
+      },
+      {
+        "kind": "close",
+        "animation": "adv-drawer-out",
+        "firstX": 0,
+        "lastX": 732.584
+      }
+    ]
+  },
+  "bookings-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Lịch hẹn",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "drawer",
+        "animation": "adv-drawer-in",
+        "firstX": 900,
+        "lastX": 0
+      },
+      {
+        "kind": "close",
+        "animation": "adv-drawer-out",
+        "firstX": 0,
+        "lastX": 899.768
+      }
+    ]
+  },
+  "customers-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Khách hàng",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "drawer",
+        "animation": "adv-drawer-in",
+        "firstX": 390,
+        "lastX": 0
+      },
+      {
+        "kind": "close",
+        "animation": "adv-drawer-out",
+        "firstX": 0,
+        "lastX": 337.493
+      },
+      {
+        "kind": "drawer",
+        "animation": "none",
+        "firstX": 0,
+        "lastX": 0
+      }
+    ]
+  },
+  "customers-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Khách hàng",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "drawer",
+        "animation": "adv-drawer-in",
+        "firstX": 733,
+        "lastX": 0
+      },
+      {
+        "kind": "close",
+        "animation": "adv-drawer-out",
+        "firstX": 0,
+        "lastX": 732.849
+      }
+    ]
+  },
+  "customers-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Khách hàng",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "drawer",
+        "animation": "adv-drawer-in",
+        "firstX": 900,
+        "lastX": 0
+      },
+      {
+        "kind": "close",
+        "animation": "adv-drawer-out",
+        "firstX": 0,
+        "lastX": 899.891
+      }
+    ]
+  },
+  "tickets-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Phiếu dịch vụ",
+    "errors": [],
+    "motion": []
+  },
+  "tickets-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Phiếu dịch vụ",
+    "errors": [],
+    "motion": []
+  },
+  "tickets-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Phiếu dịch vụ",
+    "errors": [],
+    "motion": []
+  },
+  "new-booking-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Tạo lịch hẹn",
+    "errors": [],
+    "motion": []
+  },
+  "new-booking-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Tạo lịch hẹn",
+    "errors": [],
+    "motion": []
+  },
+  "new-booking-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Tạo lịch hẹn",
+    "errors": [],
+    "motion": []
+  },
+  "reception-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Tiếp nhận xe",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0
+      }
+    ]
+  },
+  "reception-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Tiếp nhận xe",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 7.25588e-8
+      }
+    ]
+  },
+  "reception-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Tiếp nhận xe",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0.501048
+      }
+    ]
+  },
+  "work-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Mercedes-Benz GLC 300 4MATIC · 61K-123.45",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0
+      }
+    ]
+  },
+  "work-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Mercedes-Benz GLC 300 4MATIC · 61K-123.45",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0
+      }
+    ]
+  },
+  "work-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Mercedes-Benz GLC 300 4MATIC · 61K-123.45",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 5.15937e-7
+      }
+    ]
+  },
+  "quote-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Mercedes-Benz GLC 300 4MATIC · 61K-123.45",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0
+      }
+    ]
+  },
+  "quote-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Mercedes-Benz GLC 300 4MATIC · 61K-123.45",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0
+      }
+    ]
+  },
+  "quote-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Mercedes-Benz GLC 300 4MATIC · 61K-123.45",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0
+      }
+    ]
+  },
+  "payment-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Mercedes-Benz GLC 300 4MATIC · 61K-123.45",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0
+      }
+    ]
+  },
+  "payment-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Mercedes-Benz GLC 300 4MATIC · 61K-123.45",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0.0000020635
+      }
+    ]
+  },
+  "payment-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Mercedes-Benz GLC 300 4MATIC · 61K-123.45",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0
+      }
+    ]
+  },
+  "vehicle-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "59A-123.40",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0.499429
+      }
+    ]
+  },
+  "vehicle-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "59A-123.40",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0.131166
+      }
+    ]
+  },
+  "vehicle-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "59A-123.40",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "page",
+        "animation": "adv-detail-in",
+        "firstX": 24,
+        "lastX": 0
+      }
+    ]
+  },
+  "account-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Tài khoản",
+    "errors": [],
+    "motion": []
+  },
+  "account-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Tài khoản",
+    "errors": [],
+    "motion": []
+  },
+  "account-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Tài khoản",
+    "errors": [],
+    "motion": []
+  },
+  "settings-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Tùy chọn cá nhân",
+    "errors": [],
+    "motion": []
+  },
+  "settings-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Tùy chọn cá nhân",
+    "errors": [],
+    "motion": []
+  },
+  "settings-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Tùy chọn cá nhân",
+    "errors": [],
+    "motion": []
+  },
+  "notifications-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Thông báo",
+    "errors": [],
+    "motion": []
+  },
+  "notifications-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Thông báo",
+    "errors": [],
+    "motion": []
+  },
+  "notifications-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Thông báo",
+    "errors": [],
+    "motion": []
+  },
+  "history-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Lịch đã bàn giao",
+    "errors": [],
+    "motion": []
+  },
+  "history-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Lịch đã bàn giao",
+    "errors": [],
+    "motion": []
+  },
+  "history-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Lịch đã bàn giao",
+    "errors": [],
+    "motion": []
+  },
+  "confirm-booking-390": {
+    "passed": true,
+    "overflow": false,
+    "width": 390,
+    "heading": "Lịch hẹn",
+    "errors": [],
+    "motion": []
+  },
+  "confirm-booking-820": {
+    "passed": true,
+    "overflow": false,
+    "width": 820,
+    "heading": "Lịch hẹn",
+    "errors": [],
+    "motion": []
+  },
+  "confirm-booking-1440": {
+    "passed": true,
+    "overflow": false,
+    "width": 1440,
+    "heading": "Lịch hẹn",
+    "errors": [],
+    "motion": []
+  },
+  "confirm-booking-360": {
+    "passed": true,
+    "overflow": false,
+    "width": 360,
+    "heading": "Lịch hẹn",
+    "errors": [],
+    "motion": []
+  },
+  "bookings-360": {
+    "passed": true,
+    "overflow": false,
+    "width": 360,
+    "heading": "Lịch hẹn",
+    "errors": [],
+    "motion": [
+      {
+        "kind": "drawer",
+        "animation": "adv-drawer-in",
+        "firstX": 360,
+        "lastX": 0
+      },
+      {
+        "kind": "close",
+        "animation": "adv-drawer-out",
+        "firstX": 0,
+        "lastX": 359.845
+      }
+    ]
+  }
+}

@@ -53,6 +53,11 @@ function BookingsContent() {
   const [service, setService] = useState("");
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(params.get("selected") || "");
+  const [queue, setQueue] = useState(
+    params.get("date") || params.get("from") || params.get("status")
+      ? "all"
+      : "pending",
+  );
   const week = Array.from({ length: 7 }, (_, i) => shiftDate(date, i));
   useEffect(() => {
     setRange?.(
@@ -66,11 +71,15 @@ function BookingsContent() {
         (item) => item.id === booking.customerId,
       );
       return (
-        (mode === "week"
-          ? week.includes(booking.date)
-          : mode === "range"
-            ? booking.date >= date && booking.date <= endDate
-            : booking.date === date) &&
+        (queue === "pending"
+          ? booking.status === "pending"
+          : queue === "unassigned"
+            ? booking.status === "pending" && !booking.advisorId
+            : mode === "week"
+              ? week.includes(booking.date)
+              : mode === "range"
+                ? booking.date >= date && booking.date <= endDate
+                : booking.date === date) &&
         (!status ||
           (status === "checkedin"
             ? ["arrived", "completed"].includes(booking.status)
@@ -103,6 +112,37 @@ function BookingsContent() {
         title="Quản lý lịch hẹn"
         description="Theo dõi lịch toàn trạm và phân công cố vấn phụ trách."
       />
+      <div
+        className="mgr-tabs mgr-booking-queues"
+        aria-label="Nhóm yêu cầu lịch hẹn"
+      >
+        {[
+          [
+            "pending",
+            `Cần xử lý (${data.bookings.filter((b) => b.status === "pending").length})`,
+          ],
+          [
+            "unassigned",
+            `Chưa phân công (${data.bookings.filter((b) => b.status === "pending" && !b.advisorId).length})`,
+          ],
+          ["all", "Lịch theo ngày"],
+        ].map(([value, label]) => (
+          <button
+            key={value}
+            aria-pressed={queue === value}
+            onClick={() =>
+              resetPage(() => {
+                setQueue(value);
+                setStatus("");
+                setAdvisor("");
+                setView("table");
+              })
+            }
+          >
+            {label}
+          </button>
+        ))}
+      </div>
       <div className="mgr-section-toolbar">
         <div className="mgr-tabs" aria-label="Chế độ hiển thị">
           <button
@@ -114,61 +154,72 @@ function BookingsContent() {
           </button>
           <button
             aria-pressed={view === "calendar"}
-            onClick={() => resetPage(() => setView("calendar"))}
+            onClick={() =>
+              resetPage(() => {
+                setView("calendar");
+                setQueue("all");
+              })
+            }
           >
             <AdminIcon name="calendar" />
             Lịch
           </button>
         </div>
-        <div className="mgr-date-control">
-          <button
-            className="adm-icon-btn"
-            aria-label="Ngày trước"
-            onClick={() =>
-              resetPage(() =>
-                setDate(shiftDate(date, mode === "week" ? -7 : -1)),
-              )
-            }
-          >
-            <AdminIcon name="back" />
-          </button>
-          <input
-            type="date"
-            aria-label="Ngày xem lịch"
-            value={date}
-            onChange={(event) => {
-              if (event.target.value)
-                resetPage(() => setDate(event.target.value));
-            }}
-          />
-          <button
-            className="adm-icon-btn mgr-arrow-next"
-            aria-label="Ngày sau"
-            onClick={() =>
-              resetPage(() => setDate(shiftDate(date, mode === "week" ? 7 : 1)))
-            }
-          >
-            <AdminIcon name="back" />
-          </button>
-          <button
-            className="adm-btn"
-            onClick={() => resetPage(() => setDate(today))}
-          >
-            Hôm nay
-          </button>
-        </div>
+        {queue === "all" && (
+          <div className="mgr-date-control">
+            <button
+              className="adm-icon-btn"
+              aria-label="Ngày trước"
+              onClick={() =>
+                resetPage(() =>
+                  setDate(shiftDate(date, mode === "week" ? -7 : -1)),
+                )
+              }
+            >
+              <AdminIcon name="back" />
+            </button>
+            <input
+              type="date"
+              aria-label="Ngày xem lịch"
+              value={date}
+              onChange={(event) => {
+                if (event.target.value)
+                  resetPage(() => setDate(event.target.value));
+              }}
+            />
+            <button
+              className="adm-icon-btn mgr-arrow-next"
+              aria-label="Ngày sau"
+              onClick={() =>
+                resetPage(() =>
+                  setDate(shiftDate(date, mode === "week" ? 7 : 1)),
+                )
+              }
+            >
+              <AdminIcon name="back" />
+            </button>
+            <button
+              className="adm-btn"
+              onClick={() => resetPage(() => setDate(today))}
+            >
+              Hôm nay
+            </button>
+          </div>
+        )}
       </div>
       <div className="mgr-toolbar">
-        <FilterSelect
-          label="Khoảng xem"
-          value={mode}
-          onChange={(v) => resetPage(() => setMode(v))}
-        >
-          <option value="day">Theo ngày</option>
-          <option value="week">7 ngày từ ngày chọn</option>
-          <option value="range">Khoảng ngày</option>
-        </FilterSelect>
-        {mode === "range" && (
+        {queue === "all" && (
+          <FilterSelect
+            label="Khoảng xem"
+            value={mode}
+            onChange={(v) => resetPage(() => setMode(v))}
+          >
+            <option value="day">Theo ngày</option>
+            <option value="week">7 ngày từ ngày chọn</option>
+            <option value="range">Khoảng ngày</option>
+          </FilterSelect>
+        )}
+        {queue === "all" && mode === "range" && (
           <label className="mgr-filter">
             Đến ngày
             <input
@@ -251,7 +302,12 @@ function BookingsContent() {
           <FilterSelect
             label="Trạng thái"
             value={status}
-            onChange={(value) => resetPage(() => setStatus(value))}
+            onChange={(value) =>
+              resetPage(() => {
+                setStatus(value);
+                if (value && value !== "pending") setQueue("all");
+              })
+            }
           >
             <option value="">Tất cả trạng thái</option>
             <option value="checkedin">Đã check-in (gồm hoàn tất)</option>
@@ -306,9 +362,7 @@ function BookingsContent() {
                     className={`mgr-calendar-day ${day === today ? "is-today" : ""}`}
                     key={day}
                   >
-                    {new Intl.DateTimeFormat("vi-VN", {
-                      weekday: "short",
-                    }).format(new Date(`${day}T12:00:00`))}
+                    {formatDate(day, { weekday: "short" })}
                     <strong>{formatDate(day)}</strong>
                   </div>
                 ))}

@@ -23,6 +23,10 @@ export const sourceCode: Record<BookingSource, string> = {
   Zalo: "ZALO",
 };
 export function bookingFromApi(b: ApiBooking): Booking {
+  const originalPeriod =
+    b.originalRequestedPeriod === undefined
+      ? b.requestedPeriod
+      : b.originalRequestedPeriod;
   return {
     id: b.id,
     code: b.code,
@@ -32,11 +36,26 @@ export function bookingFromApi(b: ApiBooking): Booking {
     serviceIds: b.services.map((s) => s.id),
     serviceNames: Object.fromEntries(b.services.map((s) => [s.id, s.name])),
     requestedAt: stationTime(b.requestedStartAt),
+    originalPeriod:
+      originalPeriod === "MORNING"
+        ? "morning"
+        : originalPeriod === "AFTERNOON"
+          ? "afternoon"
+          : undefined,
+    period:
+      b.status === "PENDING" && b.requestedPeriod
+        ? b.requestedPeriod === "MORNING"
+          ? "morning"
+          : "afternoon"
+        : undefined,
     scheduledAt: stationTime(b.scheduledStartAt),
     confirmedAt: b.confirmedStartAt
       ? stationTime(b.confirmedStartAt)
       : undefined,
     createdAt: b.createdAt || b.requestedStartAt,
+    lastContactOutcome: b.lastContactOutcome,
+    contactAttempts: b.contactAttempts,
+    callbackAt: b.callbackAt,
     status: b.status.toLowerCase() as BookingStatus,
     source: sources[b.source],
     advisorId: b.assignedAdvisor?.id || "",
@@ -48,7 +67,7 @@ export function bookingFromApi(b: ApiBooking): Booking {
     allowedActions:
       b.allowedActions ||
       (b.status === "PENDING"
-        ? [...(b.assignedAdvisor ? ["confirm"] : []), "cancel"]
+        ? ["confirm", "cancel"]
         : b.status === "CONFIRMED"
           ? ["arrive", "cancel"]
           : []),

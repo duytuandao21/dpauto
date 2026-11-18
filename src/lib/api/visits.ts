@@ -1,4 +1,8 @@
 export type VisitStage =
+  | "QUOTING"
+  | "WAITING_FOR_WORK"
+  | "HANDOVER"
+  | "COMPLETED"
   | "RECEIVED"
   | "INSPECTED"
   | "IN_PROGRESS"
@@ -6,7 +10,25 @@ export type VisitStage =
   | "READY"
   | "HANDED_OVER"
   | "ABORTED";
+export type TicketStage =
+  | "QUOTING"
+  | "WAITING_FOR_WORK"
+  | "HANDOVER"
+  | "COMPLETED"
+  | "QUOTE"
+  | "WAITING_WORK"
+  | "IN_PROGRESS"
+  | "PAUSED"
+  | "REWORK"
+  | "QUALITY_CHECK"
+  | "READY"
+  | "HANDED_OVER"
+  | "ABORTED";
 export const visitStages: Record<VisitStage, string> = {
+  QUOTING: "Báo giá",
+  WAITING_FOR_WORK: "Chờ thi công",
+  HANDOVER: "Bàn giao",
+  COMPLETED: "Hoàn thành",
   RECEIVED: "Đã tiếp nhận",
   INSPECTED: "Đã kiểm tra",
   IN_PROGRESS: "Đang thi công",
@@ -16,6 +38,10 @@ export const visitStages: Record<VisitStage, string> = {
   ABORTED: "Đã dừng",
 };
 export const visitStageTone: Record<VisitStage, string> = {
+  QUOTING: "pending",
+  WAITING_FOR_WORK: "confirmed",
+  HANDOVER: "arrived",
+  COMPLETED: "completed",
   RECEIVED: "pending",
   INSPECTED: "pending",
   IN_PROGRESS: "confirmed",
@@ -24,6 +50,17 @@ export const visitStageTone: Record<VisitStage, string> = {
   HANDED_OVER: "completed",
   ABORTED: "cancelled",
 };
+export function serviceStage(visit: Visit): VisitStage {
+  const legacy: Record<string, VisitStage> = {
+    RECEIVED: "QUOTING",
+    INSPECTED:
+      visit.ticketStage === "WAITING_WORK" ? "WAITING_FOR_WORK" : "QUOTING",
+    QUALITY_CHECK: "IN_PROGRESS",
+    READY: "HANDOVER",
+    HANDED_OVER: "COMPLETED",
+  };
+  return legacy[visit.stage] || visit.stage;
+}
 export type Intake = {
   request: string;
   odometer: number | null;
@@ -60,6 +97,20 @@ export type Visit = {
   bookingId: string | null;
   origin: "BOOKING" | "WALK_IN";
   stage: VisitStage;
+  workflowVersion?: number;
+  canDelete?: boolean;
+  deleteBlockedReason?: string | null;
+  isPaused?: boolean;
+  pauseReason?: string | null;
+  pausedAt?: string | null;
+  ticketStage?: TicketStage;
+  pricing?: {
+    approvedTotal: string | null;
+    estimateTotal: string | null;
+    payableTotal: string | null;
+    hasOpenQuote: boolean;
+    hasExemption: boolean;
+  };
   customerId: string;
   vehicleId: string;
   version: number;
@@ -96,7 +147,8 @@ export type VisitDetail = Visit & {
 };
 
 export function visitFollowUp(visit: Visit, now: number) {
-  if (visit.stage === "HANDED_OVER" || visit.stage === "ABORTED") return null;
+  if (["HANDED_OVER", "COMPLETED", "ABORTED"].includes(visit.stage))
+    return null;
   if (
     visit.stage === "IN_PROGRESS" &&
     visit.work?.dueAt &&
@@ -111,6 +163,30 @@ export function visitFollowUp(visit: Visit, now: number) {
       priority: 0,
     } as const;
   const tasks = {
+    QUOTING: {
+      label: "Chốt báo giá",
+      badge: "Báo giá",
+      tone: "pending",
+      tab: "bao-gia",
+      priority: 3,
+    },
+    WAITING_FOR_WORK: {
+      label: "Bắt đầu thi công",
+      badge: "Chờ thi công",
+      tone: "confirmed",
+      tab: "thi-cong",
+      priority: 3,
+    },
+    HANDOVER: {
+      label: "Hoàn thành phiếu",
+      badge: "Bàn giao",
+      tone: "arrived",
+      tab: "doi-soat",
+      priority: 5,
+    },
+    COMPLETED: null,
+    ABORTED: null,
+    HANDED_OVER: null,
     RECEIVED: {
       label: "Kiểm tra xe tiếp nhận",
       badge: "Tiếp nhận",

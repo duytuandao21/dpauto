@@ -142,12 +142,19 @@ export function manager(ctx: Context) {
 export function permission(ctx: Context, p: string) {
   if (!ctx.actor?.permissions.includes(p)) fail(403, "FORBIDDEN");
 }
-export function scope(ctx: Context, alias = "b") {
+export function scope(ctx: Context, alias = "b", includeDeleted = false) {
   if (!ctx.actor) fail(401, "UNAUTHENTICATED");
   const a = sql.identifier(alias);
-  return ctx.actor.role === "MANAGER"
-    ? sql`${a}.station_id=${ctx.station.id}::uuid`
-    : sql`${a}.station_id=${ctx.station.id}::uuid AND ${a}.assigned_advisor_id=${ctx.actor.staffId}::uuid`;
+  const access =
+    ctx.actor.role === "MANAGER"
+      ? sql`${a}.station_id=${ctx.station.id}::uuid`
+      : alias === "b"
+        ? // Unclaimed pending bookings form a shared queue every advisor can pick up.
+          sql`${a}.station_id=${ctx.station.id}::uuid AND (${a}.assigned_advisor_id=${ctx.actor.staffId}::uuid OR (${a}.assigned_advisor_id IS NULL AND ${a}.status='PENDING'))`
+        : sql`${a}.station_id=${ctx.station.id}::uuid AND ${a}.assigned_advisor_id=${ctx.actor.staffId}::uuid`;
+  return alias === "b" || includeDeleted
+    ? access
+    : sql`${access} AND ${a}.deleted_at IS NULL`;
 }
 export async function scopedBooking(
   c: Conn,
@@ -167,10 +174,11 @@ export async function scopedVisit(
   ctx: Context,
   id: string,
   lock = false,
+  includeDeleted = false,
 ) {
   const visit = await one(
     c,
-    sql`SELECT v.* FROM service_visits v WHERE v.id=${id}::uuid AND ${scope(ctx, "v")} ${lock ? sql`FOR UPDATE` : sql``}`,
+    sql`SELECT v.* FROM service_visits v WHERE v.id=${id}::uuid AND ${scope(ctx, "v", includeDeleted)} ${lock ? sql`FOR UPDATE` : sql``}`,
   );
   if (!visit) fail(404, "NOT_FOUND");
   return visit;

@@ -46,7 +46,7 @@ export function PageBanner({
   );
 }
 
-export function FinalCTA({ vietnamese = false }: { vietnamese?: boolean }) {
+export function FinalCTA({ vietnamese = true }: { vietnamese?: boolean }) {
   return (
     <section className="final-cta">
       <ParallaxPhoto

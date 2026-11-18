@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { homeNavigation } from "@/lib/home-vi";
 import Image from "next/image";
 import { navigation, site } from "@/lib/content";
@@ -10,7 +9,7 @@ import { FooterShader } from "@/components/media/footer-shader";
 
 export function Hours({
   compact = false,
-  vietnamese = false,
+  vietnamese = true,
 }: {
   compact?: boolean;
   vietnamese?: boolean;
@@ -58,7 +57,7 @@ export function Hours({
 }
 
 export function Footer() {
-  const vietnamese = usePathname() === "/";
+  const vietnamese = true;
   const links = vietnamese ? homeNavigation : navigation;
   return (
     <footer className="site-footer" lang={vietnamese ? "vi" : "en"}>

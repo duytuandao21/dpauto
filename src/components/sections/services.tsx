@@ -131,7 +131,7 @@ export function ServicesBanner() {
       </motion.div>
       <div className="work-banner-overlay" />
       <div className="container work-banner-heading">
-        <h1>Our Services</h1>
+        <h1>Dịch vụ của chúng tôi</h1>
       </div>
     </section>
   );
@@ -176,7 +176,7 @@ function ServiceStackCard({ service }: { service: Service }) {
             <h2>{service.title}</h2>
           </Link>
           <p>{service.description}</p>
-          <Button href={`/services/${service.slug}`}>View Details</Button>
+          <Button href={`/services/${service.slug}`}>Xem chi tiết</Button>
         </div>
       </article>
     </motion.div>

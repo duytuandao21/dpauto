@@ -26,7 +26,7 @@ export function BeforeAfter({
   hoverFollow = false,
   className = "",
   originalImages = false,
-  vietnamese = false,
+  vietnamese = true,
 }: {
   before: SiteImage;
   after: SiteImage;

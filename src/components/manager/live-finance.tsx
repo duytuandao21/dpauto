@@ -29,6 +29,7 @@ type Subject = {
   vehicle?: { model?: string; plate?: string };
   stage?: string;
   status?: string;
+  deletedAt?: string | null;
 };
 export function LiveFinance() {
   return (
@@ -290,6 +291,7 @@ type Account = {
   code: string;
   version: number;
   stage: string;
+  deletedAt?: string | null;
   customer: { name: string };
   vehicle: { plate: string; model: string };
   balance: Settlement;
@@ -362,10 +364,15 @@ function AccountList({
                   <td>
                     <Link
                       className="adm-text-link"
-                      href={`/dieu-hanh/phieu-dich-vu/${a.id}?tab=doi-soat`}
+                      href={
+                        a.deletedAt
+                          ? `/dieu-hanh/tai-chinh?visitId=${a.id}`
+                          : `/dieu-hanh/phieu-dich-vu/${a.id}?tab=doi-soat`
+                      }
                     >
                       {a.code}
                     </Link>
+                    {a.deletedAt && <p className="adm-muted">Phiếu đã xóa</p>}
                     <p>
                       {a.customer.name} · {a.vehicle.plate || a.vehicle.model}
                     </p>
@@ -490,10 +497,15 @@ function SubjectPicker({
   value: Subject | null;
   onSelect: (s: Subject) => void;
 }) {
+  const session = useSession();
+  const readAccounts =
+    kind === "visit" && !!session?.permissions.includes("finance.read");
   const [query, setQuery] = useState(""),
     base =
       kind === "visit"
-        ? "admin/service-visits"
+        ? readAccounts
+          ? "admin/finance/accounts"
+          : "admin/service-visits"
         : kind === "booking"
           ? "admin/bookings"
           : "admin/customers";
@@ -507,11 +519,17 @@ function SubjectPicker({
         ...(query ? { q: query } : {}),
         ...(kind === "booking"
           ? { from: date, to: date, status: "PENDING,CONFIRMED" }
-          : kind === "visit"
+          : kind === "visit" && !readAccounts
             ? { activeOnly: "true" }
             : {}),
       }),
     0,
+  );
+  const subjects = p.data.filter(
+    (s) =>
+      kind !== "visit" ||
+      s.deletedAt ||
+      !["HANDED_OVER", "COMPLETED", "ABORTED"].includes(s.stage || ""),
   );
   return (
     <div className="adm-form-grid">
@@ -540,20 +558,22 @@ function SubjectPicker({
           required
           value={value?.id || ""}
           onChange={(e) => {
-            const s = p.data.find((s) => s.id === e.target.value);
+            const s = subjects.find((s) => s.id === e.target.value);
             if (s) onSelect(s);
           }}
         >
           <option value="">Chọn trong danh sách</option>
-          {value && !p.data.some((s) => s.id === value.id) && (
+          {value && !subjects.some((s) => s.id === value.id) && (
             <option value={value.id}>
               {value.code || value.name || value.customer?.name}
+              {value.deletedAt ? " · Phiếu đã xóa" : ""}
             </option>
           )}
-          {p.data.map((s) => (
+          {subjects.map((s) => (
             <option key={s.id} value={s.id}>
               {s.code || s.name} · {s.customer?.name || s.phone}
               {s.vehicle?.plate ? " · " + s.vehicle.plate : ""}
+              {s.deletedAt ? " · Phiếu đã xóa" : ""}
             </option>
           ))}
         </select>
@@ -576,6 +596,7 @@ function CollectForm({
   run: Run;
   busy: boolean;
 }) {
+  const readAccounts = !!useSession()?.permissions.includes("finance.read");
   const [kind, setKind] = useState(
       initialBooking ? "booking" : initialCustomer ? "customer" : "visit",
     ),
@@ -593,23 +614,31 @@ function CollectForm({
     const id = initialVisit || initialBooking || initialCustomer;
     if (!id) return;
     const a = new AbortController();
-    request<Subject>(
-      (initialVisit
-        ? "admin/service-visits/"
-        : initialBooking
-          ? "admin/bookings/"
-          : "admin/customers/") + id,
-      { signal: a.signal },
-    )
-      .then((r) => {
-        setSubject(r.data);
-        setPayer(r.data.customer?.name || r.data.name || "");
+    const subjectRequest =
+      initialVisit && readAccounts
+        ? request<Subject[]>(
+            `admin/finance/accounts?visitId=${encodeURIComponent(id)}`,
+            { signal: a.signal },
+          ).then((r) => r.data[0])
+        : request<Subject>(
+            (initialVisit
+              ? "admin/service-visits/"
+              : initialBooking
+                ? "admin/bookings/"
+                : "admin/customers/") + id,
+            { signal: a.signal },
+          ).then((r) => r.data);
+    subjectRequest
+      .then((subject) => {
+        if (!subject) throw new Error("Không tìm thấy phiếu dịch vụ.");
+        setSubject(subject);
+        setPayer(subject.customer?.name || subject.name || "");
       })
       .catch((e) => {
         if (!a.signal.aborted) setError(e.message);
       });
     return () => a.abort();
-  }, [initialVisit, initialBooking, initialCustomer]);
+  }, [initialVisit, initialBooking, initialCustomer, readAccounts]);
   return (
     <section className="adm-panel">
       <h2>{kind === "visit" ? "Thu tiền phiếu dịch vụ" : "Thu cọc"}</h2>

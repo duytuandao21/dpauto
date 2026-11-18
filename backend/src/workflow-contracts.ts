@@ -27,6 +27,7 @@ export const quoteDraft = z.strictObject({
         kind: z.enum(["SERVICE", "PART"]),
         serviceId: uuid.optional(),
         name: text(160),
+        description: z.string().trim().max(500).default(""),
         code: z.string().trim().max(60),
         unit: text(30),
         quantity: z
@@ -42,15 +43,44 @@ export const quoteDraft = z.strictObject({
     .max(100),
 });
 export const reasonCommand = z.strictObject(command);
+export const quoteVoid = z.strictObject({
+  ...command,
+  unperformedConfirmed: z.literal(true).optional(),
+  lineIds: z
+    .array(uuid)
+    .min(1)
+    .max(100)
+    .refine((a) => new Set(a).size === a.length)
+    .optional(),
+});
 export const quoteDecision = z.strictObject({
   ...command,
   decision: z.enum(["APPROVED", "REJECTED"]),
   evidence,
+  approvedLineIds: z
+    .array(uuid)
+    .min(1)
+    .max(100)
+    .refine((a) => new Set(a).size === a.length)
+    .optional(),
+});
+export const quoteClose = quoteDraft.extend({
+  evidence,
+  approvedLineIds: z.array(uuid).min(1).max(100).optional(),
 });
 export const quoteQuery = z.strictObject({
   ...pagination,
   q: text(100).optional(),
-  status: z.enum(["DRAFT", "SUBMITTED", "APPROVED", "REJECTED"]).optional(),
+  status: z
+    .enum([
+      "DRAFT",
+      "SUBMITTED",
+      "PENDING_APPROVAL",
+      "APPROVED",
+      "REJECTED",
+      "VOIDED",
+    ])
+    .optional(),
 });
 export const exemption = z.strictObject({
   ...command,
@@ -60,7 +90,7 @@ export const exemption = z.strictObject({
 });
 const technicians = z
   .array(uuid)
-  .min(1)
+  .min(0)
   .max(8)
   .refine((a) => new Set(a).size === a.length);
 export const itemCreate = z
@@ -69,7 +99,7 @@ export const itemCreate = z
     label: text(200),
     quoteLineId: uuid.optional(),
     exemptionId: uuid.optional(),
-    technicianIds: technicians,
+    technicianIds: technicians.default([]),
     dueAt: instant,
   })
   .refine((v) => !v.quoteLineId || !v.exemptionId);
@@ -107,8 +137,23 @@ export const acceptance = z.strictObject({
         note: z.string().trim().max(500),
       }),
     )
-    .min(1)
+    .min(0)
     .max(200),
+  qualityChecks: z
+    .array(
+      z.strictObject({
+        key: text(220),
+        passed: z.boolean(),
+        note: z.string().trim().max(500),
+      }),
+    )
+    .max(200)
+    .optional(),
+  completionConfirmed: z.boolean().optional(),
+});
+export const finishCommand = z.strictObject({
+  ...command,
+  quality: acceptance.omit({ expectedVersion: true, reason: true }).optional(),
 });
 export const handover = z.strictObject({
   ...command,
@@ -116,6 +161,7 @@ export const handover = z.strictObject({
   evidenceNote: text(2000),
   vehicleMoved: z.literal(true),
   paymentBasis: z.enum(["NO_CHARGE", "SETTLED"]),
+  paymentReceived: z.boolean().optional(),
 });
 export const abort = z.strictObject({
   ...command,

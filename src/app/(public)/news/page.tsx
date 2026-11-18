@@ -5,7 +5,7 @@ import { NewsSection, FeaturedArticle } from "@/components/sections/news";
 import { publicArticles, publicMetadata } from "@/lib/public-cms";
 
 export const generateMetadata = (): Promise<Metadata> =>
-  publicMetadata("/news", { title: "Latest from HyperAuto Care" });
+  publicMetadata("/news", { title: "Tin tức từ HyperAuto Care" });
 export default async function NewsPage() {
   const articles = await publicArticles();
   return (
@@ -15,7 +15,7 @@ export default async function NewsPage() {
         <FeaturedArticle article={articles[5] || articles[0]} />
       )}
       <NewsSection
-        title="All News, Guides & Offers"
+        title="Tin tức, hướng dẫn & ưu đãi"
         items={articles}
         more={false}
         originalImages

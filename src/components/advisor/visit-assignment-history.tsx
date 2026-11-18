@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { request } from "@/lib/api/client";
-import { stationTime } from "@/lib/api/types";
+import { workflowTime } from "@/lib/api/workflow";
 import { AdminLoading } from "@/components/admin/primitives";
+import { AdminIcon } from "@/components/admin/admin-icon";
 
 type Assignment = {
   id: string;
@@ -62,43 +63,51 @@ export function VisitAssignmentHistory() {
             <strong>
               {v.historicalSnapshot?.visitCode || "Phiếu đang phụ trách"}
             </strong>
-            <p>
-              Nhận phụ trách{" "}
-              {stationTime(v.assignedAt).slice(0, 16).replace("T", " ")}
-            </p>
-            {v.endedAt && (
-              <p>
-                Chuyển cố vấn{" "}
-                {stationTime(v.endedAt).slice(0, 16).replace("T", " ")}
-              </p>
-            )}
+            <p>Nhận phụ trách {workflowTime(v.assignedAt)}</p>
+            {v.endedAt && <p>Chuyển cố vấn {workflowTime(v.endedAt)}</p>}
           </article>
         ))
       ) : (
         <p>Chưa có lịch sử phụ trách phiếu.</p>
       )}
-      <div className="adm-action-row">
+      <nav
+        className="adv-pagination"
+        aria-label="Phân trang lịch sử phụ trách phiếu"
+      >
         <button
           className="adm-btn"
+          type="button"
+          aria-label="Trang trước"
           disabled={loading || !previous.length}
           onClick={() => {
             setCursor(previous.at(-1) || "");
             setPrevious(previous.slice(0, -1));
           }}
         >
-          Trang trước
+          <AdminIcon name="back" />
+          Trước
         </button>
+        <span
+          className="adv-pagination-current"
+          aria-current="page"
+          aria-live="polite"
+        >
+          Trang {previous.length + 1}
+        </span>
         <button
           className="adm-btn"
+          type="button"
+          aria-label="Trang sau"
           disabled={loading || !!error || !next}
           onClick={() => {
             setPrevious([...previous, cursor]);
             setCursor(next || "");
           }}
         >
-          Trang sau
+          Tiếp
+          <AdminIcon name="back" />
         </button>
-      </div>
+      </nav>
     </section>
   );
 }

@@ -11,8 +11,14 @@ import { HeaderButton } from "./header-button";
 
 export function Header() {
   const path = usePathname();
-  const vietnamese = path === "/";
-  const links = vietnamese ? homeNavigation : navigation;
+  const vietnamese = true;
+  const base = vietnamese ? homeNavigation : navigation;
+  // Header only: Accessories replaces Brands (the footer keeps the shared list).
+  const links = [
+    base[0],
+    { label: vietnamese ? "Phụ kiện" : "Accessories", href: "/phu-kien" },
+    ...base.slice(1, 5),
+  ];
   const menuServices = vietnamese ? homeServices : services;
   const [mobile, setMobile] = useState(false);
   const [dropdown, setDropdown] = useState(false);

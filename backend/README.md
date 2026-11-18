@@ -75,7 +75,8 @@ Copy-Item .env.example .env
 
 - `DATABASE_URL`: database mới của DPAuto.
 - `API_SECRET`: sinh bằng lệnh trong `.env.example`; không commit.
-- `APP_ORIGIN`: origin frontend chính xác, không có dấu `/` cuối.
+- `APP_ORIGIN`: origin frontend chính để tạo link/QR, không có dấu `/` cuối; luôn được phép truy cập API.
+- `APP_ALLOWED_ORIGINS`: các origin frontend bổ sung, ngăn bằng dấu phẩy; có thể để trống. Mỗi origin gồm giao thức HTTP/HTTPS, tên miền hoặc IP và cổng nếu có; không có đường dẫn, dấu `/` cuối hay wildcard.
 - Các trường `BOOTSTRAP_*` và thông tin trạm còn trống. Mật khẩu tạm từ 15 đến 128 ký tự.
 
 ```powershell
@@ -121,8 +122,9 @@ Thông tin đặt lịch hiện dùng registry `BOOKING_V1` tại `/chinh-sach-d
 
 ## LAN và production
 
-- Nếu mở bằng IP trên điện thoại, đặt `APP_ORIGIN=http://<IP-máy>:4001`, rồi dùng cùng địa chỉ đó trên desktop và mobile. Backend vẫn bind loopback; Next proxy public/admin API.
-- Production: `NODE_ENV=production`, HTTPS `APP_ORIGIN`, secret riêng và reverse proxy cùng origin. Cookie production có prefix `__Host-` và Secure; không nới sang cookie HTTP để xử lý deploy sai.
+- Để dùng cả localhost trên máy tính và IP trên điện thoại, giữ `APP_ORIGIN=http://localhost:4001`, thêm `APP_ALLOWED_ORIGINS=http://<IP-máy>:4001` trong `backend/.env`, rồi khởi động lại backend. Có thể thêm nhiều origin bằng dấu phẩy. Hai thiết bị dùng cùng mạng LAN; backend vẫn bind loopback, Next proxy public/admin API. Phiên đăng nhập tách riêng theo từng địa chỉ. Nếu muốn link/QR cũng mở được trên điện thoại, dùng địa chỉ IP làm `APP_ORIGIN`, thêm localhost vào `APP_ALLOWED_ORIGINS`.
+- Khi chạy `npm run dev`, IP truy cập phải có trong `allowedDevOrigins` của `next.config.ts`; đây là cấu hình riêng của Next, không thay thế danh sách origin của backend.
+- Production: `NODE_ENV=production`, HTTPS cho `APP_ORIGIN` và mọi origin bổ sung, secret riêng và reverse proxy cùng origin. Cookie production có prefix `__Host-` và Secure; không nới sang cookie HTTP để xử lý deploy sai.
 - Không proxy `/internal`: probes chỉ dùng qua backend nội bộ. Không bật CORS hoặc tin tùy ý `X-Forwarded-For`. Giới hạn IP hiện dùng địa chỉ peer; khi Next proxy qua loopback, giới hạn theo IP được chia sẻ, cần cấu hình proxy tin cậy theo hạ tầng thực trước mở công khai.
 - Tách quyền migration/extension khỏi user runtime khi triển khai. Không dùng tài khoản PostgreSQL superuser làm runtime.
 - Backend có script `npm run build` để xuất JavaScript vào `dist/`; `npm start` chạy JavaScript này và không cần tsx/dev dependencies ở runtime. Tạo build trong bước deploy được duyệt, không tự chạy trong nhiệm vụ này. Migration/bootstrap chạy ở bước quản trị có dev dependencies trước khi bỏ dev dependencies khỏi runtime.

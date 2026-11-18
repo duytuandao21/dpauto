@@ -56,7 +56,7 @@ export class Operations {
     const r = range(q.from, q.to);
     const visits = await one(
       c,
-      sql`SELECT count(*)::int AS received,count(*) FILTER(WHERE v.stage='HANDED_OVER')::int AS delivered,count(*) FILTER(WHERE v.stage NOT IN ('HANDED_OVER','ABORTED'))::int AS open FROM service_visits v WHERE ${scope(ctx, "v")} AND v.received_at>=${r.from} AND v.received_at<${r.to}`,
+      sql`SELECT count(*)::int AS received,count(*) FILTER(WHERE v.stage IN ('HANDED_OVER','COMPLETED'))::int AS delivered,count(*) FILTER(WHERE v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED'))::int AS open FROM service_visits v WHERE ${scope(ctx, "v")} AND v.received_at>=${r.from} AND v.received_at<${r.to}`,
     );
     const bookings = await one(
       c,
@@ -68,7 +68,7 @@ export class Operations {
     );
     const stages = await rows(
       c,
-      sql`SELECT v.stage,count(*)::int AS count FROM service_visits v WHERE ${scope(ctx, "v")} AND v.stage NOT IN ('HANDED_OVER','ABORTED') GROUP BY v.stage ORDER BY v.stage`,
+      sql`SELECT v.stage,count(*)::int AS count FROM service_visits v WHERE ${scope(ctx, "v")} AND v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') GROUP BY v.stage ORDER BY v.stage`,
     );
     const technicians =
       ctx.actor!.role === "MANAGER"
@@ -107,10 +107,10 @@ export class Operations {
     const base = sql`
       SELECT md5('unassigned'||b.id::text)::uuid AS id,b.id AS subject_id,'booking' AS subject_type,b.scheduled_start_at AS cursor_key,'Chưa phân công cố vấn' AS title,b.code,'WARNING' AS severity FROM bookings b WHERE ${scope(ctx)} AND b.assigned_advisor_id IS NULL AND b.status IN ('PENDING','CONFIRMED')
       UNION ALL SELECT md5('late'||b.id::text)::uuid,b.id,'booking',b.scheduled_start_at,'Lịch đã qua giờ hẹn',b.code,'WARNING' FROM bookings b WHERE ${scope(ctx)} AND b.status='CONFIRMED' AND b.scheduled_start_at<${ctx.now}
-      UNION ALL SELECT md5('quote'||q.id::text)::uuid,v.id,'visit',q.submitted_at,'Báo giá đang chờ phản hồi',v.code,'INFO' FROM quote_revisions q JOIN service_visits v ON v.id=q.visit_id WHERE ${scope(ctx, "v")} AND q.status='SUBMITTED'
+      UNION ALL SELECT md5('quote'||q.id::text)::uuid,v.id,'visit',q.submitted_at,'Báo giá đang chờ phản hồi',v.code,'INFO' FROM quote_revisions q JOIN service_visits v ON v.id=q.visit_id WHERE ${scope(ctx, "v")} AND q.status IN ('SUBMITTED','PENDING_APPROVAL')
       UNION ALL SELECT md5('overdue'||w.id::text)::uuid,v.id,'visit',w.due_at,'Thi công quá hạn',v.code,'DANGER' FROM work_orders w JOIN service_visits v ON v.id=w.visit_id WHERE ${scope(ctx, "v")} AND w.status IN ('IN_PROGRESS','PAUSED') AND w.due_at<${ctx.now}
-      UNION ALL SELECT md5('ready'||v.id::text)::uuid,v.id,'visit',v.ready_at,'Xe sẵn sàng chờ bàn giao',v.code,'INFO' FROM service_visits v WHERE ${scope(ctx, "v")} AND v.stage='READY'
-      UNION ALL SELECT md5('stock'||v.id::text)::uuid,v.id,'visit',v.updated_at,'Vật tư chưa đủ để thi công',v.code,'WARNING' FROM service_visits v WHERE ${scope(ctx, "v")} AND v.stage NOT IN ('HANDED_OVER','ABORTED') AND EXISTS(SELECT 1 FROM stock_requests r WHERE r.visit_id=v.id AND r.quantity>r.reserved+COALESCE((SELECT sum(l.quantity) FROM stock_document_lines l JOIN stock_documents d ON d.id=l.document_id WHERE l.request_id=r.id AND d.status='POSTED' AND d.kind='ISSUE'),0)-COALESCE((SELECT sum(x.quantity) FROM stock_document_lines x JOIN stock_documents d ON d.id=x.document_id JOIN stock_document_lines l ON l.id=x.original_line_id WHERE l.request_id=r.id AND d.status='POSTED' AND d.kind='RETURN'),0))
+      UNION ALL SELECT md5('ready'||v.id::text)::uuid,v.id,'visit',v.ready_at,'Xe sẵn sàng chờ bàn giao',v.code,'INFO' FROM service_visits v WHERE ${scope(ctx, "v")} AND v.stage IN ('READY','HANDOVER')
+      UNION ALL SELECT md5('stock'||v.id::text)::uuid,v.id,'visit',v.updated_at,'Vật tư chưa đủ để thi công',v.code,'WARNING' FROM service_visits v WHERE ${scope(ctx, "v")} AND v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') AND EXISTS(SELECT 1 FROM stock_requests r WHERE r.visit_id=v.id AND r.quantity>r.reserved+COALESCE((SELECT sum(l.quantity) FROM stock_document_lines l JOIN stock_documents d ON d.id=l.document_id WHERE l.request_id=r.id AND d.status='POSTED' AND d.kind='ISSUE'),0)-COALESCE((SELECT sum(x.quantity) FROM stock_document_lines x JOIN stock_documents d ON d.id=x.document_id JOIN stock_document_lines l ON l.id=x.original_line_id WHERE l.request_id=r.id AND d.status='POSTED' AND d.kind='RETURN'),0))
     `;
     const p = await page(
       c,
@@ -205,7 +205,7 @@ export class Operations {
       dayEnd = new Date(+dayStart + 86400000);
     const work = await rows(
       c,
-      sql`SELECT DISTINCT w.id,w.due_at FROM work_item_assignments a JOIN work_items i ON i.id=a.work_item_id JOIN work_orders w ON w.id=i.work_order_id JOIN service_visits v ON v.id=w.visit_id WHERE a.technician_id=${h.staff_id} AND a.ended_at IS NULL AND i.status IN ('PENDING','IN_PROGRESS') AND w.status='IN_PROGRESS' AND v.station_id=${ctx.station.id}`,
+      sql`SELECT DISTINCT w.id,w.due_at FROM work_item_assignments a JOIN work_items i ON i.id=a.work_item_id JOIN work_orders w ON w.id=i.work_order_id JOIN service_visits v ON v.id=w.visit_id WHERE a.technician_id=${h.staff_id} AND a.ended_at IS NULL AND i.status IN ('PENDING','IN_PROGRESS') AND w.status='IN_PROGRESS' AND v.station_id=${ctx.station.id} AND v.deleted_at IS NULL`,
     );
     const shifts = await rows(
       c,

@@ -626,7 +626,7 @@ export function LiveNotifications({ advisor = false }: { advisor?: boolean }) {
       {!p.loading && !p.data.length && !p.error && (
         <p className="adm-muted">Bạn chưa có thông báo.</p>
       )}
-      <PageButtons manager page={p} />
+      <PageButtons manager={!advisor} page={p} />
       {!advisor && session?.permissions.includes("notifications.manage") && (
         <DeliveryJobs />
       )}

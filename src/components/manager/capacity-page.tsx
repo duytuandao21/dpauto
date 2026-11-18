@@ -86,7 +86,8 @@ function Slots() {
       >
         <div className="mgr-section-toolbar">
           <span className="adm-muted">
-            Tối đa {policy?.maxBookingsPerSlot || 5} lịch mỗi khung{" "}
+            Khách đặt theo buổi, không giới hạn · Cảnh báo khi quá{" "}
+            {policy?.maxBookingsPerSlot || 5} lịch đã xác nhận mỗi khung{" "}
             {policy?.slotMinutes || 60} phút
           </span>
           <button
@@ -169,7 +170,7 @@ function Slots() {
                           {s.endTime ? " – " + s.endTime : ""}
                         </strong>
                         <small>
-                          {s.reserved}/{s.total} lịch
+                          {s.confirmed ?? s.reserved}/{s.total} đã xác nhận
                         </small>
                       </td>
                       <td>{s.pending ?? 0}</td>
@@ -187,7 +188,7 @@ function Slots() {
                               ? "Đóng nhận lịch"
                               : free
                                 ? "Còn chỗ"
-                                : "Đủ lịch"}
+                                : "Đạt ngưỡng"}
                         </span>
                       </td>
                       <td>

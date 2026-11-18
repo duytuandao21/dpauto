@@ -14,19 +14,13 @@ export function LocationSection({
     <section className="section light location-section">
       <div className="container">
         <Reveal>
-          <h2>
-            {vietnamese ? "Ghé thăm HyperAuto Care" : "Visit HyperAuto Care"}
-          </h2>
+          <h2>Ghé thăm HyperAuto Care</h2>
         </Reveal>
         <div className="location-grid">
           <Reveal className="location-map">
             <iframe
               src={site.mapEmbed}
-              title={
-                vietnamese
-                  ? "Vị trí HyperAuto Care trên Google Maps"
-                  : "HyperAuto Care location on Google Maps"
-              }
+              title="Vị trí HyperAuto Care trên Google Maps"
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
@@ -36,32 +30,30 @@ export function LocationSection({
             <div>
               <h3>
                 <Icon name="pin" />
-                {vietnamese ? "Địa chỉ" : "Address"}
+                Địa chỉ
               </h3>
               <p className="location-address">
                 <span>{site.address}</span>
                 <br />
-                <span>
-                  {site.city}, {vietnamese ? "Hoa Kỳ" : "United States"}
-                </span>
+                <span>{site.city}, Hoa Kỳ</span>
               </p>
               <Button href={site.directions} variant="secondary" arrow>
-                {vietnamese ? "Chỉ đường" : "Get Directions"}
+                Chỉ đường
               </Button>
             </div>
             <div>
               <h3>
                 <Icon name="phone" />
-                {vietnamese ? "Điện thoại" : "Phone"}
+                Điện thoại
               </h3>
               <a href={site.phoneHref}>{site.phone}</a>
             </div>
             <div>
               <h3>
                 <Icon name="clock" />
-                {vietnamese ? "Giờ mở cửa" : "Opening Hours"}
+                Giờ mở cửa
               </h3>
-              <Hours vietnamese={vietnamese} />
+              <Hours vietnamese />
             </div>
             <div>
               <h3>
@@ -71,9 +63,8 @@ export function LocationSection({
               <a href={`mailto:${site.email}`}>{site.email}</a>
             </div>
             <p className="location-note">
-              {vietnamese
-                ? "Gara nghỉ vào các ngày lễ lớn. Bạn vui lòng gọi trước để xác nhận giờ mở cửa."
-                : "We are closed on major holidays. If you plan to visit during a holiday, please contact us first to confirm our hours."}
+              Gara nghỉ vào các ngày lễ lớn. Bạn vui lòng gọi trước để xác nhận
+              giờ mở cửa.
             </p>
           </Reveal>
         </div>

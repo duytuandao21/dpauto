@@ -35,7 +35,7 @@ export function ManagerPolicyEditor() {
           <dd>{policy?.slotMinutes || 60} phút</dd>
         </div>
         <div>
-          <dt>Giới hạn mỗi khung</dt>
+          <dt>Ngưỡng cảnh báo mỗi khung</dt>
           <dd>{policy?.maxBookingsPerSlot || 5} lịch</dd>
         </div>
       </dl>
@@ -111,7 +111,7 @@ function PolicyForm({ onClose }: { onClose: () => void }) {
               onChange={(e) => setWidth(Number(e.target.value))}
             />
           </ManagerField>
-          <ManagerField label="Số lịch tối đa mỗi khung">
+          <ManagerField label="Ngưỡng cảnh báo (lịch đã xác nhận mỗi khung)">
             <input
               type="number"
               required

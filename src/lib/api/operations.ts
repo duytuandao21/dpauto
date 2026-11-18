@@ -71,6 +71,10 @@ export type NotificationJob = {
   }[];
 };
 export const operationStages: Record<string, string> = {
+  QUOTING: "Báo giá",
+  WAITING_FOR_WORK: "Chờ thi công",
+  HANDOVER: "Bàn giao",
+  COMPLETED: "Hoàn thành",
   RECEIVED: "Mới tiếp nhận",
   INSPECTED: "Đã kiểm tra",
   IN_PROGRESS: "Đang thi công",

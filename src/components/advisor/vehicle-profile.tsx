@@ -1,4 +1,5 @@
 "use client";
+import { formatOdometer, formatPhone, formatPlate } from "@/lib/advisor/formats";
 
 import Link from "next/link";
 import { AdminIcon } from "@/components/admin/admin-icon";
@@ -9,7 +10,7 @@ import {
   PageHeading,
   StatusBadge,
 } from "@/components/admin/primitives";
-import { bookingTime, formatDate, timeLabel } from "@/lib/booking/logic";
+import { bookingTime, formatDate, slotLabel } from "@/lib/booking/logic";
 import { useAdvisor } from "./advisor-provider";
 import { StageBadge } from "./order-common";
 import { apiEnabled } from "@/lib/api/client";
@@ -41,7 +42,7 @@ export function VehicleProfile({ id }: { id: string }) {
   if (!vehicle || !customer)
     return <EmptyState title="Không tìm thấy xe" create={false} />;
   return (
-    <div className="adv-page adv-stack">
+    <div className="adv-page adv-stack adv-detail-page">
       <Link
         className="adm-mobile-back adm-text-link"
         href={`/co-van/khach-hang/${customer.id}`}
@@ -51,7 +52,7 @@ export function VehicleProfile({ id }: { id: string }) {
       </Link>
       <PageHeading
         eyebrow="CỐ VẤN / HỒ SƠ XE"
-        title={vehicle.plate || vehicle.model}
+        title={formatPlate(vehicle.plate) || vehicle.model}
         description={`${vehicle.model} · ${vehicle.year || "Chưa rõ năm sản xuất"}`}
       >
         <Link
@@ -78,12 +79,14 @@ export function VehicleProfile({ id }: { id: string }) {
           <div>
             <dt>Điện thoại</dt>
             <dd>
-              <a href={`tel:${customer.phone}`}>{customer.phone}</a>
+              <a href={`tel:${formatPhone(customer.phone)}`}>
+                {formatPhone(customer.phone)}
+              </a>
             </dd>
           </div>
           <div>
             <dt>Biển số</dt>
-            <dd>{vehicle.plate || "Chưa có"}</dd>
+            <dd>{formatPlate(vehicle.plate) || "Chưa có"}</dd>
           </div>
           <div>
             <dt>Dòng xe</dt>
@@ -96,7 +99,7 @@ export function VehicleProfile({ id }: { id: string }) {
           {!apiEnabled && (
             <div>
               <dt>ODO gần nhất</dt>
-              <dd>{lastOdo ? `${lastOdo} km` : "Chưa ghi"}</dd>
+              <dd>{lastOdo ? `${formatOdometer(lastOdo)} km` : "Chưa ghi"}</dd>
             </div>
           )}
         </dl>
@@ -140,8 +143,7 @@ export function VehicleProfile({ id }: { id: string }) {
                 <div>
                   <strong>{booking.id}</strong>
                   <small>
-                    {formatDate(bookingTime(booking))} ·{" "}
-                    {timeLabel(bookingTime(booking))}
+                    {formatDate(bookingTime(booking))} · {slotLabel(booking)}
                   </small>
                 </div>
                 <StatusBadge status={booking.status} />

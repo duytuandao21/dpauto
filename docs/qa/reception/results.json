@@ -1,0 +1,64 @@
+{
+  "booking-1440-light": {
+    "overflow": false,
+    "overlaps": 0,
+    "columns": "grid",
+    "sourceDisabled": true,
+    "passed": true,
+    "submitCount": 1
+  },
+  "booking-1440-dark": {
+    "overflow": false,
+    "overlaps": 0,
+    "columns": "grid",
+    "sourceDisabled": true,
+    "passed": true,
+    "submitCount": 1
+  },
+  "new-car-820-dark": {
+    "overflow": false,
+    "overlaps": 0,
+    "columns": "flex",
+    "sourceDisabled": true,
+    "passed": true,
+    "submitCount": 1
+  },
+  "walk-in-390-light": {
+    "overflow": false,
+    "overlaps": 0,
+    "columns": "flex",
+    "sourceDisabled": true,
+    "passed": true,
+    "submitCount": 1
+  },
+  "keyboard-390-dark": {
+    "overflow": false,
+    "columns": "flex",
+    "inspectionCollapsed": true,
+    "keyboard": true,
+    "passed": true
+  },
+  "keyboard-1440-dark": {
+    "overflow": false,
+    "columns": "grid",
+    "inspectionCollapsed": true,
+    "keyboard": true,
+    "passed": true
+  },
+  "booking-390-light": {
+    "overflow": false,
+    "overlaps": 0,
+    "columns": "flex",
+    "sourceDisabled": true,
+    "passed": true,
+    "submitCount": 1
+  },
+  "booking-820-light": {
+    "overflow": false,
+    "overlaps": 0,
+    "columns": "flex",
+    "sourceDisabled": true,
+    "passed": true,
+    "submitCount": 1
+  }
+}

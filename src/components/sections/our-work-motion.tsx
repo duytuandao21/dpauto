@@ -15,10 +15,10 @@ import { site, type SiteImage } from "@/lib/content";
 const imageSpring = { stiffness: 500, damping: 60, mass: 1 };
 
 export function WorkBanner({
-  title = "Our Work",
+  title = "Thành quả",
   image = {
     src: "/images/5jFIDmf3fDYVLCeKxRoGZM5XCA.webp",
-    alt: "Black SUV with doors open inside a detailing workshop",
+    alt: "SUV đen mở cửa trong xưởng chăm sóc xe",
   },
 }: {
   title?: string;
@@ -45,7 +45,7 @@ export function WorkBanner({
 }
 
 export function WorkFinalCTA({
-  vietnamese = false,
+  vietnamese = true,
   copy,
 }: {
   vietnamese?: boolean;

@@ -268,7 +268,16 @@ export function BookingSummary({
                 {time} · {displayDate(date)}
               </strong>
             ) : (
-              <span>Chưa chọn khung giờ</span>
+              <span>Chưa chọn buổi</span>
+            )}
+            {onEdit && (
+              <button
+                type="button"
+                className="pb-text-button"
+                onClick={() => onEdit(3)}
+              >
+                Đổi thời gian
+              </button>
             )}
           </dd>
         </div>

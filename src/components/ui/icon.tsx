@@ -20,6 +20,8 @@ export type IconName =
   | "muted"
   | "expand"
   | "close"
+  | "search"
+  | "sort"
   | "facebook"
   | "instagram"
   | "award"
@@ -105,6 +107,8 @@ const paths: Record<
   ),
   expand: <path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" />,
   close: <path d="m6 6 12 12M6 18 18 6" />,
+  search: <path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Zm9 2-4-4" />,
+  sort: <path d="M7 4v16m0 0-3-3m3 3 3-3M13 6h8M13 12h6M13 18h4" />,
   award: (
     <>
       <path d="m12 2 3 2 4 1 1 4 2 3-2 3-1 4-4 1-3 2-3-2-4-1-1-4-2-3 2-3 1-4 4-1 3-2Z" />

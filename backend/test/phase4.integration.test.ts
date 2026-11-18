@@ -1,3 +1,4 @@
+import { useLegacyVisitFixtures } from "./legacy-visit-fixture";
 import { before, beforeEach, after, test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
@@ -143,6 +144,7 @@ const grants = [
 before(async () => {
   await migrate(url!);
   ({ app, api } = await createApp(config));
+  useLegacyVisitFixtures(api);
   await bootstrap(api.db, config, {
     name: "Store Manager",
     email: "manager@example.test",
@@ -330,23 +332,23 @@ async function walk(client = a, extra: any = {}) {
   assert.equal(r.status, 201, JSON.stringify(r.body));
   return { visit: r.body.data, payload, key };
 }
-async function confirmed() {
+async function confirmed(time = "10:30") {
   const date = clock.toLocaleDateString("en-CA", {
     timeZone: "Asia/Ho_Chi_Minh",
   });
-  const booking = await createBooking(date, "10:30");
+  const booking = await createBooking(date, time);
   const confirm = await a.call(
     "POST",
     `admin/bookings/${booking.bookingId}/confirm`,
     {
       expectedVersion: booking.version,
-      confirmedStartAt: `${date}T10:30:00+07:00`,
+      confirmedStartAt: `${date}T${time}:00+07:00`,
       customerAgreed: true,
       reason: "Khách đồng ý",
     },
   );
   assert.equal(confirm.status, 200, JSON.stringify(confirm.body));
-  clock = new Date(`${date}T03:30:00Z`);
+  clock = new Date(`${date}T${time}:00+07:00`);
   await a.login("a@example.test", changed);
   await b.login("b@example.test", changed);
   await manager.login("manager@example.test", changed);
@@ -594,6 +596,40 @@ async function refund(
     reason: "Điều chỉnh có căn cứ",
   });
 }
+
+test("booking reception persists checked services atomically and preserves the appointment snapshot", async () => {
+  let hour = 10;
+  for (const selection of [[service, extraService], [extraService], undefined]) {
+    const booking = await confirmed(`${hour++}:30`);
+    const payload = await receivePayload(booking, {
+      vehicle: { model: "Honda Civic", plate: "79A" + String(++phone).padStart(5, "0") },
+      ...(selection ? { serviceIds: selection, catalogVersion: (await settingsVersion()).catalogVersion } : {}),
+    });
+    if (selection?.length === 2) {
+      const denied = await b.call("POST", `admin/bookings/${booking.bookingId}/receive`, payload);
+      assert.ok([403, 404].includes(denied.status), JSON.stringify(denied.body));
+      const stale = await a.call("POST", `admin/bookings/${booking.bookingId}/receive`, { ...payload, catalogVersion: payload.catalogVersion - 1 });
+      assert.equal(stale.status, payload.catalogVersion > 1 ? 409 : 400, JSON.stringify(stale.body));
+      const invalid = await a.call("POST", `admin/bookings/${booking.bookingId}/receive`, { ...payload, serviceIds: [service, randomUUID()] });
+      assert.equal(invalid.status, 422, JSON.stringify(invalid.body));
+      const unchanged = await one(api.db.db, sql`SELECT status,version FROM bookings WHERE id=${booking.bookingId}`);
+      assert.equal(unchanged!.status, "CONFIRMED");
+      assert.equal(unchanged!.version, booking.version);
+      assert.equal((await rows(api.db.db, sql`SELECT id FROM service_visits WHERE booking_id=${booking.bookingId}`)).length, 0);
+      await api.db.db.execute(sql`UPDATE services SET active=false,bookable=false WHERE id=${service}`);
+    }
+    try {
+      const received = await a.call("POST", `admin/bookings/${booking.bookingId}/receive`, payload);
+      assert.equal(received.status, 201, JSON.stringify(received.body));
+      const saved = await rows(api.db.db, sql`SELECT service_id FROM visit_services WHERE visit_id=${received.body.data.visitId} ORDER BY sequence_no`);
+      assert.deepEqual(saved.map((row) => row.service_id), selection || [service]);
+      const original = await rows(api.db.db, sql`SELECT service_id FROM booking_services WHERE booking_id=${booking.bookingId} ORDER BY sequence_no`);
+      assert.deepEqual(original.map((row) => row.service_id), [service]);
+    } finally {
+      await api.db.db.execute(sql`UPDATE services SET active=true,bookable=true WHERE id=${service}`);
+    }
+  }
+});
 
 test("P4 permissions do not grant money, adjustment or costs by job title; strict boundaries and immutable history", async () => {
   assert.equal(

@@ -1,4 +1,5 @@
 "use client";
+import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import {
   useCallback,
   useEffect,
@@ -23,7 +24,7 @@ import {
   type ApiStaff,
 } from "@/lib/api/types";
 import { stationToday } from "@/lib/public-booking/mock";
-import { bookingTime, shiftDate } from "@/lib/booking/logic";
+import { bookingTime, shiftDate, warningText } from "@/lib/booking/logic";
 import type { Booking, BookingData, BookingDraft } from "@/lib/booking/types";
 import { BookingContext, type Confirmation } from "./booking-provider";
 import { useSession } from "./auth-gate";
@@ -77,21 +78,31 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
         : vehicleId
           ? "vehicleId=" + vehicleId
           : `from=${shiftDate(selectedDate, -7)}&to=${shiftDate(selectedDate, 7)}`;
-      const [bookings, customers, vehicles, services, staff, metadata] =
-        await Promise.all([
-          collection<ApiBooking>("admin/bookings?" + query, signal),
-          collection<ApiCustomer>("admin/customers", signal),
-          collection<ApiVehicle>("admin/vehicles", signal),
-          collection<ApiService>("admin/services", signal),
-          collection<ApiStaff>("admin/staff", signal),
-          request<ApiService[]>("admin/services?limit=1", { signal }),
-        ]);
+      const [
+        bookings,
+        pending,
+        customers,
+        vehicles,
+        services,
+        staff,
+        metadata,
+      ] = await Promise.all([
+        collection<ApiBooking>("admin/bookings?" + query, signal),
+        collection<ApiBooking>("admin/bookings?status=PENDING,ARRIVED", signal),
+        collection<ApiCustomer>("admin/customers", signal),
+        collection<ApiVehicle>("admin/vehicles", signal),
+        collection<ApiService>("admin/services", signal),
+        collection<ApiStaff>("admin/staff", signal),
+        request<ApiService[]>("admin/services?limit=1", { signal }),
+      ]);
       versions.current = {
         catalogVersion: Number(metadata.meta.catalogVersion),
         policyVersion: Number(metadata.meta.policyVersion),
         privacyNoticeVersion: String(metadata.meta.privacyNoticeVersion),
       };
-      const values = bookings.map(bookingFromApi);
+      const values = Array.from(
+        new Map([...bookings, ...pending].map((b) => [b.id, b])).values(),
+      ).map(bookingFromApi);
       if (bookingId) {
         const detail = (
           await request<ApiBooking>("admin/bookings/" + bookingId, { signal })
@@ -122,6 +133,8 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
           id: s.id,
           name: s.name,
           duration: s.estimatedDurationMinutes,
+          active: s.active,
+          bookable: s.bookable,
         })),
         advisors: staff
           .filter((s) => s.active && s.jobRole === "ADVISOR")
@@ -175,30 +188,23 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
       clearInterval(timer);
     };
   }, [refresh]);
-  async function act(id: string, action: string) {
+  async function act(id: string, action: string, reason?: string) {
     const current = ref.current.bookings.find((b) => b.id === id);
-    if (!current) return;
+    if (!current) throw new Error("Không tìm thấy lịch hẹn.");
     try {
-      if (!["confirm", "cancel", "no_show"].includes(action))
+      if (!["cancel", "no_show"].includes(action))
         throw new Error("Thao tác chưa khả dụng.");
+      if (!reason?.trim()) throw new Error("Nhập lý do thực tế của thao tác.");
       await command(`admin/bookings/${id}/${action.replace("_", "-")}`, {
         expectedVersion: current.version,
-        reason:
-          action === "cancel"
-            ? "Khách yêu cầu hủy lịch"
-            : action === "no_show"
-              ? "Cố vấn đã liên hệ và kiểm tra khách không đến"
-              : "Đã trao đổi và thống nhất với khách",
-        ...(action === "confirm"
-          ? { confirmedStartAt: bookingTime(current), customerAgreed: true }
-          : action === "no_show"
-            ? { checkedManually: true }
-            : {}),
+        reason: reason.trim(),
+        ...(action === "no_show" ? { checkedManually: true } : {}),
       });
       await refresh();
       setToast("Đã cập nhật lịch hẹn.");
     } catch (e) {
       setToast(e instanceof Error ? e.message : "Chưa thể cập nhật.");
+      throw e;
     }
   }
   async function saveBooking(
@@ -211,7 +217,7 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
       : draft.model.trim() || draft.plate.trim()
         ? {
             ...(draft.model.trim() ? { model: draft.model.trim() } : {}),
-            ...(draft.plate.trim() ? { plate: draft.plate.trim() } : {}),
+            ...(draft.plate.trim() ? { plate: formatPlate(draft.plate) } : {}),
           }
         : null;
     const common = {
@@ -229,35 +235,51 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
         : {}),
     };
     const receipt = existing
-      ? await command<{ bookingId: string }>(
+      ? await command<{ bookingId: string; warnings?: string[] }>(
           `admin/bookings/${id}`,
           {
             ...common,
             expectedVersion: existing.version,
             reason: "Cập nhật thông tin theo yêu cầu khách",
-            customerContact: { name: draft.name, phone: draft.phone },
+            customerContact: {
+              name: draft.name,
+              phone: formatPhone(draft.phone),
+            },
             vehicle,
           },
           "PATCH",
         )
-      : await command<{ bookingId: string }>("admin/bookings", {
-          ...common,
-          customer: draft.customerId
-            ? { id: draft.customerId }
-            : { name: draft.name, phone: draft.phone },
-          vehicle,
-          requestedStartAt: `${draft.date}T${draft.time}:00+07:00`,
-          source: sourceCode[draft.source],
-          ...(session.roles.includes("MANAGER")
-            ? { advisorId: draft.advisorId || null }
-            : {}),
-          notice: {
-            privacyNoticeVersion: versions.current.privacyNoticeVersion,
-            privacyNoticeAcknowledged: true,
-            marketingConsent: false,
+      : await command<{ bookingId: string; warnings?: string[] }>(
+          "admin/bookings",
+          {
+            ...common,
+            customer: draft.customerId
+              ? { id: draft.customerId }
+              : { name: draft.name, phone: formatPhone(draft.phone) },
+            vehicle,
+            ...(draft.period && !draft.confirmNow
+              ? {
+                  requestedDate: draft.date,
+                  requestedPeriod:
+                    draft.period === "morning" ? "MORNING" : "AFTERNOON",
+                }
+              : { requestedStartAt: `${draft.date}T${draft.time}:00+07:00` }),
+            ...(draft.confirmNow
+              ? { confirmNow: true, customerAgreed: true }
+              : {}),
+            source: sourceCode[draft.source],
+            ...(session.roles.includes("MANAGER")
+              ? { advisorId: draft.advisorId || null }
+              : {}),
+            notice: {
+              privacyNoticeVersion: versions.current.privacyNoticeVersion,
+              privacyNoticeAcknowledged: true,
+              marketingConsent: false,
+            },
           },
-        });
+        );
     const result = await refresh();
+    setToast("Đã lưu lịch hẹn." + warningText(receipt.data.warnings));
     const saved = result.bookings.find((b) => b.id === receipt.data.bookingId);
     return (
       saved ||
@@ -267,19 +289,48 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
       )
     );
   }
-  async function reschedule(id: string, date: string, time: string) {
+  async function reschedule(
+    id: string,
+    date: string,
+    time: string,
+    confirm = false,
+    advisorId?: string,
+    note?: string,
+  ) {
     const b = ref.current.bookings.find((b) => b.id === id);
     if (!b) throw new Error("Không tìm thấy lịch hẹn.");
-    await command(`admin/bookings/${id}/reschedule`, {
-      expectedVersion: b.version,
-      reason: "Đã trao đổi và thống nhất giờ mới với khách",
-      newStartAt: `${date}T${time}:00+07:00`,
-      customerAgreed: true,
-      policyVersion: versions.current.policyVersion,
-    });
+    const period =
+      time === "morning"
+        ? "MORNING"
+        : time === "afternoon"
+          ? "AFTERNOON"
+          : null;
+    const at = `${date}T${time}:00+07:00`;
+    const receipt = await command<{ warnings?: string[] }>(
+      `admin/bookings/${id}/${confirm ? "confirm" : "reschedule"}`,
+      {
+        expectedVersion: b.version,
+        ...(note?.trim()
+          ? confirm
+            ? { internalNote: note.trim() }
+            : { reason: note.trim() }
+          : {}),
+        customerAgreed: true,
+        ...(confirm && advisorId ? { advisorId } : {}),
+        ...(period
+          ? { requestedDate: date, requestedPeriod: period }
+          : {
+              [confirm ? "confirmedStartAt" : "newStartAt"]: at,
+              policyVersion: versions.current.policyVersion,
+            }),
+      },
+    );
     await refresh();
     setSelectedDate(date);
-    setToast("Đã đổi lịch hẹn.");
+    setToast(
+      (confirm ? "Đã xác nhận lịch hẹn." : "Đã đổi lịch hẹn.") +
+        warningText(receipt.data.warnings),
+    );
   }
   return (
     <BookingContext.Provider

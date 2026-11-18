@@ -4,7 +4,7 @@ import { WorkFinalCTA } from "@/components/sections/our-work-motion";
 import { publicMetadata } from "@/lib/public-cms";
 
 export const generateMetadata = (): Promise<Metadata> =>
-  publicMetadata("/services", { title: "Our Services" });
+  publicMetadata("/services", { title: "Dịch vụ" });
 export default function ServicesPage() {
   return (
     <div className="services-page">

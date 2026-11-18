@@ -1,10 +1,12 @@
 "use client";
+import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { request } from "@/lib/api/client";
 import {
   vnd,
+  formatQuantity,
   workflowTime,
   quoteLabels,
   type Workflow,
@@ -18,7 +20,12 @@ type Snapshot = {
   vehicle: { model: string; plate: string };
 };
 type PrintData =
-  | { kind: "quote"; snapshot: Snapshot; revision: QuoteRevision }
+  | {
+      kind: "quote";
+      snapshot: Snapshot;
+      revision: QuoteRevision;
+      combined?: { quotes: QuoteRevision[]; approvedTotal: string | null };
+    }
   | {
       kind: "acceptance";
       snapshot: Snapshot;
@@ -66,6 +73,25 @@ function PrintContent({
           signal: a.signal,
         })
       ).data;
+      if (kind === "quote" && !selected && w.workflowVersion === 2) {
+        const quotes = w.quotes.filter(
+          (q) => !["REJECTED", "VOIDED"].includes(q.status),
+        );
+        if (!quotes.length) throw new Error("Chưa có hạng mục báo giá để in.");
+        const printed = await request<Extract<PrintData, { kind: "quote" }>>(
+          `admin/quote-revisions/${quotes[0].id}/print`,
+          { signal: a.signal },
+        );
+        if (!a.signal.aborted)
+          setData({
+            ...printed.data,
+            combined: {
+              quotes,
+              approvedTotal: w.obligation.assessed ? w.obligation.total : null,
+            },
+          });
+        return;
+      }
       const candidate =
         kind === "quote"
           ? selected
@@ -102,6 +128,27 @@ function PrintContent({
         </Link>
       </section>
     );
+  const quotes =
+    data.kind === "quote" ? data.combined?.quotes || [data.revision] : [];
+  const amounts =
+    data.kind === "quote" && data.combined
+      ? {
+          ...data.revision,
+          ...Object.fromEntries(
+            (["subtotal", "discountTotal", "taxTotal", "total"] as const).map(
+              (key) => [
+                key,
+                quotes
+                  .reduce((sum, q) => sum + BigInt(q[key]), BigInt(0))
+                  .toString(),
+              ],
+            ),
+          ),
+          approvedTotal: data.combined.approvedTotal,
+        }
+      : data.kind === "quote"
+        ? data.revision
+        : null;
   return (
     <div className="adv-print-wrap">
       <div className="adv-print-actions">
@@ -120,7 +167,7 @@ function PrintContent({
           <div>
             <strong>{data.snapshot.station.name}</strong>
             <p>{data.snapshot.station.address}</p>
-            <p>{data.snapshot.station.phone}</p>
+            <p>{formatPhone(data.snapshot.station.phone)}</p>
           </div>
           <span>{data.snapshot.visitCode}</span>
         </header>
@@ -134,7 +181,7 @@ function PrintContent({
           </div>
           <div>
             <dt>Số điện thoại</dt>
-            <dd>{data.snapshot.customer.phone}</dd>
+            <dd>{formatPhone(data.snapshot.customer.phone)}</dd>
           </div>
           <div>
             <dt>Xe</dt>
@@ -142,19 +189,21 @@ function PrintContent({
           </div>
           <div>
             <dt>Biển số</dt>
-            <dd>{data.snapshot.vehicle.plate || "Chưa có"}</dd>
+            <dd>{formatPlate(data.snapshot.vehicle.plate) || "Chưa có"}</dd>
           </div>
         </dl>
         {data.kind === "quote" ? (
           <>
             <p>
-              Bản {data.revision.revisionNo} ·{" "}
-              {quoteLabels[data.revision.status]} ·{" "}
+              {data.combined
+                ? `Báo giá · ${data.snapshot.visitCode}`
+                : `Bản ${data.revision.revisionNo} · ${quoteLabels[data.revision.status]}`}{" "}
+              ·{" "}
               {data.revision.submittedAt
                 ? workflowTime(data.revision.submittedAt)
                 : ""}
             </p>
-            {data.revision.kind === "CHANGE_ORDER" && (
+            {!data.combined && data.revision.kind === "CHANGE_ORDER" && (
               <p>Báo giá phát sinh bổ sung</p>
             )}
             <table>
@@ -163,45 +212,90 @@ function PrintContent({
                   <th>Hạng mục</th>
                   <th>Đơn vị</th>
                   <th>Số lượng</th>
-                  <th>Đơn giá</th>
+                  <th className="adv-money-cell">Đơn giá</th>
                   <th>CK / thuế (%)</th>
-                  <th>Thành tiền</th>
+                  <th className="adv-money-cell">Thành tiền</th>
                 </tr>
               </thead>
               <tbody>
-                {data.revision.lines.map((l) => (
-                  <tr key={l.id}>
-                    <td>{l.name}</td>
-                    <td>{l.unit}</td>
-                    <td>{l.quantity.replace(/\.0+$/, "")}</td>
-                    <td>{vnd(l.unitPrice)}</td>
-                    <td>
-                      {l.discountPercent} / {l.vatPercent}
-                    </td>
-                    <td>{vnd(l.total)}</td>
-                  </tr>
-                ))}
+                {quotes.flatMap((quote) =>
+                  quote.lines.map((l) => (
+                    <tr key={l.id}>
+                      <td>
+                        {l.name}
+                        {l.description && (
+                          <small className="adv-print-description">
+                            {l.description}
+                          </small>
+                        )}
+                        {quote.status === "DRAFT" && (
+                          <small> · Đang soạn, chưa chốt</small>
+                        )}
+                        {["SUBMITTED", "PENDING_APPROVAL"].includes(
+                          quote.status,
+                        ) && <small> · Chờ khách đồng ý</small>}
+                        {quote.voidedLineIds?.includes(l.id) && (
+                          <small> · Đã hủy phạm vi</small>
+                        )}
+                        {quote.decision?.approvedLineIds &&
+                          !quote.decision.approvedLineIds.includes(l.id) && (
+                            <small> · Không duyệt</small>
+                          )}
+                      </td>
+                      <td>{l.unit}</td>
+                      <td>{formatQuantity(l.quantity)}</td>
+                      <td className="adv-money-cell">{vnd(l.unitPrice)}</td>
+                      <td>
+                        {l.discountPercent} / {l.vatPercent}
+                      </td>
+                      <td className="adv-money-cell">{vnd(l.total)}</td>
+                    </tr>
+                  )),
+                )}
               </tbody>
             </table>
             <div className="adv-print-totals">
               <div>
                 <span>Cộng tiền</span>
-                <strong>{vnd(data.revision.subtotal)}</strong>
+                <strong>{vnd(amounts!.subtotal)}</strong>
               </div>
               <div>
                 <span>Chiết khấu</span>
-                <strong>{vnd(data.revision.discountTotal)}</strong>
+                <strong>{vnd(amounts!.discountTotal)}</strong>
               </div>
               <div>
                 <span>Thuế</span>
-                <strong>{vnd(data.revision.taxTotal)}</strong>
+                <strong>{vnd(amounts!.taxTotal)}</strong>
               </div>
               <div>
-                <span>Tổng cộng</span>
-                <strong>{vnd(data.revision.total)}</strong>
+                <span>Tổng đề xuất</span>
+                <strong>{vnd(amounts!.total)}</strong>
               </div>
+              {amounts!.approvedTotal != null && (
+                <div>
+                  <span>
+                    {data.combined
+                      ? "Tổng đã chốt sau điều chỉnh"
+                      : data.revision.voidedLineIds?.length
+                        ? "Giá trị được duyệt ban đầu"
+                        : "Giá trị được duyệt"}
+                  </span>
+                  <strong>{vnd(amounts!.approvedTotal!)}</strong>
+                </div>
+              )}
             </div>
-            <p>{data.revision.note}</p>
+            {quotes.map((quote) => (
+              <section key={quote.id}>
+                {quote.note && <p>{quote.note}</p>}
+                {quote.decision && (
+                  <p>
+                    Khách xác nhận: {quote.decision.customerName} ·{" "}
+                    {workflowTime(quote.decision.recordedAt)} ·{" "}
+                    {quote.decision.evidenceNote}
+                  </p>
+                )}
+              </section>
+            ))}
           </>
         ) : (
           <>

@@ -16,6 +16,7 @@ import { vnd, workflowTime } from "@/lib/api/workflow";
 import { useSession } from "@/components/admin/auth-gate";
 import { AdminLoading, PageHeading } from "@/components/admin/primitives";
 import { ManagerTable, ManagerEmpty } from "./manager-ui";
+import { AdminIcon } from "@/components/admin/admin-icon";
 
 export function LiveInventory() {
   return (
@@ -762,6 +763,7 @@ export function PageButtons({
     back: () => void;
     forward: () => void;
     data?: readonly unknown[];
+    pageNumber?: number;
   };
 }) {
   if (manager && !page.canPrevious && !page.canNext) return null;
@@ -770,18 +772,31 @@ export function PageButtons({
       <button
         type="button"
         className="adm-btn"
+        aria-label="Trang trước"
         disabled={page.loading || !page.canPrevious}
         onClick={page.back}
       >
-        Trang trước
+        {!manager && <AdminIcon name="back" />}
+        {manager ? "Trang trước" : "Trước"}
       </button>
+      {!manager && (
+        <span
+          className="adv-pagination-current"
+          aria-current="page"
+          aria-live="polite"
+        >
+          Trang {page.pageNumber || 1}
+        </span>
+      )}
       <button
         type="button"
         className="adm-btn"
+        aria-label="Trang sau"
         disabled={page.loading || !page.canNext}
         onClick={page.forward}
       >
-        Trang sau
+        {manager ? "Trang sau" : "Tiếp"}
+        {!manager && <AdminIcon name="back" />}
       </button>
     </>
   );
@@ -795,7 +810,9 @@ export function PageButtons({
       <div>{controls}</div>
     </div>
   ) : (
-    <div className="adm-action-row">{controls}</div>
+    <nav className="adv-pagination" aria-label="Phân trang danh sách">
+      {controls}
+    </nav>
   );
 }
 type Difference = {

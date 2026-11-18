@@ -335,6 +335,16 @@
   width: 15px;
   height: 15px;
 }
+.mgr-booking-queues {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.mgr-booking-queues button {
+  white-space: normal;
+}
 .mgr-kpis {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

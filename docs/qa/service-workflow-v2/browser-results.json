@@ -1,0 +1,114 @@
+{
+  "quote-390-light": {
+    "width": 390,
+    "overflow": false,
+    "controls": 23,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "work-390-light": {
+    "width": 390,
+    "overflow": false,
+    "controls": 12,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "waiting-820-light": {
+    "width": 820,
+    "overflow": false,
+    "controls": 9,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "work-820-dark": {
+    "width": 820,
+    "overflow": false,
+    "controls": 12,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "handover-1440-light": {
+    "width": 1440,
+    "overflow": false,
+    "controls": 4,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "handover-1440-dark": {
+    "width": 1440,
+    "overflow": false,
+    "controls": 4,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "completed-1440-dark": {
+    "width": 1440,
+    "overflow": false,
+    "controls": 1,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "quote-print-1440-light": {
+    "width": 1440,
+    "overflow": false,
+    "controls": 2,
+    "overlaps": [],
+    "progress": 0,
+    "passed": true
+  },
+  "cancel-390-light": {
+    "width": 390,
+    "overflow": false,
+    "controls": 16,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "cancel-1440-dark": {
+    "width": 1440,
+    "overflow": false,
+    "controls": 16,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "quote-unified-390-light": {
+    "width": 390,
+    "overflow": false,
+    "controls": 25,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "quote-unified-820-dark": {
+    "width": 820,
+    "overflow": false,
+    "controls": 25,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "quote-unified-1280-light": {
+    "width": 1280,
+    "overflow": false,
+    "controls": 25,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  },
+  "quote-unified-1440-dark": {
+    "width": 1440,
+    "overflow": false,
+    "controls": 25,
+    "overlaps": [],
+    "progress": 5,
+    "passed": true
+  }
+}

@@ -31,173 +31,1544 @@ body[data-workspace="advisor"] .adm-toast[data-theme="dark"]:not(.mgr-toast) {
   --adv-primary-hover: #c31829;
 }
 
-/* ---------- Buttons: one primary color, destructive stays outlined ---------- */
-.adm-app.adv-ui .adm-btn.adm-primary,
-.adm-app.adv-ui .adm-dialog .adm-btn.adm-primary,
-.adm-app.adv-ui .adm-btn.adm-booking-action {
-  color: #fff;
-  border-color: var(--adv-brand);
-  background: var(--adv-brand);
-  font-weight: 600;
-}
-
-.adm-app.adv-ui .adm-btn.adm-primary:hover,
-.adm-app.adv-ui .adm-dialog .adm-btn.adm-primary:hover,
-.adm-app.adv-ui .adm-btn.adm-booking-action:hover {
-  color: #fff;
-  border-color: var(--adv-brand-hover);
-  background: var(--adv-brand-hover);
-  filter: none;
-}
-
-.adm-app.adv-ui .adm-btn.adm-danger,
-.adm-app.adv-ui .adm-dialog .adm-btn.adm-danger {
-  color: var(--adm-danger);
-  border-color: var(--adm-danger);
+/* UI references: light navigation rail, underlined tabs, tables and side drawers. */
+.adm-app.adv-ui .adm-body,
+.adm-app.adv-ui .adm-main {
+  min-width: 0;
   background: var(--adm-surface);
 }
-
-.adm-app.adv-ui .adm-btn.adm-danger:hover,
-.adm-app.adv-ui .adm-dialog .adm-btn.adm-danger:hover {
-  color: #fff;
-  border-color: var(--adm-danger);
-  background: var(--adm-danger);
+.adm-app.adv-ui .adm-main {
+  max-width: none;
 }
-
-.adm-app.adv-ui .adm-btn:focus-visible,
-.adm-app.adv-ui .adm-nav-link:focus-visible,
-.adm-app.adv-ui .adm-icon-btn:focus-visible,
-.adm-app.adv-ui a:focus-visible {
-  outline: 3px solid var(--adm-accent);
-  outline-offset: 2px;
+.adm-app.adv-ui .adm-body {
+  min-height: 100dvh;
 }
-
-/* ---------- KPI cards: calm surfaces, color only as an accent ---------- */
-.adm-app.adv-ui .adm-kpi,
-.adm-app.adv-ui .adm-kpi-pending,
-.adm-app.adv-ui .adm-kpi-confirmed,
-.adm-app.adv-ui .adm-kpi-done {
-  --adv-kpi: var(--adm-muted);
-  min-height: 0;
-  padding: 16px 18px;
-  color: var(--adm-text);
-  background: var(--adm-surface);
-  border: 1px solid var(--adm-border);
-  border-left: 4px solid var(--adv-kpi);
-  border-radius: 8px;
+.adm-app.adv-ui .adv-page {
+  max-width: none;
 }
-
-.adm-app.adv-ui .adm-kpi-pending {
-  --adv-kpi: var(--adm-status-pending-border);
+.adm-app.adv-ui .adm-header {
+  border-radius: 0;
+  box-shadow: none;
 }
-.adm-app.adv-ui .adm-kpi-confirmed {
-  --adv-kpi: var(--adm-status-confirmed-text);
-}
-.adm-app.adv-ui .adm-kpi-done {
-  --adv-kpi: var(--adm-status-completed-text);
-}
-.adm-app.adv-ui .adm-kpi:first-child {
-  --adv-kpi: var(--adv-brand);
-}
-
-.adm-app.adv-ui .adm-kpi > div {
+.adm-app.adv-ui .adm-header-breadcrumb strong {
+  font-weight: 500;
   color: var(--adm-muted);
+}
+.adm-app.adv-ui .adm-page-heading {
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 0;
+  margin-bottom: 24px;
+  border-bottom: 0;
+}
+.adm-app.adv-ui .adm-page-heading h1 {
+  margin: 0;
+  font-weight: 650;
+}
+.adm-app.adv-ui .adm-page-heading .adm-muted {
+  max-width: none;
+}
+.adm-app.adv-ui .adm-panel {
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: none;
+}
+.adm-app.adv-ui .adm-main > .adm-panel + .adm-panel:not(.adm-more-menu) {
+  margin-top: 20px;
+}
+.adm-app.adv-ui .adv-stack {
+  gap: 20px;
+}
+.adm-app.adv-ui .adv-stack > .adm-btn {
+  align-self: flex-start;
+}
+.adm-app.adv-ui .adm-section-line {
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.adm-app.adv-ui :is(.adm-section-line, .adm-form-section-title) {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.adm-app.adv-ui .adm-section-line h2 {
+  margin: 0;
+}
+.adm-app.adv-ui .adm-panel :is(h2, h3) {
   font-weight: 600;
 }
 
-.adm-app.adv-ui .adm-kpi .icon {
-  color: var(--adv-kpi);
-}
-
-.adm-app.adv-ui .adm-kpi strong {
+/* Navigation keeps its existing links and expanded mode. */
+.adm-app.adv-ui .adm-sidebar {
   color: var(--adm-text);
-  font-size: 32px;
-  line-height: 1.1;
-  font-variant-numeric: tabular-nums;
+  background: var(--adm-surface);
+  border-right: 1px solid var(--adm-border);
 }
-
-/* ---------- Sidebar ---------- */
+.adm-app.adv-ui
+  .adm-sidebar
+  :is(.adm-sidebar-brand strong, .adm-advisor strong) {
+  color: var(--adm-text);
+}
+.adm-app.adv-ui
+  .adm-sidebar
+  :is(.adm-sidebar-brand small, .adm-advisor small, .adm-nav-group) {
+  color: var(--adm-muted);
+}
 .adm-app.adv-ui .adm-sidebar .adm-nav-link {
   position: relative;
-  min-height: 44px;
   width: 100%;
+  min-height: 44px;
   border: 0;
+  border-radius: 6px;
+  color: var(--adm-muted);
+  background: transparent;
   text-align: left;
   font: inherit;
-  cursor: pointer;
 }
-
+.adm-app.adv-ui .adm-sidebar .adm-nav-link:hover {
+  color: var(--adm-accent-text);
+  background: var(--adm-raised);
+}
 .adm-app.adv-ui .adm-sidebar .adm-nav-link.is-active {
-  color: #fff;
-  background: #ffffff14;
+  color: var(--adm-accent-text);
+  background: var(--adm-accent-soft);
 }
-
 .adm-app.adv-ui .adm-sidebar .adm-nav-link.is-active::before {
-  content: "";
-  position: absolute;
-  inset: 8px auto 8px 0;
-  width: 3px;
-  border-radius: 2px;
-  background: var(--adv-brand);
+  content: none;
 }
-
 .adm-app.adv-ui .adm-sidebar .adm-nav-count {
   background: var(--adv-brand);
+  color: var(--adm-surface);
 }
-
-/* Divider belongs above the "Cá nhân" group (5th item), not above Khách hàng. */
 .adm-app.adv-ui .adm-sidebar nav > div:nth-child(4) {
-  border-top: 0;
-  padding-top: 0;
   margin-top: 0;
+  padding-top: 0;
+  border: 0;
 }
-.adm-app.adv-ui .adm-sidebar nav > div:nth-child(5) {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--adv-sidebar-border);
+.adm-app.adv-ui .adm-sidebar .adm-advisor {
+  border-top: 0;
 }
-
-.adm-app.adv-ui .adm-sidebar .adm-avatar,
-.adm-app.adv-ui .adm-header .adm-avatar {
-  color: #fff;
-  border-color: transparent;
-  background: var(--adv-brand);
-  font-weight: 700;
-}
-
 .adm-app.adv-ui .adm-sidebar .adm-advisor strong {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-/* ---------- Header, tabs, filters ---------- */
-.adm-app.adv-ui .adm-header-breadcrumb strong {
-  font-weight: 700;
+.adm-app.adv-ui :is(.adm-sidebar, .adm-header) .adm-avatar {
+  color: #fff;
+  background: var(--adv-brand);
+  border-color: var(--adv-brand);
+  font-weight: 600;
+  border-radius: 6px;
+}
+.adm-app.adv-ui .adv-sidebar-toggle {
+  position: absolute;
+  top: 28px;
+  right: -16px;
+  width: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 6px;
+  color: var(--adm-muted);
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: 50%;
+}
+.adm-app.adv-ui.adm-collapsed .adv-sidebar-toggle .icon {
+  transform: rotate(180deg);
 }
 
-.adm-app.adv-ui .adm-date-strip button.is-active {
+/* One primary action, compact secondary and destructive actions. */
+.adm-app.adv-ui .adm-btn {
+  min-height: 44px;
+  border-radius: 4px;
+  padding: 9px 16px;
+  font-weight: 500;
+  box-shadow: none;
+}
+.adm-app.adv-ui .adm-btn:hover {
+  background: var(--adm-raised);
+  color: var(--adm-text);
+  border-color: var(--adm-muted);
+}
+.adm-app.adv-ui .adm-btn.adm-primary,
+.adm-app.adv-ui .adm-btn.adm-booking-action,
+.adm-app.adv-ui .adm-dialog .adm-btn.adm-primary {
   color: #fff;
   border-color: var(--adv-brand);
   background: var(--adv-brand);
-}
-
-.adm-app.adv-ui .adm-bottom-nav .is-active {
-  color: var(--adm-accent-text);
   font-weight: 600;
 }
-
-/* ---------- Cards and lists ---------- */
-.adm-app.adv-ui .adm-panel,
-.adm-app.adv-ui .adm-booking-list,
-.adm-app.adv-ui .adm-customer-list,
-.adm-app.adv-ui .adv-order-list {
-  border-radius: 8px;
+.adm-app.adv-ui .adm-btn.adm-primary:hover,
+.adm-app.adv-ui .adm-btn.adm-booking-action:hover,
+.adm-app.adv-ui .adm-dialog .adm-btn.adm-primary:hover {
+  color: #fff;
+  border-color: var(--adv-brand-hover);
+  background: var(--adv-brand-hover);
+  filter: none;
+}
+.adm-app.adv-ui .adm-btn.adm-danger,
+.adm-app.adv-ui .adm-btn.adm-subtle-danger {
+  color: var(--adm-danger);
+  border-color: var(--adm-border);
+  background: var(--adm-surface);
+}
+.adm-app.adv-ui .adm-btn.adm-danger:hover,
+.adm-app.adv-ui .adm-btn.adm-subtle-danger:hover {
+  color: var(--adm-danger);
+  background: var(--adm-danger-bg);
+  border-color: var(--adm-danger);
+}
+.adm-app.adv-ui :is(.adm-btn, .adm-nav-link, .adm-icon-btn, a):focus-visible {
+  outline: 2px solid var(--adm-accent);
+  outline-offset: 3px;
+}
+.adm-app.adv-ui button:disabled {
+  cursor: not-allowed;
 }
 
-.adm-app.adv-ui .adm-booking-card.is-selected,
-.adm-app.adv-ui .adm-booking-card[aria-current="true"] {
-  box-shadow: inset 3px 0 0 var(--adv-brand);
+.adm-app.adv-ui .adv-booking-confirm-dialog {
+  width: min(580px, calc(100vw - 32px));
+}
+.adm-dialog.adv-intake-dialog {
+  width: min(720px, calc(100vw - 32px));
+  padding: 0;
+  overflow: hidden;
+}
+.adv-intake-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.adv-intake-dialog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 24px;
+  flex: none;
+}
+.adv-intake-dialog-heading h2 {
+  margin: 0;
+}
+.adv-intake-dialog > .adm-booking-form {
+  min-height: 0;
+  gap: 0;
+}
+.adv-intake-dialog-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  padding: 0 24px 24px;
+}
+.adv-intake-dialog .adv-checks {
+  margin-top: 0;
+}
+.adv-intake-dialog .adm-panel {
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+}
+.adv-intake-dialog .adm-dialog-actions {
+  flex: none;
+  margin: 0;
+  padding: 16px 24px;
+  background: var(--adm-raised);
+}
+@media (max-width: 640px) {
+  .adv-intake-dialog-heading,
+  .adv-intake-dialog .adm-dialog-actions {
+    padding: 16px;
+  }
+  .adv-intake-dialog-body {
+    padding: 0 16px 16px;
+  }
+  .adv-intake-dialog .adm-dialog-actions .adm-btn {
+    flex: 1;
+    min-width: 0;
+  }
+}
+.adm-app.adv-ui .adv-booking-confirm-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.adm-app.adv-ui .adv-booking-confirm-heading h2 {
+  margin: 0 0 4px;
+}
+.adm-app.adv-ui .adv-booking-confirm-heading p {
+  margin: 0;
+}
+.adm-app.adv-ui .adv-booking-confirm-form {
+  display: grid;
+  gap: 20px;
+}
+.adm-app.adv-ui .adv-booking-confirm-services {
+  margin: -8px 0 0;
+  overflow-wrap: anywhere;
+}
+.adm-app.adv-ui .adv-booking-confirm-services > summary {
+  cursor: pointer;
+  list-style: none;
+}
+.adm-app.adv-ui
+  .adv-booking-confirm-services
+  > summary::-webkit-details-marker {
+  display: none;
+}
+.adm-app.adv-ui .adv-booking-confirm-services > summary > span:first-child {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.adm-app.adv-ui .adv-booking-confirm-services .adv-booking-services-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  color: var(--adm-accent-text);
+}
+.adm-app.adv-ui .adv-booking-confirm-services ul {
+  margin: 4px 0 0;
+  padding-left: 20px;
+}
+.adm-app.adv-ui .adv-booking-confirm-services[open] summary .icon {
+  transform: rotate(180deg);
+}
+.adm-app.adv-ui
+  .adv-booking-confirm-services[open]
+  > summary
+  > span:first-child {
+  display: block;
+}
+.adm-app.adv-ui .adv-booking-confirm-customer {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.adm-app.adv-ui .adv-booking-confirm-customer > div {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.adm-app.adv-ui .adv-booking-confirm-customer p {
+  margin: 4px 0 0;
+}
+.adm-app.adv-ui .adv-booking-confirm-customer > .adm-btn {
+  flex: none;
+  width: 44px;
+  padding: 10px;
+}
+.adm-app.adv-ui .adv-booking-confirm-request {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  background: var(--adm-raised);
+  border-radius: 6px;
+}
+.adm-app.adv-ui .adv-booking-confirm-request > .icon {
+  margin-top: 2px;
+}
+.adm-app.adv-ui .adv-booking-confirm-request strong {
+  color: var(--adm-text);
+}
+.adm-app.adv-ui .adv-booking-confirm-form .adm-booking-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  gap: 12px;
+}
+.adm-app.adv-ui .adv-booking-confirm-form legend {
+  padding: 0;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.adm-app.adv-ui .adv-booking-confirm-hint {
+  margin: 0;
+}
+.adm-app.adv-ui .adv-booking-confirm-notes > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+}
+.adm-app.adv-ui .adv-booking-confirm-notes > summary::-webkit-details-marker {
+  display: none;
+}
+.adm-app.adv-ui
+  :is(.adv-booking-confirm-notes, .adv-booking-confirm-services)
+  > summary:focus-visible {
+  outline: 2px solid var(--adm-accent);
+  outline-offset: 3px;
+}
+.adm-app.adv-ui .adv-booking-confirm-notes[open] > summary > .icon {
+  transform: rotate(180deg);
+}
+.adm-app.adv-ui .adv-booking-confirm-form .adm-dialog-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  margin: 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--adm-border);
+}
+.adm-app.adv-ui .adv-booking-confirm-form .adm-note {
+  margin: 0;
+}
+
+/* Tab rows and the search/filter toolbar mirror the reference hierarchy. */
+.adm-app.adv-ui .adm-quick-filters,
+.adm-app.adv-ui .adv-tabs,
+.adm-app.adv-ui .adv-service-workspace .adv-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 4px;
+  min-width: 0;
+  padding: 0;
+  margin: 0 0 20px;
+  border: 0;
+  border-bottom: 1px solid var(--adm-border);
+  border-radius: 0;
+  background: var(--adm-surface);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.adm-app.adv-ui .adm-quick-filters button,
+.adm-app.adv-ui .adv-tabs a,
+.adm-app.adv-ui .adv-service-workspace .adv-tabs a {
+  flex: 0 0 auto;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--adm-muted);
+  background: transparent;
+  font-size: calc(12px + var(--adm-font-increase));
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+.adm-app.adv-ui .adm-quick-filters button.is-active,
+.adm-app.adv-ui .adv-tabs a.is-active,
+.adm-app.adv-ui .adv-service-workspace .adv-tabs a.is-active {
+  color: var(--adm-accent-text);
+  border-bottom-color: var(--adv-brand);
+  background: var(--adm-accent-soft);
+  font-weight: 600;
+}
+.adm-app.adv-ui .adm-quick-filters button.is-active::after {
+  display: none;
+}
+.adm-app.adv-ui .adv-date-shortcuts {
+  margin-bottom: 12px;
+}
+.adm-app.adv-ui .adv-date-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+.adm-app.adv-ui .adv-date-input > input:first-child {
+  flex: 1;
+  min-width: 0;
+  max-width: none;
+  padding-right: 44px;
+}
+.adm-app.adv-ui .adv-date-input > .adm-icon-btn {
+  position: absolute;
+  right: 0;
+  border: 0;
+  background: transparent;
+}
+.adm-app.adv-ui .adv-date-input > .adv-date-picker {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.adm-app.adv-ui
+  .adm-toggle-row:has(> input[type="checkbox"]:not([role="switch"])) {
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 8px;
+}
+.adm-app.adv-ui .adm-toggle-row > input[type="checkbox"]:not([role="switch"]) {
+  order: -1;
+  flex: 0 0 18px;
+  margin: 3px 0 0;
+}
+.adm-app.adv-ui .adm-search-row {
+  max-width: 720px;
+  margin-bottom: 16px;
+  align-items: stretch;
+}
+.adm-app.adv-ui .adm-search,
+.adm-app.adv-ui .adm-field :is(input, select, textarea),
+.adm-app.adv-ui .adm-filters :is(input, select),
+.adm-app.adv-ui .adm-results-row select {
+  border-radius: 4px;
+}
+.adm-app.adv-ui .adm-search input {
+  min-height: 44px;
+}
+.adm-app.adv-ui .adm-search:focus-within {
+  border-color: var(--adm-muted);
+  box-shadow: none;
+}
+.adm-app.adv-ui .adm-search input:focus {
+  outline: none;
+  box-shadow: none;
+}
+.adm-app.adv-ui .adm-field.has-error :is(input, select, textarea) {
+  border-color: var(--adm-danger);
+}
+.adm-app.adv-ui .adm-filters {
+  border-radius: 6px;
+  background: var(--adm-raised);
+}
+.adm-app.adv-ui .adm-results-row {
+  margin: 16px 0;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.adm-app.adv-ui .adm-results-row strong {
+  font-weight: 500;
+  font-size: calc(12px + var(--adm-font-increase));
+}
+.adm-app.adv-ui .adm-badge {
+  border-radius: 3px;
+  padding: 4px 8px;
+  font-weight: 500;
+}
+
+/* Overview: totals first, then the operational queue. */
+.adm-app.adv-ui .adm-overview .adm-kpis {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.adm-app.adv-ui .adm-kpi {
+  --adv-kpi: var(--adm-text);
+  min-height: 0;
+  padding: 20px;
+  color: var(--adm-text);
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: 6px;
+  box-shadow: none;
+}
+.adm-app.adv-ui .adm-kpi-pending {
+  --adv-kpi: var(--adm-status-pending-text);
+}
+.adm-app.adv-ui .adm-kpi-confirmed {
+  --adv-kpi: var(--adm-status-confirmed-text);
+}
+.adm-app.adv-ui .adm-kpi-done {
+  --adv-kpi: var(--adm-status-arrived-text);
+}
+.adm-app.adv-ui .adm-kpi > div {
+  color: var(--adm-muted);
+  font-weight: 500;
+}
+.adm-app.adv-ui .adm-kpi .icon {
+  color: var(--adv-kpi);
+}
+.adm-app.adv-ui .adm-kpi strong {
+  color: var(--adv-kpi);
+  font-size: 32px;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+.adm-app.adv-ui .adm-kpi small {
+  color: var(--adm-muted);
+}
+.adm-app.adv-ui .adm-task-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+.adm-app.adv-ui .adm-task-heading .adm-muted {
+  font-size: calc(12px + var(--adm-font-increase));
+  font-weight: 400;
+}
+.adm-app.adv-ui .adm-overview .adm-search-row.adm-task-search {
+  display: flex;
+}
+.adm-app.adv-ui .adm-overview .adm-booking-list {
+  border-radius: 6px;
+}
+.adm-app.adv-ui .adm-task-card {
+  padding: 20px;
+  border-radius: 0;
+  border-bottom: 0;
+  background: var(--adm-surface);
+}
+.adm-app.adv-ui .adm-task-card:nth-child(even) {
+  background: var(--adm-raised);
+}
+.adm-app.adv-ui .adm-task-card.is-selected {
+  box-shadow: none;
+}
+.adm-app.adv-ui .adm-task-card.is-selected::before {
+  content: none;
+}
+.adm-app.adv-ui .adm-task-card:hover,
+.adm-app.adv-ui .adm-task-card.is-selected {
+  background: var(--adm-accent-soft);
+}
+.adm-app.adv-ui .adm-task-customer {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.adm-app.adv-ui .adm-task-customer h3 {
+  font-size: calc(14px + var(--adm-font-increase));
+  font-weight: 600;
+}
+.adm-app.adv-ui .adm-task-card .adm-card-top {
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.adm-app.adv-ui .adm-task-card .adm-card-service {
+  padding-left: 0;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+.adm-app.adv-ui .adm-task-card .adm-card-service > .icon {
+  flex: none;
+  margin-top: 3px;
+}
+.adm-app.adv-ui .adm-task-card .adv-booking-services {
+  flex: 1;
+  min-width: 0;
+}
+.adm-app.adv-ui .adm-task-card .adv-booking-services > span {
+  max-width: none;
+}
+.adm-app.adv-ui .adm-task-time {
+  color: var(--adm-muted);
+  margin-top: 8px;
+}
+.adm-app.adv-ui .adm-task-time .icon {
+  width: 14px;
+  height: 14px;
+}
+.adm-app.adv-ui .adm-task-card .adm-card-footer {
+  gap: 8px;
+}
+.adm-app.adv-ui .adm-task-card .adm-card-footer > .adm-booking-actions,
+.adm-app.adv-ui .adm-task-card .adm-card-footer > .adm-booking-action {
+  margin-left: auto;
+}
+.adm-app.adv-ui .adm-overview .adv-tasks {
+  margin-top: 24px;
+}
+.adm-app.adv-ui .adv-overview-footer {
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+/* Full-width lists; the selected record opens in the native modal drawer. */
+.adm-app.adv-ui .adv-list-workspace {
+  display: block;
+}
+.adm-app.adv-ui .has-detail .adm-list-heading,
+.adm-app.adv-ui .has-detail .adm-master {
+  display: block;
+}
+.adm-app.adv-ui .has-detail .adm-kpis {
+  display: grid;
+}
+.adm-app.adv-ui .adv-data-scroll {
+  min-width: 0;
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--adm-border);
+  border-radius: 4px;
+  scrollbar-width: thin;
+}
+.adm-app.adv-ui .adv-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: calc(12px + var(--adm-font-increase));
+  line-height: 1.5;
+}
+.adm-app.adv-ui .adv-data-table :is(th, td) {
+  padding: 16px;
+  border-bottom: 0;
+  vertical-align: middle;
+}
+.adm-app.adv-ui .adv-data-table th {
+  border-bottom: 1px solid var(--adm-border);
+  color: var(--adm-muted);
+  background: var(--adm-raised);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.adm-app.adv-ui .adv-data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.adm-app.adv-ui .adv-ticket-table td {
+  border-bottom: 0;
+}
+.adm-app.adv-ui
+  :is(.adv-data-table, .adv-ticket-table, .adv-quote-table)
+  tbody
+  tr:nth-child(even) {
+  background: var(--adm-raised);
+}
+.adm-app.adv-ui :is(.adv-data-table, .adv-ticket-table) tbody tr:hover,
+.adm-app.adv-ui .adv-data-table tr.is-selected {
+  background: var(--adm-accent-soft);
+}
+.adm-app.adv-ui .adv-data-table small,
+.adm-app.adv-ui .adv-table-secondary {
+  display: block;
+  margin-top: 4px;
+  color: var(--adm-muted);
+  font-size: calc(11px + var(--adm-font-increase));
+}
+.adm-app.adv-ui .adv-data-table .adm-text-link {
+  display: inline;
+  min-height: 0;
+  font-size: inherit;
+}
+.adm-app.adv-ui .adv-data-table strong {
+  font-weight: 500;
+}
+.adm-app.adv-ui .adv-bookings-table {
+  min-width: 900px;
+}
+.adm-app.adv-ui .adv-bookings-table td:nth-child(1) {
+  width: 18%;
+}
+.adm-app.adv-ui .adv-bookings-table td:nth-child(2) {
+  width: 18%;
+}
+.adm-app.adv-ui .adv-bookings-table td:nth-child(3) {
+  width: 16%;
+}
+.adm-app.adv-ui .adv-bookings-table td:nth-child(4) {
+  max-width: 240px;
+  overflow-wrap: anywhere;
+}
+.adm-app.adv-ui .adv-booking-services > span {
+  display: block;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.adm-app.adv-ui
+  .adv-booking-services
+  > :is(.adm-text-link, .adv-booking-services-more) {
+  color: var(--adm-accent-text);
+}
+.adm-app.adv-ui .adv-bookings-table td:last-child {
+  width: 1%;
+  white-space: nowrap;
+}
+.adm-app.adv-ui .adv-bookings-table .adv-table-actions {
+  flex-wrap: nowrap;
+}
+.adm-app.adv-ui .adv-bookings-table .adv-table-actions > * {
+  flex: none;
+}
+.adm-app.adv-ui .adv-customers-table {
+  min-width: 680px;
+}
+.adm-app.adv-ui .adv-table-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.adm-app.adv-ui .adv-table-actions .adm-btn {
+  white-space: nowrap;
+}
+.adm-app.adv-ui .adv-ticket-panel {
+  padding: 0;
+  border: 0;
+}
+.adm-app.adv-ui .adv-ticket-scroll {
+  max-height: none;
+  border-radius: 4px;
+}
+.adm-app.adv-ui .adv-ticket-table {
+  font-size: calc(12px + var(--adm-font-increase));
+}
+.adm-app.adv-ui .adv-ticket-table tbody tr:nth-child(even) td:last-child {
+  background: var(--adm-raised);
+}
+.adm-app.adv-ui .adv-ticket-table tbody tr:hover td:last-child {
+  background: var(--adm-accent-soft);
+}
+.adm-app.adv-ui .adv-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.adm-app.adv-ui .adv-pagination .adm-btn {
+  min-height: 44px;
+  gap: 6px;
+  padding: 8px 12px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--adm-muted);
+  white-space: nowrap;
+}
+.adm-app.adv-ui .adv-pagination .adm-btn:hover:not(:disabled) {
+  border-color: var(--adm-border);
+  background: var(--adm-raised);
+  color: var(--adm-text);
+}
+.adm-app.adv-ui .adv-pagination .adm-btn:disabled {
+  opacity: 0.4;
+}
+.adm-app.adv-ui .adv-pagination .icon {
+  width: 16px;
+  height: 16px;
+}
+.adm-app.adv-ui .adv-pagination [aria-label="Trang sau"] .icon {
+  transform: rotate(180deg);
+}
+.adm-app.adv-ui .adv-pagination-current {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--adm-accent-soft);
+  color: var(--adm-accent-text);
+  font-size: calc(12px + var(--adm-font-increase));
+  font-weight: 600;
+  white-space: nowrap;
+}
+.adm-app.adv-ui .adv-ticket-filters > .adm-filters {
+  background: var(--adm-surface);
+}
+
+/* Native dialog provides keyboard focus containment and Escape handling. */
+body:has(.adv-workspace-drawer[open]) {
+  overflow: hidden;
+}
+.adm-app.adv-ui .adv-workspace-drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(900px, calc(100vw - 72px));
+  max-width: none;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--adm-border);
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: none;
+}
+.adm-app.adv-ui .adv-workspace-drawer[open] {
+  display: flex;
+  flex-direction: column;
+  animation: adv-drawer-in 0.3s ease-out;
+}
+.adm-app.adv-ui .adv-workspace-drawer[data-closing] {
+  animation: adv-drawer-out 0.2s ease-in forwards;
+}
+.adm-app.adv-ui .adv-workspace-drawer::backdrop {
+  background: #0009;
+  backdrop-filter: none;
+  animation: adv-backdrop-in 0.3s ease-out;
+}
+.adm-app.adv-ui .adv-workspace-drawer[data-closing]::backdrop {
+  animation: adv-backdrop-in 0.2s ease-in reverse forwards;
+}
+.adm-app.adv-ui
+  .adm-main:has(> :is(.adv-order-detail, .adv-detail-page, .adv-reception)) {
+  overflow-x: clip;
+}
+.adm-app.adv-ui :is(.adv-order-detail, .adv-detail-page, .adv-reception) {
+  animation: adv-detail-in 0.3s ease-out;
+}
+@keyframes adv-drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes adv-drawer-out {
+  from {
+    transform: none;
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes adv-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes adv-detail-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .adm-app.adv-ui .adv-workspace-drawer::backdrop {
+    animation: none;
+  }
+}
+@media print {
+  .adm-app.adv-ui :is(.adv-order-detail, .adv-detail-page, .adv-reception) {
+    animation: none;
+  }
+}
+.adm-app.adv-ui .adv-drawer-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex: none;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--adm-border);
+  background: var(--adm-surface);
+}
+.adm-app.adv-ui .adv-drawer-heading h2 {
+  margin: 0;
+  font-size: calc(18px + var(--adm-font-increase));
+}
+.adm-app.adv-ui .adv-drawer-heading .adm-icon-btn {
+  font-size: 26px;
+  font-weight: 400;
+}
+.adm-app.adv-ui .adv-drawer-content {
+  min-height: 0;
+  padding: 24px;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+.adm-app.adv-ui .adv-drawer-content > .adm-detail {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.adm-app.adv-ui .adv-drawer-content .adm-detail-section {
+  padding-top: 0;
+  margin-top: 0;
+}
+.adm-app.adv-ui .adv-drawer-content .adm-info-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.adm-app.adv-ui .adm-booking-person {
+  flex-wrap: wrap;
+}
+.adm-app.adv-ui .adm-booking-person-info {
+  flex: 1 1 180px;
+}
+.adm-app.adv-ui .adm-booking-contact-actions {
+  display: flex;
+  flex: none;
+  gap: 8px;
+  margin-left: auto;
+}
+.adm-app.adv-ui .adv-drawer-content .adm-detail-actions {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+  position: sticky;
+  bottom: -24px;
+  margin-top: 24px;
+  padding: 16px 0;
+  border-top: 1px solid var(--adm-border);
+  background: var(--adm-surface);
+}
+.adm-app.adv-ui
+  .adv-drawer-content
+  .adm-detail-actions
+  > :is(.adm-booking-actions, .adm-action-row) {
+  display: contents;
+}
+.adm-app.adv-ui .adv-drawer-content .adm-detail-actions > .adm-btn,
+.adm-app.adv-ui
+  .adv-drawer-content
+  .adm-detail-actions
+  > :is(.adm-booking-actions, .adm-action-row)
+  > .adm-btn {
+  grid-column: auto;
+  min-width: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  white-space: normal;
+}
+
+/* Reception and order workspaces share the same section and action rhythm. */
+.adm-app.adv-ui .adm-form-page {
+  max-width: 1280px;
+}
+.adm-app.adv-ui .adm-form-section-title > span {
+  color: var(--adm-accent-text);
+  background: var(--adm-accent-soft);
+  border: 0;
+  border-radius: 4px;
+}
+.adm-app.adv-ui .adm-service-options > label,
+.adm-app.adv-ui .adv-check-grid label {
+  background: var(--adm-surface);
+  border-radius: 4px;
+}
+.adm-app.adv-ui :is(.adm-form-footer, .adv-quote-actions) {
+  padding: 16px 0;
+  background: var(--adm-surface);
+}
+.adm-app.adv-ui .adv-reception-header {
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+}
+.adm-app.adv-ui .adv-reception h2 {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.adm-app.adv-ui .adv-service-header {
+  border: 0;
+  padding: 0 0 16px;
+  border-radius: 0;
+}
+.adm-app.adv-ui .adv-service-code {
+  color: var(--adm-muted);
+}
+.adm-app.adv-ui .adv-service-totals {
+  gap: 24px;
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 16px;
+}
+.adm-app.adv-ui .adv-service-totals dd {
+  font-size: calc(20px + var(--adm-font-increase));
+}
+.adm-app.adv-ui .adv-service-sticky {
+  background: var(--adm-surface);
+}
+.adm-app.adv-ui .adv-service-workspace .adv-tabs {
+  margin-bottom: 0;
+}
+.adm-app.adv-ui .adv-service-progress li {
+  border-top-color: var(--adm-border);
+}
+.adm-app.adv-ui .adv-service-progress li.is-active {
+  color: var(--adm-accent-text);
+  border-top-color: var(--adv-brand);
+}
+.adm-app.adv-ui .adv-quote-table th {
+  font-size: calc(11px + var(--adm-font-increase));
+  font-weight: 500;
+}
+.adm-app.adv-ui .adv-quote-table td {
+  padding-block: 12px;
+  border-bottom: 0;
+}
+.adm-app.adv-ui .adv-quote-editor fieldset {
+  min-inline-size: 0;
+  max-width: 100%;
+  margin-inline: 0;
+}
+.adm-app.adv-ui .adv-quote-scroll {
+  position: relative;
+}
+.adm-app.adv-ui .adv-quote-table :is(input, select) {
+  border-radius: 4px;
+}
+.adm-app.adv-ui :is(th, td).adv-money-cell,
+.adm-app.adv-ui .adv-quote-table .adv-quote-amount {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.adm-app.adv-ui .adv-quote-table th.adv-money-cell {
+  padding-inline-end: calc(6px + 8px);
+}
+.adm-app.adv-ui .adv-quote-table .adv-money-cell input {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.adm-app.adv-ui
+  .adv-quote-table
+  td.adv-money-cell
+  .adm-field
+  > span:not(.adv-quote-cell-label) {
+  padding-inline: 8px;
+}
+.adm-app.adv-ui .adv-money-list {
+  font-variant-numeric: tabular-nums;
+}
+.adm-app.adv-ui .adv-money-list > div {
+  padding-inline: 12px;
+}
+.adm-app.adv-ui .adv-money-list dd,
+.adm-app.adv-ui .adv-print-totals :is(dd, strong),
+.adm-app.adv-ui .adv-line-total > strong,
+.adm-app.adv-ui .adv-service-workspace .adv-lines > .adm-section-line > strong {
+  margin: 0;
+  flex-shrink: 0;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.adm-app.adv-ui .adv-money-total {
+  background: var(--adm-raised);
+  padding: 12px;
+  border-top: 0;
+}
+.adm-app.adv-ui .adm-detail {
+  gap: 24px;
+}
+.adm-app.adv-ui .adm-detail-section {
+  border-top: 0;
+  padding-top: 0;
+}
+.adm-app.adv-ui .adm-info-grid {
+  gap: 20px 24px;
+}
+.adm-app.adv-ui .adm-info-grid > div {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.adm-app.adv-ui .adm-related-bookings > a {
+  border-bottom: 0;
+}
+.adm-app.adv-ui
+  :is(.adv-reception-section-title, .adv-reception-verify, .adv-quote-summary) {
+  border-top: 0;
+}
+.adm-app.adv-ui :is(.adv-reception-section-title, .adv-quote-summary) {
+  padding-top: 0;
+}
+.adm-app.adv-ui .adv-quote-group + .adv-quote-group {
+  border-top: 0;
+  padding-top: 0;
+}
+.adm-app.adv-ui
+  .adv-service-workspace
+  .adv-lines
+  > .adm-section-line
+  + .adm-section-line {
+  border-top: 0;
+  padding-top: 0;
+  margin-top: 16px;
+}
+.adm-app.adv-ui .adm-note {
+  border-radius: 4px;
+}
+.adm-app.adv-ui .adm-empty {
+  padding: 32px 20px;
+}
+.adm-app.adv-ui .adm-empty-icon {
+  color: var(--adm-muted);
+  background: var(--adm-raised);
+  border-radius: 6px;
+}
+.adm-app.adv-ui .adm-more-profile {
+  border-radius: 6px 6px 0 0;
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+.adm-app.adv-ui .adm-more-menu {
+  border-top: 0;
+  border-radius: 0 0 6px 6px;
+}
+.adm-app.adv-ui .adm-more-menu > :is(a, button) {
+  border-radius: 0;
+  border-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .adm-app.adv-ui .adm-sidebar {
+    width: 72px;
+    padding: 20px 10px 16px;
+  }
+  .adm-app.adv-ui .adm-body {
+    margin: 0 0 0 72px;
+    min-height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+  .adm-app.adv-ui .adm-main {
+    padding: 28px;
+  }
+  .adm-app.adv-ui .adm-sidebar-brand {
+    margin-bottom: 24px;
+  }
+  .adm-app.adv-ui .adm-sidebar-logo {
+    width: 44px;
+    height: 32px;
+    object-fit: contain;
+  }
+  .adm-app.adv-ui .adm-sidebar-create {
+    margin-bottom: 16px;
+  }
+  .adm-app.adv-ui .adv-sidebar-toggle {
+    display: none;
+  }
+  .adm-app.adv-ui .adm-overview .adm-task-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+    gap: 12px 24px;
+    align-items: center;
+  }
+  .adm-app.adv-ui .adm-task-card .adm-card-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .adm-app.adv-ui .adm-task-card .adm-card-footer {
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
+  .adm-app.adv-ui .adm-task-card .adm-card-main {
+    margin: 0;
+  }
+  .adm-app.adv-ui
+    .adm-task-card
+    .adm-card-footer
+    > :is(.adm-booking-actions, .adm-booking-action) {
+    margin: 0;
+  }
+  .adm-app.adv-ui .adm-task-card .adm-card-footer .adm-btn {
+    min-height: 44px;
+  }
+}
+@media (min-width: 1100px) {
+  .adm-app.adv-ui .adm-form-page:not(.adv-reception) > .adm-booking-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .adm-app.adv-ui
+    .adm-form-page:not(.adv-reception)
+    > .adm-booking-form
+    > :not(section) {
+    grid-column: 1 / -1;
+  }
+  .adm-app.adv-ui
+    .adm-form-page:not(.adv-reception)
+    > .adm-booking-form
+    > section:nth-of-type(n + 3) {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1200px) {
+  .adm-app.adv-ui .adv-sidebar-toggle {
+    display: flex;
+  }
+  .adm-app.adv-ui:not(.adm-collapsed) .adm-sidebar {
+    width: 232px;
+    padding-inline: 14px;
+  }
+  .adm-app.adv-ui:not(.adm-collapsed) .adm-body {
+    margin-left: 232px;
+  }
+  .adm-app.adv-ui .adm-sidebar-brand {
+    min-height: 40px;
+  }
+  .adm-app.adv-ui .adm-sidebar-brand strong {
+    font-size: calc(12px + var(--adm-font-increase));
+  }
+  .adm-app.adv-ui .adm-sidebar .adm-nav-link {
+    padding-block: 12px;
+  }
+}
+@media (min-width: 1100px) and (min-height: 800px) {
+  .adm-app.adv-ui .adv-service-sticky {
+    top: 64px;
+    padding-top: 12px;
+    padding-bottom: 0;
+  }
+}
+@media (max-width: 1199.98px) and (min-width: 768px) {
+  .adm-app.adv-ui .adm-overview .adm-task-card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  }
+  .adm-app.adv-ui .adm-task-card .adm-card-footer {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}
+@media (max-width: 767.98px) {
+  .adm-app.adv-ui .adv-pagination {
+    justify-content: center;
+  }
+  .adm-app.adv-ui .adv-bookings-scroll {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+  }
+  .adm-app.adv-ui .adv-bookings-table {
+    display: block;
+    min-width: 0;
+  }
+  .adm-app.adv-ui .adv-bookings-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .adm-app.adv-ui .adv-bookings-table tbody {
+    display: grid;
+    gap: 12px;
+  }
+  .adm-app.adv-ui .adv-bookings-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--adm-border);
+    border-radius: 6px;
+  }
+  .adm-app.adv-ui .adv-bookings-table tbody td {
+    display: block;
+    grid-column: 1 / -1;
+    min-width: 0;
+    padding: 0;
+    white-space: normal;
+  }
+  .adm-app.adv-ui .adv-bookings-table tbody td:nth-child(n) {
+    width: auto;
+    max-width: none;
+  }
+  .adm-app.adv-ui .adv-bookings-table .adv-booking-customer {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .adm-app.adv-ui .adv-booking-customer strong {
+    font-size: calc(14px + var(--adm-font-increase));
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .adm-app.adv-ui .adv-bookings-table .adv-booking-status {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .adm-app.adv-ui .adv-bookings-table .adv-booking-vehicle {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    grid-row: 2;
+  }
+  .adm-app.adv-ui .adv-booking-vehicle small {
+    margin: 0;
+  }
+  .adm-app.adv-ui .adv-bookings-table .adv-booking-schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .adm-app.adv-ui .adv-booking-schedule small {
+    order: -1;
+    margin: 0;
+    color: var(--adm-text);
+    font-size: inherit;
+  }
+  .adm-app.adv-ui .adv-booking-schedule .adv-booking-code {
+    color: var(--adm-muted);
+    font-size: calc(11px + var(--adm-font-increase));
+    overflow-wrap: anywhere;
+  }
+  .adm-app.adv-ui .adv-booking-service-cell .adv-booking-services > span {
+    max-width: none;
+  }
+  .adm-app.adv-ui .adv-bookings-table .adv-table-actions > * {
+    flex: 1;
+    min-width: 0;
+  }
+  .adm-app.adv-ui .adv-bookings-table .adv-table-actions {
+    align-items: stretch;
+  }
+  .adm-app.adv-ui .adv-bookings-table .adv-table-actions .adm-btn {
+    white-space: normal;
+  }
+  .adm-app.adv-ui .adv-booking-confirm-dialog {
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    max-height: calc(100dvh - 24px);
+    padding: 16px;
+  }
+  .adm-app.adv-ui .adv-booking-confirm-heading {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .adm-app.adv-ui .adv-booking-confirm-form {
+    gap: 16px;
+  }
+  .adm-app.adv-ui .adv-booking-confirm-form .adm-booking-fields {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+  .adm-app.adv-ui .adv-booking-confirm-customer {
+    align-items: center;
+    gap: 12px;
+  }
+  .adm-app.adv-ui .adv-booking-confirm-request {
+    padding: 10px 12px;
+  }
+  .adm-app.adv-ui .adv-booking-confirm-request > span {
+    display: grid;
+    gap: 2px;
+  }
+  .adm-app.adv-ui .adv-booking-confirm-request strong {
+    white-space: nowrap;
+  }
+  .adm-app.adv-ui .adv-booking-confirm-form .adm-dialog-actions {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    position: sticky;
+    bottom: -16px;
+    margin-bottom: -16px;
+    padding: 12px 0 max(16px, env(safe-area-inset-bottom));
+    background: var(--adm-surface);
+  }
+  .adm-app.adv-ui .adm-main {
+    padding: 20px 16px calc(100px + env(safe-area-inset-bottom));
+  }
+  .adm-app.adv-ui .adm-header-brand img {
+    object-fit: contain;
+  }
+  .adm-app.adv-ui .adm-page-heading {
+    flex-wrap: wrap;
+    padding-bottom: 0;
+    margin-bottom: 20px;
+  }
+  .adm-app.adv-ui .adm-page-heading > .adv-actions {
+    width: 100%;
+  }
+  .adm-app.adv-ui .adm-page-heading .adv-actions > .adm-btn {
+    flex: 1;
+  }
+  .adm-app.adv-ui .adm-overview .adm-kpis {
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .adm-app.adv-ui .adm-kpi {
+    padding: 12px;
+  }
+  .adm-app.adv-ui .adm-kpi strong {
+    font-size: 26px;
+  }
+  .adm-app.adv-ui .adm-kpi .icon,
+  .adm-app.adv-ui .adm-kpi small {
+    display: none;
+  }
+  .adm-app.adv-ui .adm-kpi > div {
+    font-size: calc(11px + var(--adm-font-increase));
+  }
+  .adm-app.adv-ui .adm-panel {
+    padding: 16px;
+  }
+  .adm-app.adv-ui .adv-ticket-panel {
+    padding: 0;
+  }
+  .adm-app.adv-ui .adv-ticket-table tbody tr:nth-child(even) td:last-child,
+  .adm-app.adv-ui .adv-ticket-table tbody tr:hover td:last-child {
+    background: transparent;
+  }
+  .adm-app.adv-ui .adv-workspace-drawer {
+    width: 100%;
+    height: 100dvh;
+    border: 0;
+  }
+  .adm-app.adv-ui .adv-drawer-heading {
+    padding: 12px 16px;
+  }
+  .adm-app.adv-ui .adv-drawer-content {
+    padding: 20px 16px calc(24px + env(safe-area-inset-bottom));
+  }
+  .adm-app.adv-ui .adv-drawer-content .adm-detail-actions {
+    bottom: -24px;
+  }
+  .adm-app.adv-ui .adv-drawer-content .adm-info-grid {
+    grid-template-columns: 1fr;
+  }
+  .adm-app.adv-ui .adm-task-card {
+    padding: 16px;
+  }
+  .adm-app.adv-ui .adm-task-card .adm-card-footer > .adm-booking-actions,
+  .adm-app.adv-ui .adm-task-card .adm-card-footer > .adm-booking-action {
+    flex: 1;
+    margin: 0;
+  }
+  .adm-app.adv-ui .adm-task-card .adm-card-footer .adm-btn {
+    min-height: 44px;
+  }
+  .adm-app.adv-ui .adv-service-header {
+    padding: 0 0 16px;
+  }
+  .adm-app.adv-ui .adv-service-totals {
+    gap: 12px;
+  }
+  .adm-app.adv-ui .adv-service-totals dd {
+    font-size: calc(16px + var(--adm-font-increase));
+  }
+  .adm-app.adv-ui .adv-tabs {
+    margin-bottom: 16px;
+  }
+  .adm-app.adv-ui .adm-bottom-nav .is-active {
+    color: var(--adm-accent-text);
+    font-weight: 600;
+  }
+}
+@media (max-width: 479.98px) {
+  .adm-app.adv-ui .adm-kpi {
+    padding: 12px 8px;
+  }
+  .adm-app.adv-ui .adm-task-heading {
+    flex-wrap: wrap;
+  }
+  .adm-app.adv-ui .adv-service-workspace .adv-tabs a {
+    padding-inline: 12px;
+  }
+}
+@media print {
+  .adm-app.adv-ui .adm-body {
+    margin: 0;
+  }
+  .adm-app.adv-ui .adv-service-sticky {
+    position: static;
+  }
 }
 
 /* ---------- Login (advisor only) ---------- */
@@ -270,37 +1641,4 @@ body[data-workspace="advisor"] .adm-toast[data-theme="dark"]:not(.mgr-toast) {
 .adm-app.adv-login .adm-btn.adm-primary {
   min-height: 48px;
   font-size: 16px;
-}
-
-/* ---------- Mobile ---------- */
-@media (max-width: 767.98px) {
-  .adm-app.adv-ui .adm-kpis {
-    gap: 8px;
-  }
-
-  .adm-app.adv-ui .adm-kpi {
-    padding: 12px 14px;
-  }
-
-  .adm-app.adv-ui .adm-kpi strong {
-    font-size: 26px;
-  }
-
-  .adm-app.adv-ui .adm-kpi small {
-    display: none;
-  }
-
-  .adm-app.adv-ui .adm-btn {
-    min-height: 44px;
-  }
-
-  .adm-app.adv-ui .adm-bottom-nav a {
-    min-height: 56px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .adm-app.adv-login {
-    background: var(--adm-bg);
-  }
 }

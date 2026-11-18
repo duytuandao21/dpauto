@@ -145,6 +145,44 @@ export class Capacity {
     );
     return { policy, input: { buckets } };
   }
+  // Half-day periods a customer can request; noon splits morning from afternoon.
+  async periods(c: Conn, ctx: Context, date: string) {
+    const { policy, input } = await this.state(c, ctx, date),
+      origin = +midnight(date),
+      today = +midnight(day(ctx.now)),
+      inWindow =
+        origin >= today && origin <= today + policy.advance_days * 86400000;
+    return (["MORNING", "AFTERNOON"] as const).map((period) => {
+      const open = inWindow
+        ? input.buckets.find(
+            (b) =>
+              b.start - origin < 12 * 3600000 === (period === "MORNING") &&
+              !b.closed &&
+              b.start > +ctx.now,
+          )
+        : undefined;
+      return { period, startAt: open ? open.start : null };
+    });
+  }
+  // Start of the requested period: orders pending requests until an advisor sets the real time.
+  async periodStart(
+    c: Conn,
+    ctx: Context,
+    date: string,
+    period: "MORNING" | "AFTERNOON",
+  ) {
+    const found = (await this.periods(c, ctx, date)).find(
+      (p) => p.period === period,
+    )!;
+    if (found.startAt === null)
+      fail(
+        422,
+        "PERIOD_UNAVAILABLE",
+        "Buổi này trạm không nhận lịch. Vui lòng chọn ngày hoặc buổi khác.",
+      );
+    return new Date(found.startAt);
+  }
+  // Staff-entered times are never blocked by load; overload and closures come back as warnings.
   async allocate(
     c: Conn,
     ctx: Context,
@@ -156,7 +194,8 @@ export class Capacity {
   ) {
     if (policyVersion !== ctx.station.configuration_version)
       fail(409, "POLICY_VERSION_CONFLICT");
-    const p = await this.policy(c, ctx.station.id, at);
+    const p = await this.policy(c, ctx.station.id, at),
+      warnings: string[] = [];
     if (!reception) {
       if (
         +at <= +ctx.now ||
@@ -164,20 +203,10 @@ export class Capacity {
       )
         fail(422, "OUTSIDE_BOOKING_WINDOW");
       const { input } = await this.state(c, ctx, day(at), ignoreReservation),
-        b = input.buckets.find((b) => b.start === +at);
-      if (!b)
-        fail(
-          422,
-          "INVALID_START_GRID",
-          "Chọn giờ bắt đầu trong các khung nhận lịch của trạm.",
-        );
-      if (b.closed) fail(409, "SLOT_CLOSED");
-      if (b.held >= b.limit)
-        fail(
-          409,
-          "CAPACITY_FULL",
-          "Khung giờ đã đủ lịch. Vui lòng chọn giờ khác.",
-        );
+        b = input.buckets.find((b) => b.start <= +at && +at < b.end);
+      if (!b) warnings.push("OUTSIDE_HOURS");
+      else if (b.closed) warnings.push("SLOT_CLOSED");
+      else if (b.confirmed >= b.limit) warnings.push("SLOT_OVERLOADED");
     }
     const duration = services.reduce(
       (sum, s) =>
@@ -191,6 +220,7 @@ export class Capacity {
     );
     return {
       policy: p,
+      warnings,
       plan: {
         start: +at,
         end: +at + Math.max(15, duration) * 60000,
@@ -322,7 +352,7 @@ export class Capacity {
     if (!b) fail(404, "NOT_FOUND");
     expectVersion({ version: b.version }, input.expectedVersion);
     if (+at <= +ctx.now) fail(422, "OUTSIDE_BOOKING_WINDOW");
-    if (input.capacityLimit !== undefined && input.capacityLimit < b.held)
+    if (input.capacityLimit !== undefined && input.capacityLimit < b.confirmed)
       fail(409, "CAPACITY_IMPACT");
     const old = await one(
       c,
@@ -405,7 +435,8 @@ export class Capacity {
           heldUnits: b.held,
           pendingCount: b.pending,
           confirmedCount: b.confirmed,
-          freeUnits: b.closed ? 0 : Math.max(0, b.limit - b.held),
+          // Pending requests hold nothing; only confirmed bookings use the slot's warning threshold.
+          freeUnits: b.closed ? 0 : Math.max(0, b.limit - b.confirmed),
           closed: b.closed,
           version: b.version,
           holdRefs: b.bookingIds.map((bookingId) => ({ bookingId, units: 1 })),

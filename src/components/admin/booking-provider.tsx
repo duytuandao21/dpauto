@@ -1,4 +1,5 @@
 "use client";
+import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 
 import {
   createContext,
@@ -16,6 +17,7 @@ import {
   createDemoId,
   formatDate,
   localDate,
+  periodLabels,
   terminal,
   transitionBooking,
   validateDraft,
@@ -48,9 +50,22 @@ export interface BookingContextValue {
   setSelectedDate: (date: string) => void;
   notify: (message: string) => void;
   ask: (confirmation: Confirmation) => void;
-  act: (id: string, action: BookingAction) => void;
+  act: (
+    id: string,
+    action: BookingAction,
+    reason?: string,
+  ) => void | Promise<void>;
   saveBooking: (draft: BookingDraft, id?: string) => Booking | Promise<Booking>;
-  reschedule: (id: string, date: string, time: string) => void | Promise<void>;
+  /** `time` is "HH:MM", or "morning"/"afternoon" to move a pending request; `confirm` sets the official time. */
+  reschedule: (
+    id: string,
+    date: string,
+    time: string,
+    confirm?: boolean,
+    /** Advisor who takes an unclaimed request (manager confirming). */
+    advisorId?: string,
+    note?: string,
+  ) => void | Promise<void>;
   saveSettings: (value: CapacityConfig) => void;
   reset: () => void;
 }
@@ -181,13 +196,13 @@ function LocalBookingProvider({ children }: { children: React.ReactNode }) {
     const customerId =
       draft.customerId ||
       current.customers.find(
-        (c) => c.phone === draft.phone.replace(/[\s.-]/g, ""),
+        (c) => formatPhone(c.phone) === formatPhone(draft.phone),
       )?.id ||
       createDemoId();
     const customer = {
       id: customerId,
       name: draft.name.trim(),
-      phone: draft.phone.replace(/[\s.-]/g, ""),
+      phone: formatPhone(draft.phone),
     };
     const vehicleId = draft.vehicleId || createDemoId();
     const oldVehicle = current.vehicles.find((v) => v.id === vehicleId);
@@ -195,7 +210,7 @@ function LocalBookingProvider({ children }: { children: React.ReactNode }) {
       id: vehicleId,
       customerId,
       model: draft.model.trim(),
-      plate: draft.plate.trim().toUpperCase(),
+      plate: formatPlate(draft.plate),
       year: oldVehicle?.year || "",
     };
     const now = new Date().toISOString(),
@@ -263,13 +278,43 @@ function LocalBookingProvider({ children }: { children: React.ReactNode }) {
     );
     return booking;
   }
-  function reschedule(id: string, date: string, time: string) {
+  function reschedule(
+    id: string,
+    date: string,
+    time: string,
+    confirm = false,
+    advisorId?: string,
+  ) {
     const current = dataRef.current,
       b = current.bookings.find((item) => item.id === id);
     if (!b || !["pending", "confirmed"].includes(b.status))
       throw new Error("Chỉ có thể đổi lịch đang chờ hoặc đã xác nhận.");
-    const at = `${date}T${time}:00`,
+    // Demo data: a period request is placed at the start of that half-day.
+    const period =
+        time === "morning" || time === "afternoon" ? time : undefined,
+      at = `${date}T${period ? (period === "morning" ? "07:30" : "12:30") : time}:00`,
       previous = bookingTime(b);
+    if (confirm) {
+      commit(
+        {
+          ...current,
+          bookings: current.bookings.map((item) =>
+            item.id === id
+              ? {
+                  ...item,
+                  status: "confirmed",
+                  confirmedAt: at,
+                  period: undefined,
+                  advisorId: item.advisorId || advisorId || "",
+                }
+              : item,
+          ),
+        },
+        "Đã xác nhận lịch hẹn",
+      );
+      setSelectedDate(date);
+      return;
+    }
     commit(
       {
         ...current,
@@ -280,13 +325,14 @@ function LocalBookingProvider({ children }: { children: React.ReactNode }) {
                 ...item,
                 requestedAt: b.status === "pending" ? at : b.requestedAt,
                 confirmedAt: b.status === "confirmed" ? at : undefined,
+                period,
                 events: [
                   ...b.events,
                   {
                     id: createDemoId(),
                     at: new Date().toISOString(),
                     label: "Đổi lịch hẹn",
-                    detail: `${formatDate(previous)} ${previous.slice(11, 16)} → ${formatDate(at)} ${time}`,
+                    detail: `${formatDate(previous)} ${previous.slice(11, 16)} → ${formatDate(at)} ${period ? periodLabels[period] : time}`,
                   },
                 ],
               },

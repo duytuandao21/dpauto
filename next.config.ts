@@ -4,6 +4,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   devIndicators: false,
+  // shortcut: LAN IP of the dev machine for phone testing; update it if the IP changes.
+  allowedDevOrigins: ["192.168.100.209"],
   rewrites() {
     const backend = process.env.API_INTERNAL_URL || "http://127.0.0.1:4002";
     return ["admin", "public"].map((area) => ({

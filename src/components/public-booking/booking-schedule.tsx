@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { apiEnabled, request } from "@/lib/api/client";
-import { stationTime, type PublicCatalog } from "@/lib/api/types";
+import type { PublicCatalog } from "@/lib/api/types";
 import {
   addDays,
   dateKey,
@@ -9,9 +9,6 @@ import {
   displayDate,
   loadMockAvailability,
   parseDate,
-  slotLabels,
-  type Availability,
-  type DemoScenario,
 } from "@/lib/public-booking/mock";
 
 function Calendar({
@@ -85,17 +82,14 @@ function Calendar({
           const key = dateKey(
             new Date(month.getFullYear(), month.getMonth(), i + 1, 12),
           );
-          const status = apiEnabled ? "available" : dayStatus(key, today);
+          // Requests are unlimited: a day is only unavailable when the station is closed.
+          const status =
+            !apiEnabled && dayStatus(key, today) === "closed"
+              ? "closed"
+              : "available";
           const outside = key < today || key > end;
-          const disabled = outside || status === "closed" || status === "full";
-          const label =
-            status === "closed"
-              ? "Ngày nghỉ mẫu"
-              : status === "full"
-                ? "Hết chỗ mẫu"
-                : status === "limited"
-                  ? "Sắp đầy mẫu"
-                  : "Còn lịch mẫu";
+          const disabled = outside || status === "closed";
+          const label = status === "closed" ? "Ngày nghỉ mẫu" : "Nhận lịch mẫu";
           return (
             <button
               type="button"
@@ -120,21 +114,23 @@ function Calendar({
         <div className="pb-calendar-legend">
           <span>
             <i />
-            Còn lịch
-          </span>
-          <span>
-            <i className="is-limited" />
-            Sắp đầy
+            Nhận lịch
           </span>
           <span>
             <i className="is-closed" />
-            Hết chỗ / nghỉ
+            Ngày nghỉ
           </span>
         </div>
       )}
     </section>
   );
 }
+
+type Period = "morning" | "afternoon";
+const periods: { id: Period; label: string; hint: string }[] = [
+  { id: "morning", label: "Buổi sáng", hint: "Trước 12:00" },
+  { id: "afternoon", label: "Buổi chiều", hint: "Từ 12:00" },
+];
 
 export function BookingSchedule({
   today,
@@ -150,6 +146,7 @@ export function BookingSchedule({
   today: string;
   date: string;
   serviceIds: string[];
+  /** Selected period ("morning" | "afternoon"); the advisor sets the exact time later. */
   selectedTime: string;
   error: string;
   onDate: (value: string) => void;
@@ -157,208 +154,152 @@ export function BookingSchedule({
   onReady: (value: boolean) => void;
   catalog?: PublicCatalog | null;
 }) {
-  const [scenario, setScenario] = useState<DemoScenario>("normal");
   const [retry, setRetry] = useState(0);
   const [state, setState] = useState<{
     status: "loading" | "error" | "ready";
-    data?: Availability;
+    open?: Record<Period, boolean>;
   }>({ status: "loading" });
   const signature = serviceIds.join(",");
   useEffect(() => {
     const controller = new AbortController();
     setState({ status: "loading" });
     onReady(false);
-    const loading: Promise<Availability> =
+    const loading: Promise<Record<Period, boolean>> =
       apiEnabled && catalog
-        ? request<{ slots: { startAt: string; status: string }[] }>(
-            "public/availability?" +
-              new URLSearchParams({
-                date,
-                serviceIds: signature,
-                catalogVersion: String(catalog.catalogVersion),
-                policyVersion: String(catalog.policyVersion),
-              }),
+        ? request<{ periods: { period: string; status: string }[] }>(
+            "public/availability?" + new URLSearchParams({ date }),
             { signal: controller.signal },
-          ).then((r) => ({
-            date,
-            serviceIds: signature.split(","),
-            scenario: "normal",
-            slots: r.data.slots.map((slot) => {
-              const time = stationTime(slot.startAt).slice(11, 16);
-              return {
-                id: time,
-                time,
-                period: time < "12:00" ? "morning" : "afternoon",
-                status: slot.status.toLowerCase() as
-                  "available" | "full" | "unavailable",
-              };
-            }),
-          }))
+          ).then((r) => {
+            const open = (p: string) =>
+              r.data.periods.some(
+                (x) => x.period === p && x.status === "AVAILABLE",
+              );
+            return { morning: open("MORNING"), afternoon: open("AFTERNOON") };
+          })
         : apiEnabled
           ? Promise.reject(new Error("Chưa tải được danh mục dịch vụ."))
           : loadMockAvailability({
               date,
               serviceIds: signature.split(","),
-              scenario,
+              scenario: "normal",
               signal: controller.signal,
+            }).then((data) => {
+              const open = (p: Period) =>
+                data.slots.some(
+                  (s) => s.period === p && s.status !== "unavailable",
+                );
+              return { morning: open("morning"), afternoon: open("afternoon") };
             });
     loading
-      .then((data) => {
-        setState({ status: "ready", data });
+      .then((open) => {
+        setState({ status: "ready", open });
         onReady(true);
       })
       .catch((error: Error) => {
         if (error.name !== "AbortError") setState({ status: "error" });
       });
     return () => controller.abort();
-  }, [date, signature, scenario, retry, onReady, catalog]);
+  }, [date, signature, retry, onReady, catalog]);
 
   const empty =
-    state.status === "ready" &&
-    !state.data?.slots.some(
-      (slot) => slot.status === "available" || slot.status === "limited",
-    );
-  function changeScenario(value: DemoScenario) {
-    onTime("");
-    onReady(false);
-    setScenario(value);
-  }
+    state.status === "ready" && !state.open?.morning && !state.open?.afternoon;
   return (
-    <>
-      <div className="pb-schedule-layout">
-        <div>
-          <h4 className="pb-section-label">Ngày đến trạm</h4>
-          <Calendar
-            today={today}
-            value={date}
-            advanceDays={catalog?.bookingPolicy.advanceDays}
-            onChange={(value) => {
-              onTime("");
-              onReady(false);
-              onDate(value);
-            }}
-          />
+    <div className="pb-schedule-layout">
+      <div>
+        <h4 className="pb-section-label">Ngày đến trạm</h4>
+        <Calendar
+          today={today}
+          value={date}
+          advanceDays={catalog?.bookingPolicy.advanceDays}
+          onChange={(value) => {
+            onTime("");
+            onReady(false);
+            onDate(value);
+          }}
+        />
+      </div>
+      <section
+        className="pb-times"
+        aria-label="Chọn buổi đến trạm"
+        aria-busy={state.status === "loading"}
+      >
+        <div className="pb-times-heading">
+          <h4 className="pb-section-label">Buổi đến trạm</h4>
+          <p className="pb-selected-date">{displayDate(date)}</p>
         </div>
-        <section
-          className="pb-times"
-          aria-label="Chọn khung giờ"
-          aria-busy={state.status === "loading"}
-        >
-          <h4 className="pb-section-label">Khung giờ đến trạm</h4>
-          <p className="pb-selected-date">{displayDate(date, true)}</p>
-          {apiEnabled && (
+        {state.status === "loading" && (
+          <div className="pb-loading" role="status">
+            <span>Đang kiểm tra lịch làm việc…</span>
+            <div className="pb-slot-grid">
+              <div className="pb-skeleton" />
+              <div className="pb-skeleton" />
+            </div>
+          </div>
+        )}
+        {state.status === "error" && (
+          <div className="pb-empty" role="alert">
+            <Icon name="clock" />
+            <strong>Chưa tải được lịch làm việc</strong>
+            <p>Bạn thử tải lại để tiếp tục nhé.</p>
             <button
-              type="button"
               className="pb-text-button"
-              disabled={state.status === "loading"}
+              type="button"
               onClick={() => setRetry((value) => value + 1)}
             >
-              Cập nhật khung giờ
+              Thử lại
             </button>
-          )}
-          {state.status === "loading" && (
-            <div className="pb-loading" role="status">
-              <span>Đang tải khung giờ…</span>
-              <div className="pb-slot-grid">
-                {Array.from({ length: 6 }, (_, i) => (
-                  <div className="pb-skeleton" key={i} />
-                ))}
+          </div>
+        )}
+        {state.status === "ready" && (
+          <>
+            {empty && (
+              <div className="pb-empty" role="status">
+                <Icon name="clock" />
+                <strong>Trạm không nhận lịch ngày này</strong>
+                <p>Bạn vui lòng chọn ngày khác.</p>
               </div>
-            </div>
-          )}
-          {state.status === "error" && (
-            <div className="pb-empty" role="alert">
-              <Icon name="clock" />
-              <strong>Chưa tải được khung giờ</strong>
-              <p>Bạn thử tải lại để tiếp tục nhé.</p>
-              <button
-                className="pb-text-button"
-                type="button"
-                onClick={() => {
-                  setScenario("normal");
-                  setRetry((value) => value + 1);
-                }}
-              >
-                Thử lại
-              </button>
-            </div>
-          )}
-          {state.status === "ready" && (
-            <>
-              {empty && (
-                <div className="pb-empty" role="status">
-                  <Icon name="clock" />
-                  <strong>Chưa còn khung giờ phù hợp</strong>
-                  <p>Chưa có khung giờ phù hợp. Bạn vui lòng chọn ngày khác.</p>
+            )}
+            <div className="pb-slot-grid">
+              {periods.map((p) => {
+                const available = !!state.open?.[p.id],
+                  selected = selectedTime === p.id;
+                return (
                   <button
-                    className="pb-text-button"
+                    key={p.id}
                     type="button"
-                    onClick={() => {
-                      changeScenario("normal");
-                      let next = addDays(date, 1);
-                      while (
-                        !apiEnabled &&
-                        ["closed", "full"].includes(dayStatus(next, today))
-                      )
-                        next = addDays(next, 1);
-                      onDate(
-                        next > addDays(today, catalog?.bookingPolicy.advanceDays ?? 59) ? addDays(today, 1) : next,
-                      );
-                    }}
+                    className={`pb-slot ${selected ? "is-selected" : ""}`}
+                    data-status={available ? "available" : "unavailable"}
+                    disabled={!available}
+                    aria-pressed={selected}
+                    aria-label={`${p.label} · ${selected ? "Đang chọn" : available ? p.hint : "Không nhận lịch"}`}
+                    onClick={() => onTime(p.id)}
                   >
-                    Chọn ngày khác
+                    <strong>{p.label}</strong>
+                    <span>
+                      {selected ? (
+                        <>
+                          <Icon name="check" />
+                          Đang chọn
+                        </>
+                      ) : available ? (
+                        p.hint
+                      ) : (
+                        "Không nhận lịch"
+                      )}
+                    </span>
                   </button>
-                </div>
-              )}
-              {(["morning", "afternoon"] as const).map((period) => (
-                <fieldset className="pb-slot-group" key={period}>
-                  <legend>
-                    {period === "morning" ? "Buổi sáng" : "Buổi chiều"}
-                  </legend>
-                  <div className="pb-slot-grid">
-                    {state.data?.slots
-                      .filter((slot) => slot.period === period)
-                      .map((slot) => {
-                        const disabled =
-                          slot.status === "full" ||
-                          slot.status === "unavailable";
-                        return (
-                          <button
-                            key={slot.id}
-                            type="button"
-                            className={`pb-slot ${selectedTime === slot.id ? "is-selected" : ""}`}
-                            data-status={slot.status}
-                            disabled={disabled}
-                            aria-pressed={selectedTime === slot.id}
-                            aria-label={`${slot.time} · ${selectedTime === slot.id ? "Đang chọn" : slotLabels[slot.status]}`}
-                            onClick={() => onTime(slot.id)}
-                          >
-                            <strong>{slot.time}</strong>
-                            <span>
-                              {selectedTime === slot.id ? (
-                                <>
-                                  <Icon name="check" />
-                                  Đang chọn
-                                </>
-                              ) : (
-                                slotLabels[slot.status]
-                              )}
-                            </span>
-                          </button>
-                        );
-                      })}
-                  </div>
-                </fieldset>
-              ))}
-            </>
-          )}
-          {error && (
-            <p className="pb-error" role="alert" id="pb-time-error">
-              {error}
-            </p>
-          )}
-        </section>
-      </div>
-    </>
+                );
+              })}
+            </div>
+          </>
+        )}
+        <p className="pb-caption">Cố vấn sẽ liên hệ xác nhận giờ cụ thể.</p>
+        {error && (
+          <p className="pb-error" role="alert" id="pb-time-error">
+            {error}
+          </p>
+        )}
+      </section>
+    </div>
   );
 }

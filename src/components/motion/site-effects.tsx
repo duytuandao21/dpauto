@@ -77,7 +77,7 @@ function SmoothScroll() {
 }
 
 export function SiteEffects({ children }: { children: ReactNode }) {
-  const vietnamese = usePathname() === "/";
+  const vietnamese = true;
   useEffect(() => {
     document.documentElement.lang = vietnamese ? "vi" : "en";
   }, [vietnamese]);

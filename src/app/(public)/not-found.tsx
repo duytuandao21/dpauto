@@ -7,7 +7,7 @@ export default function NotFound() {
     <section className="not-found">
       <Photo
         src="/images/W7P9NeMMaW0raSzYV5sntMR8ZXs.webp"
-        alt="Technician polishing a vehicle inside a professional detailing workshop"
+        alt="Kỹ thuật viên đánh bóng xe trong xưởng chăm sóc xe chuyên nghiệp"
         priority
         sizes="100vw"
       />
@@ -15,21 +15,21 @@ export default function NotFound() {
       <div className="container">
         <p className="not-found-address">
           <Icon name="pin" />
-          000 Harbor Avenue SW, Seattle, WA 98126
+          000 Harbor Avenue SW, Seattle, WA 98126, Hoa Kỳ
         </p>
         <div className="not-found-number" aria-hidden="true">
           404
         </div>
-        <h1>Page Not Found</h1>
+        <h1>Không tìm thấy trang</h1>
         <p>
-          The page you’re looking for may have been moved, removed, or is no
-          longer available.
+          Trang bạn tìm có thể đã được di chuyển, xóa hoặc không còn tồn
+          tại.
         </p>
         <div className="button-row">
           <Button href="/" variant="secondary">
-            Back to Home
+            Về trang chủ
           </Button>
-          <Button href="/services">View Our Services</Button>
+          <Button href="/services">Xem dịch vụ</Button>
         </div>
       </div>
     </section>

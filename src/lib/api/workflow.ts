@@ -5,6 +5,7 @@ export type QuoteLine = {
   kind: "SERVICE" | "PART";
   serviceId?: string | null;
   name: string;
+  description?: string;
   code: string;
   unit: string;
   quantity: string;
@@ -21,7 +22,15 @@ export type QuoteRevision = {
   revisionNo: number;
   kind: "INITIAL" | "CHANGE_ORDER";
   baseRevisionId: string | null;
-  status: "DRAFT" | "SUBMITTED" | "APPROVED" | "REJECTED";
+  status:
+    | "DRAFT"
+    | "SUBMITTED"
+    | "PENDING_APPROVAL"
+    | "APPROVED"
+    | "REJECTED"
+    | "VOIDED";
+  approvedTotal?: string | null;
+  voidedLineIds?: string[];
   currency: string;
   calculationPolicy: string;
   discountPercent: string;
@@ -34,6 +43,7 @@ export type QuoteRevision = {
   submittedAt: string | null;
   lines: QuoteLine[];
   decision: {
+    approvedLineIds?: string[] | null;
     decision: string;
     customerName: string;
     channel: string;
@@ -69,6 +79,25 @@ export type Workflow = {
   visitId: string;
   version: number;
   stage: string;
+  workflowVersion?: number;
+  isPaused?: boolean;
+  pauseReason?: string | null;
+  pausedAt?: string | null;
+  requiredChecks?: { key: string; label: string }[];
+  approvedLines?: {
+    id: string;
+    name: string;
+    kind: string;
+    quantity: string;
+    unit: string;
+    total: string;
+  }[];
+  quoteTotals?: {
+    proposed: string;
+    original: string;
+    pending: string;
+    extras: string;
+  };
   calculationPolicy: string;
   quotes: QuoteRevision[];
   obligation: { assessed: boolean; total: string | null };
@@ -138,6 +167,8 @@ export type RunWorkflow = (
 ) => Promise<boolean>;
 export const quoteLabels = {
   DRAFT: "Bản nháp",
+  PENDING_APPROVAL: "Chờ khách duyệt",
+  VOIDED: "Đã hủy",
   SUBMITTED: "Chờ khách xác nhận",
   APPROVED: "Đã duyệt",
   REJECTED: "Từ chối",
@@ -158,8 +189,12 @@ export const workLabels = {
 export function vnd(value: string) {
   return BigInt(value).toLocaleString("vi-VN") + " ₫";
 }
-export const workflowTime = (s: string) =>
-  stationTime(s).slice(0, 16).replace("T", " ");
+export const formatQuantity = (value: string) =>
+  Number(value).toLocaleString("vi-VN", { maximumFractionDigits: 3 });
+export const workflowTime = (s: string) => {
+  const value = stationTime(s);
+  return `${value.slice(8, 10)}/${value.slice(5, 7)}/${value.slice(0, 4)} ${value.slice(11, 16)}`;
+};
 export const stationInstant = (value: string) =>
   value.length === 16 ? value + ":00+07:00" : value;
 export function quoteDraftBody(q: {
@@ -178,6 +213,7 @@ export function quoteDraftBody(q: {
       kind: l.kind,
       serviceId: l.kind === "SERVICE" ? l.serviceId || undefined : undefined,
       name: l.name,
+      description: l.description || "",
       code: l.code,
       unit: l.unit,
       quantity: l.quantity,

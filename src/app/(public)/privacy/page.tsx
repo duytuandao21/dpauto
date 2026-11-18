@@ -6,7 +6,7 @@ import { CmsPage } from "@/components/sections/cms-page";
 import { notFound } from "next/navigation";
 
 export const generateMetadata = (): Promise<Metadata> =>
-  publicMetadata("/privacy", { title: "Privacy Policy" });
+  publicMetadata("/privacy", { title: "Chính sách bảo mật" });
 export default async function PrivacyPage() {
   const content = await publicPage("privacy");
   if (content?.withdrawn) notFound();

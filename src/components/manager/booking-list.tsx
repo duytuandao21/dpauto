@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiEnabled } from "@/lib/api/client";
-import { BookingCommunication } from "@/components/admin/booking-communication";
 import Link from "next/link";
 import {
   validateBookingChange,
@@ -12,11 +11,16 @@ import {
 import { orderEvent } from "@/lib/manager/operations";
 import { StatusBadge } from "@/components/admin/primitives";
 import { AdminIcon } from "@/components/admin/admin-icon";
-import { formatDate } from "@/lib/booking/logic";
+import { formatDate, periodLabels, timeLabel } from "@/lib/booking/logic";
 import type { ManagerBooking } from "@/lib/manager/mock";
 import { useManager } from "./manager-provider";
 import { ManagerEmpty, ManagerField } from "./manager-ui";
 import { ManagerModal } from "./manager-modal";
+import { BookingTimeForm } from "@/components/admin/booking-time-form";
+import { bookingFromApi } from "@/lib/api/booking-adapter";
+import { request, collection } from "@/lib/api/client";
+import type { ApiBooking } from "@/lib/api/types";
+import type { Booking } from "@/lib/booking/types";
 
 export function ManagerBookingTable({
   bookings,
@@ -71,7 +75,9 @@ export function ManagerBookingTable({
                     {booking.code || booking.id}
                   </button>
                   <strong>{customer?.name}</strong>
-                  <small>{customer?.phone}</small>
+                  <a className="adm-phone" href={`tel:${customer?.phone}`}>
+                    {customer?.phone}
+                  </a>
                 </td>
                 <td data-label="Phương tiện">
                   <span>{customer?.model}</span>
@@ -87,7 +93,11 @@ export function ManagerBookingTable({
                     .join(", ")}
                 </td>
                 <td data-label="Ngày giờ">
-                  <strong>{booking.time}</strong>
+                  <strong>
+                    {booking.period
+                      ? periodLabels[booking.period]
+                      : booking.time}
+                  </strong>
                   <small>{formatDate(booking.date)}</small>
                 </td>
                 <td data-label="Phụ trách">
@@ -130,13 +140,41 @@ export function ManagerBookingDetail({
   const { data, theme, update, ask, commandBooking } = useManager();
   const booking = data.bookings.find((item) => item.id === id);
   const [advisorId, setAdvisorId] = useState(booking?.advisorId ?? "");
-  const [action, setAction] = useState<BookingChange | null>(null);
+  const [action, setAction] = useState<BookingChange | null>(
+    apiEnabled && booking?.status === "pending" ? "confirm" : null,
+  );
   const [date, setDate] = useState(booking?.date || "");
   const [time, setTime] = useState(booking?.time || "");
   const [reason, setReason] = useState("");
   const [assignmentReason, setAssignmentReason] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [record, setRecord] = useState<Booking | undefined>(booking?.record);
+  const [timeline, setTimeline] = useState<
+    { id: string; occurredAt: string; summary: string; reason: string | null }[]
+  >([]);
+  useEffect(() => {
+    if (!apiEnabled) return;
+    const abort = new AbortController();
+    void Promise.all([
+      request<ApiBooking>(`admin/bookings/${id}`, { signal: abort.signal }),
+      collection<{
+        id: string;
+        occurredAt: string;
+        summary: string;
+        reason: string | null;
+      }>(`admin/bookings/${id}/events`, abort.signal),
+    ])
+      .then(([detail, events]) => {
+        setRecord(bookingFromApi(detail.data));
+        setTimeline(events);
+      })
+      .catch((e) => {
+        if (e.name !== "AbortError") setError(e.message);
+      });
+    return () => abort.abort();
+  }, [id, booking?.version]);
   if (!booking)
     return (
       <ManagerModal
@@ -231,7 +269,9 @@ export function ManagerBookingDetail({
         ? "Vui lòng nhập lý do."
         : action !== "cancel" && !agreed
           ? "Vui lòng xác nhận đã thống nhất với khách."
-          : ""
+          : action === "confirm" && !booking.advisorId && !advisorId
+            ? "Chọn cố vấn ở mục “Phân công cố vấn” để nhận lịch này."
+            : ""
       : validateBookingChange(
           data,
           booking,
@@ -253,7 +293,7 @@ export function ManagerBookingDetail({
           : "Đổi lịch";
     ask({
       title: `${label}?`,
-      message: `${id} · ${booking.date} ${booking.time}${action === "reschedule" ? ` → ${date} ${time}` : ""}. ${reason.trim()}`,
+      message: `${id} · ${booking.date} ${booking.time}${action !== "cancel" ? ` → ${date} ${time}` : ""}. ${reason.trim()}`,
       danger: action === "cancel",
       label,
       action: async () => {
@@ -267,6 +307,7 @@ export function ManagerBookingDetail({
                   confirmedStartAt: `${date}T${time}:00+07:00`,
                   customerAgreed: true,
                   policyVersion: metadata.meta.policyVersion,
+                  ...(booking.advisorId ? {} : { advisorId }),
                 }
               : action === "reschedule"
                 ? {
@@ -303,7 +344,8 @@ export function ManagerBookingDetail({
       <div className="mgr-detail-status">
         <StatusBadge status={booking.status} />
         <span>
-          {booking.time} · {formatDate(booking.date)}
+          {booking.period ? periodLabels[booking.period] : booking.time} ·{" "}
+          {formatDate(booking.date)}
         </span>
       </div>
       {apiEnabled && booking.status === "confirmed" && (
@@ -340,14 +382,6 @@ export function ManagerBookingDetail({
           </div>
         </div>
       </section>
-      {apiEnabled &&
-        booking.version &&
-        ["pending", "confirmed"].includes(booking.status) && (
-          <BookingCommunication
-            bookingId={booking.id}
-            version={booking.version}
-          />
-        )}
       {["pending", "confirmed"].includes(booking.status) && (
         <section className="mgr-detail-section">
           <h3>Xử lý lịch hẹn</h3>
@@ -360,7 +394,7 @@ export function ManagerBookingDetail({
                   setError("");
                 }}
               >
-                Xác nhận lịch
+                Chốt lịch
               </button>
             )}
             <button
@@ -370,7 +404,7 @@ export function ManagerBookingDetail({
                 setError("");
               }}
             >
-              Đổi lịch
+              Đổi giờ
             </button>
             <button
               className="adm-btn adm-danger"
@@ -382,18 +416,131 @@ export function ManagerBookingDetail({
               Hủy lịch
             </button>
           </div>
-          {action && (
+          {apiEnabled && record && action && action !== "cancel" && (
+            <BookingTimeForm
+              key={`${id}-${action}-${record.version}`}
+              booking={record}
+              confirm={action === "confirm"}
+              advisors={data.staff
+                .filter(
+                  (s) =>
+                    s.role === "advisor" &&
+                    s.active &&
+                    s.accountEnabled !== false,
+                )
+                .map((s) => ({ id: s.id, name: s.name }))}
+              pickAdvisor={action === "confirm" && !booking.advisorId}
+              onCancel={() => setAction(null)}
+              onSave={async ({ date, time, advisorId, note }) => {
+                if (!commandBooking)
+                  throw new Error("Chưa thể cập nhật lịch hẹn.");
+                const metadata = await request("admin/services?limit=1");
+                const period =
+                  time === "morning"
+                    ? "MORNING"
+                    : time === "afternoon"
+                      ? "AFTERNOON"
+                      : null;
+                await commandBooking(
+                  id,
+                  action === "confirm" ? "confirm" : "reschedule",
+                  {
+                    expectedVersion: record.version,
+                    customerAgreed: true,
+                    ...(note.trim()
+                      ? action === "confirm"
+                        ? { internalNote: note.trim() }
+                        : { reason: note.trim() }
+                      : {}),
+                    ...(action === "confirm" && advisorId ? { advisorId } : {}),
+                    ...(period
+                      ? { requestedDate: date, requestedPeriod: period }
+                      : {
+                          [action === "confirm"
+                            ? "confirmedStartAt"
+                            : "newStartAt"]: `${date}T${time}:00+07:00`,
+                          policyVersion: Number(metadata.meta.policyVersion),
+                        }),
+                  },
+                );
+                setAction(null);
+                onClose();
+              }}
+            />
+          )}
+          {apiEnabled && action === "cancel" && (
+            <form
+              className="mgr-form"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (busy || !commandBooking) return;
+                setBusy(true);
+                setError("");
+                try {
+                  await commandBooking(id, "cancel", {
+                    expectedVersion: record?.version || booking.version,
+                    reason: reason.trim(),
+                  });
+                  setAction(null);
+                  setReason("");
+                  onClose();
+                } catch (e) {
+                  setError(
+                    e instanceof Error ? e.message : "Không hủy được lịch.",
+                  );
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              <p>
+                {booking.code || id} · {customer.name} · {customer.plate} ·{" "}
+                {formatDate(booking.date)}
+              </p>
+              <ManagerField label="Lý do hủy thực tế *">
+                <textarea
+                  required
+                  maxLength={400}
+                  rows={3}
+                  disabled={busy}
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                />
+              </ManagerField>
+              <div className="mgr-row-actions">
+                <button
+                  type="button"
+                  className="adm-btn"
+                  disabled={busy}
+                  onClick={() => setAction(null)}
+                >
+                  Quay lại
+                </button>
+                <button
+                  className="adm-btn adm-danger"
+                  disabled={busy || !reason.trim()}
+                >
+                  {busy ? "Đang lưu…" : "Hủy lịch"}
+                </button>
+              </div>
+            </form>
+          )}
+          {!apiEnabled && action && (
             <div className="mgr-form">
-              {action === "reschedule" && (
+              {action !== "cancel" && (
                 <div className="mgr-form-columns">
-                  <ManagerField label="Ngày mới">
+                  <ManagerField
+                    label={action === "confirm" ? "Ngày hẹn" : "Ngày mới"}
+                  >
                     <input
                       type="date"
                       value={date}
                       onChange={(e) => setDate(e.target.value)}
                     />
                   </ManagerField>
-                  <ManagerField label="Giờ mới">
+                  <ManagerField
+                    label={action === "confirm" ? "Giờ hẹn" : "Giờ mới"}
+                  >
                     <input
                       type="time"
                       value={time}
@@ -486,11 +633,24 @@ export function ManagerBookingDetail({
       )}
       <section className="mgr-detail-section">
         <h3>Ghi chú</h3>
-        <p>{booking.note || "Không có ghi chú."}</p>
+        <p>{record?.customerNote || booking.note || "Không có ghi chú."}</p>
+        {record?.internalNote && <p>Nội bộ: {record.internalNote}</p>}
       </section>
       <section className="mgr-detail-section">
         <h3>Nhật ký liên quan</h3>
-        {data.events.filter((event) => event.target.includes(id)).length ? (
+        {apiEnabled ? (
+          timeline.length ? (
+            timeline.map((event) => (
+              <p key={event.id}>
+                {formatDate(event.occurredAt)} {timeLabel(event.occurredAt)} ·{" "}
+                {event.summary}
+                {event.reason ? ` · ${event.reason}` : ""}
+              </p>
+            ))
+          ) : (
+            <p>Chưa có thao tác liên quan.</p>
+          )
+        ) : data.events.filter((event) => event.target.includes(id)).length ? (
           data.events
             .filter((event) => event.target.includes(id))
             .map((event) => (

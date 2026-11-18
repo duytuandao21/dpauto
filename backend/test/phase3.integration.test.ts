@@ -1,3 +1,4 @@
+import { useLegacyVisitFixtures } from "./legacy-visit-fixture";
 import { before, beforeEach, after, test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
@@ -132,6 +133,7 @@ let technician: any;
 before(async () => {
   await migrate(url!);
   ({ app, api } = await createApp(config));
+  useLegacyVisitFixtures(api);
   await bootstrap(api.db, config, {
     name: "Store Manager",
     email: "manager@example.test",
@@ -439,6 +441,179 @@ async function passed(id: string, itemId: string) {
   });
   return ok(a, id, `admin/service-visits/${id}/ready`);
 }
+
+test("Ticket UI empty draft does not expose the database default zero as an estimate", async () => {
+  const id = await received();
+  const draft = await ok(a, id, `admin/service-visits/${id}/quotes`);
+  const stored = await one(api.db.db, sql`SELECT total::text AS total FROM quote_revisions WHERE id=${draft.revisionId}`);
+  assert.equal(stored!.total, "0");
+  const r = await a.call("GET", "admin/service-visits?ticketStage=QUOTE");
+  assert.equal(r.status, 200);
+  const row = r.body.data.find((value: any) => value.id === id);
+  assert.equal(row.pricing.hasOpenQuote, true);
+  assert.equal(row.pricing.estimateTotal, null);
+  assert.equal(row.pricing.approvedTotal, null);
+});
+
+test("Ticket UI list preserves scoped search, exact pricing and cursor pagination", async () => {
+  const first = await walk();
+  const id = first.visit.visitId;
+  const other = await walk(b);
+  const list = async (suffix = "", client = a) => {
+    const params = new URLSearchParams(suffix.replace(/^&/, ""));
+    if (!params.has("limit")) params.set("limit", "20");
+    const r = await client.call("GET", `admin/service-visits?${params}`);
+    assert.equal(r.status, 200, JSON.stringify(r.body));
+    return r.body;
+  };
+  let row = (await list(`&q=${first.visit.code}`)).data[0];
+  assert.equal(row.ticketStage, "QUOTE");
+  assert.equal(row.pricing.approvedTotal, null);
+  assert.equal(row.pricing.estimateTotal, null);
+  assert.equal(row.pricing.payableTotal, null);
+  for (const q of [
+    first.visit.code,
+    first.payload.vehicle.plate,
+    "Toyota Vios",
+    first.payload.customer.name,
+    first.payload.customer.phone,
+  ]) {
+    assert.ok(
+      (await list(`&q=${encodeURIComponent(q)}`)).data.some(
+        (v: any) => v.id === id,
+      ),
+      q,
+    );
+  }
+  assert.equal((await list(`&q=${other.visit.code}`)).data.length, 0);
+  assert.equal((await b.call("GET", `admin/service-visits/${id}`)).status, 404);
+  const page1 = await list("&limit=1", manager);
+  assert.ok(page1.page.nextCursor);
+  const page2 = await list(
+    `&limit=1&cursor=${encodeURIComponent(page1.page.nextCursor)}`,
+    manager,
+  );
+  assert.notEqual(page1.data[0].id, page2.data[0].id);
+  assert.equal(
+    (
+      await a.call(
+        "GET",
+        `admin/service-visits?limit=1&cursor=${encodeURIComponent(page1.page.nextCursor)}`,
+      )
+    ).status,
+    400,
+  );
+  await ok(a, id, `admin/service-visits/${id}/inspection`);
+  const draft = await quote(id, "4500000", "SERVICE", false);
+  row = (await list(`&q=${first.visit.code}&ticketStage=QUOTE`)).data[0];
+  assert.equal(row.pricing.estimateTotal, "4500000");
+  assert.equal(row.pricing.approvedTotal, null);
+  await ok(a, id, `admin/quote-revisions/${draft.id}/decision`, {
+    decision: "APPROVED",
+    evidence,
+  });
+  const change = await quote(id, "500000", "SERVICE", false);
+  row = (await list(`&q=${first.visit.code}`)).data[0];
+  assert.equal(row.pricing.approvedTotal, "4500000");
+  assert.equal(row.pricing.payableTotal, "4500000");
+  assert.equal(row.pricing.hasOpenQuote, true);
+  await ok(a, id, `admin/quote-revisions/${change.id}/decision`, {
+    decision: "APPROVED",
+    evidence,
+  });
+  const actor = await one(
+    api.db.db,
+    sql`SELECT id FROM users WHERE email_normalized='manager@example.test'`,
+  );
+  await api.db.db.execute(
+    sql`INSERT INTO obligation_credits(visit_id,command_id,amount,reason,evidence,approved_by,occurred_at) VALUES(${id},${randomUUID()},200000,'Fixture credit','Fixture evidence',${actor!.id},${clock})`,
+  );
+  row = (await list(`&q=${first.visit.code}&ticketStage=WAITING_WORK`)).data[0];
+  assert.equal(row.pricing.approvedTotal, "5000000");
+  assert.equal(row.pricing.payableTotal, "4800000");
+  const workflow = (await a.call("GET", `admin/service-visits/${id}/workflow`))
+    .body.data;
+  assert.equal(row.pricing.payableTotal, workflow.obligation.total);
+  assert.equal(
+    (await a.call("GET", "admin/service-visits?ticketStage=INVALID")).status,
+    400,
+  );
+});
+
+test("Ticket UI maps every workflow phase and exceptions without changing visit state on reads", async () => {
+  const { visit } = await walk();
+  const id = visit.visitId;
+  const check = async (expected: string, stage: string) => {
+    const before = (await a.call("GET", `admin/service-visits/${id}`)).body
+      .data;
+    const r = await a.call(
+      "GET",
+      `admin/service-visits?ticketStage=${expected}&q=${visit.code}`,
+    );
+    assert.equal(r.status, 200, JSON.stringify(r.body));
+    assert.equal(r.body.data[0]?.ticketStage, expected);
+    assert.equal(r.body.data[0]?.stage, stage);
+    const after = (await a.call("GET", `admin/service-visits/${id}`)).body.data;
+    assert.equal(after.version, before.version);
+    assert.equal(after.stage, before.stage);
+  };
+  await check("QUOTE", "RECEIVED");
+  await ok(a, id, `admin/service-visits/${id}/inspection`);
+  const q = await quote(id);
+  const i = await item(id, q.lines[0].id);
+  await check("WAITING_WORK", "INSPECTED");
+  await ok(a, id, `admin/service-visits/${id}/work/start`);
+  await check("IN_PROGRESS", "IN_PROGRESS");
+  await ok(a, id, `admin/service-visits/${id}/work/pause`);
+  await check("PAUSED", "IN_PROGRESS");
+  await ok(a, id, `admin/service-visits/${id}/work/resume`);
+  await ok(a, id, `admin/work-items/${i.workItemId}/progress`, {
+    status: "IN_PROGRESS",
+  });
+  await ok(a, id, `admin/work-items/${i.workItemId}/progress`, {
+    status: "DONE",
+  });
+  await ok(a, id, `admin/service-visits/${id}/work/finish`);
+  await check("QUALITY_CHECK", "QUALITY_CHECK");
+  await ok(a, id, `admin/service-visits/${id}/acceptances`, {
+    inspectorId: technician.id,
+    result: "NEEDS_WORK",
+    note: "Fixture needs rework",
+    checks: [{ workItemId: i.workItemId, passed: false, note: "Needs rework" }],
+  });
+  await check("REWORK", "IN_PROGRESS");
+  await ok(a, id, `admin/service-visits/${id}/work/resume`);
+  await ok(a, id, `admin/work-items/${i.workItemId}/progress`, {
+    status: "DONE",
+  });
+  await ok(a, id, `admin/service-visits/${id}/work/finish`);
+  await passed(id, i.workItemId);
+  await check("READY", "READY");
+  await ok(a, id, `admin/service-visits/${id}/handover`, {
+    recipientName: "Customer",
+    evidenceNote: "Verified vehicle and keys",
+    vehicleMoved: true,
+    paymentBasis: "NO_CHARGE",
+  });
+  await check("HANDED_OVER", "HANDED_OVER");
+  const active = await a.call(
+    "GET",
+    `admin/service-visits?activeOnly=true&q=${visit.code}`,
+  );
+  assert.equal(active.body.data.length, 0);
+  const stopped = await walk();
+  await ok(
+    manager,
+    stopped.visit.visitId,
+    `admin/service-visits/${stopped.visit.visitId}/abort`,
+    { evidenceNote: "Fixture: verified vehicle returned", vehicleMoved: true },
+  );
+  const r = await a.call(
+    "GET",
+    `admin/service-visits?ticketStage=ABORTED&q=${stopped.visit.code}`,
+  );
+  assert.equal(r.body.data[0]?.ticketStage, "ABORTED");
+});
 
 test("P3 quote submission freezes amounts, evidence and print snapshots; change orders are additive", async () => {
   assert.equal(

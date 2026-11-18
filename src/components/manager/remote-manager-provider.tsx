@@ -23,12 +23,14 @@ import type {
   ManagerStaff,
 } from "@/lib/manager/mock";
 import { stationToday } from "@/lib/public-booking/mock";
-import { shiftDate } from "@/lib/booking/logic";
+import { shiftDate, warningText } from "@/lib/booking/logic";
 import {
   ManagerContext,
   type ManagerContext as Value,
 } from "./manager-provider";
 import { ManagerModal } from "./manager-modal";
+import { usePathname } from "next/navigation";
+import { bookingFromApi } from "@/lib/api/booking-adapter";
 
 const groupCodes: Record<string, string> = {
   "Bảo dưỡng": "MAINTENANCE",
@@ -62,6 +64,7 @@ const empty: ManagerData = {
   },
 };
 export function RemoteManagerProvider({ children }: { children: ReactNode }) {
+  const path = usePathname();
   const [data, setData] = useState<ManagerData | null>(null),
     [policy, setPolicy] = useState<ApiPolicy | null>(null),
     [error, setError] = useState("");
@@ -96,6 +99,7 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
     async (signal?: AbortSignal) => {
       const [
         bookings,
+        pending,
         customers,
         vehicles,
         services,
@@ -109,6 +113,9 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
           `admin/bookings?from=${period.from}&to=${period.to}`,
           signal,
         ),
+        path === "/dieu-hanh/lich-hen"
+          ? collection<ApiBooking>("admin/bookings?status=PENDING", signal)
+          : Promise.resolve([] as ApiBooking[]),
         collection<ApiCustomer>("admin/customers", signal),
         collection<ApiVehicle>("admin/vehicles", signal),
         collection<ApiService>("admin/services", signal),
@@ -135,16 +142,20 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
         >(`admin/audit-logs?from=${today}&to=${today}&limit=100`, { signal }),
       ]);
       const p = policyResponse?.data || null;
+      const appointments = Array.from(
+        new Map([...bookings, ...pending].map((b) => [b.id, b])).values(),
+      );
       const vehicleOf = new Map<string, ApiVehicle>();
       for (const v of vehicles)
         for (const x of v.customerContacts)
           if (!vehicleOf.has(x.customerId)) vehicleOf.set(x.customerId, v);
       const result: ManagerData = {
         ...empty,
-        bookings: bookings.map((b) => {
+        bookings: appointments.map((b) => {
           const time = stationTime(b.scheduledStartAt);
           return {
             id: b.id,
+            record: bookingFromApi(b),
             code: b.code,
             serviceVisitId: b.serviceVisitId,
             version: b.version,
@@ -156,6 +167,12 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
             advisorId: b.assignedAdvisor?.id || "",
             date: time.slice(0, 10),
             time: time.slice(11, 16),
+            period:
+              b.status === "PENDING" && b.requestedPeriod
+                ? b.requestedPeriod === "MORNING"
+                  ? "morning"
+                  : "afternoon"
+                : undefined,
             status:
               b.status.toLowerCase() as ManagerData["bookings"][number]["status"],
             note: b.customerNote || "",
@@ -181,6 +198,8 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
           name: s.name,
           group: s.category.name,
           duration: s.estimatedDurationMinutes,
+            qualityChecks: s.qualityChecks,
+            technicianRequired: s.technicianRequired,
           active: s.active,
           bookable: s.bookable,
           version: s.version,
@@ -248,7 +267,7 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
       };
       if (!signal?.aborted) {
         raw.current = {
-          bookings,
+          bookings: appointments,
           services,
           staff,
           settings: settings.data,
@@ -260,7 +279,7 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
         setError("");
       }
     },
-    [period, today],
+    [period, today, path],
   );
   useEffect(() => {
     const c = new AbortController();
@@ -308,12 +327,12 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
   ) {
     const b = raw.current.bookings.find((b) => b.id === id);
     if (!b) throw new Error("Không tìm thấy lịch hẹn.");
-    await command(`admin/bookings/${id}/${action}`, {
-      ...input,
-      expectedVersion: b.version,
-    });
+    const receipt = await command<{ warnings?: string[] }>(
+      `admin/bookings/${id}/${action}`,
+      { ...input, expectedVersion: input.expectedVersion ?? b.version },
+    );
     await load();
-    setToast("Đã cập nhật lịch hẹn.");
+    setToast("Đã cập nhật lịch hẹn." + warningText(receipt.data?.warnings));
   }
   async function savePolicy(input: Record<string, unknown>) {
     await command("admin/capacity/policy", input, "PUT");
@@ -343,6 +362,8 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
           bookable: !!item.bookable && item.active,
           sortOrder: old?.sortOrder || 0,
           estimatedDurationMinutes: item.duration,
+            qualityChecks: item.qualityChecks || [],
+            technicianRequired: item.technicianRequired || false,
         };
         if (old)
           await command(

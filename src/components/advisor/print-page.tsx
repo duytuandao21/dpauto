@@ -1,4 +1,5 @@
 "use client";
+import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 
 import Link from "next/link";
 import { useBookings } from "@/components/admin/booking-provider";
@@ -81,7 +82,7 @@ function LocalPrintPage({
           </div>
           <div>
             <dt>Điện thoại</dt>
-            <dd>{customer?.phone}</dd>
+            <dd>{formatPhone(customer?.phone)}</dd>
           </div>
           <div>
             <dt>Xe</dt>
@@ -89,7 +90,7 @@ function LocalPrintPage({
           </div>
           <div>
             <dt>Biển số</dt>
-            <dd>{vehicle?.plate}</dd>
+            <dd>{formatPlate(vehicle?.plate)}</dd>
           </div>
           <div>
             <dt>Phiếu dịch vụ</dt>
@@ -118,10 +119,10 @@ function LocalPrintPage({
                   <th>Hạng mục</th>
                   <th>ĐVT</th>
                   <th>SL</th>
-                  <th>Đơn giá</th>
+                  <th className="adv-money-cell">Đơn giá</th>
                   <th>CK</th>
                   <th>VAT</th>
-                  <th>Thành tiền</th>
+                  <th className="adv-money-cell">Thành tiền</th>
                 </tr>
               </thead>
               <tbody>
@@ -132,10 +133,12 @@ function LocalPrintPage({
                       <td>{line.name}</td>
                       <td>{line.unit}</td>
                       <td>{line.quantity}</td>
-                      <td>{formatMoney(line.price)}</td>
+                      <td className="adv-money-cell">
+                        {formatMoney(line.price)}
+                      </td>
                       <td>{line.discount}%</td>
                       <td>{line.vat}%</td>
-                      <td>
+                      <td className="adv-money-cell">
                         {formatMoney(
                           line.quantity *
                             line.price *

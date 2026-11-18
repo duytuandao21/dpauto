@@ -6,8 +6,6 @@ import {
   equal,
   canonical,
   iso,
-  day,
-  midnight,
   type Context,
 } from "./common";
 import { Capacity } from "./capacity/capacity";
@@ -76,52 +74,16 @@ export class PublicApi {
         "BOOKING_NOT_CONFIGURED",
         "Trạm hiện chưa mở nhận lịch trực tuyến.",
       );
-    if (q.policyVersion !== ctx.station.configuration_version)
-      fail(409, "POLICY_VERSION_CONFLICT");
-    const services = await this.capacity.servicePlans(
-        c,
-        ctx,
-        q.serviceIds,
-        q.catalogVersion,
-      ),
-      state = await this.capacity.state(c, ctx, q.date),
-      p = state.policy;
-    const today = +midnight(day(ctx.now)),
-      origin = +midnight(q.date);
-    const slots = [];
-    for (const bucket of state.input.buckets) {
-      const start = bucket.start,
-        end = bucket.end;
-      let status = "AVAILABLE",
-        reasonCode: string | null = null;
-      if (start <= +ctx.now || origin > today + p.advance_days * 86400000) {
-        status = "UNAVAILABLE";
-        reasonCode = "OUTSIDE_BOOKING_WINDOW";
-      } else if (bucket.closed) {
-        status = "UNAVAILABLE";
-        reasonCode = "SLOT_CLOSED";
-      } else if (bucket.held >= bucket.limit) {
-        status = "FULL";
-        reasonCode = "CAPACITY_FULL";
-      }
-      slots.push({
-        startAt: iso(new Date(start)),
-        endAt: iso(new Date(end)),
-        status,
-        reasonCode,
-        remaining:
-          status === "AVAILABLE" ? Math.max(0, bucket.limit - bucket.held) : 0,
-      });
-    }
+    // Only says whether the station takes requests that half-day; no counts, no limits.
+    const periods = (await this.capacity.periods(c, ctx, q.date)).map((p) => ({
+      period: p.period,
+      status: p.startAt === null ? "UNAVAILABLE" : "AVAILABLE",
+    }));
     return {
       date: q.date,
       timezone: "Asia/Ho_Chi_Minh",
-      serviceIds: q.serviceIds,
-      catalogVersion: ctx.station.catalog_version,
-      policyVersion: ctx.station.configuration_version,
-      slots,
+      periods,
       asOf: iso(ctx.now),
-      ...(!slots.length ? { dayReasonCode: "SLOT_CLOSED" } : {}),
     };
   }
 }

@@ -17,7 +17,7 @@ export function ServiceDetail({ service }: { service: Service }) {
   });
   const galleryTitle = (
     <h2 className="service-gallery-heading">
-      <span>{service.title}</span> <span>Gallery</span>
+      <span>{service.title}</span> <span>qua hình ảnh</span>
     </h2>
   );
   const galleryImages = gallery.map((image, index) => (
@@ -32,7 +32,7 @@ export function ServiceDetail({ service }: { service: Service }) {
       <div className="container service-body">
         <div className="service-main">
           <section className="service-overview">
-            <h2>Overview</h2>
+            <h2>Tổng quan</h2>
             <div
               className="rich-content service-overview-content"
               dangerouslySetInnerHTML={{ __html: overviewHtml }}
@@ -40,7 +40,7 @@ export function ServiceDetail({ service }: { service: Service }) {
           </section>
           <section className="service-process">
             <div className="service-section-intro">
-              <h2>Service Process</h2>
+              <h2>Quy trình dịch vụ</h2>
               <p>{service.processIntroduction}</p>
             </div>
             <div className="service-process-grid">
@@ -53,7 +53,7 @@ export function ServiceDetail({ service }: { service: Service }) {
                   )}
                   <div className="service-process-row">
                     <span className="service-process-number">
-                      Step {String(index + 1).padStart(2, "0")}
+                      Bước {String(index + 1).padStart(2, "0")}
                     </span>
                     <div className="service-process-copy">
                       <h3>{step.title}</h3>
@@ -107,21 +107,21 @@ export function ServiceDetail({ service }: { service: Service }) {
         <aside className="service-sidebar">
           <div className="service-contact-card">
             <div className="service-contact-copy">
-              <h3>Ready To Refresh Your Vehicle?</h3>
+              <h3>Sẵn sàng làm mới xe của bạn?</h3>
               <p>
-                Give your car the professional care it deserves with HyperAuto
-                Care.
+                Hãy để HyperAuto Care chăm sóc chiếc xe của bạn một cách chuyên
+                nghiệp.
               </p>
             </div>
             <div className="service-contact-actions">
-              <Button href="/contact">Contact Us</Button>
+              <Button href="/contact">Liên hệ ngay</Button>
               <Button href={site.phoneHref} variant="secondary" icon="phone">
-                Call Us: {site.phone}
+                Gọi {site.phone}
               </Button>
             </div>
           </div>
           <div className="other-services">
-            <h3>Other Services</h3>
+            <h3>Dịch vụ khác</h3>
             <div className="other-services-list">
               {services
                 .filter((item) => item.slug !== service.slug)

@@ -48,7 +48,15 @@ export function ManagerServicesPage() {
       setError("Nhập tên dịch vụ và thời lượng từ 15 đến 1440 phút.");
       return;
     }
-    const value = { ...editing, name: editing.name.trim() };
+    const value = {
+      ...editing,
+      name: editing.name.trim(),
+      qualityChecks: [
+        ...new Set(
+          (editing.qualityChecks || []).map((s) => s.trim()).filter(Boolean),
+        ),
+      ],
+    };
     if (
       apiEnabled &&
       (!editing.code || !/^[A-Z0-9_-]{3,50}$/.test(editing.code))
@@ -275,6 +283,32 @@ export function ManagerServicesPage() {
             </ManagerField>
             {apiEnabled && (
               <div>
+                <ManagerField label="Kiểm tra bắt buộc (mỗi dòng một mục)">
+                  <textarea
+                    rows={3}
+                    maxLength={4800}
+                    value={(editing.qualityChecks || []).join("\n")}
+                    onChange={(e) =>
+                      setEditing({
+                        ...editing,
+                        qualityChecks: e.target.value.split("\n"),
+                      })
+                    }
+                  />
+                </ManagerField>
+                <label className="adm-toggle-row">
+                  <span>Bắt buộc phân công kỹ thuật viên</span>
+                  <input
+                    type="checkbox"
+                    checked={editing.technicianRequired || false}
+                    onChange={(e) =>
+                      setEditing({
+                        ...editing,
+                        technicianRequired: e.target.checked,
+                      })
+                    }
+                  />
+                </label>
                 <label className="adm-toggle-row">
                   <span>Cho phép đặt lịch</span>
                   <input

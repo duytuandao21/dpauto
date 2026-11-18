@@ -1,4 +1,9 @@
 "use client";
+import {
+  formatOdometer,
+  formatPhone,
+  formatPlate,
+} from "@/lib/advisor/formats";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
@@ -21,8 +26,12 @@ import {
 } from "@/lib/api/visits";
 import { useSession } from "@/components/admin/auth-gate";
 import { AdminLoading, PageHeading } from "@/components/admin/primitives";
-import { VisitIntakeFields } from "./visit-intake-fields";
+import {
+  VisitIntakeFields,
+  VisitInspectionFields,
+} from "./visit-intake-fields";
 import { AdminIcon } from "@/components/admin/admin-icon";
+import { formatDate, timeLabel } from "@/lib/booking/logic";
 
 type Meta = {
   catalogVersion: number;
@@ -56,7 +65,6 @@ function RemoteReception({
   const router = useRouter(),
     session = useSession()!;
   const followUp = useSearchParams().get("followUp");
-  const [followUpReason, setFollowUpReason] = useState("");
   const root = manager ? "/dieu-hanh" : "/co-van";
   const [booking, setBooking] = useState<ApiBooking | null>(null),
     [existing, setExisting] = useState<Visit | null>(null);
@@ -70,8 +78,7 @@ function RemoteReception({
     [name, setName] = useState(""),
     [phone, setPhone] = useState("");
   const [model, setModel] = useState(""),
-    [plate, setPlate] = useState(""),
-    [changeReason, setChangeReason] = useState("");
+    [plate, setPlate] = useState("");
   const [advisor, setAdvisor] = useState(""),
     [services, setServices] = useState<string[]>([]);
   const [draft, setDraft] = useState<Intake>(emptyIntake),
@@ -84,7 +91,10 @@ function RemoteReception({
   const [photoBusy, setPhotoBusy] = useState(false);
   const [reload, setReload] = useState(0),
     submitted = useRef(false),
-    initialized = useRef(false);
+    initialized = useRef(false),
+    submitting = useRef(false),
+    invalidFocused = useRef(false),
+    errorRef = useRef<HTMLParagraphElement>(null);
   useEffect(() => {
     const abort = new AbortController();
     setReady(false);
@@ -118,6 +128,7 @@ function RemoteReception({
         setBooking(b);
         if (!initialized.current) {
           setVehicleId(b.vehicle?.id || "");
+          setServices(b.services.map((s) => s.id));
           initialized.current = true;
         }
         setVehicles(
@@ -131,8 +142,13 @@ function RemoteReception({
             ? v
             : {
                 ...v,
-                request:
-                  b.customerNote || b.services.map((s) => s.name).join(", "),
+                request: [
+                  b.services.map((s) => s.name).join(", "),
+                  b.customerNote,
+                ]
+                  .filter(Boolean)
+                  .join("\n")
+                  .slice(0, 2000),
               },
         );
         const visits = await request<Visit[]>(
@@ -153,7 +169,7 @@ function RemoteReception({
               signal: abort.signal,
             })
           ).data;
-          if (!["HANDED_OVER", "ABORTED"].includes(previous.stage))
+          if (!["HANDED_OVER", "COMPLETED", "ABORTED"].includes(previous.stage))
             throw new Error(
               "Phiếu trước chưa đóng. Hãy tiếp tục xử lý trên phiếu hiện hành.",
             );
@@ -181,6 +197,9 @@ function RemoteReception({
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
+  useEffect(() => {
+    if (error && ready) errorRef.current?.focus();
+  }, [error, ready]);
   const selectedVehicle = vehicleId
     ? vehicles.find((v) => v.id === vehicleId)
     : null;
@@ -190,7 +209,9 @@ function RemoteReception({
     plate;
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (busy || photoBusy || !meta) return;
+    if (busy || photoBusy || !meta || submitting.current || submitted.current)
+      return;
+    submitting.current = true;
     setBusy(true);
     setError("");
     try {
@@ -198,7 +219,7 @@ function RemoteReception({
         ? { id: vehicleId }
         : {
             model: model.trim() || undefined,
-            plate: plate.trim() || undefined,
+            plate: formatPlate(plate) || undefined,
           };
       const value = await command<VisitReceipt>(
         id ? `admin/bookings/${id}/receive` : "admin/service-visits",
@@ -207,14 +228,15 @@ function RemoteReception({
               expectedVersion: booking!.version,
               vehicle,
               vehicleVerified: verified,
-              vehicleChangeReason: changeReason.trim() || undefined,
+              serviceIds: services,
+              catalogVersion: meta.catalogVersion,
               policyVersion: meta.policyVersion,
               intake: intakePayload(draft),
             }
           : {
               customer: customerId
                 ? { id: customerId }
-                : { name: name.trim(), phone: phone.trim() },
+                : { name: name.trim(), phone: formatPhone(phone) },
               vehicle,
               vehicleVerified: verified,
               advisorId: advisor || session.staff.id,
@@ -227,7 +249,6 @@ function RemoteReception({
               },
               intake: intakePayload(draft),
               followUpOfVisitId: followUp || undefined,
-              followUpReason: followUp ? followUpReason.trim() : undefined,
             },
       );
       submitted.current = true;
@@ -235,7 +256,49 @@ function RemoteReception({
       window.dispatchEvent(new Event("dpauto-data-updated"));
       router.push(`${root}/phieu-dich-vu/${value.data.visitId}`);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Không tiếp nhận được xe.");
+      if (
+        e instanceof ApiFailure &&
+        e.code === "VALIDATION_FAILED" &&
+        e.fields.length
+      ) {
+        const labels: Record<string, string> = {
+          customer: "Thông tin khách hàng",
+          vehicle: "Thông tin xe",
+          vehicleVerified: "Xác nhận đối chiếu xe",
+          advisorId: "Cố vấn phụ trách",
+          serviceIds: "Dịch vụ đã chọn",
+          catalogVersion: "Phiên bản danh mục dịch vụ",
+          policyVersion: "Cấu hình tiếp nhận",
+          expectedVersion: "Phiên bản lịch hẹn",
+          notice: "Xác nhận thông báo cho khách",
+          intake: "Thông tin tiếp nhận",
+          "intake.request": "Yêu cầu của khách",
+          "intake.odometer": "ODO (từ 0 đến 9.999.999 km)",
+          "intake.receptionNote": "Ghi chú tiếp nhận (tối đa 1.000 ký tự)",
+          "intake.conditions": "Kiểm tra tình trạng xe",
+          "intake.photos": "Hình ảnh tiếp nhận",
+        };
+        setError(
+          e.fields.some(
+            (field) => field.path === "" && field.code === "unrecognized_keys",
+          )
+            ? "Form và API tiếp nhận không cùng phiên bản. Vui lòng cập nhật và khởi động lại API rồi thử lại."
+            : "Vui lòng kiểm tra: " +
+                [
+                  ...new Set(
+                    e.fields.map(
+                      ({ path }) =>
+                        labels[path.split(".").slice(0, 2).join(".")] ||
+                        labels[path.split(".")[0]] ||
+                        "Thông tin tiếp nhận",
+                    ),
+                  ),
+                ].join(", ") +
+                ".",
+        );
+      } else {
+        setError(e instanceof Error ? e.message : "Không tiếp nhận được xe.");
+      }
       if (
         e instanceof ApiFailure &&
         [
@@ -246,6 +309,7 @@ function RemoteReception({
       )
         setReload((v) => v + 1);
     } finally {
+      submitting.current = false;
       setBusy(false);
     }
   }
@@ -280,308 +344,435 @@ function RemoteReception({
         />
       </section>
     );
+  const customer = booking?.customer ||
+    customers.find((c) => c.id === customerId) || { name, phone };
+  const vehicleModel =
+    selectedVehicle?.model ||
+    (vehicleId === booking?.vehicle?.id ? booking?.vehicle?.model : null) ||
+    model;
+  const appointment = booking
+    ? booking.confirmedStartAt || booking.scheduledStartAt
+    : null;
+  const updateIntake = (value: Intake) => {
+    setDraft(value);
+    setDirty(true);
+  };
+  const availableServices = catalog.filter(
+    (s) => (s.active && s.bookable) || services.includes(s.id),
+  );
+  const serviceOptions = [
+    ...availableServices,
+    ...(booking?.services || []).filter(
+      (s) => !availableServices.some((option) => option.id === s.id),
+    ),
+  ];
+  const servicePicker = (
+    <div className="adv-check-grid adv-reception-services">
+      {serviceOptions.map((s) => (
+        <label key={s.id}>
+          <input
+            type="checkbox"
+            checked={services.includes(s.id)}
+            disabled={!services.includes(s.id) && services.length >= 10}
+            onChange={(e) => {
+              const next = e.target.checked
+                ? [...services, s.id]
+                : services.filter((v) => v !== s.id);
+              if (booking) {
+                const requestFor = (ids: string[]) =>
+                  [
+                    ids
+                      .map(
+                        (id) =>
+                          booking.services.find((item) => item.id === id)
+                            ?.name ||
+                          serviceOptions.find((item) => item.id === id)?.name,
+                      )
+                      .filter(Boolean)
+                      .join(", "),
+                    booking.customerNote,
+                  ]
+                    .filter(Boolean)
+                    .join("\n")
+                    .slice(0, 2000);
+                setDraft((value) =>
+                  value.request === requestFor(services)
+                    ? { ...value, request: requestFor(next) }
+                    : value,
+                );
+              }
+              setServices(next);
+              setDirty(true);
+            }}
+          />
+          {s.name}
+        </label>
+      ))}
+      {!serviceOptions.length && (
+        <p className="adm-muted">Chưa có dịch vụ đang mở tiếp nhận.</p>
+      )}
+      {serviceOptions.length > 0 && (
+        <p className="adm-muted adm-span-full">
+          Đã chọn {services.length}/10 dịch vụ (tối thiểu 1).
+        </p>
+      )}
+    </div>
+  );
+  const checks = [
+    [!!(customer.name.trim() && customer.phone.trim()), "Thông tin khách hàng"],
+    [!!vehicleId || !!model.trim(), "Thông tin xe"],
+    [verified, "Đã xác minh khách và xe"],
+    [!!draft.request.trim(), "Yêu cầu khách hàng"],
+  ] as const;
   return (
-    <div className="adm-form-page adv-page">
+    <div className="adm-form-page adv-page adv-reception">
       {!manager && (
         <Link
           className="adm-mobile-back adm-text-link"
           href={id ? `${root}/lich-hen/${id}` : `${root}/phieu-dich-vu`}
         >
           <AdminIcon name="back" />
-          {id ? "Chi tiết lịch hẹn" : "Xe dịch vụ"}
+          {id ? "Chi tiết lịch hẹn" : "Phiếu dịch vụ"}
         </Link>
       )}
-      <PageHeading
-        eyebrow={manager ? "ĐIỀU HÀNH / TIẾP NHẬN" : "CỐ VẤN / TIẾP NHẬN XE"}
-        title={id ? "Tiếp nhận xe" : "Tiếp nhận xe trực tiếp"}
-        description={
-          booking
-            ? `${booking.customer.name} · ${booking.customer.phone}`
-            : undefined
-        }
-      />
+      <header className="adm-panel adv-reception-header">
+        <div>
+          <h1>Tiếp nhận xe</h1>
+          <p>
+            {booking
+              ? `${booking.code} · ${customer.name}`
+              : followUp
+                ? "Tiếp nhận xe quay lại"
+                : "Tiếp nhận trực tiếp"}
+          </p>
+        </div>
+        <span className="adm-badge adm-status-pending">Đang tiếp nhận</span>
+      </header>
       <form
         className="adm-booking-form"
         onSubmit={submit}
         onChange={() => setDirty(true)}
+        onInvalidCapture={(e) => {
+          if (invalidFocused.current) return;
+          invalidFocused.current = true;
+          const field = e.target as HTMLInputElement;
+          field.closest("details")?.setAttribute("open", "");
+          field.setAttribute("aria-invalid", "true");
+          field.focus();
+          field.scrollIntoView({ block: "center" });
+          requestAnimationFrame(() => {
+            invalidFocused.current = false;
+          });
+        }}
+        onInput={(e) =>
+          (e.target as HTMLElement).removeAttribute("aria-invalid")
+        }
       >
-        {!id && followUp && (
-          <section className="adm-panel">
-            <h2>Tiếp nhận xe quay lại</h2>
-            <label className="adm-field">
-              Lý do quay lại *
-              <textarea
-                required
-                maxLength={400}
-                rows={2}
-                value={followUpReason}
-                onChange={(e) => setFollowUpReason(e.target.value)}
-              />
-            </label>
-          </section>
-        )}
-        <fieldset
-          disabled={busy}
-          className="adv-stack adv-checks"
-          aria-label="Khách hàng và xe"
-        >
-          <section className="adm-panel">
-            {manager ? (
-              <h2>Khách hàng và xe</h2>
-            ) : (
-              <div className="adm-form-section-title">
-                <span>1</span>
-                <div>
-                  <h2>Khách hàng và xe</h2>
-                  <p>
-                    {id
-                      ? "Thông tin lấy từ lịch đã xác nhận."
-                      : "Đối chiếu thông tin khách hàng và xe thực tế."}
-                  </p>
-                </div>
-              </div>
-            )}
-            <div className="adm-form-grid">
+        <fieldset disabled={busy || photoBusy} className="adv-reception-fields">
+          <legend className="adv-sr-only">Thông tin tiếp nhận xe</legend>
+          <div className="adv-reception-grid">
+            <section className="adm-panel adv-stack adv-reception-customer">
+              <h2>
+                <AdminIcon name="user" />
+                Khách hàng
+              </h2>
               {!id && (
+                <label className="adm-field">
+                  Khách tiếp nhận
+                  <select
+                    value={customerId}
+                    onChange={(e) => {
+                      setCustomerId(e.target.value);
+                      setVehicleId("");
+                      setVerified(false);
+                    }}
+                  >
+                    <option value="">Tạo khách hàng mới</option>
+                    {customers.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name} · {formatPhone(c.phone)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              {!id && !customerId ? (
                 <>
                   <label className="adm-field">
-                    Khách hàng
-                    <select
-                      value={customerId}
+                    Họ tên *
+                    <input
+                      required
+                      maxLength={100}
+                      value={name}
                       onChange={(e) => {
-                        setCustomerId(e.target.value);
-                        setVehicleId("");
+                        setName(e.target.value);
                         setVerified(false);
                       }}
-                    >
-                      <option value="">Tạo khách hàng mới</option>
-                      {customers.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name} · {c.phone}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </label>
-                  {!customerId && (
-                    <>
-                      <label className="adm-field">
-                        Họ tên *
-                        <input
-                          required
-                          maxLength={100}
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                        />
-                      </label>
-                      <label className="adm-field">
-                        Số điện thoại *
-                        <input
-                          required
-                          type="tel"
-                          maxLength={30}
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                        />
-                      </label>
-                    </>
-                  )}
-                  {customerId && (
-                    <label className="adm-field">
-                      Xe của khách
+                  <label className="adm-field">
+                    Số điện thoại *
+                    <input
+                      required
+                      type="tel"
+                      maxLength={30}
+                      value={phone}
+                      onBlur={() => setPhone(formatPhone(phone))}
+                      onChange={(e) => {
+                        setPhone(e.target.value);
+                        setVerified(false);
+                      }}
+                    />
+                  </label>
+                </>
+              ) : (
+                <div>
+                  <strong>{customer.name}</strong>
+                  <p>
+                    <a href={`tel:${formatPhone(customer.phone)}`}>
+                      {formatPhone(customer.phone)}
+                    </a>
+                  </p>
+                </div>
+              )}
+              <label className="adv-reception-verify">
+                <input
+                  type="checkbox"
+                  required
+                  checked={verified}
+                  onChange={(e) => setVerified(e.target.checked)}
+                />
+                Đã đối chiếu xe thực tế với khách hàng
+              </label>
+            </section>
+            <div className="adv-reception-main">
+              <section className="adm-panel adv-stack adv-reception-vehicle">
+                <h2>
+                  <AdminIcon name="car" />
+                  01. Thông tin xe
+                </h2>
+                <div className="adm-form-grid">
+                  {(booking || customerId) && (
+                    <label className="adm-field adm-span-full">
+                      Xe tiếp nhận
                       <select
                         value={vehicleId}
                         onChange={(e) => {
                           setVehicleId(e.target.value);
+                          if (!e.target.value) {
+                            setModel("");
+                            setPlate("");
+                          }
                           setVerified(false);
                         }}
                       >
-                        <option value="">Thêm xe mới</option>
-                        {vehicles
-                          .filter((v) =>
-                            v.customerContacts.some(
-                              (c) => c.customerId === customerId,
-                            ),
-                          )
-                          .map((v) => (
-                            <option key={v.id} value={v.id}>
-                              {v.plate || v.model}
+                        {(booking
+                          ? vehicles
+                          : vehicles.filter((v) =>
+                              v.customerContacts.some(
+                                (c) => c.customerId === customerId,
+                              ),
+                            )
+                        ).map((v) => (
+                          <option key={v.id} value={v.id}>
+                            {[v.model, formatPlate(v.plate)]
+                              .filter(Boolean)
+                              .join(" · ")}
+                            {v.id === booking?.vehicle?.id
+                              ? " · Xe trong lịch"
+                              : ""}
+                          </option>
+                        ))}
+                        <option value="">Bổ sung xe mới</option>
+                      </select>
+                    </label>
+                  )}
+                  <label className="adm-field adm-span-full">
+                    Dòng xe
+                    {vehicleId ? (
+                      <input
+                        readOnly
+                        value={vehicleModel || "Chưa có thông tin"}
+                      />
+                    ) : (
+                      <input
+                        required
+                        maxLength={100}
+                        value={model}
+                        onChange={(e) => {
+                          setModel(e.target.value);
+                          setVerified(false);
+                        }}
+                      />
+                    )}
+                  </label>
+                  <label className="adm-field">
+                    Biển số
+                    {vehicleId ? (
+                      <input
+                        readOnly
+                        value={vehiclePlate || "Chưa có biển số"}
+                      />
+                    ) : (
+                      <input
+                        maxLength={20}
+                        placeholder="Xe chưa có biển số có thể để trống"
+                        value={plate}
+                        onBlur={() => setPlate(formatPlate(plate))}
+                        onChange={(e) => {
+                          setPlate(e.target.value);
+                          setVerified(false);
+                        }}
+                      />
+                    )}
+                  </label>
+                  <label className="adm-field">
+                    Nguồn xe
+                    <select disabled defaultValue="">
+                      <option value="">Chưa hỗ trợ lưu nguồn xe</option>
+                      <option value="CUSTOMER">Khách hàng thông thường</option>
+                      <option value="TOAN_TRUNG">Xe Lướt Toàn Trung</option>
+                    </select>
+                  </label>
+                  {!id && session.roles.includes("MANAGER") && (
+                    <label className="adm-field adm-span-full">
+                      Cố vấn phụ trách *
+                      <select
+                        required
+                        value={advisor}
+                        onChange={(e) => setAdvisor(e.target.value)}
+                      >
+                        <option value="">Chọn cố vấn</option>
+                        {staff
+                          .filter((s) => s.accountEnabled)
+                          .map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.name}
                             </option>
                           ))}
                       </select>
                     </label>
                   )}
-                </>
-              )}
-              {id && booking && (
-                <label className="adm-field">
-                  Xe tiếp nhận
-                  <select
-                    value={vehicleId}
-                    onChange={(e) => {
-                      setVehicleId(e.target.value);
-                      if (!e.target.value) {
-                        setModel("");
-                        setPlate("");
-                      }
-                      setVerified(false);
-                    }}
-                  >
-                    {vehicles.map((v) => (
-                      <option key={v.id} value={v.id}>
-                        {v.plate || v.model}
-                        {v.id === booking.vehicle?.id ? " · Xe trong lịch" : ""}
-                      </option>
-                    ))}
-                    <option value="">Bổ sung xe mới</option>
-                  </select>
-                </label>
-              )}
-              {!vehicleId && (
-                <>
-                  <label className="adm-field">
-                    Dòng xe *
-                    <input
-                      required
-                      maxLength={100}
-                      value={model}
-                      onChange={(e) => {
-                        setModel(e.target.value);
-                        setVerified(false);
-                      }}
-                    />
-                  </label>
-                  <label className="adm-field">
-                    Biển số
-                    <input
-                      maxLength={20}
-                      value={plate}
-                      onChange={(e) => {
-                        setPlate(e.target.value);
-                        setVerified(false);
-                      }}
-                    />
-                  </label>
-                </>
-              )}
-              {id && vehicleId !== booking?.vehicle?.id && (
-                <label className="adm-field">
-                  Lý do bổ sung/đổi xe *
-                  <input
-                    required
-                    maxLength={400}
-                    value={changeReason}
-                    onChange={(e) => setChangeReason(e.target.value)}
-                  />
-                </label>
-              )}
-              {!vehiclePlate && (
-                <label className="adm-field">
-                  Lý do chưa có biển số *
-                  <input
-                    required
-                    maxLength={400}
-                    value={draft.plateMissingReason || ""}
-                    onChange={(e) =>
-                      setDraft({ ...draft, plateMissingReason: e.target.value })
-                    }
-                  />
-                </label>
-              )}
-              {!id && session.roles.includes("MANAGER") && (
-                <label className="adm-field">
-                  Cố vấn phụ trách *
-                  <select
-                    required
-                    value={advisor}
-                    onChange={(e) => setAdvisor(e.target.value)}
-                  >
-                    <option value="">Chọn cố vấn</option>
-                    {staff
-                      .filter((s) => s.accountEnabled)
-                      .map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-              )}
+                </div>
+              </section>
+              <div className="adv-reception-intake">
+                <VisitIntakeFields
+                  reception
+                  numbered
+                  inspection={false}
+                  value={draft}
+                  disabled={busy}
+                  onChange={updateIntake}
+                  serviceSummary={servicePicker}
+                />
+              </div>
             </div>
-            <label className="adv-checks">
+            <aside
+              className="adv-reception-context"
+              aria-label="Khách hàng, lịch hẹn và kiểm tra xe"
+            >
+              <section className="adm-panel adv-stack adv-reception-appointment">
+                <h2>
+                  <AdminIcon name="calendar" />
+                  Lịch hẹn
+                </h2>
+                {booking && appointment ? (
+                  <dl className="adv-reception-facts">
+                    <div>
+                      <dt>Mã lịch</dt>
+                      <dd>{booking.code}</dd>
+                    </div>
+                    <div>
+                      <dt>Giờ hẹn</dt>
+                      <dd>
+                        {formatDate(appointment)} · {timeLabel(appointment)}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Cố vấn</dt>
+                      <dd>
+                        {booking.assignedAdvisor?.name || "Chưa phân công"}
+                      </dd>
+                    </div>
+                  </dl>
+                ) : (
+                  <p className="adm-muted">
+                    Không có lịch hẹn · Tiếp nhận trực tiếp
+                  </p>
+                )}
+              </section>
+              <div className="adv-reception-inspection">
+                <VisitInspectionFields
+                  collapsible
+                  value={draft}
+                  disabled={busy}
+                  onProcessing={setPhotoBusy}
+                  onChange={updateIntake}
+                />
+              </div>
+              <section className="adm-panel adv-stack adv-reception-checklist">
+                <h2>
+                  <AdminIcon name="check" />
+                  Thông tin đã ghi nhận
+                </h2>
+                <ul>
+                  {checks.map(([complete, label]) => (
+                    <li key={label} className={complete ? "is-complete" : ""}>
+                      <AdminIcon name={complete ? "check" : "time"} />
+                      <span>{label}</span>
+                      <span className="adv-sr-only">
+                        {complete ? "Đã có" : "Chưa có"}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="adm-muted">
+                  {draft.odometer === null
+                    ? "Chưa ghi nhận ODO (không bắt buộc)"
+                    : `ODO: ${formatOdometer(draft.odometer)} km`}
+                </p>
+              </section>
+            </aside>
+          </div>
+          {!id && (
+            <label className="adv-reception-notice">
               <input
                 type="checkbox"
                 required
-                checked={verified}
-                onChange={(e) => setVerified(e.target.checked)}
+                checked={notice}
+                onChange={(e) => setNotice(e.target.checked)}
               />{" "}
-              Đã đối chiếu xe thực tế với khách hàng
+              <span>
+                Khách đã được thông báo về việc sử dụng thông tin để tiếp nhận
+                và liên hệ dịch vụ.{" "}
+                <Link href="/chinh-sach-dat-lich" target="_blank">
+                  Xem chính sách
+                </Link>
+              </span>
             </label>
-          </section>
-          {!id && (
-            <section className="adm-panel">
-              <h2>Dịch vụ cần tiếp nhận</h2>
-              {!catalog.some((s) => s.active && s.bookable) && (
-                <p className="adm-muted">Chưa có dịch vụ đang mở tiếp nhận.</p>
-              )}
-              <div className="adv-check-grid">
-                {catalog
-                  .filter((s) => s.active && s.bookable)
-                  .map((s) => (
-                    <label key={s.id}>
-                      <input
-                        type="checkbox"
-                        checked={services.includes(s.id)}
-                        onChange={(e) =>
-                          setServices(
-                            e.target.checked
-                              ? [...services, s.id]
-                              : services.filter((x) => x !== s.id),
-                          )
-                        }
-                      />
-                      {s.name}
-                    </label>
-                  ))}
-              </div>
-            </section>
           )}
         </fieldset>
-        <VisitIntakeFields
-          numbered={!manager}
-          value={draft}
-          disabled={busy}
-          onProcessing={setPhotoBusy}
-          onChange={(v) => {
-            setDraft(v);
-            setDirty(true);
-          }}
-        />
-        {!id && (
-          <label className="adv-checks">
-            <input
-              type="checkbox"
-              required
-              checked={notice}
-              onChange={(e) => setNotice(e.target.checked)}
-            />{" "}
-            Khách đã được thông báo về việc sử dụng thông tin để tiếp nhận và
-            liên hệ dịch vụ.{" "}
-            <Link href="/chinh-sach-dat-lich" target="_blank">
-              Xem chính sách
-            </Link>
-          </label>
-        )}
         {error && (
-          <p className="adm-error-text" role="alert">
+          <p
+            id="reception-error"
+            ref={errorRef}
+            tabIndex={-1}
+            className="adm-error-text"
+            role="alert"
+          >
             {error}
           </p>
         )}
-        <div className="adm-form-footer">
+        <div className="adm-form-footer adv-reception-footer">
           <Link
             className="adm-btn"
             href={`${root}/${id ? "lich-hen" : "phieu-dich-vu"}`}
             onClick={(e) => {
-              if (dirty && !window.confirm("Rời form và bỏ thay đổi chưa lưu?"))
+              if (
+                busy ||
+                photoBusy ||
+                (dirty && !window.confirm("Rời form và bỏ thay đổi chưa lưu?"))
+              )
                 e.preventDefault();
             }}
           >
@@ -589,7 +780,7 @@ function RemoteReception({
           </Link>
           <button
             className="adm-btn adm-primary"
-            disabled={busy || photoBusy || (!id && !services.length)}
+            disabled={busy || photoBusy || !services.length}
           >
             {busy ? "Đang tiếp nhận…" : "Hoàn tất tiếp nhận"}
           </button>

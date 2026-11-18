@@ -1,6 +1,11 @@
 ﻿"use client";
+import {
+  formatOdometer,
+  formatPhone,
+  formatPlate,
+} from "@/lib/advisor/formats";
 import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   apiEnabled,
@@ -42,7 +47,8 @@ function VisitCard({
       <Link href={`${root}/phieu-dich-vu/${visit.id}`}>
         <div>
           <strong>
-            {visit.code} · {visit.vehicle.plate || visit.vehicle.model}
+            {visit.code} ·{" "}
+            {formatPlate(visit.vehicle.plate) || visit.vehicle.model}
           </strong>
           <small>{at(visit.receivedAt)}</small>
         </div>
@@ -67,10 +73,11 @@ function VisitCard({
         )}
       </span>
       <strong className="adv-order-name">
-        {visit.vehicle.plate || "Chưa có biển số"} · {visit.vehicle.model}
+        {formatPlate(visit.vehicle.plate) || "Chưa có biển số"} ·{" "}
+        {visit.vehicle.model}
       </strong>
       <span>
-        {visit.customer.name} · {visit.customer.phone}
+        {visit.customer.name} · {formatPhone(visit.customer.phone)}
       </span>
       <span>{visit.services.map((s) => s.name).join(", ")}</span>
       <span className="adm-muted">
@@ -236,13 +243,13 @@ function VisitsContent({
     >
       {!embedded && (
         <PageHeading
-          eyebrow={manager ? "ĐIỀU HÀNH" : "CỐ VẤN / XE DỊCH VỤ"}
+          eyebrow={manager ? "ĐIỀU HÀNH" : "CỐ VẤN / PHIẾU DỊCH VỤ"}
           title={
             activeOnly
               ? "Điều phối xưởng"
               : manager
                 ? "Phiếu dịch vụ"
-                : "Xe dịch vụ"
+                : "Phiếu dịch vụ"
           }
           description={
             activeOnly
@@ -348,7 +355,9 @@ function VisitsContent({
                       .filter(
                         ([key]) =>
                           !activeOnly ||
-                          !["HANDED_OVER", "ABORTED"].includes(key),
+                          !["HANDED_OVER", "COMPLETED", "ABORTED"].includes(
+                            key,
+                          ),
                       )
                       .map(([key, label]) => (
                         <option key={key} value={key}>
@@ -436,26 +445,45 @@ function VisitsContent({
           />
         )}
         {(previous.length > 0 || next) && (
-          <div className="adv-actions">
+          <div
+            className={manager ? "adv-actions" : "adv-pagination"}
+            role="navigation"
+            aria-label="Phân trang phiếu dịch vụ liên quan"
+          >
             <button
               className="adm-btn"
+              type="button"
+              aria-label="Trang trước"
               disabled={loading || !previous.length}
               onClick={() => {
                 setCursor(previous.at(-1) || "");
                 setPrevious(previous.slice(0, -1));
               }}
             >
-              Trang trước
+              {!manager && <AdminIcon name="back" />}
+              {manager ? "Trang trước" : "Trước"}
             </button>
+            {!manager && (
+              <span
+                className="adv-pagination-current"
+                aria-current="page"
+                aria-live="polite"
+              >
+                Trang {previous.length + 1}
+              </span>
+            )}
             <button
               className="adm-btn"
+              type="button"
+              aria-label="Trang sau"
               disabled={loading || !!error || !next}
               onClick={() => {
                 setPrevious([...previous, cursor]);
                 setCursor(next || "");
               }}
             >
-              Trang sau
+              {manager ? "Trang sau" : "Tiếp"}
+              {!manager && <AdminIcon name="back" />}
             </button>
           </div>
         )}
@@ -516,6 +544,9 @@ const eventNames: Record<string, string> = {
   VISIT_READY: "Xe sẵn sàng bàn giao",
   VISIT_HANDED_OVER: "Bàn giao xe",
   VISIT_ABORTED: "Dừng phiếu dịch vụ",
+  VISIT_COMPLETED: "Hoàn thành phiếu",
+  QUOTE_VOIDED: "Hủy báo giá",
+  QUOTE_SCOPE_VOIDED: "Hủy hạng mục chưa thực hiện",
   STOCK_REQUESTED: "Lập yêu cầu phụ tùng",
   STOCK_RESERVED: "Điều chỉnh giữ phụ tùng",
   STOCK_POSTED: "Ghi sổ phụ tùng",
@@ -552,9 +583,12 @@ function RemoteVisitDetail({
 }) {
   const root = manager ? "/dieu-hanh" : "/co-van";
   const params = useSearchParams();
-  const overview = !["bao-gia", "thi-cong", "nghiem-thu", "doi-soat"].includes(
-    params.get("tab") || "",
-  );
+  const legacyOverview = ![
+    "bao-gia",
+    "thi-cong",
+    "nghiem-thu",
+    "doi-soat",
+  ].includes(params.get("tab") || "");
   const [workflowDirty, setWorkflowDirty] = useState(false);
   const [visit, setVisit] = useState<VisitDetail | null>(null),
     [events, setEvents] = useState<VisitEvent[]>([]),
@@ -567,11 +601,30 @@ function RemoteVisitDetail({
     [draft, setDraft] = useState<Intake | null>(null),
     [reason, setReason] = useState("");
   const [photoBusy, setPhotoBusy] = useState(false);
+  const intakeDialog = useRef<HTMLDialogElement>(null);
+  const intakeTrigger = useRef<HTMLButtonElement>(null);
   const [staff, setStaff] = useState<ApiStaff[]>([]),
     [advisor, setAdvisor] = useState("");
-  const [channel, setChannel] = useState("PHONE"),
-    [outcome, setOutcome] = useState("UNREACHED"),
-    [note, setNote] = useState("");
+  useEffect(() => {
+    if (!editing) return;
+    const dialog = intakeDialog.current;
+    if (!dialog) return;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    return () => {
+      dialog.close();
+      document.body.style.overflow = overflow;
+      intakeTrigger.current?.focus({ preventScroll: true });
+    };
+  }, [editing]);
+  function closeIntake() {
+    if (busy || photoBusy) return;
+    setEditing(false);
+    setDraft(null);
+    setReason("");
+    setError("");
+  }
   useEffect(() => {
     const a = new AbortController();
     setLoading(true);
@@ -621,8 +674,22 @@ function RemoteVisitDetail({
   useEffect(() => {
     if (!editing) return;
     const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    const guard = (e: MouseEvent) => {
+      if (e.target instanceof Element && e.target.closest("a[href]")) {
+        if (!window.confirm("Rời phần này và bỏ thay đổi tiếp nhận chưa lưu?"))
+          e.preventDefault();
+        else {
+          setEditing(false);
+          setDraft(null);
+        }
+      }
+    };
     window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
+    document.addEventListener("click", guard, true);
+    return () => {
+      window.removeEventListener("beforeunload", warn);
+      document.removeEventListener("click", guard, true);
+    };
   }, [editing]);
   async function run(path: string, body: unknown, method = "POST") {
     if (busy || photoBusy) return;
@@ -633,7 +700,6 @@ function RemoteVisitDetail({
       setEditing(false);
       setDraft(null);
       setReason("");
-      setNote("");
       setAdvisor("");
       setReload((n) => n + 1);
       window.dispatchEvent(new Event("dpauto-data-updated"));
@@ -677,229 +743,222 @@ function RemoteVisitDetail({
         </button>
       </section>
     );
-  return (
-    <div className="adv-page adv-stack adv-order-detail">
-      {!manager && (
-        <Link
-          href={`${root}/phieu-dich-vu`}
-          className="adm-mobile-back adm-text-link"
-        >
-          <AdminIcon name="back" />
-          Xe dịch vụ
-        </Link>
-      )}
-      <PageHeading
-        eyebrow={
-          manager ? "ĐIỀU HÀNH / PHIẾU DỊCH VỤ" : "CỐ VẤN / PHIẾU DỊCH VỤ"
-        }
-        title={visit.code}
-        description={`${visit.vehicle.plate || visit.vehicle.model} · Tiếp nhận ${at(visit.receivedAt)}`}
+  const overview =
+    visit.workflowVersion === 2
+      ? params.get("tab") === "tong-quan"
+      : legacyOverview;
+  const workspace = !manager && visit.workflowVersion === 2;
+  const errorMessage = error && (
+    <p className="adm-error-text" role="alert">
+      {error}{" "}
+      <button
+        className="adm-btn"
+        disabled={busy || photoBusy}
+        onClick={() => {
+          if (
+            (!editing && !workflowDirty) ||
+            window.confirm("Tải lại dữ liệu và bỏ các thay đổi chưa lưu?")
+          ) {
+            setEditing(false);
+            setWorkflowDirty(false);
+            setDraft(null);
+            setReload((n) => n + 1);
+          }
+        }}
+        type="button"
       >
-        <VisitStageBadge stage={visit.stage} />
-        <Link className="adm-btn" href={`${root}/phieu-dich-vu`}>
-          Danh sách phiếu
-        </Link>
-        {["HANDED_OVER", "ABORTED"].includes(visit.stage) && (
-          <Link
-            className="adm-btn adm-primary"
-            href={`${root}/tiep-nhan/truc-tiep?followUp=${id}`}
-          >
-            Tiếp nhận xe quay lại
-          </Link>
-        )}
-      </PageHeading>
-      {error && (
-        <p className="adm-error-text" role="alert">
-          {error}{" "}
+        Tải lại dữ liệu
+      </button>
+    </p>
+  );
+  const vehicleContent = (
+    <>
+      {(manager || workspace) && (
+        <section className="adm-panel">
+          <h2>Khách hàng và xe</h2>
+          <dl className="adm-info-grid">
+            <div>
+              <dt>Khách hàng</dt>
+              <dd>{visit.customer.name}</dd>
+            </div>
+            <div>
+              <dt>Số điện thoại</dt>
+              <dd>
+                <a href={`tel:${formatPhone(visit.customer.phone)}`}>
+                  {formatPhone(visit.customer.phone)}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt>Xe</dt>
+              <dd>
+                {visit.vehicle.model} ·{" "}
+                {formatPlate(visit.vehicle.plate) || "Chưa có biển số"}
+              </dd>
+            </div>
+            <div>
+              <dt>Cố vấn</dt>
+              <dd>{visit.assignedAdvisor.name}</dd>
+            </div>
+            <div>
+              <dt>Nguồn tiếp nhận</dt>
+              <dd>
+                {visit.origin === "WALK_IN"
+                  ? "Khách đến trực tiếp"
+                  : "Lịch hẹn"}
+              </dd>
+            </div>
+            <div>
+              <dt>Dịch vụ</dt>
+              <dd>{visit.services.map((s) => s.name).join(", ")}</dd>
+            </div>
+          </dl>
+          {visit.bookingId && (
+            <Link
+              className="adm-text-link"
+              href={`${root}/lich-hen${manager ? "?selected=" : "/"}${visit.bookingId}`}
+            >
+              Xem lịch hẹn
+            </Link>
+          )}
+          {visit.followUpOfVisitId && (
+            <Link
+              className="adm-text-link"
+              href={`${root}/phieu-dich-vu/${visit.followUpOfVisitId}`}
+            >
+              Phiếu của lần trước
+            </Link>
+          )}
+        </section>
+      )}
+      <section className="adm-panel">
+        <h2>Thông tin tiếp nhận</h2>
+        <dl className="adm-info-grid">
+          <div>
+            <dt>Yêu cầu</dt>
+            <dd>{visit.intake.request}</dd>
+          </div>
+          <div>
+            <dt>ODO</dt>
+            <dd>
+              {visit.intake.odometer !== null
+                ? `${formatOdometer(visit.intake.odometer)} km`
+                : visit.intake.odometerMissingReason || "Chưa ghi"}
+            </dd>
+          </div>
+          {Object.entries(visit.intake.conditions).map(([k, v]) => (
+            <div key={k}>
+              <dt>
+                {
+                  {
+                    exterior: "Ngoại thất",
+                    interior: "Nội thất",
+                    engine: "Động cơ",
+                    dashboard: "Đèn taplo",
+                    tires: "Lốp xe",
+                    operation: "Vận hành",
+                  }[k]
+                }
+              </dt>
+              <dd>
+                {Array.isArray(v)
+                  ? v.join(", ") || "Chưa ghi"
+                  : v || "Chưa ghi"}
+              </dd>
+            </div>
+          ))}
+          <div>
+            <dt>Ghi chú</dt>
+            <dd>{visit.intake.receptionNote || "Chưa ghi"}</dd>
+          </div>
+          {visit.intake.plateMissingReason && (
+            <div>
+              <dt>Lý do chưa có biển số</dt>
+              <dd>{visit.intake.plateMissingReason}</dd>
+            </div>
+          )}
+        </dl>
+        <div className="adv-photo-grid">
+          {visit.media.map((p) => (
+            <figure key={p.id}>
+              <PrivatePhoto id={p.id} name={p.name} />
+              {!editing && visit.allowedActions.includes("edit_intake") && (
+                <button
+                  className="adm-btn adm-btn-sm"
+                  disabled={busy}
+                  onClick={() => {
+                    const why = window.prompt("Lý do gỡ ảnh?");
+                    if (why?.trim())
+                      void run(
+                        "admin/visit-media/" + p.id,
+                        {
+                          expectedVersion: visit.version,
+                          reason: why.trim(),
+                        },
+                        "DELETE",
+                      );
+                  }}
+                >
+                  Gỡ ảnh
+                </button>
+              )}
+            </figure>
+          ))}
+        </div>
+        {visit.allowedActions.includes("edit_intake") && (
           <button
+            ref={intakeTrigger}
             className="adm-btn"
             onClick={() => {
-              if (
-                (!editing && !workflowDirty) ||
-                window.confirm("Tải lại dữ liệu và bỏ các thay đổi chưa lưu?")
-              ) {
-                setEditing(false);
-                setWorkflowDirty(false);
-                setDraft(null);
-                setReload((n) => n + 1);
-              }
+              setDraft({ ...visit.intake, photos: [] });
+              setReason("");
+              setError("");
+              setEditing(true);
             }}
           >
-            Tải lại dữ liệu
+            Cập nhật tiếp nhận
           </button>
-        </p>
-      )}
-      <LiveWorkflow
-        visit={visit}
-        root={root}
-        onCommitted={() => {
-          setWorkflowDirty(false);
-          setReload((n) => n + 1);
-        }}
-        onDirty={setWorkflowDirty}
-      />
-      {overview && (
-        <>
-          {manager && (
-            <section className="adm-panel">
-              <h2>Khách hàng và xe</h2>
-              <dl className="adm-info-grid">
-                <div>
-                  <dt>Khách hàng</dt>
-                  <dd>{visit.customer.name}</dd>
-                </div>
-                <div>
-                  <dt>Số điện thoại</dt>
-                  <dd>
-                    <a href={`tel:${visit.customer.phone}`}>
-                      {visit.customer.phone}
-                    </a>
-                  </dd>
-                </div>
-                <div>
-                  <dt>Xe</dt>
-                  <dd>
-                    {visit.vehicle.model} ·{" "}
-                    {visit.vehicle.plate || "Chưa có biển số"}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Cố vấn</dt>
-                  <dd>{visit.assignedAdvisor.name}</dd>
-                </div>
-                <div>
-                  <dt>Nguồn tiếp nhận</dt>
-                  <dd>
-                    {visit.origin === "WALK_IN"
-                      ? "Khách đến trực tiếp"
-                      : "Lịch hẹn"}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Dịch vụ</dt>
-                  <dd>{visit.services.map((s) => s.name).join(", ")}</dd>
-                </div>
-              </dl>
-              {visit.bookingId && (
-                <Link
-                  className="adm-text-link"
-                  href={`${root}/lich-hen${manager ? "?selected=" : "/"}${visit.bookingId}`}
-                >
-                  Xem lịch hẹn
-                </Link>
-              )}
-              {visit.followUpOfVisitId && (
-                <Link
-                  className="adm-text-link"
-                  href={`${root}/phieu-dich-vu/${visit.followUpOfVisitId}`}
-                >
-                  Phiếu của lần trước
-                </Link>
-              )}
-            </section>
-          )}
-          <section className="adm-panel">
-            <h2>Thông tin tiếp nhận</h2>
-            <dl className="adm-info-grid">
-              <div>
-                <dt>Yêu cầu</dt>
-                <dd>{visit.intake.request}</dd>
-              </div>
-              <div>
-                <dt>ODO</dt>
-                <dd>
-                  {visit.intake.odometer !== null
-                    ? `${visit.intake.odometer} km`
-                    : visit.intake.odometerMissingReason}
-                </dd>
-              </div>
-              {Object.entries(visit.intake.conditions).map(([k, v]) => (
-                <div key={k}>
-                  <dt>
-                    {
-                      {
-                        exterior: "Ngoại thất",
-                        interior: "Nội thất",
-                        engine: "Động cơ",
-                        dashboard: "Đèn taplo",
-                        tires: "Lốp xe",
-                        operation: "Vận hành",
-                      }[k]
-                    }
-                  </dt>
-                  <dd>
-                    {Array.isArray(v)
-                      ? v.join(", ") || "Chưa ghi"
-                      : v || "Chưa ghi"}
-                  </dd>
-                </div>
-              ))}
-              <div>
-                <dt>Ghi chú</dt>
-                <dd>{visit.intake.receptionNote || "Chưa ghi"}</dd>
-              </div>
-              {visit.intake.plateMissingReason && (
-                <div>
-                  <dt>Lý do chưa có biển số</dt>
-                  <dd>{visit.intake.plateMissingReason}</dd>
-                </div>
-              )}
-            </dl>
-            <div className="adv-photo-grid">
-              {visit.media.map((p) => (
-                <figure key={p.id}>
-                  <PrivatePhoto id={p.id} name={p.name} />
-                  {!editing && visit.allowedActions.includes("edit_intake") && (
-                    <button
-                      className="adm-btn adm-btn-sm"
-                      disabled={busy}
-                      onClick={() => {
-                        const why = window.prompt("Lý do gỡ ảnh?");
-                        if (why?.trim())
-                          void run(
-                            "admin/visit-media/" + p.id,
-                            {
-                              expectedVersion: visit.version,
-                              reason: why.trim(),
-                            },
-                            "DELETE",
-                          );
-                      }}
-                    >
-                      Gỡ ảnh
-                    </button>
-                  )}
-                </figure>
-              ))}
-            </div>
-            {visit.allowedActions.includes("edit_intake") && !editing && (
-              <button
-                className="adm-btn"
-                onClick={() => {
-                  setDraft({ ...visit.intake, photos: [] });
-                  setEditing(true);
-                }}
-              >
-                Cập nhật tiếp nhận
-              </button>
-            )}
-          </section>
-          {editing && draft && (
-            <form
-              className="adm-booking-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                void run(
-                  `admin/service-visits/${id}/intake`,
-                  {
-                    expectedVersion: visit.version,
-                    reason,
-                    intake: intakePayload(draft),
-                  },
-                  "PATCH",
-                );
-              }}
+        )}
+      </section>
+      {editing && draft && (
+        <dialog
+          ref={intakeDialog}
+          className="adm-dialog adv-intake-dialog"
+          aria-labelledby="intake-dialog-title"
+          onCancel={(e) => {
+            e.preventDefault();
+            closeIntake();
+          }}
+        >
+          <header className="adv-intake-dialog-heading">
+            <h2 id="intake-dialog-title">Cập nhật tiếp nhận</h2>
+            <button
+              type="button"
+              className="adm-icon-btn"
+              aria-label="Đóng cập nhật tiếp nhận"
+              autoFocus
+              disabled={busy || photoBusy}
+              onClick={closeIntake}
             >
+              <AdminIcon name="close" />
+            </button>
+          </header>
+          <form
+            className="adm-booking-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void run(
+                `admin/service-visits/${id}/intake`,
+                {
+                  expectedVersion: visit.version,
+                  reason,
+                  intake: intakePayload(draft),
+                },
+                "PATCH",
+              );
+            }}
+          >
+            <div className="adv-intake-dialog-body adv-stack">
               <VisitIntakeFields
                 value={draft}
                 onChange={setDraft}
@@ -913,221 +972,203 @@ function RemoteVisitDetail({
                   required
                   maxLength={400}
                   value={reason}
+                  disabled={busy || photoBusy}
                   onChange={(e) => setReason(e.target.value)}
                 />
               </label>
-              <div className="adm-action-row">
-                <button
-                  type="button"
-                  className="adm-btn"
-                  disabled={busy}
-                  onClick={() => {
-                    setEditing(false);
-                    setDraft(null);
-                  }}
-                >
-                  Bỏ thay đổi
-                </button>
-                <button
-                  className="adm-btn adm-primary"
-                  disabled={busy || photoBusy}
-                >
-                  Lưu thông tin
-                </button>
-              </div>
-            </form>
-          )}
-          {visit.allowedActions.includes("inspect") && !editing && (
-            <section className="adm-panel">
-              <h2>Kiểm tra ban đầu</h2>
+              {errorMessage}
+            </div>
+            <div className="adm-dialog-actions">
+              <button
+                type="button"
+                className="adm-btn"
+                disabled={busy || photoBusy}
+                onClick={closeIntake}
+              >
+                Bỏ thay đổi
+              </button>
               <button
                 className="adm-btn adm-primary"
-                disabled={busy}
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Xác nhận đã hoàn tất kiểm tra ban đầu của xe?",
-                    )
-                  )
-                    void run(`admin/service-visits/${id}/inspection`, {
-                      expectedVersion: visit.version,
-                      reason: "Đã kiểm tra tình trạng xe thực tế",
-                    });
-                }}
+                disabled={busy || photoBusy}
               >
-                Hoàn tất kiểm tra ban đầu
+                {busy ? "Đang lưu…" : "Lưu thông tin"}
               </button>
-            </section>
-          )}
-          {visit.allowedActions.includes("contact") && !editing && (
-            <section className="adm-panel">
-              <h2>Ghi nhận liên hệ</h2>
-              <form
-                className="adm-booking-form"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  void run(`admin/service-visits/${id}/contact-events`, {
-                    expectedVersion: visit.version,
-                    channel,
-                    outcome,
-                    note,
-                  });
-                }}
-              >
-                <div className="adm-form-grid">
-                  <label className="adm-field">
-                    Kênh liên hệ
-                    <select
-                      value={channel}
-                      onChange={(e) => setChannel(e.target.value)}
-                    >
-                      {[
-                        ["PHONE", "Điện thoại"],
-                        ["ZALO", "Zalo"],
-                        ["IN_PERSON", "Trực tiếp"],
-                        ["OTHER", "Khác"],
-                      ].map(([v, l]) => (
-                        <option value={v} key={v}>
-                          {l}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="adm-field">
-                    Kết quả
-                    <select
-                      value={outcome}
-                      onChange={(e) => setOutcome(e.target.value)}
-                    >
-                      {[
-                        ["UNREACHED", "Chưa liên hệ được"],
-                        ["AGREED", "Đã thống nhất"],
-                        ["DECLINED", "Khách từ chối"],
-                        ["OTHER", "Khác"],
-                      ].map(([v, l]) => (
-                        <option value={v} key={v}>
-                          {l}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="adm-field adm-span-full">
-                    Nội dung
-                    <textarea
-                      rows={2}
-                      maxLength={1000}
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}
-                    />
-                  </label>
-                </div>
-                <button className="adm-btn" disabled={busy}>
-                  Lưu liên hệ
-                </button>
-              </form>
-            </section>
-          )}
-          {manager && visit.allowedActions.includes("transfer") && !editing && (
-            <section className="adm-panel">
-              <h2>Chuyển cố vấn</h2>
-              <form
-                className="adm-booking-form"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  void run(`admin/service-visits/${id}/transfer`, {
-                    expectedVersion: visit.version,
-                    toAdvisorId: advisor,
-                    reason,
-                  });
-                }}
-              >
-                <label className="adm-field">
-                  Cố vấn nhận *
-                  <select
-                    required
-                    value={advisor}
-                    onChange={(e) => setAdvisor(e.target.value)}
-                  >
-                    <option value="">Chọn cố vấn</option>
-                    {staff
-                      .filter(
-                        (s) =>
-                          s.id !== visit.assignedAdvisor.id && s.accountEnabled,
-                      )
-                      .map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-                <label className="adm-field">
-                  Lý do chuyển *
-                  <input
-                    required
-                    maxLength={400}
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
-                  />
-                </label>
-                <button className="adm-btn adm-primary" disabled={busy}>
-                  Chuyển cố vấn
-                </button>
-              </form>
-            </section>
-          )}
-          <section className="adm-panel">
-            <h2>Lịch sử phiếu</h2>
-            <ol className="adm-timeline adv-timeline">
-              {events.map((e) => (
-                <li key={e.id}>
-                  <i />
-                  <div>
-                    <strong>{eventNames[e.type] || e.type}</strong>
-                    <time>{at(e.occurredAt)}</time>
-                    {e.reason && <p>{e.reason}</p>}
-                    {e.type === "VISIT_CONTACT" && (
-                      <p>
-                        {
-                          (
-                            {
-                              PHONE: "Điện thoại",
-                              ZALO: "Zalo",
-                              IN_PERSON: "Trực tiếp",
-                              OTHER: "Khác",
-                            } as Record<string, string>
-                          )[String(e.data.channel)]
-                        }{" "}
-                        ·{" "}
-                        {
-                          (
-                            {
-                              UNREACHED: "Chưa liên hệ được",
-                              AGREED: "Đã thống nhất",
-                              DECLINED: "Khách từ chối",
-                              OTHER: "Khác",
-                            } as Record<string, string>
-                          )[String(e.data.outcome)]
-                        }{" "}
-                        · {String(e.data.note || "")}
-                      </p>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ol>
-            {next && (
-              <button
-                className="adm-btn"
-                disabled={busy}
-                onClick={() => void moreEvents()}
-              >
-                Xem thêm lịch sử
-              </button>
-            )}
-          </section>
-        </>
+            </div>
+          </form>
+        </dialog>
       )}
+      {visit.allowedActions.includes("inspect") && !editing && (
+        <section className="adm-panel">
+          <h2>Kiểm tra ban đầu</h2>
+          <button
+            className="adm-btn adm-primary"
+            disabled={busy}
+            onClick={() => {
+              if (
+                window.confirm("Xác nhận đã hoàn tất kiểm tra ban đầu của xe?")
+              )
+                void run(`admin/service-visits/${id}/inspection`, {
+                  expectedVersion: visit.version,
+                  reason: "Đã kiểm tra tình trạng xe thực tế",
+                });
+            }}
+          >
+            Hoàn tất kiểm tra ban đầu
+          </button>
+        </section>
+      )}
+      {manager && visit.allowedActions.includes("transfer") && !editing && (
+        <section className="adm-panel">
+          <h2>Chuyển cố vấn</h2>
+          <form
+            className="adm-booking-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void run(`admin/service-visits/${id}/transfer`, {
+                expectedVersion: visit.version,
+                toAdvisorId: advisor,
+                reason,
+              });
+            }}
+          >
+            <label className="adm-field">
+              Cố vấn nhận *
+              <select
+                required
+                value={advisor}
+                onChange={(e) => setAdvisor(e.target.value)}
+              >
+                <option value="">Chọn cố vấn</option>
+                {staff
+                  .filter(
+                    (s) =>
+                      s.id !== visit.assignedAdvisor.id && s.accountEnabled,
+                  )
+                  .map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label className="adm-field">
+              Lý do chuyển *
+              <input
+                required
+                maxLength={400}
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
+            </label>
+            <button className="adm-btn adm-primary" disabled={busy}>
+              Chuyển cố vấn
+            </button>
+          </form>
+        </section>
+      )}
+    </>
+  );
+  const historyContent = (
+    <>
+      <section className="adm-panel">
+        <h2>Lịch sử phiếu</h2>
+        <ol className="adm-timeline adv-timeline">
+          {events.map((e) => (
+            <li key={e.id}>
+              <i />
+              <div>
+                <strong>{eventNames[e.type] || e.type}</strong>
+                <time>{at(e.occurredAt)}</time>
+                {e.reason && <p>{e.reason}</p>}
+                {e.type === "VISIT_CONTACT" && (
+                  <p>
+                    {
+                      (
+                        {
+                          PHONE: "Điện thoại",
+                          ZALO: "Zalo",
+                          IN_PERSON: "Trực tiếp",
+                          OTHER: "Khác",
+                        } as Record<string, string>
+                      )[String(e.data.channel)]
+                    }{" "}
+                    ·{" "}
+                    {
+                      (
+                        {
+                          UNREACHED: "Chưa liên hệ được",
+                          AGREED: "Đã thống nhất",
+                          DECLINED: "Khách từ chối",
+                          OTHER: "Khác",
+                        } as Record<string, string>
+                      )[String(e.data.outcome)]
+                    }{" "}
+                    · {String(e.data.note || "")}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+        {next && (
+          <button
+            className="adm-btn"
+            disabled={busy}
+            onClick={() => void moreEvents()}
+          >
+            Xem thêm lịch sử
+          </button>
+        )}
+      </section>
+    </>
+  );
+  return (
+    <div className="adv-page adv-stack adv-order-detail">
+      {!manager && (
+        <Link
+          href={`${root}/phieu-dich-vu`}
+          className="adm-mobile-back adm-text-link"
+        >
+          <AdminIcon name="back" />
+          Phiếu dịch vụ
+        </Link>
+      )}
+      {!workspace && (
+        <PageHeading
+          eyebrow={
+            manager ? "ĐIỀU HÀNH / PHIẾU DỊCH VỤ" : "CỐ VẤN / PHIẾU DỊCH VỤ"
+          }
+          title={visit.code}
+          description={`${formatPlate(visit.vehicle.plate) || visit.vehicle.model} · Tiếp nhận ${at(visit.receivedAt)}`}
+        >
+          <VisitStageBadge stage={visit.stage} />
+          <Link className="adm-btn" href={`${root}/phieu-dich-vu`}>
+            Danh sách phiếu
+          </Link>
+          {["HANDED_OVER", "COMPLETED", "ABORTED"].includes(visit.stage) && (
+            <Link
+              className="adm-btn adm-primary"
+              href={`${root}/tiep-nhan/truc-tiep?followUp=${id}`}
+            >
+              Tiếp nhận xe quay lại
+            </Link>
+          )}
+        </PageHeading>
+      )}
+      {!editing && errorMessage}
+      <LiveWorkflow
+        vehicleContent={workspace ? vehicleContent : undefined}
+        historyContent={workspace ? historyContent : undefined}
+        visit={visit}
+        root={root}
+        onCommitted={() => {
+          setWorkflowDirty(false);
+          setReload((n) => n + 1);
+        }}
+        onDirty={setWorkflowDirty}
+      />
+      {!workspace && overview && vehicleContent}
+      {!workspace && overview && historyContent}
     </div>
   );
 }

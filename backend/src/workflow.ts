@@ -1,4 +1,5 @@
 import type { Config } from "./config";
+import { randomUUID } from "node:crypto";
 import { checkStaffShift } from "./operations";
 import { sql, one, rows, json, ids, type Conn, type Row } from "./database";
 import {
@@ -10,6 +11,7 @@ import {
   iso,
   event,
   page,
+  permission,
   type Context,
 } from "./common";
 import { Visits } from "./visits";
@@ -19,6 +21,8 @@ import type { ServicePlan } from "./capacity/capacity";
 import { quoteMoney, calculationPolicy } from "./quote-money";
 import type { Finance } from "./finance";
 import type { Inventory } from "./inventory";
+import { checkServiceTransition } from "./service-workflow";
+import { ServiceWorkflowV2 } from "./workflow-v2";
 
 export class Workflow {
   constructor(
@@ -32,7 +36,7 @@ export class Workflow {
     const v = await scopedVisit(c, ctx, id, version !== undefined);
     if (version !== undefined) {
       expectVersion(v, version);
-      if (["HANDED_OVER", "ABORTED"].includes(v.stage))
+      if (["HANDED_OVER", "COMPLETED", "ABORTED"].includes(v.stage))
         fail(409, "VISIT_CLOSED", "Phiếu đã đóng, không thể chỉnh sửa.");
     }
     return v;
@@ -110,6 +114,7 @@ export class Workflow {
       kind: l.kind,
       serviceId: l.service_id,
       name: l.name,
+      description: l.description,
       code: l.code,
       unit: l.unit,
       quantity: l.quantity,
@@ -133,6 +138,7 @@ export class Workflow {
       kind: r.kind,
       baseRevisionId: r.base_revision_id,
       status: r.status,
+      approvedTotal: r.approved_total,
       currency: r.currency,
       calculationPolicy: r.calculation_policy,
       discountPercent: r.discount_percent,
@@ -144,6 +150,12 @@ export class Workflow {
       createdAt: iso(r.created_at),
       submittedAt: r.submitted_at ? iso(r.submitted_at) : null,
       lines: await this.lines(c, r.id),
+      voidedLineIds: (
+        await rows(
+          c,
+          sql`SELECT jsonb_array_elements_text(data->'lineIds') AS id FROM visit_events WHERE visit_id=${r.visit_id} AND type='QUOTE_SCOPE_VOIDED' AND data->>'revisionId'=${r.id}`,
+        )
+      ).map((x) => x.id),
       decision: decision
         ? {
             decision: decision.decision,
@@ -152,6 +164,7 @@ export class Workflow {
             evidenceNote: decision.evidence_note,
             recordedAt: iso(decision.recorded_at),
             mediaId: decision.media_id,
+            approvedLineIds: decision.approved_line_ids,
           }
         : null,
     };
@@ -180,7 +193,7 @@ export class Workflow {
       : [];
     const acceptances = await rows(
       c,
-      sql`SELECT a.*,s.name AS inspector_name FROM acceptances a JOIN staff_profiles s ON s.id=a.inspector_id WHERE a.visit_id=${id} ORDER BY a.checked_at DESC,a.id DESC`,
+      sql`SELECT a.*,s.name AS inspector_name FROM acceptances a JOIN staff_profiles s ON s.id=a.inspector_id WHERE a.visit_id=${id} ORDER BY CASE WHEN ${v.workflow_version}=2 THEN a.record_no ELSE NULL END DESC,a.checked_at DESC,a.id DESC`,
     );
     const inspections = [];
     for (const a of acceptances)
@@ -190,6 +203,8 @@ export class Workflow {
         scopeVersion: a.scope_version,
         checkedAt: iso(a.checked_at),
         inspector: { id: a.inspector_id, name: a.inspector_name },
+        qualityChecks: a.quality_checks,
+        completionConfirmed: a.completion_confirmed,
         note: a.note,
         checks: await rows(
           c,
@@ -204,12 +219,19 @@ export class Workflow {
       c,
       sql`SELECT * FROM visit_handovers WHERE visit_id=${id}`,
     );
-    const open = !["HANDED_OVER", "ABORTED"].includes(v.stage);
+    const open = !["HANDED_OVER", "COMPLETED", "ABORTED"].includes(v.stage);
     const settlement = await this.finance.balance(c, id);
     return {
       visitId: id,
       version: v.version,
       stage: v.stage,
+      workflowVersion: v.workflow_version,
+      isPaused: v.is_paused,
+      pauseReason: v.pause_reason,
+      pausedAt: v.paused_at ? iso(v.paused_at) : null,
+      ...(v.workflow_version === 2
+        ? await new ServiceWorkflowV2(this).summary(c, ctx, v)
+        : {}),
       calculationPolicy,
       quotes: await Promise.all(revisions.map((r) => this.revisionView(c, r))),
       obligation: { assessed: settlement.assessed, total: settlement.total },
@@ -333,9 +355,14 @@ export class Workflow {
   async createQuote(c: Conn, ctx: Context, id: string, input: Row) {
     const v = await this.visit(c, ctx, id, input.expectedVersion);
     if (
+      v.workflow_version === 2 &&
+      !["QUOTING", "WAITING_FOR_WORK", "IN_PROGRESS"].includes(v.stage)
+    )
+      fail(409, "INVALID_TRANSITION");
+    if (
       await one(
         c,
-        sql`SELECT id FROM quote_revisions WHERE visit_id=${id} AND status IN ('DRAFT','SUBMITTED')`,
+        sql`SELECT id FROM quote_revisions WHERE visit_id=${id} AND status IN ('DRAFT','SUBMITTED','PENDING_APPROVAL')`,
       )
     )
       fail(409, "QUOTE_OPEN_REVISION", "Hãy xử lý bản báo giá đang mở trước.");
@@ -355,11 +382,21 @@ export class Workflow {
     ))!;
     if (base?.status === "REJECTED") {
       await c.execute(
-        sql`INSERT INTO quote_lines(revision_id,sequence_no,kind,service_id,resource_plan,name,code,unit,quantity,unit_price,discount_percent,vat_percent,subtotal,discount_total,tax_total,total) SELECT ${r.id},sequence_no,kind,service_id,resource_plan,name,code,unit,quantity,unit_price,discount_percent,vat_percent,subtotal,discount_total,tax_total,total FROM quote_lines WHERE revision_id=${base.id}`,
+        sql`INSERT INTO quote_lines(revision_id,sequence_no,kind,service_id,resource_plan,name,description,code,unit,quantity,unit_price,discount_percent,vat_percent,subtotal,discount_total,tax_total,total,workflow_requirements) SELECT ${r.id},sequence_no,kind,service_id,resource_plan,name,description,code,unit,quantity,unit_price,discount_percent,vat_percent,subtotal,discount_total,tax_total,total,workflow_requirements FROM quote_lines WHERE revision_id=${base.id}`,
       );
       await c.execute(
         sql`UPDATE quote_revisions SET discount_percent=${base.discount_percent},subtotal=${base.subtotal},discount_total=${base.discount_total},tax_total=${base.tax_total},total=${base.total},note=${base.note} WHERE id=${r.id}`,
       );
+    }
+    if (!base && v.workflow_version === 2) {
+      const requested = await rows(
+        c,
+        sql`SELECT s.* FROM visit_services vs JOIN services s ON s.id=vs.service_id WHERE vs.visit_id=${id} AND s.active ORDER BY vs.sequence_no`,
+      );
+      for (const [i, s] of requested.entries())
+        await c.execute(
+          sql`INSERT INTO quote_lines(revision_id,sequence_no,kind,service_id,name,code,unit,quantity,unit_price,discount_percent,vat_percent,subtotal,discount_total,tax_total,total) VALUES(${r.id},${i},'SERVICE',${s.id},${s.name},${s.code},'Lần',1,0,0,0,0,0,0,0)`,
+        );
     }
     return this.record(c, ctx, v, "QUOTE_CREATED", input.reason, {
       revisionId: r.id,
@@ -381,11 +418,11 @@ export class Workflow {
     const plans: (ServicePlan | null)[] = [];
     for (const l of input.lines) {
       if (l.kind === "SERVICE") {
-        if (!l.serviceId || !/^1(\.0{1,3})?$/.test(l.quantity))
+        if (!l.serviceId)
           fail(
             422,
             "SERVICE_PLAN_REQUIRED",
-            "Mỗi dòng dịch vụ cần chọn một gói chuẩn với số lượng 1.",
+            "Mỗi dòng dịch vụ cần chọn một dịch vụ trong danh mục.",
           );
         plans.push(
           (
@@ -407,8 +444,12 @@ export class Workflow {
     for (const [i, l] of input.lines.entries()) {
       const t = totals.lines[i];
       await c.execute(
-        sql`INSERT INTO quote_lines(revision_id,sequence_no,kind,service_id,resource_plan,name,code,unit,quantity,unit_price,discount_percent,vat_percent,subtotal,discount_total,tax_total,total) VALUES(${id},${i},${l.kind},${l.serviceId || null},${plans[i] ? json(plans[i]) : sql`NULL`},${l.name},${l.code},${l.unit},${l.quantity},${l.unitPrice},${l.discountPercent},${l.vatPercent},${t.subtotal},${t.discountTotal},${t.taxTotal},${t.total})`,
+        sql`INSERT INTO quote_lines(revision_id,sequence_no,kind,service_id,resource_plan,name,description,code,unit,quantity,unit_price,discount_percent,vat_percent,subtotal,discount_total,tax_total,total) VALUES(${id},${i},${l.kind},${l.serviceId || null},${plans[i] ? json(plans[i]) : sql`NULL`},${l.name},${l.description || ""},${l.code},${l.unit},${l.quantity},${l.unitPrice},${l.discountPercent},${l.vatPercent},${t.subtotal},${t.discountTotal},${t.taxTotal},${t.total})`,
       );
+      if (v.workflow_version === 2 && l.serviceId)
+        await c.execute(
+          sql`UPDATE quote_lines SET workflow_requirements=(SELECT jsonb_build_object('qualityChecks',quality_checks,'technicianRequired',technician_required) FROM services WHERE id=${l.serviceId}) WHERE revision_id=${id} AND sequence_no=${i}`,
+        );
     }
     await c.execute(
       sql`UPDATE quote_revisions SET discount_percent=${input.discountPercent},subtotal=${totals.subtotal},discount_total=${totals.discountTotal},tax_total=${totals.taxTotal},total=${totals.total},note=${input.note} WHERE id=${id}`,
@@ -444,7 +485,7 @@ export class Workflow {
       request: v.request,
     };
     await c.execute(
-      sql`UPDATE quote_revisions SET status='SUBMITTED',submitted_at=${ctx.now},print_snapshot=${json(snapshot)} WHERE id=${id}`,
+      sql`UPDATE quote_revisions SET status=${v.workflow_version === 2 ? "PENDING_APPROVAL" : "SUBMITTED"},submitted_at=${ctx.now},print_snapshot=${json(snapshot)} WHERE id=${id}`,
     );
     return this.record(c, ctx, v, "QUOTE_SUBMITTED", input.reason, {
       revisionId: id,
@@ -457,24 +498,224 @@ export class Workflow {
       id,
       input.expectedVersion,
     );
-    if (r.status !== "SUBMITTED") fail(409, "QUOTE_REVISION_CONFLICT");
+    if (!["SUBMITTED", "PENDING_APPROVAL"].includes(r.status))
+      fail(409, "QUOTE_REVISION_CONFLICT");
+    const lines = await this.lines(c, id);
+    const accepted =
+      input.decision === "APPROVED"
+        ? input.approvedLineIds || lines.map((l) => l.id)
+        : [];
+    if (
+      (input.decision === "REJECTED" && input.approvedLineIds) ||
+      new Set(accepted).size !== accepted.length ||
+      accepted.some((key: string) => !lines.some((l) => l.id === key))
+    )
+      fail(422, "QUOTE_LINE_DECISION_INVALID");
+    if (
+      v.workflow_version === 1 &&
+      input.approvedLineIds &&
+      accepted.length !== lines.length
+    )
+      fail(422, "LEGACY_PARTIAL_APPROVAL_UNSUPPORTED");
+    const approvedTotal = lines
+      .filter((l) => accepted.includes(l.id))
+      .reduce((total, l) => total + BigInt(l.total), 0n)
+      .toString();
     const e = await this.evidence(c, ctx, v, input.evidence);
     await c.execute(
-      sql`INSERT INTO quote_decisions(revision_id,decision,recorded_by,recorded_at,customer_name,channel,evidence_note,media_id) VALUES(${id},${input.decision},${ctx.actor!.userId},${ctx.now},${e.customerName},${e.channel},${e.note},${e.mediaId})`,
+      sql`INSERT INTO quote_decisions(revision_id,decision,recorded_by,recorded_at,customer_name,channel,evidence_note,media_id,approved_line_ids) VALUES(${id},${input.decision},${ctx.actor!.userId},${ctx.now},${e.customerName},${e.channel},${e.note},${e.mediaId},${ids(accepted)})`,
     );
     await c.execute(
-      sql`UPDATE quote_revisions SET status=${input.decision},decided_at=${ctx.now} WHERE id=${id}`,
+      sql`UPDATE quote_revisions SET status=${input.decision},decided_at=${ctx.now},approved_total=${approvedTotal} WHERE id=${id}`,
     );
     if (input.decision === "APPROVED") {
       await this.finance.obligation(c, v.id);
       await this.invalidate(c, ctx, v);
+      if (v.workflow_version === 2 && v.stage === "QUOTING") {
+        checkServiceTransition(v.stage, "WAITING_FOR_WORK");
+        v.stage = "WAITING_FOR_WORK";
+        await c.execute(
+          sql`UPDATE service_visits SET stage=${v.stage} WHERE id=${v.id}`,
+        );
+      }
     }
     return this.record(c, ctx, v, "QUOTE_" + input.decision, input.reason, {
       revisionId: id,
     });
   }
+  async closeQuote(c: Conn, ctx: Context, id: string, input: Row) {
+    permission(ctx, "quotes.write");
+    const { visit: v, revision: r } = await this.revision(
+      c,
+      ctx,
+      id,
+      input.expectedVersion,
+    );
+    if (v.workflow_version !== 2 || r.status !== "DRAFT")
+      fail(409, "INVALID_TRANSITION");
+    await this.saveQuote(c, ctx, id, input);
+    await this.submit(c, ctx, id, {
+      ...input,
+      expectedVersion: input.expectedVersion + 1,
+    });
+    return this.decide(c, ctx, id, {
+      ...input,
+      expectedVersion: input.expectedVersion + 2,
+      decision: "APPROVED",
+      approvedLineIds: undefined,
+    });
+  }
+  async voidQuote(c: Conn, ctx: Context, id: string, input: Row) {
+    const { visit: v, revision: r } = await this.revision(
+      c,
+      ctx,
+      id,
+      input.expectedVersion,
+    );
+    if (
+      v.workflow_version !== 2 ||
+      r.status === "VOIDED" ||
+      r.status === "REJECTED"
+    )
+      fail(409, "INVALID_TRANSITION");
+    if (input.lineIds) return this.voidScope(c, ctx, v, r, input);
+    if (r.status === "APPROVED") {
+      manager(ctx);
+      if (BigInt(r.approved_total ?? r.total) > 0n)
+        permission(ctx, "payments.refund");
+      if (input.unperformedConfirmed !== true)
+        fail(
+          422,
+          "UNPERFORMED_CONFIRMATION_REQUIRED",
+          "Quản lý cần xác nhận các hạng mục chưa được thực hiện trước khi hủy.",
+        );
+      if (r.kind === "INITIAL" && v.stage !== "WAITING_FOR_WORK")
+        fail(409, "QUOTE_ALREADY_PERFORMED");
+      const performed = await one(
+        c,
+        sql`SELECT i.id FROM work_items i JOIN quote_lines l ON l.id=i.quote_line_id WHERE l.revision_id=${id} AND i.status NOT IN ('PENDING','SKIPPED') LIMIT 1`,
+      );
+      if (performed)
+        fail(
+          409,
+          "QUOTE_ALREADY_PERFORMED",
+          "Hạng mục đã thực hiện: dùng điều chỉnh tài chính, không hủy báo giá.",
+        );
+      const requests = await rows(
+        c,
+        sql`SELECT sr.id,sr.reserved FROM stock_requests sr JOIN quote_lines l ON l.id=sr.quote_line_id WHERE l.revision_id=${id}`,
+      );
+      for (const request of requests)
+        if (
+          Number(request.reserved) > 0 ||
+          (await this.inventory.netIssued(c, request.id)) > 0n
+        )
+          fail(
+            409,
+            "STOCK_SETTLEMENT_REQUIRED",
+            "Trả phụ tùng và giải phóng giữ kho trước khi hủy.",
+          );
+      const amount = await this.finance.obligation(c, v.id);
+      if (BigInt(amount.total || "0") < BigInt(r.approved_total ?? r.total))
+        fail(409, "CREDIT_EXCEEDS_OBLIGATION");
+      await c.execute(
+        sql`UPDATE work_items SET status='SKIPPED',finished_at=${ctx.now} WHERE quote_line_id IN (SELECT id FROM quote_lines WHERE revision_id=${id}) AND status='PENDING'`,
+      );
+      if (r.kind === "INITIAL") {
+        v.stage = "QUOTING";
+        await c.execute(
+          sql`UPDATE service_visits SET stage='QUOTING' WHERE id=${v.id}`,
+        );
+      }
+      await this.invalidate(c, ctx, v);
+    }
+    await c.execute(
+      sql`UPDATE quote_revisions SET status='VOIDED' WHERE id=${id}`,
+    );
+    return this.record(c, ctx, v, "QUOTE_VOIDED", input.reason, {
+      revisionId: id,
+      previousStatus: r.status,
+    });
+  }
+  async voidScope(c: Conn, ctx: Context, v: Row, r: Row, input: Row) {
+    manager(ctx);
+    if (
+      r.status !== "APPROVED" ||
+      !["WAITING_FOR_WORK", "IN_PROGRESS"].includes(v.stage)
+    )
+      fail(409, "INVALID_TRANSITION");
+    if (input.unperformedConfirmed !== true)
+      fail(422, "UNPERFORMED_CONFIRMATION_REQUIRED");
+    const current = await rows(
+      c,
+      sql`SELECT * FROM authorized_quote_lines WHERE revision_id=${r.id}`,
+    );
+    if (
+      input.lineIds.length > current.length ||
+      input.lineIds.some((id: string) => !current.some((l) => l.id === id))
+    )
+      fail(
+        422,
+        "QUOTE_LINE_DECISION_INVALID",
+        "Hạng mục không còn hiệu lực hoặc không thuộc báo giá.",
+      );
+    const selected = current.filter((l) => input.lineIds.includes(l.id));
+    if (
+      await one(
+        c,
+        sql`SELECT id FROM work_items WHERE quote_line_id=ANY(${ids(input.lineIds)}) AND status NOT IN ('PENDING','SKIPPED') LIMIT 1`,
+      )
+    )
+      fail(409, "QUOTE_ALREADY_PERFORMED");
+    for (const req of await rows(
+      c,
+      sql`SELECT * FROM stock_requests WHERE quote_line_id=ANY(${ids(input.lineIds)})`,
+    ))
+      if (
+        Number(req.reserved) > 0 ||
+        (await this.inventory.netIssued(c, req.id)) > 0n
+      )
+        fail(409, "STOCK_SETTLEMENT_REQUIRED");
+    const amount = selected.reduce((sum, l) => sum + BigInt(l.total), 0n);
+    let creditId: string | undefined;
+    if (amount > 0n) {
+      permission(ctx, "payments.refund");
+      const credit = await this.finance.credit(c, ctx, v.id, {
+        commandId: randomUUID(),
+        expectedVersion: v.version,
+        amount: amount.toString(),
+        reason: input.reason,
+        evidence: `Hủy ${selected.length} hạng mục chưa thực hiện trong báo giá ${r.id}. ${input.reason}`,
+      });
+      v.version = credit.version;
+      creditId = credit.id;
+    }
+    await c.execute(
+      sql`UPDATE work_items SET status='SKIPPED',finished_at=${ctx.now} WHERE quote_line_id=ANY(${ids(input.lineIds)}) AND status='PENDING'`,
+    );
+    await this.invalidate(c, ctx, v);
+    return this.record(c, ctx, v, "QUOTE_SCOPE_VOIDED", input.reason, {
+      revisionId: r.id,
+      lineIds: input.lineIds,
+      creditId,
+      amount: amount.toString(),
+      unperformedConfirmed: true,
+    });
+  }
   async invalidate(c: Conn, ctx: Context, v: Row) {
     const order = await this.order(c, v.id, true);
+    if (v.workflow_version === 2) {
+      if (v.stage === "HANDOVER")
+        fail(
+          409,
+          "SCOPE_LOCKED",
+          "Phiếu đang bàn giao, không thể thay đổi phạm vi thi công.",
+        );
+      await c.execute(
+        sql`UPDATE work_orders SET scope_version=scope_version+1 WHERE id=${order!.id}`,
+      );
+      return;
+    }
     await c.execute(
       sql`UPDATE work_orders SET scope_version=scope_version+1,status=CASE WHEN status IN ('FINISHED','IN_PROGRESS') THEN 'PAUSED' ELSE status END,finished_at=NULL WHERE id=${order!.id}`,
     );
@@ -492,7 +733,7 @@ export class Workflow {
       input.mode === "NO_QUOTE_FREE" &&
       (await one(
         c,
-        sql`SELECT id FROM quote_revisions WHERE visit_id=${id} AND status<>'REJECTED' LIMIT 1`,
+        sql`SELECT id FROM quote_revisions WHERE visit_id=${id} AND status NOT IN ('REJECTED','VOIDED') LIMIT 1`,
       ))
     )
       fail(
@@ -505,6 +746,14 @@ export class Workflow {
         c,
         sql`INSERT INTO work_exemptions(visit_id,mode,scope,reason,evidence,approved_by,approved_at) VALUES(${id},${input.mode},${input.scope},${input.reason},${json(e)},${ctx.actor!.userId},${ctx.now}) RETURNING id`,
       );
+    if (v.workflow_version === 2 && input.mode === "NO_QUOTE_FREE") {
+      checkServiceTransition(v.stage, "WAITING_FOR_WORK");
+      v.stage = "WAITING_FOR_WORK";
+      await this.order(c, id, true);
+      await c.execute(
+        sql`UPDATE service_visits SET stage=${v.stage} WHERE id=${id}`,
+      );
+    }
     return this.record(c, ctx, v, "WORK_EXEMPTION_APPROVED", input.reason, {
       exemptionId: r!.id,
     });
@@ -527,7 +776,7 @@ export class Workflow {
       quoteLineId &&
       !(await one(
         c,
-        sql`SELECT l.id FROM quote_lines l JOIN quote_revisions r ON r.id=l.revision_id WHERE l.id=${quoteLineId} AND r.visit_id=${visitId} AND r.status='APPROVED' AND l.kind='SERVICE'`,
+        sql`SELECT l.id FROM authorized_quote_lines l JOIN quote_revisions r ON r.id=l.revision_id WHERE l.id=${quoteLineId} AND r.visit_id=${visitId} AND r.status='APPROVED' AND l.kind='SERVICE'`,
       ))
     )
       fail(422, "WORK_NOT_AUTHORIZED");
@@ -559,6 +808,8 @@ export class Workflow {
   async addItem(c: Conn, ctx: Context, id: string, input: Row) {
     const v = await this.visit(c, ctx, id, input.expectedVersion),
       order = (await this.order(c, id, true))!;
+    if (v.workflow_version !== 2 && !input.technicianIds.length)
+      fail(422, "TECHNICIAN_REQUIRED");
     if (+new Date(input.dueAt) <= +ctx.now) fail(422, "DUE_DATE_INVALID");
     if (
       (await one(
@@ -608,7 +859,16 @@ export class Workflow {
           c,
           sql`SELECT technician_id FROM work_item_assignments WHERE work_item_id=${id} AND ended_at IS NULL`,
         );
-        if (!people.length) fail(422, "TECHNICIAN_REQUIRED");
+        if (v.workflow_version === 2 && !people.length && item.quote_line_id) {
+          const line = await one(
+            c,
+            sql`SELECT workflow_requirements FROM authorized_quote_lines WHERE id=${item.quote_line_id}`,
+          );
+          if (line?.workflow_requirements.technicianRequired)
+            fail(422, "TECHNICIAN_REQUIRED");
+        }
+        if (!people.length && v.workflow_version !== 2)
+          fail(422, "TECHNICIAN_REQUIRED");
         await this.technicians(
           c,
           ctx,
@@ -623,6 +883,12 @@ export class Workflow {
       );
     } else {
       if (item.status !== "PENDING") fail(409, "WORK_ITEM_LOCKED");
+      if (
+        v.workflow_version !== 2 &&
+        input.technicianIds &&
+        !input.technicianIds.length
+      )
+        fail(422, "TECHNICIAN_REQUIRED");
       const line =
           input.quoteLineId === undefined
             ? item.quote_line_id
@@ -687,6 +953,8 @@ export class Workflow {
   async work(c: Conn, ctx: Context, id: string, action: string, input: Row) {
     const v = await this.visit(c, ctx, id, input.expectedVersion),
       order = (await this.order(c, id, true))!;
+    if (v.workflow_version === 2)
+      return new ServiceWorkflowV2(this).work(c, ctx, v, order, action, input);
     if (action === "start" || action === "resume") {
       if (
         (action === "start" &&
@@ -792,6 +1060,8 @@ export class Workflow {
   async accept(c: Conn, ctx: Context, id: string, input: Row) {
     const v = await this.visit(c, ctx, id, input.expectedVersion),
       order = await this.order(c, id);
+    if (v.workflow_version === 2)
+      return new ServiceWorkflowV2(this).accept(c, ctx, v, input);
     if (!order || order.status !== "FINISHED" || v.stage !== "QUALITY_CHECK")
       fail(409, "INVALID_TRANSITION");
     if (
@@ -881,6 +1151,8 @@ export class Workflow {
   }
   async handover(c: Conn, ctx: Context, id: string, input: Row) {
     const v = await this.visit(c, ctx, id, input.expectedVersion);
+    if (v.workflow_version === 2)
+      return new ServiceWorkflowV2(this).handover(c, ctx, v, input);
     if (v.stage !== "READY") fail(409, "HANDOVER_BLOCKED");
     const acceptance = await this.passed(c, id),
       amount = await this.finance.balance(c, id);
@@ -924,6 +1196,29 @@ export class Workflow {
       handoverId: h!.id,
     });
   }
+  async remove(c: Conn, ctx: Context, id: string, input: Row) {
+    const v = await scopedVisit(c, ctx, id, true);
+    expectVersion(v, input.expectedVersion);
+    await this.inventory.releaseVisit(c, ctx, id, input.reason);
+    await this.release(c, ctx, id, "DELETE: " + input.reason);
+    await c.execute(
+      sql`UPDATE work_orders SET status='ABORTED' WHERE visit_id=${id} AND status IN ('NOT_STARTED','IN_PROGRESS','PAUSED')`,
+    );
+    await c.execute(
+      sql`UPDATE service_visits SET deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId} WHERE id=${id}`,
+    );
+    if (v.booking_id) {
+      await c.execute(
+        sql`UPDATE bookings SET status='CANCELLED',cancelled_at=${ctx.now},cancel_reason=${input.reason},change_kind='CANCELLED',version=version+1,updated_at=${ctx.now} WHERE id=${v.booking_id} AND status='ARRIVED'`,
+      );
+      await event(c, ctx, v.booking_id, "BOOKING_VISIT_DELETED", input.reason, {
+        visitId: id,
+      });
+    }
+    return this.record(c, ctx, v, "VISIT_DELETED", input.reason, {
+      stageBefore: v.stage,
+    });
+  }
   async abort(c: Conn, ctx: Context, id: string, input: Row) {
     manager(ctx);
     const v = await this.visit(c, ctx, id, input.expectedVersion),
@@ -952,7 +1247,7 @@ export class Workflow {
     );
     v.stage = "ABORTED";
     await c.execute(
-      sql`UPDATE service_visits SET stage='ABORTED',aborted_at=${ctx.now} WHERE id=${id}`,
+      sql`UPDATE service_visits SET stage='ABORTED',is_paused=false,pause_reason=NULL,paused_at=NULL,aborted_at=${ctx.now} WHERE id=${id}`,
     );
     if (v.booking_id) {
       await c.execute(
@@ -994,11 +1289,25 @@ export class Workflow {
   }
   async print(c: Conn, ctx: Context, id: string, kind: "quote" | "acceptance") {
     if (kind === "quote") {
-      const { revision: r } = await this.revision(c, ctx, id);
-      if (r.status === "DRAFT")
+      const { revision: r, visit: v } = await this.revision(c, ctx, id);
+      if (r.status === "DRAFT" && v.workflow_version !== 2)
         fail(409, "QUOTE_NOT_SUBMITTED", "Gửi báo giá để cố định bản in.");
       const view = await this.revisionView(c, r);
-      return { kind: "quote", snapshot: r.print_snapshot, revision: view };
+      return {
+        kind: "quote",
+        snapshot: r.print_snapshot || {
+          station: {
+            name: ctx.station.name,
+            phone: ctx.station.phone,
+            address: ctx.station.address,
+          },
+          visitCode: v.code,
+          customer: v.contact_snapshot,
+          vehicle: v.vehicle_snapshot,
+          request: v.request,
+        },
+        revision: view,
+      };
     }
     const a = await one(
       c,
@@ -1015,10 +1324,13 @@ export class Workflow {
         inspectorName: a.print_snapshot.inspectorName,
         checkedAt: iso(a.checked_at),
         note: a.note,
-        checks: await rows(
-          c,
-          sql`SELECT label_snapshot AS label,passed,note FROM acceptance_checks WHERE acceptance_id=${id}`,
-        ),
+        checks: [
+          ...(await rows(
+            c,
+            sql`SELECT label_snapshot AS label,passed,note FROM acceptance_checks WHERE acceptance_id=${id}`,
+          )),
+          ...(a.quality_checks || []),
+        ],
       },
     };
   }

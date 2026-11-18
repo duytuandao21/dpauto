@@ -11,7 +11,7 @@ export function Gallery({
   images,
   className = "",
   mosaic = false,
-  vietnamese = false,
+  vietnamese = true,
 }: {
   images: SiteImage[];
   className?: string;

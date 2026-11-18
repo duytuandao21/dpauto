@@ -1,9 +1,10 @@
-import type { BookingStatus } from "@/lib/booking/types";
+import type { Booking, BookingStatus } from "@/lib/booking/types";
 import type { AdminIconName } from "@/components/admin/admin-icon";
 import type { OperationsData } from "./operations";
 import { createOperationsSeed } from "./operations-seed";
 
 export type ManagerBooking = {
+  record?: Booking;
   id: string;
   serviceVisitId?: string | null;
   code?: string;
@@ -15,7 +16,10 @@ export type ManagerBooking = {
   serviceNames?: Record<string, string>;
   advisorId: string;
   date: string;
+  /** Exact time; for a pending day+period request it is only the period start used for ordering. */
   time: string;
+  /** Half-day the customer asked for, while the advisor has not set an exact time. */
+  period?: "morning" | "afternoon";
   status: BookingStatus;
   note: string;
   changeKind?: "new" | "rescheduled" | "cancelled";
@@ -29,6 +33,8 @@ export type ManagerCustomer = {
   plate: string;
 };
 export type ManagerService = {
+  qualityChecks?: string[];
+  technicianRequired?: boolean;
   id: string;
   name: string;
   group: string;

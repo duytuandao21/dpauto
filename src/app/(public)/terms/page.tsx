@@ -6,7 +6,7 @@ import { CmsPage } from "@/components/sections/cms-page";
 import { notFound } from "next/navigation";
 
 export const generateMetadata = (): Promise<Metadata> =>
-  publicMetadata("/terms", { title: "Terms of Service" });
+  publicMetadata("/terms", { title: "Điều khoản dịch vụ" });
 export default async function TermsPage() {
   const content = await publicPage("terms");
   if (content?.withdrawn) notFound();

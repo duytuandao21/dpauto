@@ -103,14 +103,14 @@ export class Staff {
     if (
       await one(
         c,
-        sql`SELECT a.id FROM work_item_assignments a JOIN work_items i ON i.id=a.work_item_id JOIN work_orders w ON w.id=i.work_order_id JOIN service_visits v ON v.id=w.visit_id WHERE a.technician_id=${staffId} AND a.ended_at IS NULL AND i.status NOT IN ('DONE','SKIPPED') AND v.stage NOT IN ('HANDED_OVER','ABORTED') LIMIT 1`,
+        sql`SELECT a.id FROM work_item_assignments a JOIN work_items i ON i.id=a.work_item_id JOIN work_orders w ON w.id=i.work_order_id JOIN service_visits v ON v.id=w.visit_id WHERE a.technician_id=${staffId} AND a.ended_at IS NULL AND i.status NOT IN ('DONE','SKIPPED') AND v.deleted_at IS NULL AND v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') LIMIT 1`,
       )
     )
       fail(409, "WORK_ASSIGNMENTS_REMAIN");
     if (
       await one(
         c,
-        sql`SELECT id FROM service_visits WHERE assigned_advisor_id=${staffId} AND station_id=${ctx.station.id} AND stage NOT IN ('HANDED_OVER','ABORTED') LIMIT 1`,
+        sql`SELECT id FROM service_visits WHERE assigned_advisor_id=${staffId} AND station_id=${ctx.station.id} AND deleted_at IS NULL AND stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') LIMIT 1`,
       )
     )
       fail(409, "ASSIGNMENTS_REMAIN");

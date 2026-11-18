@@ -9,6 +9,11 @@ import {
   normalize,
   type Context,
 } from "./common";
+const defaultQualityChecks: Record<string, string[]> = {
+  MAINTENANCE: ["Kiểm tra các hạng mục bảo dưỡng và an toàn vận hành"],
+  DETAILING: ["Kiểm tra bề mặt và chất lượng hoàn thiện"],
+  ACCESSORIES: ["Kiểm tra lắp đặt và vận hành phụ kiện"],
+};
 
 export class Catalog {
   constructor(readonly config: Config) {}
@@ -58,6 +63,9 @@ export class Catalog {
       description: old?.description,
       marketingSlug: old?.marketing_slug,
       estimatedDurationMinutes: old?.estimated_duration_minutes,
+      qualityChecks:
+        old?.quality_checks || defaultQualityChecks[input.categoryCode] || [],
+      technicianRequired: old?.technician_required || false,
       ...input,
     };
     if (merged.bookable && !merged.active) fail(422, "SERVICE_INACTIVE");
@@ -82,6 +90,9 @@ export class Catalog {
       await c.execute(
         sql`INSERT INTO services(id,code,name,category_id,active,bookable,sort_order,description,marketing_slug,estimated_duration_minutes) VALUES(${serviceId},${merged.code},${merged.name},${category.id},${merged.active},${merged.bookable},${merged.sortOrder},${merged.description ?? null},${merged.marketingSlug ?? null},${merged.estimatedDurationMinutes})`,
       );
+    await c.execute(
+      sql`UPDATE services SET quality_checks=${json(merged.qualityChecks)},technician_required=${merged.technicianRequired} WHERE id=${serviceId}`,
+    );
     await c.execute(
       sql`UPDATE stations SET catalog_version=catalog_version+1 WHERE id=${ctx.station.id}`,
     );
@@ -114,6 +125,8 @@ export function serviceView(s: Row, catalogVersion: number) {
     marketingSlug: s.marketing_slug,
     requirements: [],
     estimatedDurationMinutes: s.estimated_duration_minutes,
+    qualityChecks: s.quality_checks,
+    technicianRequired: s.technician_required,
     version: s.version,
     catalogVersion,
   };

@@ -59,12 +59,12 @@ export default async function ArticlePage({
         <div className="article-body">
           <RichContent blocks={article.content} />
           <Link href="/news" className="back-link">
-            &lt; Back to News &amp; Promotion
+            &lt; Quay lại Tin tức &amp; Ưu đãi
           </Link>
         </div>
       </article>
       <NewsSection
-        title="More from HyperAuto Care"
+        title="Tin khác từ HyperAuto Care"
         items={articles.filter((a) => a.slug !== slug).slice(0, 3)}
         more={false}
         originalImages

@@ -14,7 +14,7 @@ export function VideoPlayer({
   src,
   poster,
   className = "",
-  vietnamese = false,
+  vietnamese = true,
 }: {
   src: string;
   poster?: string;

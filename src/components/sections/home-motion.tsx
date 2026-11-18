@@ -104,13 +104,16 @@ export function HomeAppear({
 export function HomeSectionHeading({
   title,
   description,
+  pageTitle = false,
 }: {
   title: string;
   description?: string;
+  /** Page's main heading: keeps the h2 look, announced as level 1. */
+  pageTitle?: boolean;
 }) {
   return (
     <div className="section-heading">
-      <h2>{title}</h2>
+      <h2 aria-level={pageTitle ? 1 : undefined}>{title}</h2>
       {description && <p>{description}</p>}
     </div>
   );

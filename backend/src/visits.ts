@@ -16,10 +16,24 @@ import {
   range,
   page,
   manager,
+  phone as phoneSchema,
   type Context,
 } from "./common";
 import { Bookings } from "./bookings";
 import { Directory } from "./directory";
+const ticketStageSql = sql`CASE
+  WHEN v.workflow_version=2 THEN v.stage
+  WHEN v.stage IN ('HANDED_OVER','COMPLETED','ABORTED','READY','QUALITY_CHECK') THEN v.stage
+  WHEN v.stage='IN_PROGRESS' AND tw.status='PAUSED' AND
+    (SELECT a.result FROM acceptances a WHERE a.visit_id=v.id ORDER BY a.checked_at DESC,a.id DESC LIMIT 1)='NEEDS_WORK' THEN 'REWORK'
+  WHEN v.stage='IN_PROGRESS' AND tw.status='PAUSED' THEN 'PAUSED'
+  WHEN v.stage='IN_PROGRESS' THEN 'IN_PROGRESS'
+  WHEN v.stage='INSPECTED' AND tw.status='NOT_STARTED'
+    AND (EXISTS(SELECT 1 FROM quote_revisions r WHERE r.visit_id=v.id AND r.status='APPROVED')
+      OR EXISTS(SELECT 1 FROM work_exemptions e WHERE e.visit_id=v.id AND e.mode='NO_QUOTE_FREE'))
+    AND NOT EXISTS(SELECT 1 FROM quote_revisions r WHERE r.visit_id=v.id AND r.status IN ('DRAFT','SUBMITTED')) THEN 'WAITING_WORK'
+  ELSE 'QUOTE' END`;
+const serviceStageSql=sql`CASE (${ticketStageSql}) WHEN 'QUOTE' THEN 'QUOTING' WHEN 'WAITING_WORK' THEN 'WAITING_FOR_WORK' WHEN 'QUALITY_CHECK' THEN 'IN_PROGRESS' WHEN 'PAUSED' THEN 'IN_PROGRESS' WHEN 'REWORK' THEN 'IN_PROGRESS' WHEN 'READY' THEN 'HANDOVER' WHEN 'HANDED_OVER' THEN 'COMPLETED' ELSE (${ticketStageSql}) END`;
 import { Capacity, type ServicePlan } from "./capacity/capacity";
 
 export class Visits {
@@ -71,6 +85,15 @@ export class Visits {
       c,
       sql`SELECT w.status,w.due_at,(SELECT count(*)::int FROM work_items i WHERE i.work_order_id=w.id AND i.status<>'SKIPPED') AS total,(SELECT count(*)::int FROM work_items i WHERE i.work_order_id=w.id AND i.status='DONE') AS done,ARRAY(SELECT DISTINCT s.name FROM work_item_assignments a JOIN work_items i ON i.id=a.work_item_id JOIN staff_profiles s ON s.id=a.technician_id WHERE i.work_order_id=w.id AND a.ended_at IS NULL ORDER BY s.name) AS technicians FROM work_orders w WHERE w.visit_id=${v.id}`,
     );
+    const pricing = await one(
+      c,
+      sql`SELECT
+      (SELECT sum(COALESCE(r.approved_total,r.total))::text FROM quote_revisions r WHERE r.visit_id=${v.id} AND r.status='APPROVED') AS approved_total,
+      (SELECT r.total::text FROM quote_revisions r WHERE r.visit_id=${v.id} AND r.status IN ('DRAFT','SUBMITTED','PENDING_APPROVAL') AND EXISTS(SELECT 1 FROM quote_lines l WHERE l.revision_id=r.id) ORDER BY r.revision_no DESC LIMIT 1) AS estimate_total,
+      EXISTS(SELECT 1 FROM quote_revisions r WHERE r.visit_id=${v.id} AND r.status IN ('DRAFT','SUBMITTED','PENDING_APPROVAL')) AS has_open_quote,
+      EXISTS(SELECT 1 FROM work_exemptions e WHERE e.visit_id=${v.id} AND e.mode='NO_QUOTE_FREE') AS has_exemption,
+      COALESCE((SELECT sum(amount) FROM obligation_credits WHERE visit_id=${v.id}),0)::text AS credits`,
+    );
     return {
       id: v.id,
       code: v.code,
@@ -78,7 +101,28 @@ export class Visits {
       customerId: v.customer_id,
       vehicleId: v.vehicle_id,
       origin: v.origin,
+      workflowVersion: v.workflow_version,
+      isPaused: v.is_paused,
+      pauseReason: v.pause_reason,
+      pausedAt: v.paused_at ? iso(v.paused_at) : null,
       stage: v.stage,
+      canDelete: !v.deleted_at,
+      deleteBlockedReason: null,
+      ...(v.ticket_stage ? { ticketStage: v.ticket_stage } : {}),
+      pricing: {
+        approvedTotal: pricing!.approved_total,
+        estimateTotal: pricing!.estimate_total,
+        payableTotal:
+          pricing!.approved_total !== null
+            ? (
+                BigInt(pricing!.approved_total) - BigInt(pricing!.credits)
+              ).toString()
+            : pricing!.has_exemption
+              ? "0"
+              : null,
+        hasOpenQuote: pricing!.has_open_quote,
+        hasExemption: pricing!.has_exemption,
+      },
       receivedAt: iso(v.received_at),
       version: v.version,
       customer: v.contact_snapshot,
@@ -104,17 +148,19 @@ export class Visits {
     )
       fail(403, "FORBIDDEN");
     const dates = q.from ? range(q.from, q.to) : null;
+    const searchedPhone = phoneSchema.safeParse(q.q);
     const result = await page(
       c,
       this.config,
       ctx,
-      sql`SELECT v.*,v.received_at AS cursor_key FROM service_visits v WHERE ${scope(ctx, "v")}
+      sql`SELECT v.*,${ticketStageSql} AS ticket_stage,v.received_at AS cursor_key FROM service_visits v LEFT JOIN work_orders tw ON tw.visit_id=v.id WHERE ${scope(ctx, "v")}
       ${dates ? sql`AND v.received_at>=${dates.from} AND v.received_at<${dates.to}` : sql``}
-      ${q.stage ? sql`AND v.stage=${q.stage}` : sql``} ${q.advisorId ? sql`AND v.assigned_advisor_id=${q.advisorId}` : sql``}
-      ${q.activeOnly ? sql`AND v.stage NOT IN ('HANDED_OVER','ABORTED')` : sql``}
+      ${q.stage ? ["QUOTING","WAITING_FOR_WORK","HANDOVER","COMPLETED","IN_PROGRESS"].includes(q.stage) ? sql`AND ${serviceStageSql}=${q.stage}` : sql`AND v.stage=${q.stage}` : sql``} ${q.advisorId ? sql`AND v.assigned_advisor_id=${q.advisorId}` : sql``}
+      ${q.activeOnly ? sql`AND v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED')` : sql``}
+      ${q.ticketStage ? ["QUOTING","WAITING_FOR_WORK","HANDOVER","COMPLETED","IN_PROGRESS"].includes(q.ticketStage) ? sql`AND ${serviceStageSql}=${q.ticketStage}` : q.ticketStage==="PAUSED" ? sql`AND (v.is_paused OR ${ticketStageSql}='PAUSED')` : sql`AND ${ticketStageSql}=${q.ticketStage}` : sql``}
       ${q.bookingId ? sql`AND v.booking_id=${q.bookingId}` : sql``} ${q.customerId ? sql`AND v.customer_id=${q.customerId}` : sql``}
       ${q.vehicleId ? sql`AND v.vehicle_id=${q.vehicleId}` : sql``}
-      ${q.q ? sql`AND (v.code ILIKE ${"%" + q.q + "%"} OR v.contact_snapshot->>'name' ILIKE ${"%" + q.q + "%"} OR v.contact_snapshot->>'phone' LIKE ${"%" + q.q + "%"} OR v.vehicle_snapshot->>'plate' ILIKE ${"%" + q.q + "%"})` : sql``}`,
+      ${q.q ? sql`AND (v.code ILIKE ${"%" + q.q + "%"} OR v.contact_snapshot->>'name' ILIKE ${"%" + q.q + "%"} OR v.contact_snapshot->>'phone' LIKE ${"%" + (searchedPhone.success ? searchedPhone.data : q.q.replace(/[\s().-]/g, "")) + "%"} OR v.vehicle_snapshot->>'plate' ILIKE ${"%" + q.q + "%"} OR v.vehicle_snapshot->>'model' ILIKE ${"%" + q.q + "%"})` : sql``}`,
       q,
       "receivedAt:desc",
       true,
@@ -166,7 +212,7 @@ export class Visits {
         receivedAt: iso(v.received_at),
         inspectionCompleted: !!inspection,
       },
-      allowedActions: !["HANDED_OVER", "ABORTED"].includes(v.stage)
+      allowedActions: !["HANDED_OVER", "COMPLETED", "ABORTED"].includes(v.stage)
         ? [
             "edit_intake",
             "contact",
@@ -253,7 +299,7 @@ export class Visits {
     if (!m) fail(404, "NOT_FOUND");
     const v = await scopedVisit(c, ctx, m.visit_id, true);
     expectVersion(v, input.expectedVersion);
-    if (["HANDED_OVER", "ABORTED"].includes(v.stage))
+    if (["HANDED_OVER", "COMPLETED", "ABORTED"].includes(v.stage))
       fail(409, "INVALID_TRANSITION");
     const removed = await one(
       c,
@@ -267,10 +313,6 @@ export class Visits {
         mediaId: id,
       }),
     );
-  }
-  validateIntake(input: Row, vehicle: Row) {
-    if (!vehicle.plate_normalized && !input.plateMissingReason)
-      fail(422, "PLATE_REASON_REQUIRED", "Ghi lý do xe chưa có biển số.");
   }
   async create(c: Conn, ctx: Context, input: Row, bookingId?: string) {
     let booking: Row | undefined,
@@ -301,9 +343,20 @@ export class Visits {
         input.vehicle,
         customer.id,
       ))!;
-      if (vehicle.id !== booking.vehicle_id && !input.vehicleChangeReason)
-        fail(422, "VEHICLE_CHANGE_REASON_REQUIRED");
       plans = await this.bookings.snapshotServices(c, bookingId);
+      if (input.serviceIds) {
+        const selected: string[] = input.serviceIds;
+        const added = await this.capacity.servicePlans(
+          c,
+          ctx,
+          selected.filter((id) => !plans.some((plan) => plan.id === id)),
+          input.catalogVersion,
+        );
+        // Keep booked snapshots, including services retired after the appointment was made.
+        plans = selected.map(
+          (id) => plans.find((plan) => plan.id === id) || added.find((plan) => plan.id === id)!,
+        );
+      }
       previous = await one(
         c,
         sql`SELECT * FROM capacity_reservations WHERE booking_id=${bookingId} AND status='ACTIVE' FOR UPDATE`,
@@ -332,11 +385,10 @@ export class Visits {
         input.catalogVersion,
       );
     }
-    this.validateIntake(input.intake, vehicle);
     if (
       await one(
         c,
-        sql`SELECT id FROM service_visits WHERE station_id=${ctx.station.id} AND vehicle_id=${vehicle.id} AND stage NOT IN ('HANDED_OVER','ABORTED') LIMIT 1`,
+        sql`SELECT id FROM service_visits WHERE station_id=${ctx.station.id} AND vehicle_id=${vehicle.id} AND deleted_at IS NULL AND stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') LIMIT 1`,
       )
     )
       fail(
@@ -348,7 +400,7 @@ export class Visits {
       const parent = await scopedVisit(c, ctx, input.followUpOfVisitId);
       if (
         parent.vehicle_id !== vehicle.id ||
-        !["HANDED_OVER", "ABORTED"].includes(parent.stage)
+        !["HANDED_OVER", "COMPLETED", "ABORTED"].includes(parent.stage)
       )
         fail(422, "FOLLOW_UP_INVALID");
     }
@@ -370,8 +422,8 @@ export class Visits {
     };
     const v = (await one(
       c,
-      sql`INSERT INTO service_visits(id,code,station_id,booking_id,customer_id,vehicle_id,assigned_advisor_id,origin,received_at,received_by,contact_snapshot,vehicle_snapshot,request,odometer,odometer_missing_reason,plate_missing_reason,conditions,reception_note,follow_up_of_visit_id,follow_up_reason)
-      VALUES(${id},${"DV-" + id.replaceAll("-", "").slice(0, 16).toUpperCase()},${ctx.station.id},${bookingId || null},${customer.id},${vehicle.id},${advisorId},${bookingId ? "BOOKING" : "WALK_IN"},${ctx.now},${ctx.actor!.userId},${json(snapshot)},${json({ model: vehicle.model, plate: vehicle.plate_normalized, year: vehicle.model_year })},${intake.request},${intake.odometer},${intake.odometerMissingReason || null},${intake.plateMissingReason || null},${json(intake.conditions)},${intake.receptionNote},${input.followUpOfVisitId || null},${input.followUpReason || null}) RETURNING *`,
+      sql`INSERT INTO service_visits(workflow_version,stage,id,code,station_id,booking_id,customer_id,vehicle_id,assigned_advisor_id,origin,received_at,received_by,contact_snapshot,vehicle_snapshot,request,odometer,odometer_missing_reason,plate_missing_reason,conditions,reception_note,follow_up_of_visit_id,follow_up_reason)
+      VALUES(2,'QUOTING',${id},${"DV-" + id.replaceAll("-", "").slice(0, 16).toUpperCase()},${ctx.station.id},${bookingId || null},${customer.id},${vehicle.id},${advisorId},${bookingId ? "BOOKING" : "WALK_IN"},${ctx.now},${ctx.actor!.userId},${json(snapshot)},${json({ model: vehicle.model, plate: vehicle.plate_normalized, year: vehicle.model_year })},${intake.request},${intake.odometer},${intake.odometerMissingReason || null},${intake.plateMissingReason || null},${json(intake.conditions)},${intake.receptionNote},${input.followUpOfVisitId || null},${input.followUpReason || null}) RETURNING *`,
     ))!;
     for (const [i, s] of plans.entries())
       await c.execute(
@@ -420,6 +472,10 @@ export class Visits {
       v,
       await this.log(c, ctx, id, "VISIT_RECEIVED", input.vehicleChangeReason, {
         origin: v.origin,
+      workflowVersion: v.workflow_version,
+      isPaused: v.is_paused,
+      pauseReason: v.pause_reason,
+      pausedAt: v.paused_at ? iso(v.paused_at) : null,
       }),
     );
   }
@@ -432,15 +488,10 @@ export class Visits {
   async mutate(c: Conn, ctx: Context, id: string, action: string, input: Row) {
     const v = await scopedVisit(c, ctx, id, true);
     expectVersion(v, input.expectedVersion);
-    if (["HANDED_OVER", "ABORTED"].includes(v.stage))
+    if (["HANDED_OVER", "COMPLETED", "ABORTED"].includes(v.stage))
       fail(409, "INVALID_TRANSITION");
     let data: Row = {};
     if (action === "intake") {
-      const vehicle = (await one(
-        c,
-        sql`SELECT * FROM vehicles WHERE id=${v.vehicle_id}`,
-      ))!;
-      this.validateIntake(input.intake, vehicle);
       const i = input.intake;
       await c.execute(
         sql`UPDATE service_visits SET request=${i.request},odometer=${i.odometer},odometer_missing_reason=${i.odometerMissingReason || null},plate_missing_reason=${i.plateMissingReason || null},conditions=${json(i.conditions)},reception_note=${i.receptionNote} WHERE id=${id}`,
@@ -577,7 +628,7 @@ export class Visits {
       c,
       this.config,
       ctx,
-      sql`SELECT a.*,a.assigned_at AS cursor_key FROM visit_assignments a JOIN service_visits v ON v.id=a.visit_id WHERE a.advisor_id=${ctx.actor!.staffId} AND v.station_id=${ctx.station.id}`,
+      sql`SELECT a.*,a.assigned_at AS cursor_key FROM visit_assignments a JOIN service_visits v ON v.id=a.visit_id WHERE a.advisor_id=${ctx.actor!.staffId} AND v.station_id=${ctx.station.id} AND v.deleted_at IS NULL`,
       q,
       "assignedAt:desc",
       true,

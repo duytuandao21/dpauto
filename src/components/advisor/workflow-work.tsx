@@ -1,4 +1,5 @@
 "use client";
+import { DateInput } from "@/components/advisor/date-input";
 import { useState } from "react";
 import type { ApiStaff } from "@/lib/api/types";
 import { stationTime } from "@/lib/api/types";
@@ -43,12 +44,18 @@ function ItemForm({
     .filter((q) => q.status === "APPROVED")
     .flatMap((q) =>
       q.lines
-        .filter((l) => l.kind === "SERVICE")
+        .filter(
+          (l) =>
+            l.kind === "SERVICE" &&
+            !q.voidedLineIds?.includes(l.id) &&
+            (!q.decision?.approvedLineIds ||
+              q.decision.approvedLineIds.includes(l.id)),
+        )
         .map((l) => ({ ...l, revisionNo: q.revisionNo })),
     );
   async function save(e: React.FormEvent) {
     e.preventDefault();
-    if (!people.length) return;
+    if (!people.length && data.workflowVersion !== 2) return;
     const [kind, id] = reference.split(":");
     await run(
       item
@@ -96,7 +103,9 @@ function ItemForm({
               <option value="">Chưa liên kết</option>
               {sources.map((s) => (
                 <option key={s.id} value={"line:" + s.id}>
-                  Báo giá {s.revisionNo} · {s.name}
+                  {data.workflowVersion === 2
+                    ? s.name
+                    : `Báo giá ${s.revisionNo} · ${s.name}`}
                 </option>
               ))}
               {data.exemptions.map((x) => (
@@ -108,19 +117,19 @@ function ItemForm({
           </label>
           <label className="adm-field">
             Dự kiến xong (giờ Việt Nam) *
-            <input
+            <DateInput
               required
-              type="datetime-local"
+              withTime
               value={due}
-              onChange={(e) => {
-                setDue(e.target.value);
+              onValueChange={(value) => {
+                setDue(value);
                 onDirty(true);
               }}
             />
           </label>
         </div>
         <fieldset className="adv-checks">
-          <legend>Kỹ thuật viên *</legend>
+          <legend>Kỹ thuật viên{data.workflowVersion === 2 ? "" : " *"}</legend>
           <div className="adv-check-grid">
             {technicians.map((t) => (
               <label key={t.id}>
@@ -142,7 +151,10 @@ function ItemForm({
           </div>
           {!technicians.length && <p>Chưa có kỹ thuật viên đang hoạt động.</p>}
         </fieldset>
-        <button className="adm-btn adm-primary" disabled={!people.length}>
+        <button
+          className="adm-btn adm-primary"
+          disabled={!people.length && data.workflowVersion !== 2}
+        >
           {item ? "Lưu công việc" : "Thêm công việc"}
         </button>
       </fieldset>
@@ -155,7 +167,11 @@ export function WorkflowWork({
   run,
   busy,
   onDirty,
+  readOnly = false,
+  compact = false,
 }: {
+  readOnly?: boolean;
+  compact?: boolean;
   data: Workflow;
   technicians: ApiStaff[];
   run: RunWorkflow;
@@ -164,9 +180,23 @@ export function WorkflowWork({
 }) {
   const [note, setNote] = useState("");
   const w = data.work,
-    closed = !data.allowedActions.length;
+    closed =
+      readOnly ||
+      !data.allowedActions.length ||
+      (data.workflowVersion === 2 &&
+        !["WAITING_FOR_WORK", "IN_PROGRESS"].includes(data.stage));
   const done =
     w?.items.filter((i) => ["DONE", "SKIPPED"].includes(i.status)).length || 0;
+  const Journal = compact ? "details" : "section";
+  const newItem = (
+    <ItemForm
+      data={data}
+      technicians={technicians}
+      run={run}
+      busy={busy}
+      onDirty={onDirty}
+    />
+  );
   function command(action: string) {
     const reason =
       action === "pause"
@@ -186,157 +216,172 @@ export function WorkflowWork({
   }
   return (
     <div className="adv-stack">
-      <section className="adm-panel">
-        <div className="adm-section-line">
-          <h2>Thi công</h2>
-          <span className="adm-badge">
-            {w ? workLabels[w.status] : "Chưa lập công việc"}
-          </span>
-        </div>
-        <p>
-          {done}/{w?.items.length || 0} công việc đã xử lý
-        </p>
-        <div className="adm-action-row">
-          {!closed && w?.status === "NOT_STARTED" && (
-            <button
-              className="adm-btn adm-primary"
-              disabled={busy || data.stage !== "INSPECTED"}
-              onClick={() => command("start")}
-            >
-              Bắt đầu thi công
-            </button>
-          )}
-          {!closed && w?.status === "IN_PROGRESS" && (
-            <>
-              <button
-                className="adm-btn"
-                disabled={busy}
-                onClick={() => command("pause")}
-              >
-                Tạm dừng
-              </button>
+      {!compact && (
+        <section className="adm-panel">
+          <div className="adm-section-line">
+            <h2>Thi công</h2>
+            <span className="adm-badge">
+              {w ? workLabels[w.status] : "Chưa lập công việc"}
+            </span>
+          </div>
+          <p>
+            {done}/{w?.items.length || 0} công việc đã xử lý
+          </p>
+          <div className="adm-action-row" hidden={data.workflowVersion === 2}>
+            {!closed && w?.status === "NOT_STARTED" && (
               <button
                 className="adm-btn adm-primary"
-                disabled={busy || done !== w.items.length || !done}
-                onClick={() => command("finish")}
+                disabled={busy || data.stage !== "INSPECTED"}
+                onClick={() => command("start")}
               >
-                Chuyển nghiệm thu
+                Bắt đầu thi công
               </button>
-            </>
-          )}
-          {!closed && w?.status === "PAUSED" && (
-            <button
-              className="adm-btn adm-primary"
-              disabled={busy}
-              onClick={() => command("resume")}
-            >
-              Tiếp tục thi công
-            </button>
-          )}
-        </div>
-      </section>
+            )}
+            {!closed && w?.status === "IN_PROGRESS" && (
+              <>
+                <button
+                  className="adm-btn"
+                  disabled={busy}
+                  onClick={() => command("pause")}
+                >
+                  Tạm dừng
+                </button>
+                <button
+                  className="adm-btn adm-primary"
+                  disabled={busy || done !== w.items.length || !done}
+                  onClick={() => command("finish")}
+                >
+                  Chuyển nghiệm thu
+                </button>
+              </>
+            )}
+            {!closed && w?.status === "PAUSED" && (
+              <button
+                className="adm-btn adm-primary"
+                disabled={busy}
+                onClick={() => command("resume")}
+              >
+                Tiếp tục thi công
+              </button>
+            )}
+          </div>
+        </section>
+      )}
       <section className="adm-panel">
         <h2>Danh sách công việc</h2>
         <div className="adv-lines">
-          {w?.items.map((i) => (
-            <article className="adv-line" key={i.id}>
-              <div className="adm-section-line">
-                <h3>{i.label}</h3>
-                <span
-                  className={`adm-badge adm-status-${i.status === "DONE" ? "completed" : i.status === "IN_PROGRESS" ? "arrived" : "pending"}`}
-                >
-                  {itemLabels[i.status]}
-                </span>
-              </div>
-              <p>
-                {i.technicians.map((t) => t.name).join(", ") ||
-                  "Chưa phân công"}
-              </p>
-              <p>Dự kiến {workflowTime(i.dueAt)}</p>
-              {!closed && w.status === "IN_PROGRESS" && (
-                <div className="adm-action-row">
-                  {i.status === "PENDING" && (
-                    <button
-                      className="adm-btn"
-                      disabled={busy}
-                      onClick={() =>
-                        void run(`admin/work-items/${i.id}/progress`, {
-                          status: "IN_PROGRESS",
-                          reason: "Bắt đầu thực hiện công việc",
-                        })
-                      }
-                    >
-                      Bắt đầu
-                    </button>
-                  )}
-                  {i.status === "IN_PROGRESS" && (
-                    <button
-                      className="adm-btn adm-primary"
-                      disabled={busy}
-                      onClick={() =>
-                        void run(`admin/work-items/${i.id}/progress`, {
-                          status: "DONE",
-                          reason: "Đã hoàn tất công việc thực tế",
-                        })
-                      }
-                    >
-                      Đánh dấu đã xong
-                    </button>
-                  )}
+          {w?.items.length ? (
+            w.items.map((i) => (
+              <article className="adv-line" key={i.id}>
+                <div className="adm-section-line">
+                  <h3>{i.label}</h3>
+                  <span
+                    className={`adm-badge adm-status-${i.status === "DONE" ? "completed" : i.status === "IN_PROGRESS" ? "arrived" : "pending"}`}
+                  >
+                    {itemLabels[i.status]}
+                  </span>
                 </div>
-              )}
-              {!closed && i.status === "PENDING" && (
-                <>
-                  <details className="adv-advanced">
-                    <summary className="adm-btn">Điều chỉnh công việc</summary>
-                    <ItemForm
-                      data={data}
-                      item={i}
-                      technicians={technicians}
-                      run={run}
-                      busy={busy}
-                      onDirty={onDirty}
-                    />
-                  </details>
-                  {data.allowedActions.includes("abort") &&
-                    w.status === "IN_PROGRESS" && (
+                <p>
+                  {i.technicians.map((t) => t.name).join(", ") ||
+                    "Chưa phân công"}
+                </p>
+                <p>Dự kiến {workflowTime(i.dueAt)}</p>
+                {!closed && w.status === "IN_PROGRESS" && (
+                  <div className="adm-action-row">
+                    {i.status === "PENDING" && (
                       <button
-                        className="adm-btn adm-subtle-danger"
+                        className="adm-btn"
                         disabled={busy}
-                        onClick={() => {
-                          const reason = window.prompt(
-                            "Lý do bỏ qua công việc chưa thực hiện? Phạm vi báo giá đã duyệt vẫn phải được đáp ứng.",
-                          );
-                          if (reason?.trim())
-                            void run(`admin/work-items/${i.id}/progress`, {
-                              status: "SKIPPED",
-                              reason: reason.trim(),
-                            });
-                        }}
+                        onClick={() =>
+                          void run(`admin/work-items/${i.id}/progress`, {
+                            status: "IN_PROGRESS",
+                            reason: "Bắt đầu thực hiện công việc",
+                          })
+                        }
                       >
-                        Bỏ qua công việc
+                        Bắt đầu
                       </button>
                     )}
-                </>
-              )}
-            </article>
-          )) || <p>Chưa có công việc.</p>}
+                    {i.status === "IN_PROGRESS" && (
+                      <button
+                        className="adm-btn adm-primary"
+                        disabled={busy}
+                        onClick={() =>
+                          void run(`admin/work-items/${i.id}/progress`, {
+                            status: "DONE",
+                            reason: "Đã hoàn tất công việc thực tế",
+                          })
+                        }
+                      >
+                        Đánh dấu đã xong
+                      </button>
+                    )}
+                  </div>
+                )}
+                {!closed && i.status === "PENDING" && (
+                  <>
+                    <details className="adv-advanced">
+                      <summary className="adm-btn">
+                        Điều chỉnh công việc
+                      </summary>
+                      <ItemForm
+                        data={data}
+                        item={i}
+                        technicians={technicians}
+                        run={run}
+                        busy={busy}
+                        onDirty={onDirty}
+                      />
+                    </details>
+                    {data.allowedActions.includes("abort") &&
+                      w.status === "IN_PROGRESS" && (
+                        <button
+                          className="adm-btn adm-subtle-danger"
+                          disabled={busy}
+                          onClick={() => {
+                            const reason = window.prompt(
+                              "Lý do bỏ qua công việc chưa thực hiện? Phạm vi báo giá đã duyệt vẫn phải được đáp ứng.",
+                            );
+                            if (reason?.trim())
+                              void run(`admin/work-items/${i.id}/progress`, {
+                                status: "SKIPPED",
+                                reason: reason.trim(),
+                              });
+                          }}
+                        >
+                          Bỏ qua công việc
+                        </button>
+                      )}
+                  </>
+                )}
+              </article>
+            ))
+          ) : (
+            <p className="adm-muted">Chưa có công việc.</p>
+          )}
         </div>
       </section>
       {!closed && (
         <section className="adm-panel">
-          <h2>Thêm công việc</h2>
-          <ItemForm
-            data={data}
-            technicians={technicians}
-            run={run}
-            busy={busy}
-            onDirty={onDirty}
-          />
+          {compact ? (
+            <details>
+              <summary>Thêm công việc</summary>
+              {newItem}
+            </details>
+          ) : (
+            <>
+              <h2>Thêm công việc</h2>
+              {newItem}
+            </>
+          )}
         </section>
       )}
-      <section className="adm-panel">
-        <h2>Nhật ký thi công</h2>
+      <Journal className="adm-panel">
+        {compact ? (
+          <summary>Nhật ký thi công</summary>
+        ) : (
+          <h2>Nhật ký thi công</h2>
+        )}
         {!closed && w && ["IN_PROGRESS", "PAUSED"].includes(w.status) && (
           <form
             className="adm-booking-form"
@@ -382,7 +427,7 @@ export function WorkflowWork({
             100 nhật ký gần nhất. Lịch sử đầy đủ nằm trong dòng thời gian phiếu.
           </p>
         )}
-      </section>
+      </Journal>
     </div>
   );
 }

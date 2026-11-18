@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { collection } from "@/lib/api/client";
 import { useApiPage } from "@/lib/api/use-page";
-import { visitStages, type Visit, type VisitStage } from "@/lib/api/visits";
+import { visitStages, serviceStage, type Visit, type VisitStage } from "@/lib/api/visits";
 import { workflowTime } from "@/lib/api/workflow";
 import { PageHeading, AdminLoading } from "@/components/admin/primitives";
 import { VisitStageBadge } from "@/components/advisor/order-common";
@@ -117,7 +117,7 @@ function VisitsContent({
               {Object.entries(visitStages)
                 .filter(
                   ([key]) =>
-                    !board || !["HANDED_OVER", "ABORTED"].includes(key),
+                    ["QUOTING","WAITING_FOR_WORK","IN_PROGRESS","HANDOVER","COMPLETED","ABORTED"].includes(key) && (!board || !["COMPLETED","ABORTED"].includes(key)),
                 )
                 .map(([key, label]) => (
                   <option key={key} value={key}>
@@ -286,7 +286,7 @@ function VisitBoard({ path, reload }: { path: string; reload: number }) {
     (b) => b.date === today && ["pending", "confirmed"].includes(b.status),
   );
   const groups = (Object.entries(visitStages) as [VisitStage, string][]).filter(
-    ([s]) => !["HANDED_OVER", "ABORTED"].includes(s),
+    ([s]) => ["QUOTING","WAITING_FOR_WORK","IN_PROGRESS","HANDOVER"].includes(s),
   );
   function card(v: Visit) {
     return (
@@ -354,10 +354,10 @@ function VisitBoard({ path, reload }: { path: string; reload: number }) {
           <section className="mgr-board-column" key={stage}>
             <h3>
               {label}
-              <small>{values.filter((v) => v.stage === stage).length}</small>
+              <small>{values.filter((v) => serviceStage(v) === stage).length}</small>
             </h3>
-            {values.filter((v) => v.stage === stage).map(card)}
-            {!values.some((v) => v.stage === stage) && (
+            {values.filter((v) => serviceStage(v) === stage).map(card)}
+            {!values.some((v) => serviceStage(v) === stage) && (
               <p className="adm-muted">Không có xe</p>
             )}
           </section>

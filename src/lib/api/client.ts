@@ -9,10 +9,31 @@ export class ApiFailure extends Error {
     readonly status: number,
     readonly code: string,
     message: string,
+    readonly fields: { path: string; code: string }[] = [],
   ) {
     super(message);
   }
 }
+// The API often answers with one generic sentence; these codes get a message staff can act on.
+const generic = "Không thể thực hiện yêu cầu.";
+const codeMessages: Record<string, string> = {
+  VERSION_CONFLICT: "Dữ liệu vừa được người khác cập nhật. Vui lòng tải lại.",
+  INVALID_TRANSITION:
+    "Trạng thái lịch hẹn đã thay đổi nên thao tác này không còn phù hợp. Vui lòng tải lại.",
+  ADVISOR_REQUIRED: "Lịch hẹn cần có cố vấn phụ trách trước khi xác nhận.",
+  ADVISOR_UNAVAILABLE: "Cố vấn được chọn hiện không hoạt động.",
+  OUTSIDE_BOOKING_WINDOW:
+    "Thời gian hẹn phải sau hiện tại và nằm trong khoảng ngày trạm nhận lịch.",
+  TIME_UNCHANGED: "Thời gian mới trùng với thời gian hiện tại.",
+  PERIOD_UNAVAILABLE: "Trạm không nhận lịch buổi này. Vui lòng chọn buổi khác.",
+  POLICY_VERSION_CONFLICT:
+    "Cấu hình nhận lịch vừa thay đổi. Vui lòng tải lại rồi thử lại.",
+  TOO_EARLY: "Chưa hết thời gian chờ để đánh dấu khách không đến.",
+  FORBIDDEN: "Bạn không có quyền thực hiện thao tác này.",
+  NOT_FOUND: "Không tìm thấy dữ liệu, có thể lịch đã được người khác nhận.",
+  VALIDATION_FAILED: "Thông tin chưa hợp lệ. Vui lòng kiểm tra lại.",
+  RATE_LIMITED: "Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.",
+};
 let csrf = "";
 const pending = new Map<string, { key: string; body: unknown }>();
 export function newRequestKey() {
@@ -52,10 +73,25 @@ export async function request<T>(
       csrf = "";
       window.dispatchEvent(new Event("dpauto-session-expired"));
     }
+    const code = value?.error?.code || "SERVICE_UNAVAILABLE",
+      message: string | undefined = value?.error?.message;
     throw new ApiFailure(
       response.status,
-      value?.error?.code || "SERVICE_UNAVAILABLE",
-      value?.error?.message || "Dịch vụ chưa sẵn sàng. Vui lòng thử lại sau.",
+      code,
+      (message === generic && codeMessages[code]) ||
+        message ||
+        "Dịch vụ chưa sẵn sàng. Vui lòng thử lại sau.",
+      Array.isArray(value?.error?.fields)
+        ? value.error.fields.filter(
+            (field: unknown): field is { path: string; code: string } =>
+              !!field &&
+              typeof field === "object" &&
+              "path" in field &&
+              typeof field.path === "string" &&
+              "code" in field &&
+              typeof field.code === "string",
+          )
+        : [],
     );
   }
   if (value?.data?.csrfToken) csrf = value.data.csrfToken;

@@ -11,6 +11,7 @@ import {
   ApiFailure,
   newRequestKey,
 } from "../src/lib/api/client.ts";
+import { slotLabel, warningText } from "../src/lib/booking/logic.ts";
 
 test("booking adapter preserves requested origin, scheduled time, scope and snapshots", () => {
   const b = bookingFromApi({
@@ -49,6 +50,38 @@ test("booking adapter preserves requested origin, scheduled time, scope and snap
     }).customerIds,
     ["one", "two"],
   );
+});
+test("day+period requests show the period until an advisor sets the time; warnings never read as errors", () => {
+  const base = {
+    id: "b",
+    code: "DP-B",
+    customerId: "c",
+    version: 1,
+    source: "WEBSITE",
+    customer: { name: "An", phone: "+84901234567" },
+    vehicle: null,
+    services: [],
+    requestedStartAt: "2026-11-20T05:30:00Z",
+    scheduledStartAt: "2026-11-20T05:30:00Z",
+    confirmedStartAt: null,
+    assignedAdvisor: null,
+    changeKind: "NEW",
+    requestedPeriod: "AFTERNOON" as const,
+  };
+  const pending = bookingFromApi({ ...base, status: "PENDING" });
+  assert.equal(pending.period, "afternoon");
+  assert.equal(slotLabel(pending), "Buổi chiều");
+  // Once confirmed the exact time wins, even though the original request is kept.
+  const confirmed = bookingFromApi({
+    ...base,
+    status: "CONFIRMED",
+    confirmedStartAt: "2026-11-20T07:15:00Z",
+    scheduledStartAt: "2026-11-20T07:15:00Z",
+  });
+  assert.equal(confirmed.period, undefined);
+  assert.equal(slotLabel(confirmed), "14:15");
+  assert.equal(warningText([]), "");
+  assert.match(warningText(["SLOT_OVERLOADED"]), /vượt số xe khuyến nghị/);
 });
 test("client retains idempotency key after an unknown network outcome", async () => {
   const original = globalThis.fetch;

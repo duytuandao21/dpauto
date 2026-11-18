@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { formatDate } from "@/lib/booking/logic";
 import { formatMoney } from "@/lib/advisor/seed";
+import { formatOdometer } from "@/lib/advisor/formats";
 import {
   operationStages,
   orderAmounts,
@@ -184,7 +185,7 @@ export function ManagerOrderDrawer({
             </p>
             <p>Yêu cầu: {order.request}</p>
             <p>
-              ODO: {order.odo || "Chưa ghi"} km · {order.receptionNote}
+              ODO: {formatOdometer(order.odo) || "Chưa ghi"} km · {order.receptionNote}
             </p>
             <p>
               Dự kiến hoàn thành: <OperationTime value={order.work.dueAt} />

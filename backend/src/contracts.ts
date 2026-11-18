@@ -97,6 +97,8 @@ const serviceFields = {
   bookable: z.boolean(),
   sortOrder: z.number().int().min(0),
   estimatedDurationMinutes: z.number().int().min(15).max(1440),
+  qualityChecks: z.array(text(160)).max(30).refine(a=>new Set(a).size===a.length).optional(),
+  technicianRequired: z.boolean().optional(),
   description: text(1000).optional(),
   marketingSlug: text(150).optional(),
 };
@@ -162,6 +164,7 @@ export const notice = z.strictObject({
   privacyNoticeAcknowledged: z.literal(true),
   marketingConsent: z.boolean().default(false),
 });
+export const period = z.enum(["MORNING", "AFTERNOON"]);
 const createFields = {
   serviceIds,
   requestedStartAt: instant,
@@ -169,22 +172,41 @@ const createFields = {
   policyVersion: version,
   notice,
 };
+// Customers pick a day and a period only; there is no time slot and no per-period limit.
 export const publicCreate = z.strictObject({
-  ...createFields,
+  serviceIds,
+  requestedDate: date,
+  requestedPeriod: period,
+  catalogVersion: version,
+  notice,
   customer: contactNew,
   vehicle: vehicleNew.nullable().optional(),
   note: text(1000).optional(),
   channelToken: z.string().max(1024).optional(),
 });
-export const bookingCreate = z.strictObject({
-  ...createFields,
-  customer: contact,
-  vehicle,
-  source: z.enum(["PHONE", "AT_STATION", "ZALO", "OTHER"]),
-  advisorId: uuid.nullable().optional(),
-  customerNote: text(1000).optional(),
-  internalNote: text(1000).optional(),
-});
+export const bookingCreate = z
+  .strictObject({
+    ...createFields,
+    requestedStartAt: instant.optional(),
+    requestedDate: date.optional(),
+    requestedPeriod: period.optional(),
+    confirmNow: z.boolean().default(false),
+    customerAgreed: z.literal(true).optional(),
+    customer: contact,
+    vehicle,
+    source: z.enum(["PHONE", "AT_STATION", "ZALO", "OTHER"]),
+    advisorId: uuid.nullable().optional(),
+    customerNote: text(1000).optional(),
+    internalNote: text(1000).optional(),
+  })
+  .refine((v) =>
+    v.requestedStartAt
+      ? !v.requestedDate && !v.requestedPeriod
+      : !!v.requestedDate && !!v.requestedPeriod,
+  )
+  .refine(
+    (v) => !v.confirmNow || (!!v.requestedStartAt && v.customerAgreed === true),
+  );
 export const bookingPatch = z
   .strictObject({
     expectedVersion: version,
@@ -202,16 +224,28 @@ export const confirmInput = z.strictObject({
   expectedVersion: version,
   confirmedStartAt: instant,
   customerAgreed: z.literal(true),
-  reason,
+  reason: reason.default("Xác nhận giờ hẹn đã thống nhất với khách"),
+  internalNote: text(1000).optional(),
   policyVersion: version.optional(),
+  // Manager only: who takes an unclaimed request being confirmed.
+  advisorId: uuid.optional(),
 });
-export const rescheduleInput = z.strictObject({
-  expectedVersion: version,
-  newStartAt: instant,
-  customerAgreed: z.literal(true),
-  reason,
-  policyVersion: version,
-});
+// Either an exact new time, or (while still pending) a new day + period agreed with the customer.
+export const rescheduleInput = z
+  .strictObject({
+    expectedVersion: version,
+    newStartAt: instant.optional(),
+    requestedDate: date.optional(),
+    requestedPeriod: period.optional(),
+    customerAgreed: z.literal(true),
+    reason: reason.default("Điều chỉnh giờ hẹn đã thống nhất với khách"),
+    policyVersion: version.optional(),
+  })
+  .refine((v) =>
+    v.newStartAt
+      ? !v.requestedDate && !v.requestedPeriod && !!v.policyVersion
+      : !!v.requestedDate && !!v.requestedPeriod,
+  );
 export const reasonInput = z.strictObject({ expectedVersion: version, reason });
 export const noShowInput = z.strictObject({
   expectedVersion: version,
@@ -242,8 +276,24 @@ export const contactInput = z
     proposedStartAt: instant.optional(),
     customerAccepted: z.boolean().optional(),
     note: text(1000).optional(),
+    callbackAt: instant.optional(),
   })
   .refine((v) => v.outcome !== "PROPOSED_TIME" || !!v.proposedStartAt);
+export const bookingPreviewInput = z.strictObject({
+  expectedVersion: z.coerce.number().int().min(1),
+  action: z.enum(["confirm", "reschedule"]),
+  startAt: instant,
+  advisorId: uuid.optional(),
+});
+export const bookingCreatePreviewInput = z.strictObject({
+  startAt: instant,
+  serviceIds: z
+    .string()
+    .transform((s) => s.split(","))
+    .pipe(serviceIds),
+  catalogVersion: z.coerce.number().int().min(1),
+  advisorId: uuid.optional(),
+});
 export const bookingQuery = z
   .strictObject({
     ...pagination,
@@ -270,7 +320,13 @@ export const bookingQuery = z
       .default("scheduledStartAt:asc"),
   })
   .refine(
-    (q) => !!q.from === !!q.to && (!!q.from || !!q.customerId || !!q.vehicleId),
+    (q) =>
+      !!q.from === !!q.to &&
+      (!!q.from ||
+        !!q.customerId ||
+        !!q.vehicleId ||
+        q.status === "PENDING" ||
+        q.status === "PENDING,ARRIVED"),
   );
 export const historyQuery = z.strictObject({
   ...pagination,
@@ -379,14 +435,5 @@ export const settingsInput = z.strictObject({
   privacyNoticeVersion: text(40),
   marketingNoticeVersion: text(40).nullable().optional(),
 });
-export const availabilityQuery = z.strictObject({
-  date,
-  serviceIds: z
-    .string()
-    .max(400)
-    .transform((s) => s.split(","))
-    .pipe(serviceIds),
-  catalogVersion: z.coerce.number().int().min(1),
-  policyVersion: z.coerce.number().int().min(1),
-});
+export const availabilityQuery = z.strictObject({ date });
 export const publicServicesQuery = z.strictObject({});

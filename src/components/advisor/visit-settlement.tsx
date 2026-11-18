@@ -8,7 +8,12 @@ import type {
   StockRequirement,
 } from "@/lib/api/stock-finance";
 import { paymentLabels } from "@/lib/api/stock-finance";
-import { vnd, type Workflow, type RunWorkflow } from "@/lib/api/workflow";
+import {
+  vnd,
+  formatQuantity,
+  type Workflow,
+  type RunWorkflow,
+} from "@/lib/api/workflow";
 import { useSession } from "@/components/admin/auth-gate";
 
 export function VisitSettlement({
@@ -152,7 +157,7 @@ function StockRequest({
     <article className="adm-booking-card">
       <h3>{l.name}</h3>
       <p>
-        Yêu cầu {l.quantity} {l.unit}
+        Yêu cầu {formatQuantity(l.quantity)} {l.unit}
       </p>
       {r ? (
         <>
@@ -162,15 +167,15 @@ function StockRequest({
           <dl className="adm-info-grid">
             <div>
               <dt>Đang giữ</dt>
-              <dd>{r.reserved}</dd>
+              <dd>{formatQuantity(r.reserved)}</dd>
             </div>
             <div>
               <dt>Đã xuất ròng</dt>
-              <dd>{r.issued}</dd>
+              <dd>{formatQuantity(r.issued)}</dd>
             </div>
             <div>
               <dt>Chưa xuất</dt>
-              <dd>{r.outstanding}</dd>
+              <dd>{formatQuantity(r.outstanding)}</dd>
             </div>
           </dl>
           {allowed && (

@@ -14,11 +14,14 @@ import { apiEnabled } from "@/lib/api/client";
 const nav: { href: string; label: string; icon: AdminIconName }[] = [
   { href: "/co-van", label: "Tổng quan", icon: "overview" },
   { href: "/co-van/lich-hen", label: "Lịch hẹn", icon: "calendar" },
-  { href: "/co-van/phieu-dich-vu", label: "Xe dịch vụ", icon: "car" },
+  { href: "/co-van/phieu-dich-vu", label: "Phiếu dịch vụ", icon: "car" },
   { href: "/co-van/khach-hang", label: "Khách hàng", icon: "customers" },
   { href: "/co-van/thong-bao", label: "Thông báo", icon: "bell" },
   { href: "/co-van/tai-khoan", label: "Tài khoản", icon: "user" },
 ];
+const mainNav = nav.filter(
+  (item) => !["/co-van/tai-khoan", "/co-van/thong-bao"].includes(item.href),
+);
 const initials = (name: string) =>
   name
     .trim()
@@ -30,7 +33,7 @@ const initials = (name: string) =>
 function ShellContent({ children }: { children: React.ReactNode }) {
   const path = usePathname(),
     { data, theme, toggleTheme, ready, error, reset } = useBookings();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const sessionName = useSession()?.staff.name,
     staffName = sessionName || "Cố vấn dịch vụ",
     avatar = sessionName ? initials(sessionName) : "CV";
@@ -69,7 +72,11 @@ function ShellContent({ children }: { children: React.ReactNode }) {
       <a href="#admin-main" className="adm-skip">
         Chuyển đến nội dung quản lý
       </a>
-      <aside className="adm-sidebar" aria-label="Điều hướng quản lý">
+      <aside
+        id="advisor-navigation"
+        className="adm-sidebar"
+        aria-label="Điều hướng quản lý"
+      >
         <Link href="/co-van" className="adm-sidebar-brand">
           <Image
             className="adm-sidebar-logo"
@@ -84,6 +91,21 @@ function ShellContent({ children }: { children: React.ReactNode }) {
             <small>Cố vấn dịch vụ</small>
           </span>
         </Link>
+        <button
+          type="button"
+          className="adm-icon-btn adm-collapse adv-sidebar-toggle"
+          onClick={() => setCollapsed(!collapsed)}
+          title={
+            collapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"
+          }
+          aria-label={
+            collapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"
+          }
+          aria-expanded={!collapsed}
+          aria-controls="advisor-navigation"
+        >
+          <AdminIcon name="collapse" />
+        </button>
         <Link
           href="/co-van/lich-hen/tao-moi"
           className="adm-btn adm-primary adm-sidebar-create"
@@ -94,9 +116,8 @@ function ShellContent({ children }: { children: React.ReactNode }) {
         </Link>
         <span className="adm-nav-group">Vận hành</span>
         <nav>
-          {nav.map((item, i) => (
+          {mainNav.map((item) => (
             <div key={item.href}>
-              {i === 4 && <span className="adm-nav-group">Cá nhân</span>}
               <Link
                 href={item.href}
                 className={`adm-nav-link ${selectedNav(item.href) ? "is-active" : ""}`}
@@ -134,15 +155,6 @@ function ShellContent({ children }: { children: React.ReactNode }) {
               <span className="adm-sidebar-label">Đăng xuất</span>
             </button>
           )}
-          <button
-            className="adm-nav-link adm-collapse"
-            onClick={() => setCollapsed(!collapsed)}
-            title={collapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
-            aria-label={collapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
-          >
-            <AdminIcon name="collapse" />
-            <span className="adm-sidebar-label">Thu gọn</span>
-          </button>
           <div className="adm-advisor">
             <span className="adm-avatar" aria-hidden="true">
               {avatar}
@@ -171,9 +183,6 @@ function ShellContent({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
           <div className="adm-header-breadcrumb">
-            <AdminIcon name={current.icon} />
-            <span>Cố vấn dịch vụ</span>
-            <span className="adm-crumb-divider">/</span>
             <strong>{current.label}</strong>
           </div>
           <div className="adm-header-actions">
@@ -223,25 +232,20 @@ function ShellContent({ children }: { children: React.ReactNode }) {
         </main>
       </div>
       <nav className="adm-bottom-nav" aria-label="Điều hướng trên điện thoại">
-        {nav
-          .filter(
-            (item) =>
-              !["/co-van/tai-khoan", "/co-van/thong-bao"].includes(item.href),
-          )
-          .map((item) => {
-            const selected = selectedNav(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={selected ? "is-active" : ""}
-                aria-current={selected ? "page" : undefined}
-              >
-                <AdminIcon name={item.icon} />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+        {mainNav.map((item) => {
+          const selected = selectedNav(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={selected ? "is-active" : ""}
+              aria-current={selected ? "page" : undefined}
+            >
+              <AdminIcon name={item.icon} />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
     </div>
   );

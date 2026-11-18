@@ -1,4 +1,5 @@
 "use client";
+import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -66,7 +67,8 @@ export function OrderPerson({
   const vehicle =
     car || data.vehicles.find((item) => item.id === order?.vehicleId);
   const [contact, setContact] = useState(false);
-  const vehicleLabel = vehicle?.plate || vehicle?.model || "của bạn";
+  const vehicleLabel =
+    formatPlate(vehicle?.plate) || vehicle?.model || "của bạn";
   if (!customer || !vehicle)
     return <p className="adm-muted">Không tìm thấy thông tin khách hoặc xe.</p>;
   return (
@@ -83,21 +85,21 @@ export function OrderPerson({
             {customer.name}
           </Link>
           <Link className="adm-muted" href={`/co-van/xe/${vehicle.id}`}>
-            {vehicle.model} · {vehicle.plate}
+            {vehicle.model} · {formatPlate(vehicle.plate)}
           </Link>
         </div>
       </div>
       <div className="adv-actions">
-        <a className="adm-btn" href={`tel:${customer.phone}`}>
+        <a className="adm-btn" href={`tel:${formatPhone(customer.phone)}`}>
           <AdminIcon name="phone" />
-          Gọi {customer.phone}
+          Gọi {formatPhone(customer.phone)}
         </a>
         <button
           type="button"
           className="adm-btn"
           onClick={async () => {
             try {
-              await copyText(customer.phone);
+              await copyText(formatPhone(customer.phone));
               notify("Đã sao chép số điện thoại.");
             } catch {
               notify("Không thể sao chép trên trình duyệt này.");

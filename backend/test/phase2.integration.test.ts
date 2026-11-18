@@ -1,3 +1,4 @@
+import { useLegacyVisitFixtures } from "./legacy-visit-fixture";
 ﻿import { before, beforeEach, after, test } from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
@@ -131,6 +132,7 @@ async function createBooking(
 before(async () => {
   await migrate(url!);
   ({ app, api } = await createApp(config));
+  useLegacyVisitFixtures(api);
   await bootstrap(api.db, config, {
     name: "Store Manager",
     email: "manager@example.test",
@@ -443,7 +445,7 @@ test("intake validation, version conflicts, real inspection and append-only cont
     {
       expectedVersion: 1,
       reason: "Sửa",
-      intake: { ...intake(), odometer: null },
+      intake: { ...intake(), odometer: -1 },
     },
   );
   assert.equal(bad.status, 400);

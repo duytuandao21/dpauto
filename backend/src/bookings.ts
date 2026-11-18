@@ -11,6 +11,7 @@ import {
   normalize,
   page,
   event,
+  permission,
   type Context,
 } from "./common";
 import { Capacity, type ServicePlan } from "./capacity/capacity";
@@ -23,6 +24,17 @@ export class Bookings {
     readonly directory: Directory,
   ) {}
   async summary(c: Conn, b: Row) {
+    const contact = await one(
+      c,
+      sql`SELECT count(*)::int AS attempts FROM booking_contact_events WHERE booking_id=${b.id}`,
+    );
+    const callback =
+      b.last_contact_outcome === "UNREACHED"
+        ? await one(
+            c,
+            sql`SELECT callback_at FROM booking_contact_events WHERE booking_id=${b.id} ORDER BY contacted_at DESC,id DESC LIMIT 1`,
+          )
+        : null;
     const services = await rows(
       c,
       sql`SELECT service_id,service_name_snapshot FROM booking_services WHERE booking_id=${b.id} ORDER BY sequence_no`,
@@ -52,6 +64,8 @@ export class Bookings {
         name: s.service_name_snapshot,
       })),
       requestedStartAt: iso(b.requested_start_at),
+      requestedPeriod: b.requested_period ?? null,
+      originalRequestedPeriod: b.original_requested_period ?? null,
       scheduledStartAt: iso(b.scheduled_start_at),
       confirmedStartAt: b.confirmed_start_at ? iso(b.confirmed_start_at) : null,
       assignedAdvisor: advisor ? { id: advisor.id, name: advisor.name } : null,
@@ -59,11 +73,14 @@ export class Bookings {
         (
           await one(
             c,
-            sql`SELECT id FROM service_visits WHERE booking_id=${b.id}`,
+            sql`SELECT id FROM service_visits WHERE booking_id=${b.id} AND deleted_at IS NULL`,
           )
         )?.id || null,
       changeKind: b.change_kind,
       version: b.version,
+      lastContactOutcome: b.last_contact_outcome,
+      contactAttempts: contact!.attempts,
+      callbackAt: callback?.callback_at ? iso(callback.callback_at) : null,
     };
   }
   filter(ctx: Context, q: Row) {
@@ -148,8 +165,8 @@ export class Bookings {
     const actions: string[] = [];
     if (["PENDING", "CONFIRMED"].includes(b.status)) {
       actions.push("reschedule", "cancel", "contact");
-      if (b.status === "PENDING" && b.assigned_advisor_id)
-        actions.unshift("confirm");
+      // Unclaimed requests are confirmable too: the advisor claims it, a manager picks one.
+      if (b.status === "PENDING") actions.unshift("confirm");
       if (b.status === "CONFIRMED") {
         actions.unshift("arrive");
         const p = await this.capacity.policy(
@@ -241,12 +258,25 @@ export class Bookings {
       input.serviceIds,
       input.catalogVersion,
     );
+    // Public requests carry only day + period: no slot check, no limit; staff entries get warnings.
+    const byPeriod = publicInput || !!input.requestedPeriod;
+    if (!publicInput && input.confirmNow) permission(ctx, "booking.confirm");
+    const requestedAt = byPeriod
+      ? await this.capacity.periodStart(
+          c,
+          ctx,
+          input.requestedDate,
+          input.requestedPeriod,
+        )
+      : new Date(input.requestedStartAt);
     const allocated = await this.capacity.allocate(
       c,
       ctx,
       plans,
-      new Date(input.requestedStartAt),
-      input.policyVersion,
+      requestedAt,
+      publicInput ? ctx.station.configuration_version : input.policyVersion,
+      undefined,
+      byPeriod,
     );
     const advisorId = publicInput
       ? null
@@ -260,6 +290,7 @@ export class Bookings {
     )
       fail(403, "FORBIDDEN");
     if (advisorId) await this.validAdvisor(c, ctx, advisorId);
+    if (input.confirmNow && !advisorId) fail(422, "ADVISOR_REQUIRED");
     const customer = await this.directory.contact(
         c,
         ctx,
@@ -273,12 +304,21 @@ export class Bookings {
         customer.id,
         publicInput,
       );
+    const counter = (await one(
+      c,
+      sql`
+      INSERT INTO booking_daily_counters(day,last_value)
+      VALUES((${ctx.now}::timestamptz AT TIME ZONE 'Asia/Ho_Chi_Minh')::date,1)
+      ON CONFLICT(day) DO UPDATE SET last_value=booking_daily_counters.last_value+1
+      RETURNING to_char(day,'DDMMYYYY') AS date_code,last_value
+    `,
+    ))!;
     const id = randomUUID(),
-      code = "DP-" + id.replace(/-/g, "").toUpperCase();
+      code = `DP-DV${counter.date_code}-${String(counter.last_value).padStart(3, "0")}`;
     const b = await one(
       c,
-      sql`INSERT INTO bookings(id,station_id,code,customer_id,vehicle_id,contact_snapshot,vehicle_snapshot,requested_start_at,scheduled_start_at,status,source,assigned_advisor_id,customer_note,internal_note,created_by)
-      VALUES(${id},${ctx.station.id},${code},${customer.id},${vehicle?.id || null},${json({ name: customer.name, phone: customer.phone_normalized })},${vehicle ? json({ model: vehicle.model, plate: vehicle.plate_normalized, year: vehicle.model_year }) : sql`NULL`},${new Date(input.requestedStartAt)},${new Date(input.requestedStartAt)},'PENDING',${publicInput ? publicSource : input.source},${advisorId},${input.note || input.customerNote || null},${publicInput ? null : input.internalNote || null},${ctx.actor?.userId || null}) RETURNING *`,
+      sql`INSERT INTO bookings(id,station_id,code,customer_id,vehicle_id,contact_snapshot,vehicle_snapshot,requested_start_at,scheduled_start_at,requested_period,original_requested_period,confirmed_start_at,status,source,assigned_advisor_id,customer_note,internal_note,created_by)
+      VALUES(${id},${ctx.station.id},${code},${customer.id},${vehicle?.id || null},${json({ name: customer.name, phone: customer.phone_normalized })},${vehicle ? json({ model: vehicle.model, plate: vehicle.plate_normalized, year: vehicle.model_year }) : sql`NULL`},${requestedAt},${requestedAt},${byPeriod ? input.requestedPeriod : null},${byPeriod ? input.requestedPeriod : null},${input.confirmNow ? requestedAt : null},${input.confirmNow ? "CONFIRMED" : "PENDING"},${publicInput ? publicSource : input.source},${advisorId},${input.note || input.customerNote || null},${publicInput ? null : input.internalNote || null},${ctx.actor?.userId || null}) RETURNING *`,
     );
     await this.saveServices(c, ctx, id, plans);
     const reservation = await this.capacity.persist(c, ctx, id, allocated);
@@ -293,19 +333,42 @@ export class Bookings {
       await c.execute(
         sql`INSERT INTO consents(customer_id,booking_id,type,notice_version,granted,source,recorded_by) VALUES(${customer.id},${id},'MARKETING',${ctx.station.marketing_notice_version},${input.notice.marketingConsent},${publicInput ? "PUBLIC" : "STAFF"},${ctx.actor?.userId || null})`,
       );
-    const eventId = await event(c, ctx, id, "BOOKING_CREATED", undefined, {
-      status: "PENDING",
+    let eventId = await event(c, ctx, id, "BOOKING_CREATED", undefined, {
+      status: b!.status,
     });
+    if (input.confirmNow) {
+      await c.execute(
+        sql`INSERT INTO booking_contact_events(booking_id,actor_user_id,channel,outcome,proposed_start_at,customer_accepted,contacted_at) VALUES(${id},${ctx.actor!.userId},'OTHER','AGREED',${requestedAt},true,${ctx.now})`,
+      );
+      await c.execute(
+        sql`UPDATE bookings SET last_contact_outcome='AGREED' WHERE id=${id}`,
+      );
+      eventId = await event(
+        c,
+        ctx,
+        id,
+        "BOOKING_CONFIRM",
+        "Tạo và xác nhận giờ hẹn đã thống nhất với khách",
+        {
+          fromStatus: "PENDING",
+          toStatus: "CONFIRMED",
+          newStartAt: iso(requestedAt),
+        },
+      );
+    }
     return publicInput
       ? {
           bookingId: id,
           bookingCode: code,
           status: "PENDING",
-          requestedStartAt: iso(b!.requested_start_at),
-          reservationStatus: "ACTIVE",
+          requestedDate: input.requestedDate,
+          requestedPeriod: input.requestedPeriod,
           version: 1,
         }
-      : receipt(b!, reservation, eventId);
+      : receipt(b!, reservation, eventId, [
+          ...allocated.warnings,
+          ...(await this.conflicts(c, ctx, b!)),
+        ]);
   }
   async mutate(c: Conn, ctx: Context, id: string, action: string, input: Row) {
     const b = await scopedBooking(c, ctx, id, true);
@@ -317,7 +380,25 @@ export class Bookings {
       sql`SELECT * FROM capacity_reservations WHERE booking_id=${id} AND status='ACTIVE'`,
     );
     if (!hold) fail(409, "RESERVATION_MISSING");
-    let next = { ...b };
+    let next = { ...b },
+      warnings: string[] = [];
+    const advisorActor = ctx.actor!.role === "ADVISOR";
+    if (advisorActor && input.advisorId !== undefined) fail(403, "FORBIDDEN");
+    // A failed contact stays in the shared queue; confirmation claims it atomically.
+    const claimer = b.assigned_advisor_id
+      ? null
+      : advisorActor && action !== "contact-events"
+        ? ctx.actor!.staffId
+        : action === "confirm"
+          ? input.advisorId
+          : null;
+    if (claimer && !["assign", "transfer"].includes(action)) {
+      await this.validAdvisor(c, ctx, claimer);
+      await c.execute(
+        sql`INSERT INTO booking_assignments(booking_id,advisor_id,assigned_by,assigned_at,reason) VALUES(${id},${claimer},${ctx.actor!.userId},${ctx.now},'CLAIMED')`,
+      );
+      next.assigned_advisor_id = claimer;
+    }
     if (action === "edit") {
       if (input.customerContact)
         next.contact_snapshot = {
@@ -358,42 +439,64 @@ export class Bookings {
           hold.id,
         );
         hold = await this.capacity.persist(c, ctx, id, allocated, hold);
+        warnings = allocated.warnings;
         await this.saveServices(c, ctx, id, plans);
       }
     } else if (action === "confirm" || action === "reschedule") {
       if (action === "confirm" && b.status !== "PENDING")
         fail(409, "INVALID_TRANSITION");
       if (action === "confirm") {
-        if (!b.assigned_advisor_id) fail(422, "ADVISOR_REQUIRED");
-        await this.validAdvisor(c, ctx, b.assigned_advisor_id);
+        if (!next.assigned_advisor_id) fail(422, "ADVISOR_REQUIRED");
+        if (!claimer) await this.validAdvisor(c, ctx, next.assigned_advisor_id);
       }
-      const at = new Date(
-        action === "confirm" ? input.confirmedStartAt : input.newStartAt,
-      );
-      if (+at <= +ctx.now) fail(422, "OUTSIDE_BOOKING_WINDOW");
-      if (action === "reschedule" && +at === +b.scheduled_start_at)
-        fail(422, "TIME_UNCHANGED");
-      if (+at !== +b.scheduled_start_at) {
-        if (!input.policyVersion) fail(422, "VALIDATION_FAILED");
-        const plans = await this.snapshotServices(c, id),
-          allocated = await this.capacity.allocate(
+      // A pending request may move to another day/period; otherwise an exact time is set.
+      const byPeriod = action === "reschedule" && !!input.requestedPeriod;
+      if (byPeriod && b.status !== "PENDING") fail(409, "INVALID_TRANSITION");
+      const at = byPeriod
+        ? await this.capacity.periodStart(
             c,
             ctx,
-            plans,
-            at,
-            input.policyVersion,
-            hold.id,
+            input.requestedDate,
+            input.requestedPeriod,
+          )
+        : new Date(
+            action === "confirm" ? input.confirmedStartAt : input.newStartAt,
           );
+      if (+at <= +ctx.now) fail(422, "OUTSIDE_BOOKING_WINDOW");
+      if (
+        action === "reschedule" &&
+        +at === +b.scheduled_start_at &&
+        (!byPeriod || input.requestedPeriod === b.requested_period)
+      )
+        fail(422, "TIME_UNCHANGED");
+      const plans = await this.snapshotServices(c, id),
+        allocated = await this.capacity.allocate(
+          c,
+          ctx,
+          plans,
+          at,
+          input.policyVersion ?? ctx.station.configuration_version,
+          hold.id,
+          byPeriod,
+        );
+      if (+at !== +b.scheduled_start_at) {
         hold = await this.capacity.persist(c, ctx, id, allocated, hold);
         next.scheduled_start_at = at;
         next.change_kind = "RESCHEDULED";
       }
+      if (action === "reschedule")
+        next.requested_period = byPeriod ? input.requestedPeriod : null;
+      warnings = allocated.warnings;
       if (action === "confirm") {
         next.status = "CONFIRMED";
         next.confirmed_start_at = at;
+        if (input.internalNote)
+          next.internal_note = [b.internal_note, input.internalNote]
+            .filter(Boolean)
+            .join("\n");
       } else if (b.status === "CONFIRMED") next.confirmed_start_at = at;
       await c.execute(
-        sql`INSERT INTO booking_contact_events(booking_id,actor_user_id,channel,outcome,proposed_start_at,customer_accepted) VALUES(${id},${ctx.actor!.userId},'OTHER','AGREED',${at},true)`,
+        sql`INSERT INTO booking_contact_events(booking_id,actor_user_id,channel,outcome,proposed_start_at,customer_accepted,note_internal,contacted_at) VALUES(${id},${ctx.actor!.userId},'OTHER','AGREED',${at},true,${input.internalNote || input.reason || null},${ctx.now})`,
       );
       next.last_contact_outcome = "AGREED";
     } else if (action === "cancel" || action === "no-show") {
@@ -441,16 +544,22 @@ export class Bookings {
       );
       next.assigned_advisor_id = to;
     } else if (action === "contact-events") {
+      if (input.callbackAt && +new Date(input.callbackAt) <= +ctx.now)
+        fail(
+          422,
+          "INVALID_CALLBACK_TIME",
+          "Chọn thời điểm gọi lại trong tương lai.",
+        );
       const contact = await one(
         c,
-        sql`INSERT INTO booking_contact_events(booking_id,actor_user_id,channel,outcome,proposed_start_at,customer_accepted,note_internal,contacted_at) VALUES(${id},${ctx.actor!.userId},${input.channel},${input.outcome},${input.proposedStartAt ? new Date(input.proposedStartAt) : null},${input.customerAccepted ?? null},${input.note || null},${ctx.now}) RETURNING id`,
+        sql`INSERT INTO booking_contact_events(booking_id,actor_user_id,channel,outcome,proposed_start_at,customer_accepted,note_internal,contacted_at,callback_at) VALUES(${id},${ctx.actor!.userId},${input.channel},${input.outcome},${input.proposedStartAt ? new Date(input.proposedStartAt) : null},${input.customerAccepted ?? null},${input.note || null},${ctx.now},${input.callbackAt ? new Date(input.callbackAt) : null}) RETURNING id`,
       );
       next.last_contact_outcome = input.outcome;
       next.contactEventId = contact!.id;
     } else fail(404, "NOT_FOUND");
     next.version = b.version + 1;
     await c.execute(
-      sql`UPDATE bookings SET contact_snapshot=${json(next.contact_snapshot)},vehicle_id=${next.vehicle_id},vehicle_snapshot=${next.vehicle_snapshot ? json(next.vehicle_snapshot) : sql`NULL`},scheduled_start_at=${next.scheduled_start_at},confirmed_start_at=${next.confirmed_start_at},status=${next.status},assigned_advisor_id=${next.assigned_advisor_id},customer_note=${next.customer_note},internal_note=${next.internal_note},change_kind=${next.change_kind},cancelled_at=${next.cancelled_at},cancel_reason=${next.cancel_reason},last_contact_outcome=${next.last_contact_outcome},version=${next.version},updated_at=${ctx.now} WHERE id=${id}`,
+      sql`UPDATE bookings SET contact_snapshot=${json(next.contact_snapshot)},vehicle_id=${next.vehicle_id},vehicle_snapshot=${next.vehicle_snapshot ? json(next.vehicle_snapshot) : sql`NULL`},scheduled_start_at=${next.scheduled_start_at},requested_period=${next.requested_period},confirmed_start_at=${next.confirmed_start_at},status=${next.status},assigned_advisor_id=${next.assigned_advisor_id},customer_note=${next.customer_note},internal_note=${next.internal_note},change_kind=${next.change_kind},cancelled_at=${next.cancelled_at},cancel_reason=${next.cancel_reason},last_contact_outcome=${next.last_contact_outcome},version=${next.version},updated_at=${ctx.now} WHERE id=${id}`,
     );
     const eventId = await event(
       c,
@@ -465,6 +574,11 @@ export class Bookings {
         newStartAt: iso(next.scheduled_start_at),
       },
     );
+    if (
+      next.status === "CONFIRMED" &&
+      ["confirm", "reschedule", "assign", "transfer", "edit"].includes(action)
+    )
+      warnings.push(...(await this.conflicts(c, ctx, next)));
     return action === "contact-events"
       ? {
           bookingId: id,
@@ -472,7 +586,105 @@ export class Bookings {
           version: next.version,
           eventId,
         }
-      : receipt(next, hold!, eventId);
+      : receipt(next, hold!, eventId, warnings);
+  }
+  async conflicts(c: Conn, ctx: Context, b: Row, endAt?: Date) {
+    if (!b.assigned_advisor_id) return [];
+    const hold = endAt
+      ? null
+      : await one(
+          c,
+          sql`SELECT end_at FROM capacity_reservations WHERE booking_id=${b.id} AND status='ACTIVE' ORDER BY generation DESC LIMIT 1`,
+        );
+    const end =
+      endAt || hold?.end_at || new Date(+b.scheduled_start_at + 15 * 60000);
+    const clash = await one(
+      c,
+      sql`SELECT 1 FROM bookings other JOIN capacity_reservations r ON r.booking_id=other.id AND r.status='ACTIVE'
+      WHERE other.station_id=${ctx.station.id} AND other.assigned_advisor_id=${b.assigned_advisor_id} AND other.status='CONFIRMED'
+      AND other.scheduled_start_at<${end} AND r.end_at>${b.scheduled_start_at} AND other.id<>${b.id} LIMIT 1`,
+    );
+    return clash ? ["ADVISOR_TIME_CONFLICT"] : [];
+  }
+  async preview(c: Conn, ctx: Context, id: string, input: Row) {
+    permission(
+      ctx,
+      input.action === "confirm" ? "booking.confirm" : "booking.reschedule",
+    );
+    const b = await scopedBooking(c, ctx, id);
+    expectVersion(b, input.expectedVersion);
+    if (
+      !["PENDING", "CONFIRMED"].includes(b.status) ||
+      (input.action === "confirm" && b.status !== "PENDING")
+    )
+      fail(409, "INVALID_TRANSITION");
+    if (ctx.actor!.role === "ADVISOR" && input.advisorId !== undefined)
+      fail(403, "FORBIDDEN");
+    const advisor =
+      b.assigned_advisor_id ||
+      (ctx.actor!.role === "ADVISOR" ? ctx.actor!.staffId : input.advisorId);
+    if (input.action === "confirm" && !advisor) fail(422, "ADVISOR_REQUIRED");
+    if (advisor) await this.validAdvisor(c, ctx, advisor);
+    const hold = await one(
+      c,
+      sql`SELECT id FROM capacity_reservations WHERE booking_id=${id} AND status='ACTIVE'`,
+    );
+    if (!hold) fail(409, "RESERVATION_MISSING");
+    const at = new Date(input.startAt);
+    const result = await this.capacity.allocate(
+      c,
+      ctx,
+      await this.snapshotServices(c, id),
+      at,
+      ctx.station.configuration_version,
+      hold.id,
+    );
+    return {
+      warnings: [
+        ...result.warnings,
+        ...(await this.conflicts(
+          c,
+          ctx,
+          { ...b, assigned_advisor_id: advisor, scheduled_start_at: at },
+          new Date(result.plan.end),
+        )),
+      ],
+    };
+  }
+  async previewCreate(c: Conn, ctx: Context, input: Row) {
+    if (ctx.actor!.role === "ADVISOR" && input.advisorId !== undefined)
+      fail(403, "FORBIDDEN");
+    const advisor =
+      ctx.actor!.role === "ADVISOR" ? ctx.actor!.staffId : input.advisorId;
+    if (advisor) await this.validAdvisor(c, ctx, advisor);
+    const at = new Date(input.startAt);
+    const result = await this.capacity.allocate(
+      c,
+      ctx,
+      await this.capacity.servicePlans(
+        c,
+        ctx,
+        input.serviceIds,
+        input.catalogVersion,
+      ),
+      at,
+      ctx.station.configuration_version,
+    );
+    return {
+      warnings: [
+        ...result.warnings,
+        ...(await this.conflicts(
+          c,
+          ctx,
+          {
+            id: randomUUID(),
+            assigned_advisor_id: advisor,
+            scheduled_start_at: at,
+          },
+          new Date(result.plan.end),
+        )),
+      ],
+    };
   }
   async events(c: Conn, ctx: Context, id: string, q: Row) {
     const current = await one(
@@ -570,12 +782,13 @@ const reservationView = (r: Row) => ({
   endAt: iso(r.end_at),
   policyVersion: r.policy_version,
 });
-function receipt(b: Row, r: Row, eventId: string) {
+function receipt(b: Row, r: Row, eventId: string, warnings: string[] = []) {
   return {
     bookingId: b.id,
     bookingCode: b.code,
     status: b.status,
     requestedStartAt: iso(b.requested_start_at),
+    requestedPeriod: b.requested_period ?? null,
     scheduledStartAt: iso(b.scheduled_start_at),
     confirmedStartAt: b.confirmed_start_at ? iso(b.confirmed_start_at) : null,
     reservation: {
@@ -585,5 +798,6 @@ function receipt(b: Row, r: Row, eventId: string) {
     },
     version: b.version,
     eventId,
+    warnings,
   };
 }

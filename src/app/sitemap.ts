@@ -28,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "",
     "/services",
     "/our-work",
+    "/phu-kien",
     "/news",
     "/about",
     "/contact",
