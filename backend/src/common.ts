@@ -152,7 +152,7 @@ export function scope(ctx: Context, alias = "b", includeDeleted = false) {
         ? // Unclaimed pending bookings form a shared queue every advisor can pick up.
           sql`${a}.station_id=${ctx.station.id}::uuid AND (${a}.assigned_advisor_id=${ctx.actor.staffId}::uuid OR (${a}.assigned_advisor_id IS NULL AND ${a}.status='PENDING'))`
         : sql`${a}.station_id=${ctx.station.id}::uuid AND ${a}.assigned_advisor_id=${ctx.actor.staffId}::uuid`;
-  return alias === "b" || includeDeleted
+  return includeDeleted
     ? access
     : sql`${access} AND ${a}.deleted_at IS NULL`;
 }

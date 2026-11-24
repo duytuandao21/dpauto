@@ -1,8 +1,12 @@
 import { Photo } from "@/components/ui/photo";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
+import { publicFeed } from "@/lib/public-cms";
+import { siteSettings } from "@/lib/site-content";
 
-export default function NotFound() {
+export default async function NotFound() {
+  // Address from Cài đặt website, like the footer.
+  const settings = siteSettings(await publicFeed());
   return (
     <section className="not-found">
       <Photo
@@ -15,7 +19,7 @@ export default function NotFound() {
       <div className="container">
         <p className="not-found-address">
           <Icon name="pin" />
-          000 Harbor Avenue SW, Seattle, WA 98126, Hoa Kỳ
+          {[settings.address, settings.city].filter(Boolean).join(", ")}
         </p>
         <div className="not-found-number" aria-hidden="true">
           404
@@ -29,7 +33,7 @@ export default function NotFound() {
           <Button href="/" variant="secondary">
             Về trang chủ
           </Button>
-          <Button href="/services">Xem dịch vụ</Button>
+          <Button href="/dich-vu">Xem dịch vụ</Button>
         </div>
       </div>
     </section>

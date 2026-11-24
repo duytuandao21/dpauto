@@ -11,7 +11,7 @@ import {
   MorePage,
   SettingsPage,
 } from "../../src/components/admin/secondary-pages";
-import { LiveNotifications } from "../../src/components/manager/live-operations";
+import { AdvisorNotifications } from "../../src/components/advisor/notifications";
 import { AssignmentHistory } from "../../src/components/admin/assignment-history";
 import { VisitAssignmentHistory } from "../../src/components/advisor/visit-assignment-history";
 import {
@@ -83,7 +83,7 @@ function App() {
   else if (path.includes("/tai-khoan")) content = <MorePage />;
   else if (path.includes("/tuy-chon")) content = <SettingsPage />;
   else if (path.includes("/xe")) content = <VehicleProfile id="v1" />;
-  else if (path.includes("/thong-bao")) content = <LiveNotifications advisor />;
+  else if (path.includes("/thong-bao")) content = <AdvisorNotifications />;
   else if (path.includes("/lich-su"))
     content = (
       <>

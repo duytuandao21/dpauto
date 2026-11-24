@@ -25,7 +25,7 @@ export function ServiceHero({ service }: { service: Service }) {
         className="service-hero-image"
         style={reduced ? undefined : { scale }}
       >
-        <Photo {...service.image} priority unoptimized sizes="100vw" />
+        <Photo {...service.image} priority sizes="100vw" />
         <div className="service-hero-shade" />
       </motion.div>
       <div className="container service-hero-copy">

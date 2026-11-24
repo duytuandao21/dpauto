@@ -1,4 +1,5 @@
 "use client";
+import { DateInput } from "@/components/advisor/date-input";
 import { useState } from "react";
 import { PageHeading } from "@/components/admin/primitives";
 import { formatMoney } from "@/lib/advisor/seed";
@@ -81,19 +82,17 @@ function LocalFinancePage() {
           </FilterSelect>
           <label className="mgr-filter">
             Tiếp nhận từ
-            <input
-              type="date"
+            <DateInput
               value={from}
-              onChange={(e) => setFrom(e.target.value)}
+              onValueChange={(v) => setFrom(v)}
             />
           </label>
           <label className="mgr-filter">
             Đến
-            <input
-              type="date"
+            <DateInput
               min={from}
               value={to}
-              onChange={(e) => setTo(e.target.value)}
+              onValueChange={(v) => setTo(v)}
             />
           </label>
           <label className="adm-toggle-row">

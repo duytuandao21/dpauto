@@ -1,4 +1,5 @@
 "use client";
+import { PartnerName } from "./partner-picker";
 import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import Link from "next/link";
 import { EmptyState } from "@/components/admin/primitives";
@@ -66,8 +67,12 @@ export function ServiceTicketsTable({
                 </td>
                 <td data-label="Tên xe">{row.model || "—"}</td>
                 <td data-label="Khách hàng">
-                  <strong>{row.customer}</strong>
-                  {row.phone && (
+                  {row.partnerSale ? (
+                    <PartnerName sale={row.partnerSale} />
+                  ) : (
+                    <strong>{row.customer}</strong>
+                  )}
+                  {row.phone && !row.partnerSale && (
                     <a
                       className="adv-ticket-phone"
                       href={`tel:${formatPhone(row.phone)}`}

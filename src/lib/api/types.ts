@@ -29,6 +29,7 @@ export type ApiService = {
 export type ApiBooking = {
   id: string;
   code: string;
+  partner?: import("./partners").PartnerSnapshot | null;
   status: string;
   source: string;
   customer: { name: string; phone: string };
@@ -80,6 +81,9 @@ export type PublicCatalog = {
     name: string;
     description: string | null;
     estimatedDurationLabel: string;
+    estimatedDurationMinutes: number;
+    /** Website service key this booking service mirrors. */
+    marketingSlug: string | null;
   }[];
   catalogVersion: number;
   policyVersion: number;

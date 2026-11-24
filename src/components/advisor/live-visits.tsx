@@ -1,11 +1,15 @@
 ﻿"use client";
+import { useCloseOutside } from "./use-close-outside";
+import { DateInput } from "./date-input";
+import { PartnerSaleEdit } from "./partner-picker";
+import { eventLabel } from "@/lib/event-labels";
 import {
   formatOdometer,
   formatPhone,
   formatPlate,
 } from "@/lib/advisor/formats";
 import Link from "next/link";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   apiEnabled,
@@ -226,11 +230,92 @@ function VisitsContent({
     window.addEventListener("focus", update);
     return () => window.removeEventListener("focus", update);
   }, []);
+  const filterBox = useRef<HTMLDetailsElement>(null);
+  const closeFilters = useCallback(() => {
+    if (filterBox.current) filterBox.current.open = false;
+  }, []);
+  useCloseOutside(filterBox, !manager, closeFilters);
   function reset() {
     setCursor("");
     setPrevious([]);
   }
   const embedded = !!customerId || !!vehicleId;
+  // One set of fields: a popover on /co-van, an always-open panel on /dieu-hanh.
+  const filterFields = (
+    <>
+                <label>
+                  Trạng thái
+                  <select
+                    value={stage}
+                    onChange={(e) => {
+                      setStage(e.target.value);
+                      reset();
+                    }}
+                  >
+                    <option value="">Tất cả</option>
+                    {Object.entries(visitStages)
+                      .filter(
+                        ([key]) =>
+                          !activeOnly ||
+                          !["HANDED_OVER", "COMPLETED", "ABORTED"].includes(
+                            key,
+                          ),
+                      )
+                      .map(([key, label]) => (
+                        <option key={key} value={key}>
+                          {label}
+                        </option>
+                      ))}
+                  </select>
+                </label>
+                {manager && (
+                  <label>
+                    Cố vấn
+                    <select
+                      value={advisor}
+                      onChange={(e) => {
+                        setAdvisor(e.target.value);
+                        reset();
+                      }}
+                    >
+                      <option value="">Tất cả</option>
+                      {staff.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+                <div
+                  className={manager ? undefined : "adv-ticket-filter-dates"}
+                  style={manager ? { display: "contents" } : undefined}
+                >
+                  <label>
+                    Từ ngày
+                    <DateInput
+                      value={from}
+                      max={to || undefined}
+                      onValueChange={(v) => {
+                        setFrom(v);
+                        reset();
+                      }}
+                    />
+                  </label>
+                  <label>
+                    Đến ngày
+                    <DateInput
+                      value={to}
+                      min={from || undefined}
+                      onValueChange={(v) => {
+                        setTo(v);
+                        reset();
+                      }}
+                    />
+                  </label>
+                </div>
+    </>
+  );
   return (
     <div
       className={
@@ -305,6 +390,32 @@ function VisitsContent({
                   </button>
                 )}
               </label>
+              {!manager && (
+                <details className="adv-ticket-filters" ref={filterBox}>
+                  <summary className="adm-btn">
+                    <AdminIcon name="filter" />
+                    Bộ lọc{(stage || from || to) && " •"}
+                  </summary>
+                  <div className="adm-filters adv-ticket-filter-panel">
+                    <div className="adv-ticket-filter-head">
+                      <strong>Bộ lọc</strong>
+                      <button
+                        type="button"
+                        className="adm-text-link"
+                        onClick={() => {
+                          setStage("");
+                          setFrom("");
+                          setTo("");
+                          reset();
+                        }}
+                      >
+                        Đặt lại
+                      </button>
+                    </div>
+                    {filterFields}
+                  </div>
+                </details>
+              )}
             </div>
             {!manager && (
               <div className="adm-quick-filters" aria-label="Lọc tiến độ">
@@ -331,84 +442,7 @@ function VisitsContent({
                 ))}
               </div>
             )}
-            <details
-              className={manager ? undefined : "adv-advanced"}
-              open={manager || undefined}
-            >
-              <summary className="adm-btn" hidden={manager}>
-                Bộ lọc nâng cao
-              </summary>
-              <div
-                className={manager ? "adm-filters" : "adm-filters adv-filters"}
-              >
-                <label>
-                  Trạng thái
-                  <select
-                    value={stage}
-                    onChange={(e) => {
-                      setStage(e.target.value);
-                      reset();
-                    }}
-                  >
-                    <option value="">Tất cả</option>
-                    {Object.entries(visitStages)
-                      .filter(
-                        ([key]) =>
-                          !activeOnly ||
-                          !["HANDED_OVER", "COMPLETED", "ABORTED"].includes(
-                            key,
-                          ),
-                      )
-                      .map(([key, label]) => (
-                        <option key={key} value={key}>
-                          {label}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-                {manager && (
-                  <label>
-                    Cố vấn
-                    <select
-                      value={advisor}
-                      onChange={(e) => {
-                        setAdvisor(e.target.value);
-                        reset();
-                      }}
-                    >
-                      <option value="">Tất cả</option>
-                      {staff.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                )}
-                <label>
-                  Từ ngày
-                  <input
-                    type="date"
-                    value={from}
-                    onChange={(e) => {
-                      setFrom(e.target.value);
-                      reset();
-                    }}
-                  />
-                </label>
-                <label>
-                  Đến ngày
-                  <input
-                    type="date"
-                    value={to}
-                    onChange={(e) => {
-                      setTo(e.target.value);
-                      reset();
-                    }}
-                  />
-                </label>
-              </div>
-            </details>
+            {manager && <div className="adm-filters">{filterFields}</div>}
           </>
         )}
         {error ? (
@@ -514,49 +548,6 @@ function PrivatePhoto({ id, name }: { id: string; name: string }) {
     <p role="status">{error || "Đang tải ảnh…"}</p>
   );
 }
-const eventNames: Record<string, string> = {
-  VISIT_RECEIVED: "Tiếp nhận xe",
-  VISIT_INTAKE: "Cập nhật tiếp nhận",
-  VISIT_INSPECT: "Hoàn tất kiểm tra ban đầu",
-  VISIT_CONTACT: "Liên hệ khách hàng",
-  VISIT_TRANSFER: "Chuyển cố vấn",
-  INTAKE_PHOTO_REMOVED: "Gỡ ảnh tiếp nhận",
-  QUOTE_CREATED: "Lập bản báo giá",
-  QUOTE_DRAFT_SAVED: "Lưu báo giá",
-  QUOTE_SUBMITTED: "Gửi báo giá",
-  QUOTE_APPROVED: "Khách đồng ý báo giá",
-  QUOTE_REJECTED: "Khách từ chối báo giá",
-  WORK_EXEMPTION_APPROVED: "Duyệt công việc miễn phí",
-  WORK_ITEM_CREATED: "Thêm công việc",
-  WORK_ITEM_UPDATED: "Cập nhật công việc",
-  WORK_ITEM_IN_PROGRESS: "Bắt đầu công việc",
-  WORK_ITEM_DONE: "Hoàn tất công việc",
-  WORK_ITEM_SKIPPED: "Bỏ qua công việc",
-  WORK_START: "Bắt đầu thi công",
-  WORK_PAUSE: "Tạm dừng thi công",
-  WORK_RESUME: "Tiếp tục thi công",
-  WORK_FINISH: "Hoàn tất thi công",
-  WORK_LOG: "Nhật ký thi công",
-  ACCEPTANCE_PASSED: "Nghiệm thu đạt",
-  ACCEPTANCE_NEEDS_WORK: "Nghiệm thu cần sửa lại",
-  RESOURCE_EXTENDED: "Gia hạn tài nguyên",
-  RESOURCE_RELEASED: "Trả khu vực thi công",
-  VISIT_READY: "Xe sẵn sàng bàn giao",
-  VISIT_HANDED_OVER: "Bàn giao xe",
-  VISIT_ABORTED: "Dừng phiếu dịch vụ",
-  VISIT_COMPLETED: "Hoàn thành phiếu",
-  QUOTE_VOIDED: "Hủy báo giá",
-  QUOTE_SCOPE_VOIDED: "Hủy hạng mục chưa thực hiện",
-  STOCK_REQUESTED: "Lập yêu cầu phụ tùng",
-  STOCK_RESERVED: "Điều chỉnh giữ phụ tùng",
-  STOCK_POSTED: "Ghi sổ phụ tùng",
-  CASH_COLLECT: "Thu tiền thực tế",
-  CASH_DEPOSIT: "Thu cọc thực tế",
-  CASH_REFUND: "Hoàn tiền",
-  CASH_REVERSAL: "Đảo khoản thu",
-  DEPOSIT_ALLOCATED: "Phân bổ cọc đã thu",
-  OBLIGATION_CREDITED: "Điều chỉnh giảm nghĩa vụ",
-};
 export function LiveVisitDetail({
   id,
   manager = false,
@@ -808,6 +799,26 @@ function RemoteVisitDetail({
                   : "Lịch hẹn"}
               </dd>
             </div>
+            {visit.partner && (
+              <div>
+                <dt>Đối tác</dt>
+                <dd>
+                  {visit.partner.partnerName}
+                  {["HANDED_OVER", "COMPLETED", "ABORTED"].includes(visit.stage) ? (
+                    <span className="adv-partner-edit">
+                      Sale: {visit.partner.saleName}
+                    </span>
+                  ) : (
+                    <PartnerSaleEdit
+                      path={`admin/service-visits/${visit.id}/partner`}
+                      version={visit.version}
+                      current={visit.partner}
+                      onSaved={() => setReload((n) => n + 1)}
+                    />
+                  )}
+                </dd>
+              </div>
+            )}
             <div>
               <dt>Dịch vụ</dt>
               <dd>{visit.services.map((s) => s.name).join(", ")}</dd>
@@ -1077,7 +1088,7 @@ function RemoteVisitDetail({
             <li key={e.id}>
               <i />
               <div>
-                <strong>{eventNames[e.type] || e.type}</strong>
+                <strong>{eventLabel(e.type)}</strong>
                 <time>{at(e.occurredAt)}</time>
                 {e.reason && <p>{e.reason}</p>}
                 {e.type === "VISIT_CONTACT" && (

@@ -3,13 +3,18 @@ import "@/styles/fonts.css";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
+  // Canonical URLs are relative; the public domain makes them absolute.
+  ...(process.env.NEXT_PUBLIC_SITE_URL
+    ? { metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL) }
+    : {}),
   title: {
-    default: "HyperAuto Care | Seattle Car Detailing & Vehicle Protection",
-    template: "%s | HyperAuto Care",
+    default: "DPAuto – Trạm Dịch Vụ Toàn Trung | Bảo dưỡng, sửa chữa và chăm sóc ô tô",
+    template: "%s | DPAuto",
   },
   description:
-    "Professional car care, auto detailing, ceramic coating, paint protection film, window tint and vehicle protection services in Seattle.",
-  icons: { icon: "/images/logo-dpauto.png" },
+    "DPAuto – Trạm Dịch Vụ Toàn Trung: bảo dưỡng, sửa chữa, vệ sinh họng nạp, dán PPF, phim cách nhiệt, decal đổi màu và phụ kiện ô tô tại 787–789 Quốc lộ 13, Hiệp Bình, TP. Hồ Chí Minh.",
+  // The favicon (or logo) uploaded in "Cài đặt website", or the built-in logo.
+  icons: { icon: "/site-logo/favicon" },
 };
 export const viewport: Viewport = {
   width: "device-width",

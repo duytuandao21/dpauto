@@ -766,7 +766,7 @@ export function PageButtons({
     pageNumber?: number;
   };
 }) {
-  if (manager && !page.canPrevious && !page.canNext) return null;
+  if (!page.canPrevious && !page.canNext) return null;
   const controls = (
     <>
       <button

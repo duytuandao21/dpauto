@@ -41,7 +41,18 @@ export class Notifications {
       c,
       this.config,
       ctx,
-      sql`SELECT n.*,n.created_at AS cursor_key FROM notifications n WHERE ${this.visible(ctx)}`,
+      // The event behind each notice gives the detail: what happened, why, who, for which customer/vehicle.
+      sql`SELECT n.*,n.created_at AS cursor_key,COALESCE(be.type,ve.type) AS event_type,COALESCE(be.reason,ve.reason) AS event_reason,
+        COALESCE(be.occurred_at,ve.occurred_at) AS event_at,s.name AS actor_name,COALESCE(b.code,v.code) AS subject_code,
+        COALESCE(b.contact_snapshot,v.contact_snapshot)->>'name' AS customer_name,COALESCE(b.vehicle_snapshot,v.vehicle_snapshot)->>'plate' AS vehicle_plate,
+        COALESCE(b.vehicle_snapshot,v.vehicle_snapshot)->>'model' AS vehicle_model,b.scheduled_start_at AS booking_start_at,b.status AS booking_status,v.stage AS visit_stage
+        FROM notifications n
+        LEFT JOIN booking_events be ON n.subject_type='booking' AND be.id::text=n.event_key
+        LEFT JOIN visit_events ve ON n.subject_type='visit' AND ve.id::text=n.event_key
+        LEFT JOIN staff_profiles s ON s.user_id=COALESCE(be.actor_user_id,ve.actor_user_id)
+        LEFT JOIN bookings b ON n.subject_type='booking' AND b.id=n.subject_id
+        LEFT JOIN service_visits v ON n.subject_type='visit' AND v.id=n.subject_id
+        WHERE ${this.visible(ctx)}`,
       q,
       "inbox",
       true,
@@ -59,6 +70,18 @@ export class Notifications {
         createdAt: iso(n.created_at),
         readAt: n.read_at ? iso(n.read_at) : null,
         version: n.version,
+        eventType: n.event_type || null,
+        reason: n.event_reason || null,
+        occurredAt: n.event_at ? iso(n.event_at) : null,
+        actorName: n.actor_name || null,
+        subject: {
+          code: n.subject_code || null,
+          customerName: n.customer_name || null,
+          plate: n.vehicle_plate || null,
+          model: n.vehicle_model || null,
+          startAt: n.booking_start_at ? iso(n.booking_start_at) : null,
+          status: n.booking_status || n.visit_stage || null,
+        },
       })),
       page: p.page,
       extra: { unread: count!.n },

@@ -1,4 +1,7 @@
+"use client";
 import { ComparisonCarousel } from "@/components/media/comparison-carousel";
+import { homeDefaults } from "@/lib/home-defaults";
+import { useImage, useSection } from "@/components/site/site-content";
 import {
   AboutGalleryImage as GalleryImage,
   AboutVideo as GalleryVideo,
@@ -7,39 +10,27 @@ import { Button } from "@/components/ui/button";
 import { HomeSectionHeading as SectionHeading } from "./home-motion";
 import { HomeSocialLink } from "./home-motion";
 
-const galleryImages = [
-  {
-    src: "/images/mGs8Snpdilvf4Tj97QjW0FdaAy0.webp",
-    alt: "Xe sau khi hoàn tất chăm sóc tại HyperAuto Care",
-  },
-  {
-    src: "/images/gv0F2vE8CnjY1WUos05p1ycEuDQ.webp",
-    alt: "Chăm sóc xe tại xưởng HyperAuto Care",
-  },
-  {
-    src: "/images/IPz1ZOzMs2KRfySU3adLI7XJnvE.webp",
-    alt: "Rửa xe và chăm sóc ngoại thất tại HyperAuto Care",
-  },
-  {
-    src: "/images/o2dUjNf8zaSm1OA9O9k0HFYVSIU.webp",
-    alt: "Hoàn thiện bề mặt xe tại HyperAuto Care",
-  },
+const defaultGallery = homeDefaults["home.gallery"].images;
+const defaultVideos = [
+  "/videos/3N4aS6LLHk8XXKgD51R21mRi8Q.webm",
+  "/videos/xReQmqj0OIZCmYSNJTLGTz63324.webm",
 ];
-
 export function WorkSection() {
+  const section = useSection("home.work", homeDefaults["home.work"]);
+  if (!section) return null;
   return (
     <section className="section light home-work">
       <div className="container">
         <SectionHeading
-          title="Khác biệt từ từng chi tiết"
-          description="Kết quả thực tế sau khi làm sạch, hiệu chỉnh và phục hồi xe."
+          title={section.title}
+          description={section.description}
         />
       </div>
       <div className="container work-results">
         <ComparisonCarousel />
         <div className="section-bottom">
-          <Button href="/our-work" variant="secondary">
-            Xem thêm thành quả
+          <Button href={section.cta?.href || "/thanh-qua"} variant="secondary">
+            {section.cta?.label || "Xem thêm thành quả"}
           </Button>
         </div>
       </div>
@@ -48,28 +39,42 @@ export function WorkSection() {
 }
 
 export function SocialGallery() {
+  const section = useSection("home.gallery", homeDefaults["home.gallery"]),
+    resolve = useImage();
+  if (!section) return null;
+  // The mosaic has four photo slots around two videos; empty slots fall back to the originals.
+  const galleryImages = [0, 1, 2, 3].map((i) =>
+    resolve(section.images?.[i], defaultGallery[i])!,
+  );
+  const videos = [0, 1].map(
+    (i) => resolve(section.videos?.[i])?.src || defaultVideos[i],
+  );
   return (
     <section className="light social-gallery">
       <div className="container">
         <div className="social-gallery-heading">
-          <h3>Theo dõi những hình ảnh và công việc mới nhất tại xưởng.</h3>
+          <h3>{section.title}</h3>
         </div>
       </div>
       <div className="social-mosaic">
         <GalleryImage image={galleryImages[0]} />
-        <GalleryVideo src="/videos/3N4aS6LLHk8XXKgD51R21mRi8Q.webm" />
+        <GalleryVideo src={videos[0]} />
         <GalleryImage image={galleryImages[1]} />
-        <GalleryVideo src="/videos/xReQmqj0OIZCmYSNJTLGTz63324.webm" />
+        <GalleryVideo src={videos[1]} />
         <GalleryImage image={galleryImages[2]} />
         <GalleryImage image={galleryImages[3]} />
       </div>
       <div className="social-gallery-actions button-row">
-        <HomeSocialLink href="https://www.facebook.com/" icon="facebook">
-          Theo dõi Facebook
-        </HomeSocialLink>
-        <HomeSocialLink href="https://www.instagram.com/" icon="instagram">
-          Theo dõi Instagram
-        </HomeSocialLink>
+        {section.cta?.href && (
+          <HomeSocialLink href={section.cta.href} icon="facebook">
+            {section.cta.label}
+          </HomeSocialLink>
+        )}
+        {section.cta2?.href && (
+          <HomeSocialLink href={section.cta2.href} icon="tiktok">
+            {section.cta2.label}
+          </HomeSocialLink>
+        )}
       </div>
     </section>
   );

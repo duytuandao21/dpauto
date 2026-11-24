@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { partnerSale } from "./partners";
 import type { Config } from "./config";
 import { createHash } from "node:crypto";
 import { sql, one, rows, json, type Conn, type Row } from "./database";
@@ -106,6 +107,7 @@ export class Visits {
       pauseReason: v.pause_reason,
       pausedAt: v.paused_at ? iso(v.paused_at) : null,
       stage: v.stage,
+      partner: v.partner_snapshot ?? null,
       canDelete: !v.deleted_at,
       deleteBlockedReason: null,
       ...(v.ticket_stage ? { ticketStage: v.ticket_stage } : {}),
@@ -140,6 +142,41 @@ export class Visits {
         : null,
     };
   }
+  /**
+   * Public "Tra cứu": the car's current step only (no prices, notes, staff or history).
+   * Plate and phone must both match; handed-over cars stay visible for 24 hours.
+   */
+  async publicStatus(c: Conn, ctx: Context, input: Row) {
+    const v = await one(
+      c,
+      sql`SELECT v.code,v.vehicle_snapshot,v.received_at,v.handed_over_at,${serviceStageSql} AS step,s.name AS advisor_name,
+        EXISTS(SELECT 1 FROM quote_revisions r WHERE r.visit_id=v.id AND r.status IN ('SUBMITTED','PENDING_APPROVAL')) AS waiting_customer
+        FROM service_visits v LEFT JOIN work_orders tw ON tw.visit_id=v.id JOIN staff_profiles s ON s.id=v.assigned_advisor_id
+        WHERE v.station_id=${ctx.station.id} AND v.deleted_at IS NULL AND v.partner_sale_id IS NULL AND v.stage<>'ABORTED'
+        AND regexp_replace(upper(COALESCE(v.vehicle_snapshot->>'plate','')),'[^A-Z0-9]','','g')=${input.plate}
+        AND v.contact_snapshot->>'phone'=${input.phone}
+        AND (v.stage NOT IN ('HANDED_OVER','COMPLETED') OR COALESCE(v.handed_over_at,v.updated_at)>${new Date(+ctx.now - 86400000)})
+        ORDER BY v.received_at DESC LIMIT 1`,
+    );
+    // Same answer for a wrong plate or a wrong phone, so neither can be guessed alone.
+    if (!v)
+      fail(
+        404,
+        "NOT_FOUND",
+        "Không tìm thấy xe đang làm dịch vụ với biển số và số điện thoại này.",
+      );
+    return {
+      code: v!.code,
+      model: v!.vehicle_snapshot?.model || null,
+      plate: v!.vehicle_snapshot?.plate || null,
+      step: v!.step,
+      waitingCustomer: v!.waiting_customer,
+      receivedAt: iso(v!.received_at),
+      handedOverAt: v!.handed_over_at ? iso(v!.handed_over_at) : null,
+      advisorName: v!.advisor_name,
+      stationPhone: ctx.station.phone,
+    };
+  }
   async list(c: Conn, ctx: Context, q: Row) {
     if (
       ctx.actor!.role === "ADVISOR" &&
@@ -160,6 +197,7 @@ export class Visits {
       ${q.ticketStage ? ["QUOTING","WAITING_FOR_WORK","HANDOVER","COMPLETED","IN_PROGRESS"].includes(q.ticketStage) ? sql`AND ${serviceStageSql}=${q.ticketStage}` : q.ticketStage==="PAUSED" ? sql`AND (v.is_paused OR ${ticketStageSql}='PAUSED')` : sql`AND ${ticketStageSql}=${q.ticketStage}` : sql``}
       ${q.bookingId ? sql`AND v.booking_id=${q.bookingId}` : sql``} ${q.customerId ? sql`AND v.customer_id=${q.customerId}` : sql``}
       ${q.vehicleId ? sql`AND v.vehicle_id=${q.vehicleId}` : sql``}
+      ${q.partner ? sql`AND v.partner_sale_id IS NOT NULL` : sql``} ${q.partnerSaleId ? sql`AND v.partner_sale_id=${q.partnerSaleId}` : sql``}
       ${q.q ? sql`AND (v.code ILIKE ${"%" + q.q + "%"} OR v.contact_snapshot->>'name' ILIKE ${"%" + q.q + "%"} OR v.contact_snapshot->>'phone' LIKE ${"%" + (searchedPhone.success ? searchedPhone.data : q.q.replace(/[\s().-]/g, "")) + "%"} OR v.vehicle_snapshot->>'plate' ILIKE ${"%" + q.q + "%"} OR v.vehicle_snapshot->>'model' ILIKE ${"%" + q.q + "%"})` : sql``}`,
       q,
       "receivedAt:desc",
@@ -320,7 +358,8 @@ export class Visits {
       customer: Row,
       vehicle: Row,
       advisorId: string,
-      previous: Row | undefined;
+      previous: Row | undefined,
+      partner: { snapshot: Row } | null = null;
     if (bookingId) {
       booking = await scopedBooking(c, ctx, bookingId, true);
       const existing = await one(
@@ -333,6 +372,10 @@ export class Visits {
         fail(409, "INVALID_TRANSITION");
       advisorId = booking.assigned_advisor_id;
       await this.bookings.validAdvisor(c, ctx, advisorId);
+      // A partner booking stays a partner ticket, with the same sale.
+      partner = booking.partner_snapshot
+        ? { snapshot: booking.partner_snapshot }
+        : null;
       customer = (await one(
         c,
         sql`SELECT * FROM customers WHERE id=${booking.customer_id}`,
@@ -371,7 +414,15 @@ export class Visits {
         input.notice.privacyNoticeVersion !== ctx.station.privacy_notice_version
       )
         fail(409, "NOTICE_VERSION_CONFLICT");
-      customer = await this.directory.contact(c, ctx, input.customer);
+      const p = input.partnerSaleId
+        ? await partnerSale(c, ctx, input.partnerSaleId)
+        : null;
+      partner = p;
+      customer = await this.directory.contact(
+        c,
+        ctx,
+        p ? p.customer : input.customer,
+      );
       vehicle = (await this.directory.bookingVehicle(
         c,
         ctx,
@@ -420,11 +471,24 @@ export class Visits {
       name: customer.name,
       phone: customer.phone_normalized,
     };
+    // Readable code: PDV-<DDMMYY>-<NNN>, the Nth ticket received that local day.
+    const counter = (await one(
+      c,
+      sql`INSERT INTO visit_daily_counters(day,last_value)
+        VALUES((${ctx.now}::timestamptz AT TIME ZONE 'Asia/Ho_Chi_Minh')::date,1)
+        ON CONFLICT(day) DO UPDATE SET last_value=visit_daily_counters.last_value+1
+        RETURNING to_char(day,'DDMMYY') AS date_code,last_value`,
+    ))!;
+    const code = `PDV-${counter.date_code}-${String(counter.last_value).padStart(3, "0")}`;
     const v = (await one(
       c,
       sql`INSERT INTO service_visits(workflow_version,stage,id,code,station_id,booking_id,customer_id,vehicle_id,assigned_advisor_id,origin,received_at,received_by,contact_snapshot,vehicle_snapshot,request,odometer,odometer_missing_reason,plate_missing_reason,conditions,reception_note,follow_up_of_visit_id,follow_up_reason)
-      VALUES(2,'QUOTING',${id},${"DV-" + id.replaceAll("-", "").slice(0, 16).toUpperCase()},${ctx.station.id},${bookingId || null},${customer.id},${vehicle.id},${advisorId},${bookingId ? "BOOKING" : "WALK_IN"},${ctx.now},${ctx.actor!.userId},${json(snapshot)},${json({ model: vehicle.model, plate: vehicle.plate_normalized, year: vehicle.model_year })},${intake.request},${intake.odometer},${intake.odometerMissingReason || null},${intake.plateMissingReason || null},${json(intake.conditions)},${intake.receptionNote},${input.followUpOfVisitId || null},${input.followUpReason || null}) RETURNING *`,
+      VALUES(2,'QUOTING',${id},${code},${ctx.station.id},${bookingId || null},${customer.id},${vehicle.id},${advisorId},${bookingId ? "BOOKING" : "WALK_IN"},${ctx.now},${ctx.actor!.userId},${json(snapshot)},${json({ model: vehicle.model, plate: vehicle.plate_normalized, year: vehicle.model_year })},${intake.request},${intake.odometer},${intake.odometerMissingReason || null},${intake.plateMissingReason || null},${json(intake.conditions)},${intake.receptionNote},${input.followUpOfVisitId || null},${input.followUpReason || null}) RETURNING *`,
     ))!;
+    if (partner)
+      await c.execute(
+        sql`UPDATE service_visits SET partner_sale_id=${partner.snapshot.saleId},partner_snapshot=${json(partner.snapshot)} WHERE id=${id}`,
+      );
     for (const [i, s] of plans.entries())
       await c.execute(
         sql`INSERT INTO visit_services(visit_id,service_id,sequence_no,service_name_snapshot,plan_revision,plan_snapshot) VALUES(${id},${s.id},${i},${s.name},${s.planRevision},${json(s.requirements)})`,
@@ -512,6 +576,14 @@ export class Visits {
         },
         addedPhotos: i.photos.length,
       };
+    } else if (action === "partner") {
+      if (!v.partner_sale_id)
+        fail(422, "PARTNER_ONLY", "Phiếu này không phải xe đối tác.");
+      const p = await partnerSale(c, ctx, input.partnerSaleId);
+      await c.execute(
+        sql`UPDATE service_visits SET partner_sale_id=${p.snapshot.saleId},partner_snapshot=${json(p.snapshot)} WHERE id=${id}`,
+      );
+      data = { before: v.partner_snapshot, after: p.snapshot };
     } else if (action === "inspect") {
       if (v.stage !== "RECEIVED") fail(409, "INVALID_TRANSITION");
       if (

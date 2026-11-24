@@ -656,24 +656,33 @@
   color: #111;
   border: 1px solid var(--adm-border);
   border-radius: 8px;
-  font-family: Arial, sans-serif;
+  /* Paper quote look (bao-gia-mau.pdf): serif text, ruled tables. */
+  font-family: "Times New Roman", Times, serif;
   font-size: 13px;
   line-height: 1.5;
 }
 .adv-print-document header {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 20px;
-  padding-bottom: 18px;
-  border-bottom: 2px solid #111;
+}
+.adv-print-company {
+  display: block;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+.adv-print-meta {
+  flex: none;
+  text-align: right;
 }
 .adv-print-document header p {
   margin-top: 4px;
 }
 .adv-print-document h1 {
-  margin: 28px 0 4px;
+  margin: 28px 0 20px;
   text-align: center;
-  font-size: 22px;
+  font-size: 24px;
 }
 .adv-print-code {
   margin-bottom: 24px;
@@ -690,10 +699,11 @@
   gap: 8px;
 }
 .adv-print-info dt {
-  min-width: 95px;
+  min-width: 120px;
 }
 .adv-print-info dd {
-  font-weight: 600;
+  margin: 0;
+  font-weight: 700;
 }
 .adv-print-document section {
   margin: 18px 0;
@@ -718,9 +728,28 @@
 .adv-print-document td:nth-child(n + 4) {
   text-align: right;
 }
+.adv-print-lines h2 {
+  font-size: 14px;
+}
+.adv-print-lines table {
+  font-size: 12px;
+}
+.adv-print-document .adv-print-lines :is(th, td) {
+  padding: 4px;
+  border-color: #111;
+  text-align: left;
+  vertical-align: middle;
+}
+.adv-print-document .adv-print-lines thead th {
+  text-align: center;
+}
+.adv-print-lines td small {
+  display: block;
+  font-style: italic;
+}
 .adv-print-totals {
-  width: min(340px, 100%);
-  margin: 20px 0 20px auto;
+  width: min(560px, 100%);
+  margin: 16px 0 12px auto;
 }
 .adv-print-totals > div {
   display: flex;
@@ -728,24 +757,40 @@
   gap: 10px;
   padding: 4px 0;
 }
-.adv-print-totals > div:last-child {
-  padding-top: 10px;
-  border-top: 1px solid #111;
+.adv-print-totals dd {
+  margin: 0;
+  white-space: nowrap;
+}
+.adv-print-totals > .adv-print-grand {
   font-weight: 700;
-  font-size: 16px;
+}
+.adv-print-words em {
+  margin-left: 6px;
+}
+.adv-print-date {
+  margin-top: 32px;
+  text-align: right;
+  font-style: italic;
 }
 .adv-print-signatures {
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
-  margin-top: 42px;
+  margin-top: 12px;
   text-align: center;
 }
 .adv-print-signatures > div {
-  min-height: 100px;
+  min-height: 110px;
+}
+.adv-print-signatures :is(strong, small) {
+  display: block;
 }
 .adv-print-signatures small {
-  display: block;
+  font-style: italic;
+}
+.adv-print-stamp {
+  text-align: right;
+  font-size: 11px;
 }
 @media (max-width: 767px) {
   .adv-filters {
@@ -771,6 +816,10 @@
   }
   .adv-print-document table {
     min-width: 650px;
+  }
+  /* Only the 11-column quote tables need the wide scroll; the 4-column checklist fits. */
+  .adv-print-document .adv-print-lines table:has(th:nth-child(5)) {
+    min-width: 860px;
   }
   .adv-print-info {
     grid-template-columns: 1fr;
@@ -818,7 +867,8 @@
     border-radius: 0;
     overflow: visible;
   }
-  .adv-print-document table {
+  .adv-print-document table,
+  .adv-print-document .adv-print-lines table {
     min-width: 0;
   }
   .adv-print-document section {
@@ -850,6 +900,7 @@
 .adm-app .adv-service-header .adm-section-line { align-items: flex-start; border: 0; padding: 0; }
 .adv-service-code, .adv-service-meta { font-size: calc(12px + var(--adm-font-increase)); }
 .adv-service-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 20px; margin-top: 12px; color: var(--adm-muted); }
+.adv-service-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
 .adv-service-totals { display: flex; gap: 12px; padding-top: 12px; margin: 12px 0 0; border-top: 1px solid var(--adm-border); }
 .adv-service-totals > div { flex: 1; min-width: 0; }
 .adv-service-totals dt { color: var(--adm-muted); font-size: calc(12px + var(--adm-font-increase)); }

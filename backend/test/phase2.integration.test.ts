@@ -268,6 +268,9 @@ async function walk(client = a, extra: any = {}) {
     key = randomUUID(),
     r = await client.call("POST", "admin/service-visits", payload, key);
   assert.equal(r.status, 201, JSON.stringify(r.body));
+  // Readable ticket code: PDV-<DDMMYY>-<NNN> (per-day counter).
+  if (r.body.data.code)
+    assert.match(r.body.data.code, /^PDV-\d{6}-\d{3,}$/);
   return { visit: r.body.data, payload, key };
 }
 async function confirmed() {
@@ -724,4 +727,25 @@ test("reception payload limits reject oversized bodies with 413 and never store 
   });
   assert.equal(result.status, 413, JSON.stringify(result.body));
   assert.equal(result.body.error.code, "PAYLOAD_TOO_LARGE");
+});
+test("public lookup needs both plate and phone, hides prices and staff, and drops cars handed over more than 24h ago", async () => {
+  const { visit, payload } = await walk();
+  const guest = new Client();
+  const look = (body: unknown) => guest.call("POST", "public/vehicle-status", body);
+  const ok = await look({
+    plate: payload.vehicle.plate.toLowerCase().replace("-", " "),
+    phone: payload.customer.phone,
+  });
+  assert.equal(ok.status, 200, JSON.stringify(ok.body));
+  assert.equal(ok.body.data.code, visit.code);
+  assert.equal(ok.body.data.step, "QUOTING");
+  assert.equal(ok.body.data.waitingCustomer, false);
+  const text = JSON.stringify(ok.body.data);
+  assert.ok(!text.includes(payload.customer.phone.slice(-6)) && !/total|price/i.test(text));
+  const wrongPhone = await look({ plate: payload.vehicle.plate, phone: "0912000000" });
+  assert.equal(wrongPhone.status, 404);
+  await api.db.db.execute(
+    sql`UPDATE service_visits SET stage='HANDED_OVER',handed_over_at=${new Date(+clock - 25 * 3600000)} WHERE code=${visit.code}`,
+  );
+  assert.equal((await look({ plate: payload.vehicle.plate, phone: payload.customer.phone })).status, 404);
 });

@@ -1,3 +1,4 @@
+import type { SiteImage } from "@/lib/content";
 import type { IconName } from "@/components/ui/icon";
 
 // Frontend fixtures only. These values do not describe the station's real capacity.
@@ -11,6 +12,10 @@ export type BookingService = {
   durationLabel: string;
   icon: IconName;
   disabled?: boolean;
+  /** Website services show their photo, like the header services menu. */
+  image?: SiteImage;
+  /** Operations service the booking is filed under. */
+  opId?: string;
 };
 export type TimeSlot = {
   id: string;
@@ -28,8 +33,13 @@ export type CustomerFields = {
   name: string;
   phone: string;
   plate: string;
-  vehicle: string;
+  /** Make and model picked from the admin-managed list. */
+  brand: string;
+  model: string;
 };
+/** "Toyota Vios" — what the booking stores as the vehicle model. */
+export const vehicleName = (c: CustomerFields) =>
+  [c.brand, c.model].filter(Boolean).join(" ").trim();
 export type CustomerErrors = Partial<Record<keyof CustomerFields, string>>;
 
 export const bookingServices: BookingService[] = [

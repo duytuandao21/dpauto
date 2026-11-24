@@ -39,6 +39,7 @@ export const ticketTabs = [
   ["IN_PROGRESS", "Đang thi công"],
   ["HANDOVER", "Bàn giao"],
   ["COMPLETED", "Hoàn thành"],
+  ["partner", "Đối tác"],
 ] as const;
 
 export function ticketStage(visit: Visit): TicketStage {
@@ -171,6 +172,8 @@ export type ServiceTicketRow = {
   amount: { value: string | null; label: string };
   pendingChange?: boolean;
   action: { label: string; tab: string };
+  /** Sale name when this is a partner car; shown as a "Đối tác" badge. */
+  partnerSale?: string;
 };
 export const searchTicket = (value: string) =>
   value

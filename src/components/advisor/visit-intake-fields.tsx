@@ -5,6 +5,9 @@ import type { Intake } from "@/lib/api/visits";
 import { operationChecks } from "@/lib/advisor/seed";
 import { OdometerInput } from "@/components/ui/odometer-input";
 
+/** Temporarily off for advisors: no new vehicle photos (existing ones still show). */
+export const photoUploadsLocked = true;
+
 export async function prepareIntakePhoto(file: File) {
   if (!file.type.startsWith("image/")) throw new Error("Vui lòng chọn ảnh.");
   if (file.size > 20 * 1024 * 1024) throw new Error("Ảnh gốc tối đa 20 MB.");
@@ -64,7 +67,7 @@ export function VisitIntakeFields({
       <section className="adm-panel adv-stack">
         {numbered ? (
           <div className="adm-form-section-title">
-            <span>2</span>
+            <span>02</span>
             <div>
               <h2>Thông tin tiếp nhận</h2>
               <p>ODO và yêu cầu thực tế của khách.</p>
@@ -89,7 +92,7 @@ export function VisitIntakeFields({
           </label>
         </div>
         {reception && (
-          <h3 className="adv-reception-section-title">03. Yêu cầu dịch vụ</h3>
+          <h3 className="adv-reception-section-title">Yêu cầu dịch vụ</h3>
         )}
         {serviceSummary}
         <label className="adm-field">
@@ -103,7 +106,7 @@ export function VisitIntakeFields({
           />
         </label>
         {reception && (
-          <h3 className="adv-reception-section-title">04. Ghi chú tiếp nhận</h3>
+          <h3 className="adv-reception-section-title">Ghi chú tiếp nhận</h3>
         )}
         <label className="adm-field">
           Ghi chú tiếp nhận
@@ -242,6 +245,9 @@ export function VisitInspectionFields({
               ))}
             </div>
           </fieldset>
+          {photoUploadsLocked ? (
+            <p className="adm-muted">Chức năng tải ảnh xe đang tạm khóa.</p>
+          ) : (
           <div className="adv-photo-inputs">
             <label className="adm-field adv-photo-input" htmlFor={photoInputId}>
               Chọn ảnh từ thiết bị
@@ -269,6 +275,7 @@ export function VisitInspectionFields({
               />
             </label>
           </div>
+          )}
           <div className="adv-photo-grid">
             {value.photos.map((p, i) => (
               <figure key={i}>

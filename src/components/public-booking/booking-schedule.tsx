@@ -128,8 +128,8 @@ function Calendar({
 
 type Period = "morning" | "afternoon";
 const periods: { id: Period; label: string; hint: string }[] = [
-  { id: "morning", label: "Buổi sáng", hint: "Trước 12:00" },
-  { id: "afternoon", label: "Buổi chiều", hint: "Từ 12:00" },
+  { id: "morning", label: "Buổi sáng", hint: "7:30 – 12:00" },
+  { id: "afternoon", label: "Buổi chiều", hint: "13:30 – 17:30" },
 ];
 
 export function BookingSchedule({
@@ -158,22 +158,39 @@ export function BookingSchedule({
   const [state, setState] = useState<{
     status: "loading" | "error" | "ready";
     open?: Record<Period, boolean>;
+    /** Station hours per half-day from the API ("7:30 – 12:00"); falls back to the defaults above. */
+    hours?: Partial<Record<Period, string>>;
   }>({ status: "loading" });
   const signature = serviceIds.join(",");
   useEffect(() => {
     const controller = new AbortController();
     setState({ status: "loading" });
     onReady(false);
+    let hours: Partial<Record<Period, string>> = {};
     const loading: Promise<Record<Period, boolean>> =
       apiEnabled && catalog
-        ? request<{ periods: { period: string; status: string }[] }>(
-            "public/availability?" + new URLSearchParams({ date }),
-            { signal: controller.signal },
-          ).then((r) => {
+        ? request<{
+            periods: {
+              period: string;
+              status: string;
+              opensAt?: string | null;
+              closesAt?: string | null;
+            }[];
+          }>("public/availability?" + new URLSearchParams({ date }), {
+            signal: controller.signal,
+          }).then((r) => {
             const open = (p: string) =>
               r.data.periods.some(
                 (x) => x.period === p && x.status === "AVAILABLE",
               );
+            const span = (p: string) => {
+              const x = r.data.periods.find((x) => x.period === p);
+              const t = (v: string) => v.replace(/^0/, "");
+              return x?.opensAt && x.closesAt
+                ? `${t(x.opensAt)} – ${t(x.closesAt)}`
+                : undefined;
+            };
+            hours = { morning: span("MORNING"), afternoon: span("AFTERNOON") };
             return { morning: open("MORNING"), afternoon: open("AFTERNOON") };
           })
         : apiEnabled
@@ -192,7 +209,7 @@ export function BookingSchedule({
             });
     loading
       .then((open) => {
-        setState({ status: "ready", open });
+        setState({ status: "ready", open, hours });
         onReady(true);
       })
       .catch((error: Error) => {
@@ -271,7 +288,7 @@ export function BookingSchedule({
                     data-status={available ? "available" : "unavailable"}
                     disabled={!available}
                     aria-pressed={selected}
-                    aria-label={`${p.label} · ${selected ? "Đang chọn" : available ? p.hint : "Không nhận lịch"}`}
+                    aria-label={`${p.label} · ${selected ? "Đang chọn" : available ? (state.hours?.[p.id] || p.hint) : "Không nhận lịch"}`}
                     onClick={() => onTime(p.id)}
                   >
                     <strong>{p.label}</strong>
@@ -282,7 +299,7 @@ export function BookingSchedule({
                           Đang chọn
                         </>
                       ) : available ? (
-                        p.hint
+                        (state.hours?.[p.id] || p.hint)
                       ) : (
                         "Không nhận lịch"
                       )}

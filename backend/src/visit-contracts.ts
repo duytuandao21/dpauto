@@ -68,6 +68,12 @@ export const walkInInput = z.strictObject({
   intake,
   followUpOfVisitId: uuid.optional(),
   followUpReason: text(400).optional(),
+  partnerSaleId: uuid.optional(),
+});
+export const visitPartner = z.strictObject({
+  expectedVersion: version,
+  reason: reason.default("Cập nhật thông tin đối tác"),
+  partnerSaleId: uuid,
 });
 export const intakeInput = z.strictObject({
   expectedVersion: version,
@@ -136,6 +142,8 @@ export const visitQuery = z
     bookingId: uuid.optional(),
     customerId: uuid.optional(),
     vehicleId: uuid.optional(),
+    partner: boolQuery.optional(),
+    partnerSaleId: uuid.optional(),
   })
   .refine((v) => !!v.from === !!v.to);
 export const timelineQuery = z.strictObject({ ...pagination });

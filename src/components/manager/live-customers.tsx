@@ -1,7 +1,10 @@
 "use client";
+import { formatPhone } from "@/lib/advisor/formats";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { request } from "@/lib/api/client";
+import { command, request } from "@/lib/api/client";
+import { useSession } from "@/components/admin/auth-gate";
+import { formatDate } from "@/lib/booking/logic";
 import type { ApiBooking } from "@/lib/api/types";
 import { stationTime } from "@/lib/api/types";
 import { type ApiCustomer, type ApiVehicle } from "@/lib/api/booking-adapter";
@@ -11,6 +14,7 @@ import {
   ManagerTable,
   ManagerSearch,
   ManagerEmpty,
+  ManagerField,
 } from "./manager-ui";
 import { ManagerModal } from "./manager-modal";
 import { useManager } from "./manager-provider";
@@ -26,7 +30,9 @@ type Detail = ApiCustomer & {
   related: { bookingsHasMore: boolean };
 };
 export function LiveManagerCustomers() {
-  const { theme } = useManager();
+  const { theme } = useManager(),
+    canManage = !!useSession()?.permissions.includes("customers.manage"),
+    [reload, setReload] = useState(0);
   const [tab, setTab] = useState("customers"),
     [query, setQuery] = useState(""),
     [cursor, setCursor] = useState(""),
@@ -63,7 +69,7 @@ export function LiveManagerCustomers() {
       c.abort();
       clearTimeout(timer);
     };
-  }, [tab, query, cursor]);
+  }, [tab, query, cursor, reload]);
   useEffect(() => {
     if (!selected) return;
     const c = new AbortController();
@@ -77,7 +83,7 @@ export function LiveManagerCustomers() {
         if (!c.signal.aborted) setDetailError(e.message);
       });
     return () => c.abort();
-  }, [selected]);
+  }, [selected, reload]);
   const changeTab = (t: string) => {
     setTab(t);
     setCursor("");
@@ -162,7 +168,7 @@ export function LiveManagerCustomers() {
                         </div>
                       </td>
                       <td>
-                        <a href={`tel:${row.phone}`}>{row.phone}</a>
+                        <a href={`tel:${row.phone}`}>{formatPhone(row.phone)}</a>
                       </td>
                       <td>
                         {row.bookingCount} lịch · {row.vehicleCount} xe
@@ -234,9 +240,20 @@ export function LiveManagerCustomers() {
                 </span>
                 <h2>{detail.name}</h2>
                 <a className="adm-phone" href={`tel:${detail.phone}`}>
-                  {detail.phone}
+                  {formatPhone(detail.phone)}
                 </a>
               </div>
+              {canManage && (
+                <CustomerTools
+                  key={detail.id + detail.version}
+                  customer={detail}
+                  onChanged={() => setReload((n) => n + 1)}
+                  onDeleted={() => {
+                    setSelected("");
+                    setReload((n) => n + 1);
+                  }}
+                />
+              )}
               <section className="mgr-detail-section">
                 <h3>Phương tiện</h3>
                 {detail.vehicles.map((v) => (
@@ -257,9 +274,8 @@ export function LiveManagerCustomers() {
                       href={`/dieu-hanh/lich-hen?selected=${b.id}&date=${stationTime(b.scheduledStartAt).slice(0, 10)}`}
                     >
                       {b.code} ·{" "}
-                      {stationTime(b.scheduledStartAt)
-                        .slice(0, 16)
-                        .replace("T", " ")}
+                      {formatDate(stationTime(b.scheduledStartAt).slice(0, 10))}{" "}
+                      {stationTime(b.scheduledStartAt).slice(11, 16)}
                     </Link>
                   </p>
                 ))}
@@ -278,5 +294,234 @@ export function LiveManagerCustomers() {
         </ManagerModal>
       )}
     </>
+  );
+}
+
+/** Correct a customer's name/phone, or fold a duplicate profile into this one. */
+function CustomerTools({
+  customer,
+  onChanged,
+  onDeleted,
+}: {
+  customer: Detail;
+  onChanged: () => void;
+  onDeleted: () => void;
+}) {
+  const [mode, setMode] = useState<"" | "edit" | "merge">(""),
+    [name, setName] = useState(customer.name),
+    [phone, setPhone] = useState(formatPhone(customer.phone)),
+    [reason, setReason] = useState(""),
+    [search, setSearch] = useState(""),
+    [matches, setMatches] = useState<CustomerRow[]>([]),
+    [duplicate, setDuplicate] = useState<CustomerRow | null>(null),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState(""),
+    [done, setDone] = useState("");
+  useEffect(() => {
+    if (mode !== "merge" || search.trim().length < 2) {
+      setMatches([]);
+      return;
+    }
+    const c = new AbortController(),
+      t = setTimeout(() => {
+        request<CustomerRow[]>(
+          "admin/customers?limit=8&q=" + encodeURIComponent(search.trim()),
+          { signal: c.signal },
+        )
+          .then((r) => setMatches(r.data.filter((x) => x.id !== customer.id)))
+          .catch(() => {});
+      }, 250);
+    return () => {
+      c.abort();
+      clearTimeout(t);
+    };
+  }, [mode, search, customer.id]);
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (busy) return;
+    if (!reason.trim()) return setError("Nhập lý do thay đổi.");
+    if (mode === "merge" && !duplicate)
+      return setError("Chọn hồ sơ trùng cần gộp.");
+    if (
+      mode === "merge" &&
+      !window.confirm(
+        `Gộp "${duplicate!.name}" vào "${customer.name}"? Lịch hẹn, phiếu dịch vụ và xe sẽ chuyển sang hồ sơ này. Không hoàn tác được.`,
+      )
+    )
+      return;
+    setBusy(true);
+    setError("");
+    try {
+      if (mode === "edit")
+        await command(
+          "admin/customers/" + customer.id,
+          {
+            expectedVersion: customer.version,
+            name: name.trim(),
+            phone,
+            reason: reason.trim(),
+          },
+          "PATCH",
+        );
+      else
+        await command(`admin/customers/${duplicate!.id}/merge`, {
+          expectedVersion: duplicate!.version,
+          targetId: customer.id,
+          targetVersion: customer.version,
+          reason: reason.trim(),
+        });
+      setDone(mode === "edit" ? "Đã lưu hồ sơ." : "Đã gộp hồ sơ.");
+      setMode("");
+      onChanged();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Không lưu được.");
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <section className="mgr-detail-section">
+      <div className="mgr-row-actions">
+        <button
+          className="adm-btn"
+          aria-pressed={mode === "edit"}
+          onClick={() => {
+            setMode(mode === "edit" ? "" : "edit");
+            setError("");
+          }}
+        >
+          Sửa thông tin
+        </button>
+        <button
+          className="adm-btn"
+          aria-pressed={mode === "merge"}
+          onClick={() => {
+            setMode(mode === "merge" ? "" : "merge");
+            setError("");
+          }}
+        >
+          Gộp hồ sơ trùng
+        </button>
+        <button
+          className="adm-btn adm-subtle-danger"
+          disabled={busy}
+          onClick={async () => {
+            if (
+              !window.confirm(
+                `Xóa khách hàng ${customer.name} (${formatPhone(customer.phone)})? Hồ sơ sẽ được ẩn, lịch hẹn và phiếu dịch vụ cũ vẫn giữ thông tin.`,
+              )
+            )
+              return;
+            setBusy(true);
+            setError("");
+            setMode("");
+            try {
+              await command(
+                "admin/customers/" + customer.id,
+                { expectedVersion: customer.version },
+                "DELETE",
+              );
+              onDeleted();
+            } catch (err) {
+              setError(
+                err instanceof Error ? err.message : "Chưa thể xóa khách hàng.",
+              );
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          Xóa khách hàng
+        </button>
+      </div>
+      {done && !mode && <p className="adm-muted">{done}</p>}
+      {error && !mode && (
+        <p className="adm-error-text" role="alert">
+          {error}
+        </p>
+      )}
+      {mode && (
+        <form className="mgr-form" onSubmit={submit}>
+          <fieldset disabled={busy}>
+            {mode === "edit" ? (
+              <div className="mgr-form-columns">
+                <ManagerField label="Họ tên *">
+                  <input
+                    required
+                    maxLength={100}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </ManagerField>
+                <ManagerField label="Số điện thoại *">
+                  <input
+                    required
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </ManagerField>
+              </div>
+            ) : (
+              <>
+                <ManagerField label="Tìm hồ sơ trùng (tên hoặc SĐT)">
+                  <input
+                    value={search}
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                      setDuplicate(null);
+                    }}
+                  />
+                </ManagerField>
+                {matches.map((m) => (
+                  <label key={m.id} className="adm-toggle-row">
+                    <input
+                      type="radio"
+                      name="duplicate"
+                      checked={duplicate?.id === m.id}
+                      onChange={() => setDuplicate(m)}
+                    />
+                    {m.name} · {formatPhone(m.phone)} · {m.bookingCount} lịch
+                  </label>
+                ))}
+                <p className="adm-muted">
+                  Hồ sơ được chọn sẽ gộp vào hồ sơ đang mở. Phiếu thu tiền và
+                  lịch sử đồng ý điều khoản vẫn giữ ở hồ sơ cũ.
+                </p>
+              </>
+            )}
+            <ManagerField label="Lý do *">
+              <input
+                required
+                maxLength={400}
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
+            </ManagerField>
+            {error && (
+              <p className="adm-error-text" role="alert">
+                {error}
+              </p>
+            )}
+            <div className="mgr-row-actions">
+              <button
+                type="button"
+                className="adm-btn"
+                onClick={() => setMode("")}
+              >
+                Hủy
+              </button>
+              <button className="adm-btn adm-primary">
+                {busy
+                  ? "Đang lưu…"
+                  : mode === "edit"
+                    ? "Lưu thay đổi"
+                    : "Gộp hồ sơ"}
+              </button>
+            </div>
+          </fieldset>
+        </form>
+      )}
+    </section>
   );
 }

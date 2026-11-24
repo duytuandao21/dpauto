@@ -1,5 +1,6 @@
 "use client";
 
+import { DateInput } from "@/components/advisor/date-input";
 import Link from "next/link";
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -229,10 +230,9 @@ function OperationsContent({ mode }: { mode: Mode }) {
           </FilterSelect>
           <label className="mgr-filter">
             Ngày tiếp nhận
-            <input
-              type="date"
+            <DateInput
               value={date}
-              onChange={(e) => filter(setDate)(e.target.value)}
+              onValueChange={(v) => filter(setDate)(v)}
             />
           </label>
           <FilterSelect

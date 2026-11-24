@@ -108,7 +108,7 @@ export class Capacity {
     const [bookings, overrides, blocks] = await Promise.all([
       rows(
         c,
-        sql`SELECT id,scheduled_start_at,status FROM bookings WHERE station_id=${ctx.station.id} AND scheduled_start_at>=${origin} AND scheduled_start_at<${end} AND status IN ('PENDING','CONFIRMED','ARRIVED','COMPLETED') ${ignored?.booking_id ? sql`AND id<>${ignored.booking_id}::uuid` : sql``}`,
+        sql`SELECT id,scheduled_start_at,status FROM bookings WHERE deleted_at IS NULL AND station_id=${ctx.station.id} AND scheduled_start_at>=${origin} AND scheduled_start_at<${end} AND status IN ('PENDING','CONFIRMED','ARRIVED','COMPLETED') ${ignored?.booking_id ? sql`AND id<>${ignored.booking_id}::uuid` : sql``}`,
       ),
       rows(
         c,
@@ -152,7 +152,17 @@ export class Capacity {
       today = +midnight(day(ctx.now)),
       inWindow =
         origin >= today && origin <= today + policy.advance_days * 86400000;
+    const clock = (t: number) => {
+      const m = Math.round((t - origin) / 60000);
+      return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+    };
     return (["MORNING", "AFTERNOON"] as const).map((period) => {
+      // Opening hours of this half-day (a lunch break is a gap between two hour ranges).
+      const half = input.buckets.filter(
+        (b) => b.start - origin < 12 * 3600000 === (period === "MORNING"),
+      );
+      const opensAt = half.length ? clock(Math.min(...half.map((b) => b.start))) : null;
+      const closesAt = half.length ? clock(Math.max(...half.map((b) => b.end))) : null;
       const open = inWindow
         ? input.buckets.find(
             (b) =>
@@ -161,7 +171,7 @@ export class Capacity {
               b.start > +ctx.now,
           )
         : undefined;
-      return { period, startAt: open ? open.start : null };
+      return { period, startAt: open ? open.start : null, opensAt, closesAt };
     });
   }
   // Start of the requested period: orders pending requests until an advisor sets the real time.
@@ -298,7 +308,7 @@ export class Capacity {
     }
     const grouped = await rows(
       c,
-      sql`SELECT scheduled_start_at FROM bookings WHERE station_id=${ctx.station.id} AND scheduled_start_at>${ctx.now} AND status IN ('PENDING','CONFIRMED','ARRIVED','COMPLETED')`,
+      sql`SELECT scheduled_start_at FROM bookings WHERE deleted_at IS NULL AND station_id=${ctx.station.id} AND scheduled_start_at>${ctx.now} AND status IN ('PENDING','CONFIRMED','ARRIVED','COMPLETED')`,
     );
     const counts = new Map<number, number>();
     for (const b of grouped) {

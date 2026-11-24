@@ -172,17 +172,20 @@ export function ServiceWorkflowPanel({
             <div className="adv-service-meta">
               <span>Cố vấn: {visit.assignedAdvisor.name}</span>
               <span>Tiếp nhận: {workflowTime(visit.receivedAt)}</span>
-              <Link className="adm-text-link" href={`${root}/phieu-dich-vu`}>
-                Danh sách phiếu
-              </Link>
-              {["COMPLETED", "ABORTED"].includes(data.stage) && (
-                <Link
-                  className="adm-btn"
-                  href={`${root}/tiep-nhan/truc-tiep?followUp=${visit.id}`}
-                >
-                  Tiếp nhận xe quay lại
+              {/* Actions apart from the info text: list = secondary, follow-up = primary. */}
+              <span className="adv-service-actions">
+                <Link className="adm-btn" href={`${root}/phieu-dich-vu`}>
+                  Danh sách phiếu
                 </Link>
-              )}
+                {["COMPLETED", "ABORTED"].includes(data.stage) && (
+                  <Link
+                    className="adm-btn adm-primary"
+                    href={`${root}/tiep-nhan/truc-tiep?followUp=${visit.id}`}
+                  >
+                    Tiếp nhận xe quay lại
+                  </Link>
+                )}
+              </span>
             </div>
             <dl className="adv-service-totals">
               <div>

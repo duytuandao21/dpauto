@@ -104,6 +104,8 @@ export type Visit = {
   pauseReason?: string | null;
   pausedAt?: string | null;
   ticketStage?: TicketStage;
+  /** Partner car (Xe đối tác), names as saved on the ticket. */
+  partner?: import("./partners").PartnerSnapshot | null;
   pricing?: {
     approvedTotal: string | null;
     estimateTotal: string | null;

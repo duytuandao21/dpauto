@@ -1,9 +1,9 @@
-import { LiveNotifications } from "@/components/manager/live-operations";
+import { AdvisorNotifications } from "@/components/advisor/notifications";
 import { apiEnabled } from "@/lib/api/client";
 import { EmptyState, PageHeading } from "@/components/admin/primitives";
 export default function NotificationsPage() {
   return apiEnabled ? (
-    <LiveNotifications advisor />
+    <AdvisorNotifications />
   ) : (
     <div className="adv-stack">
       <PageHeading

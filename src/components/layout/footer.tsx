@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { homeNavigation } from "@/lib/home-vi";
-import Image from "next/image";
-import { navigation, site } from "@/lib/content";
+import { headerLinks } from "./header";
+import { SiteLogo } from "./site-logo";
+import { site } from "@/lib/content";
+import { useSite } from "@/components/site/site-content";
 import { Icon } from "@/components/ui/icon";
 import { FooterShader } from "@/components/media/footer-shader";
 
@@ -14,6 +15,22 @@ export function Hours({
   compact?: boolean;
   vietnamese?: boolean;
 }) {
+  const { settings } = useSite();
+  if (settings.custom)
+    return (
+      <dl className={`hours ${compact ? "hours--compact" : ""}`}>
+        {settings.hours.map((h) => (
+          <div key={h.label}>
+            <dt>{compact ? `${h.label}:` : h.label}</dt>
+            <dd
+              className={/^nghỉ$/i.test(h.value.trim()) ? "muted" : undefined}
+            >
+              {h.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    );
   return (
     <dl className={`hours ${compact ? "hours--compact" : ""}`}>
       <div>
@@ -58,7 +75,16 @@ export function Hours({
 
 export function Footer() {
   const vietnamese = true;
-  const links = vietnamese ? homeNavigation : navigation;
+  const { settings, navigation: menu } = useSite();
+  // Footer shows only Facebook and TikTok, each with its own name, on one row.
+  const socials = (
+    [
+      ["facebook", "Facebook"],
+      ["tiktok", "TikTok"],
+    ] as const
+  )
+    .map(([k, label]) => ({ k, label, href: settings.socials?.[k] }))
+    .filter((x): x is typeof x & { href: string } => !!x.href);
   return (
     <footer className="site-footer" lang={vietnamese ? "vi" : "en"}>
       <FooterShader kind="background" palette="red" />
@@ -69,36 +95,27 @@ export function Footer() {
               href="/"
               aria-label={vietnamese ? "Trang chủ DPAuto" : "DPAuto home"}
             >
-              <Image
-                src="/images/logo-dpauto.png"
-                alt="DPAuto Logo"
-                width={1448}
-                height={1086}
-                sizes="180px"
-              />
+              <SiteLogo sizes="180px" />
             </Link>
             <p>
-              {vietnamese
-                ? "Chăm sóc ô tô, vệ sinh chuyên sâu và bảo vệ sơn chuyên nghiệp tại Seattle."
-                : "Professional car care, detailing, paint protection, and vehicle appearance services in Seattle."}
+              {settings.custom
+                ? settings.footerText || settings.tagline
+                : vietnamese
+                  ? "Chăm sóc ô tô, vệ sinh chuyên sâu và bảo vệ sơn chuyên nghiệp tại DPAuto - Trạm dịch vụ Toàn Trung."
+                  : "Professional car care, detailing and paint protection at DPAuto."}
             </p>
             <div className="social-links">
-              <a
-                href="https://www.facebook.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icon name="facebook" />
-                HyperAuto Care
-              </a>
-              <a
-                href="https://www.instagram.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icon name="instagram" />
-                HyperAuto Care
-              </a>
+              {socials.map((s) => (
+                <a
+                  key={s.k}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon name={s.k} />
+                  {s.label}
+                </a>
+              ))}
             </div>
           </div>
           <div>
@@ -111,37 +128,38 @@ export function Footer() {
                 vietnamese ? "Điều hướng cuối trang" : "Footer navigation"
               }
             >
-              <Link href="/">{vietnamese ? "Trang chủ" : "Home"}</Link>
-              {links.slice(0, 1).map((n) => (
-                <Link key={n.href} href={n.href}>
+              {headerLinks(menu).map((n) => (
+                <Link key={n.href + n.label} href={n.href}>
                   {n.label}
                 </Link>
               ))}
-              <Link href="/#Our%20Service%20Process">
-                {vietnamese ? "Quy trình dịch vụ" : "Service Process"}
-              </Link>
-              {links.slice(1).map((n) => (
-                <Link key={n.href} href={n.href}>
-                  {n.label}
-                </Link>
-              ))}
-              <Link href="/contact">{vietnamese ? "Liên hệ" : "Contact"}</Link>
             </nav>
           </div>
           <div>
             <h3 className="footer-heading">
               {vietnamese ? "Liên hệ" : "Contact"}
             </h3>
-            <a href={site.phoneHref}>{site.phone}</a>
-            <a href={`mailto:${site.email}`} className="footer-email">
-              {site.email}
+            <a href={settings.custom ? settings.phoneHref : site.phoneHref}>
+              {settings.custom ? settings.phone : site.phone}
             </a>
+            {(settings.custom ? settings.email : site.email) && (
+              <a
+                href={`mailto:${settings.custom ? settings.email : site.email}`}
+                className="footer-email"
+              >
+                {settings.custom ? settings.email : site.email}
+              </a>
+            )}
             <address>
-              {site.address}
+              {settings.custom ? settings.address : site.address}
               <br />
-              {site.city}
-              <br />
-              {vietnamese ? "Hoa Kỳ" : "USA"}
+              {settings.custom ? settings.city : site.city}
+              {!settings.custom && (
+                <>
+                  <br />
+                  {vietnamese ? "Hoa Kỳ" : "USA"}
+                </>
+              )}
             </address>
           </div>
           <div>
@@ -151,29 +169,15 @@ export function Footer() {
             <Hours vietnamese={vietnamese} />
           </div>
         </div>
-        <div className="footer-wordmark" aria-hidden="true">
-          <FooterShader kind="logo" logoSrc="/images/logo-dpauto.png" />
-        </div>
         <div className="footer-bottom">
           <p>
-            © HyperAuto Care.{" "}
-            {vietnamese ? "Bảo lưu mọi quyền." : "All rights reserved."}
-          </p>
-          <p>
-            {vietnamese ? "Thiết kế bởi" : "Designed by"}{" "}
-            <a
-              href="https://redsignal.red/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              RedSignal.Red
-            </a>
+            © {settings.name}
           </p>
           <div>
-            <Link href="/privacy">
+            <Link href="/chinh-sach-bao-mat">
               {vietnamese ? "Chính sách bảo mật" : "Privacy Policy"}
             </Link>
-            <Link href="/terms">
+            <Link href="/dieu-khoan-dich-vu">
               {vietnamese ? "Điều khoản dịch vụ" : "Terms of Service"}
             </Link>
           </div>

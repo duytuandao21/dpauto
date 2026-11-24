@@ -1,4 +1,5 @@
 "use client";
+import { formatPhone } from "@/lib/advisor/formats";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { request, collection } from "@/lib/api/client";
@@ -150,7 +151,7 @@ export function LiveQuotes() {
                       {r.customer.name}
                       <small>
                         <a href={"tel:" + r.customer.phone}>
-                          {r.customer.phone}
+                          {formatPhone(r.customer.phone)}
                         </a>
                       </small>
                     </td>

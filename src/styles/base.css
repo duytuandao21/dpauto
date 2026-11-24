@@ -138,6 +138,11 @@ address {
 .muted {
   color: var(--muted-dark);
 }
+/* Line breaks typed in the CMS (titles, descriptions, item text) stay on the website. */
+#main-content,
+.site-footer {
+  white-space: pre-line;
+}
 .photo {
   position: relative;
   overflow: hidden;
@@ -289,4 +294,19 @@ address {
   display: flex;
   justify-content: center;
   margin-top: 40px;
+}
+
+/* Shown only while an admin previews unpublished drafts (Next draft mode). */
+.preview-bar {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  z-index: 300;
+  transform: translateX(-50%);
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 14px;
+  box-shadow: 0 8px 24px #0006;
 }

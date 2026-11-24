@@ -64,7 +64,7 @@ const articleCopy = [
     "09/09/2026",
   ],
   [
-    "Chăm sóc xe trong mùa mưa Seattle",
+    "Chăm sóc xe trong mùa mưa",
     "Hạn chế ảnh hưởng của độ ẩm và nước mưa lên bề mặt xe.",
     "02/09/2026",
   ],
@@ -159,7 +159,7 @@ export const homeVi = {
     {
       title: "Cơ hội phát triển nghề",
       description:
-        "Học viên có tay nghề và tinh thần tốt có cơ hội làm việc tại HyperAuto Care.",
+        "Học viên có tay nghề và tinh thần tốt có cơ hội làm việc tại DPAuto.",
     },
   ],
   reviews: home.reviews.map((review, i) => ({
@@ -171,7 +171,7 @@ export const homeVi = {
       "Sơn xe đẹp hơn hẳn sau khi hiệu chỉnh và phủ ceramic. Quy trình được giải thích rõ ràng, dễ hiểu.",
       "Sau chuyến đi dài, tôi mang SUV đến vệ sinh nội thất. Khi nhận xe, ghế, thảm và táp-lô đều sạch hơn nhiều.",
       "Phim cách nhiệt dán đẹp, gọn gàng. Được tư vấn rõ từng lựa chọn, xe mát và dễ chịu hơn.",
-      "Sơn xe bị xoáy và xuống bóng khá nhiều. HyperAuto Care phục hồi rất tốt, kết quả vượt mong đợi của tôi.",
+      "Sơn xe bị xoáy và xuống bóng khá nhiều. DPAuto phục hồi rất tốt, kết quả vượt mong đợi của tôi.",
     ][i],
     service: [
       "Dán phim PPF · BMW 3 Series",

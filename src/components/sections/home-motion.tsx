@@ -125,7 +125,7 @@ export function HomeSocialLink({
   children,
 }: {
   href: string;
-  icon: "facebook" | "instagram";
+  icon: "facebook" | "tiktok";
   children: ReactNode;
 }) {
   const [hovered, setHovered] = useState(false);
@@ -133,6 +133,7 @@ export function HomeSocialLink({
   return (
     <motion.a
       className="home-social-link"
+      data-brand={icon}
       href={href}
       target="_blank"
       rel="noopener noreferrer"

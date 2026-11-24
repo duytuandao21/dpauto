@@ -30,35 +30,25 @@ export const jobsQuery = z.strictObject({ ...pagination });
 export const mediaCreate = z.strictObject({
   name: text(120),
   alt: text(240),
-  dataUrl: z.string().max(273100),
 });
-export const cmsQuery = z.strictObject({
+export const mediaQuery = z.strictObject({
   ...pagination,
-  kind: z.enum(["NEWS", "PAGE", "SEO"]).optional(),
+  search: z.string().trim().max(120).optional(),
+  trash: z
+    .enum(["true", "false"])
+    .optional()
+    .transform((v) => v === "true"),
+  type: z.enum(["image", "video"]).optional(),
 });
-const block = z.strictObject({
-  tag: z.enum(["p", "h2", "h3", "li", "blockquote"]),
-  text: text(4000),
-});
-const commonContent = {
-  title: text(180),
-  description: z.string().trim().max(500),
-  imageId: uuid.nullable(),
-  blocks: z.array(block).max(100),
-  noindex: z.boolean().default(false),
-};
-export const cmsPayload = z.strictObject({
-  ...commonContent,
-  category: z.string().trim().max(80).default(""),
-  date: date.optional(),
-});
-export const cmsCreate = z.strictObject({
-  kind: z.enum(["NEWS", "PAGE", "SEO"]),
-  key: text(180),
-  payload: cmsPayload,
-});
-export const cmsSave = z.strictObject({
-  expectedVersion: version,
-  payload: cmsPayload,
-});
-export const cmsPublish = command.extend({ revisionId: uuid });
+const focal = z.number().min(0).max(1);
+export const mediaUpdate = z
+  .strictObject({
+    name: text(120).optional(),
+    alt: text(240).optional(),
+    focalX: focal.optional(),
+    focalY: focal.optional(),
+  })
+  .refine((v) => (v.focalX === undefined) === (v.focalY === undefined), {
+    path: ["focalY"],
+  })
+  .refine((v) => Object.keys(v).length > 0);

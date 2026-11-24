@@ -1,5 +1,9 @@
 "use client";
+import { PartnerName } from "@/components/advisor/partner-picker";
+import { eventLabel } from "@/lib/event-labels";
 
+import { formatPhone } from "@/lib/advisor/formats";
+import { DateInput } from "@/components/advisor/date-input";
 import { useEffect, useState } from "react";
 import { apiEnabled } from "@/lib/api/client";
 import Link from "next/link";
@@ -18,7 +22,7 @@ import { ManagerEmpty, ManagerField } from "./manager-ui";
 import { ManagerModal } from "./manager-modal";
 import { BookingTimeForm } from "@/components/admin/booking-time-form";
 import { bookingFromApi } from "@/lib/api/booking-adapter";
-import { request, collection } from "@/lib/api/client";
+import { request, collection, command } from "@/lib/api/client";
 import type { ApiBooking } from "@/lib/api/types";
 import type { Booking } from "@/lib/booking/types";
 
@@ -74,10 +78,16 @@ export function ManagerBookingTable({
                   >
                     {booking.code || booking.id}
                   </button>
-                  <strong>{customer?.name}</strong>
-                  <a className="adm-phone" href={`tel:${customer?.phone}`}>
-                    {customer?.phone}
-                  </a>
+                  {booking.record?.partner ? (
+                    <PartnerName sale={booking.record.partner.saleName} />
+                  ) : (
+                    <strong>{customer?.name}</strong>
+                  )}
+                  {!booking.record?.partner && (
+                    <a className="adm-phone" href={`tel:${customer?.phone}`}>
+                      {formatPhone(customer?.phone)}
+                    </a>
+                  )}
                 </td>
                 <td data-label="Phương tiện">
                   <span>{customer?.model}</span>
@@ -150,6 +160,7 @@ export function ManagerBookingDetail({
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [extra, setExtra] = useState<"no-show" | "contact-events" | null>(null);
   const [record, setRecord] = useState<Booking | undefined>(booking?.record);
   const [timeline, setTimeline] = useState<
     { id: string; occurredAt: string; summary: string; reason: string | null }[]
@@ -222,7 +233,7 @@ export function ManagerBookingDetail({
     }
     ask({
       title: "Xác nhận phân công",
-      message: `Giao lịch ${id}: ${data.staff.find((s) => s.id === booking?.advisorId)?.name || "Chưa phân công"} → ${data.staff.find((item) => item.id === advisorId)?.name}. ${assignmentReason.trim()}`,
+      message: `Giao lịch ${booking?.code || id}: ${data.staff.find((s) => s.id === booking?.advisorId)?.name || "Chưa phân công"} → ${data.staff.find((item) => item.id === advisorId)?.name}. ${assignmentReason.trim()}`,
       label: "Phân công",
       action: async () => {
         if (apiEnabled && commandBooking) {
@@ -293,7 +304,7 @@ export function ManagerBookingDetail({
           : "Đổi lịch";
     ask({
       title: `${label}?`,
-      message: `${id} · ${booking.date} ${booking.time}${action !== "cancel" ? ` → ${date} ${time}` : ""}. ${reason.trim()}`,
+      message: `${booking.code || id} · ${formatDate(booking.date)} ${booking.time}${action !== "cancel" ? ` → ${formatDate(date)} ${time}` : ""}. ${reason.trim()}`,
       danger: action === "cancel",
       label,
       action: async () => {
@@ -367,7 +378,13 @@ export function ManagerBookingDetail({
       <section className="mgr-detail-section">
         <h3>Khách hàng & phương tiện</h3>
         <h2>{customer?.name}</h2>
-        <p>{customer?.phone}</p>
+        <p>{formatPhone(customer?.phone)}</p>
+        {record?.partner && (
+          <p>
+            <span className="adm-badge adm-status-confirmed">Đối tác</span>{" "}
+            Sale: {record.partner.saleName}
+          </p>
+        )}
         <Link
           className="adm-text-link"
           href={`/dieu-hanh/khach-hang?selected=${customer?.id}`}
@@ -391,6 +408,7 @@ export function ManagerBookingDetail({
                 className="adm-btn adm-primary"
                 onClick={() => {
                   setAction("confirm");
+                  setExtra(null);
                   setError("");
                 }}
               >
@@ -401,6 +419,7 @@ export function ManagerBookingDetail({
               className="adm-btn"
               onClick={() => {
                 setAction("reschedule");
+                setExtra(null);
                 setError("");
               }}
             >
@@ -410,12 +429,49 @@ export function ManagerBookingDetail({
               className="adm-btn adm-danger"
               onClick={() => {
                 setAction("cancel");
+                setExtra(null);
                 setError("");
               }}
             >
               Hủy lịch
             </button>
+            {apiEnabled && record?.allowedActions?.includes("contact") && (
+              <button
+                className="adm-btn"
+                onClick={() => {
+                  setAction(null);
+                  setExtra("contact-events");
+                  setError("");
+                }}
+              >
+                Ghi nhận liên hệ
+              </button>
+            )}
+            {apiEnabled && record?.allowedActions?.includes("no_show") && (
+              <button
+                className="adm-btn"
+                onClick={() => {
+                  setAction(null);
+                  setExtra("no-show");
+                  setError("");
+                }}
+              >
+                Khách vắng hẹn
+              </button>
+            )}
           </div>
+          {apiEnabled && extra && commandBooking && (
+            <BookingExtraForm
+              key={`${id}-${extra}-${record?.version ?? booking.version}`}
+              kind={extra}
+              expectedVersion={record?.version ?? booking.version ?? 1}
+              onCancel={() => setExtra(null)}
+              onSubmit={async (input) => {
+                await commandBooking(id, extra, input);
+                setExtra(null);
+              }}
+            />
+          )}
           {apiEnabled && record && action && action !== "cancel" && (
             <BookingTimeForm
               key={`${id}-${action}-${record.version}`}
@@ -532,11 +588,7 @@ export function ManagerBookingDetail({
                   <ManagerField
                     label={action === "confirm" ? "Ngày hẹn" : "Ngày mới"}
                   >
-                    <input
-                      type="date"
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                    />
+                    <DateInput value={date} onValueChange={(v) => setDate(v)} />
                   </ManagerField>
                   <ManagerField
                     label={action === "confirm" ? "Giờ hẹn" : "Giờ mới"}
@@ -643,7 +695,7 @@ export function ManagerBookingDetail({
             timeline.map((event) => (
               <p key={event.id}>
                 {formatDate(event.occurredAt)} {timeLabel(event.occurredAt)} ·{" "}
-                {event.summary}
+                {eventLabel(event.summary)}
                 {event.reason ? ` · ${event.reason}` : ""}
               </p>
             ))
@@ -662,6 +714,171 @@ export function ManagerBookingDetail({
           <p>Chưa có thao tác liên quan.</p>
         )}
       </section>
+      {apiEnabled && record?.version !== undefined && (
+        <section className="mgr-detail-section">
+          {/* Delete in any status (same rule as /co-van): hidden everywhere, history kept. */}
+          <button
+            className="adm-btn adm-subtle-danger"
+            disabled={busy}
+            onClick={async () => {
+              if (
+                !window.confirm(
+                  `Xóa lịch ${booking.code || booking.id}? Lịch sẽ được ẩn khỏi danh sách, lịch sử thao tác vẫn được giữ.${record.serviceVisitId ? " Phiếu dịch vụ đã lập vẫn giữ nguyên." : ""}`,
+                )
+              )
+                return;
+              setBusy(true);
+              setError("");
+              try {
+                await command(
+                  `admin/bookings/${encodeURIComponent(id)}`,
+                  { expectedVersion: record.version },
+                  "DELETE",
+                );
+                window.dispatchEvent(new Event("dpauto-data-updated"));
+                onClose();
+              } catch (e) {
+                setError(
+                  e instanceof Error ? e.message : "Chưa thể xóa lịch hẹn.",
+                );
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            Xóa lịch hẹn
+          </button>
+        </section>
+      )}
     </ManagerModal>
+  );
+}
+
+const contactOutcomes = {
+  AGREED: "Khách đồng ý giờ hẹn",
+  UNREACHED: "Không liên lạc được",
+  DECLINED: "Khách từ chối",
+  OTHER: "Khác",
+} as const;
+/** Records a call to the customer, or marks a confirmed booking as a no-show. */
+function BookingExtraForm({
+  kind,
+  expectedVersion,
+  onSubmit,
+  onCancel,
+}: {
+  kind: "no-show" | "contact-events";
+  expectedVersion: number;
+  onSubmit: (input: Record<string, unknown>) => Promise<void>;
+  onCancel: () => void;
+}) {
+  const [channel, setChannel] = useState("PHONE"),
+    [outcome, setOutcome] = useState<keyof typeof contactOutcomes>("AGREED"),
+    [note, setNote] = useState(""),
+    [checked, setChecked] = useState(false),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  const noShow = kind === "no-show";
+  return (
+    <form
+      className="mgr-form"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        if (busy) return;
+        if (noShow && (!note.trim() || !checked))
+          return setError(
+            "Nhập lý do và xác nhận đã kiểm tra khách không đến trạm.",
+          );
+        setBusy(true);
+        setError("");
+        try {
+          await onSubmit(
+            noShow
+              ? { expectedVersion, reason: note.trim(), checkedManually: true }
+              : {
+                  expectedVersion,
+                  channel,
+                  outcome,
+                  ...(note.trim() ? { note: note.trim() } : {}),
+                },
+          );
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "Không lưu được.");
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      {!noShow && (
+        <div className="mgr-form-columns">
+          <ManagerField label="Kênh liên hệ">
+            <select
+              value={channel}
+              onChange={(e) => setChannel(e.target.value)}
+            >
+              <option value="PHONE">Gọi điện</option>
+              <option value="ZALO">Zalo</option>
+              <option value="IN_PERSON">Trực tiếp</option>
+              <option value="OTHER">Khác</option>
+            </select>
+          </ManagerField>
+          <ManagerField label="Kết quả">
+            <select
+              value={outcome}
+              onChange={(e) =>
+                setOutcome(e.target.value as keyof typeof contactOutcomes)
+              }
+            >
+              {Object.entries(contactOutcomes).map(([k, v]) => (
+                <option key={k} value={k}>
+                  {v}
+                </option>
+              ))}
+            </select>
+          </ManagerField>
+        </div>
+      )}
+      <ManagerField label={noShow ? "Lý do *" : "Ghi chú"}>
+        <textarea
+          rows={3}
+          maxLength={noShow ? 400 : 1000}
+          required={noShow}
+          disabled={busy}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+        />
+      </ManagerField>
+      {noShow && (
+        <label className="adm-toggle-row">
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={(e) => setChecked(e.target.checked)}
+          />
+          Đã kiểm tra khách không đến trạm
+        </label>
+      )}
+      {error && (
+        <p className="adm-error-text" role="alert">
+          {error}
+        </p>
+      )}
+      <div className="mgr-row-actions">
+        <button
+          type="button"
+          className="adm-btn"
+          disabled={busy}
+          onClick={onCancel}
+        >
+          Quay lại
+        </button>
+        <button
+          className={`adm-btn ${noShow ? "adm-danger" : "adm-primary"}`}
+          disabled={busy}
+        >
+          {busy ? "Đang lưu…" : noShow ? "Đánh dấu vắng hẹn" : "Lưu liên hệ"}
+        </button>
+      </div>
+    </form>
   );
 }

@@ -1,5 +1,5 @@
 {
-  "name": "hyperauto-care-next",
+  "name": "dpauto-next",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,6 +8,7 @@
     "api:migrate": "npm --prefix backend run db:migrate",
     "api:bootstrap": "npm --prefix backend run db:bootstrap",
     "dev": "next dev --hostname 0.0.0.0 --port 4001",
+    "dev:all": "node scripts/dev-all.mjs",
     "build": "next build",
     "start": "next start --hostname 0.0.0.0 --port 4001",
     "typecheck": "tsc --noEmit",
@@ -18,6 +19,16 @@
     "check:browser": "node scripts/check-browser.cjs"
   },
   "dependencies": {
+    "@tiptap/extension-highlight": "3.34.0",
+    "@tiptap/extension-image": "3.34.0",
+    "@tiptap/extension-list": "3.34.0",
+    "@tiptap/extension-table": "3.34.0",
+    "@tiptap/extension-text-align": "3.34.0",
+    "@tiptap/extension-youtube": "3.34.0",
+    "@tiptap/extensions": "3.34.0",
+    "@tiptap/pm": "3.34.0",
+    "@tiptap/react": "3.34.0",
+    "@tiptap/starter-kit": "3.34.0",
     "motion": "14.8.0",
     "next": "16.4.3",
     "react": "19.3.1",

@@ -18,7 +18,15 @@ export function MorePage() {
         description="Thông tin và các tùy chọn cá nhân."
       />
       <div className="adm-more-profile adm-panel">
-        <span className="adm-avatar adm-avatar-lg">CV</span>
+        <span className="adm-avatar adm-avatar-lg">
+          {(session?.staff.name || "Cố vấn")
+            .trim()
+            .split(/\s+/)
+            .slice(-2)
+            .map((w) => w[0])
+            .join("")
+            .toUpperCase()}
+        </span>
         <div>
           <h2>{session?.staff.name || "Cố vấn dịch vụ"}</h2>
           <p className="adm-muted">Trạm dịch vụ Toàn Trung</p>

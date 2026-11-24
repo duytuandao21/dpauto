@@ -1,0 +1,559 @@
+/* Accessory detail page (/phu-kien/[slug]); colours and radii follow home-theme / accessories. */
+.accessory-detail-page {
+  scroll-padding-top: 140px;
+}
+.accessory-detail-page .accessory-detail {
+  padding-top: 32px;
+  padding-bottom: 72px;
+}
+.accessory-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 28px;
+  color: var(--muted-light);
+  font-size: 14px;
+}
+.accessory-breadcrumb a:hover {
+  color: var(--brand-red);
+}
+.accessory-breadcrumb .icon {
+  width: 14px;
+  height: 14px;
+  transform: rotate(-90deg);
+}
+.accessory-breadcrumb [aria-current] {
+  color: var(--background);
+  font-weight: 600;
+}
+
+/* Top: gallery and info columns both stick; the shorter one stays put while the other scrolls. */
+.accessory-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+.accessory-gallery,
+.accessory-info {
+  position: sticky;
+  top: 100px;
+}
+.accessory-gallery {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 16px;
+}
+.accessory-gallery:not(:has(> .accessory-thumbs)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Key specs under the photos; only specs the admin marked are listed. */
+.accessory-keyspecs {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  margin: 0;
+  padding: 16px 0;
+  border-radius: 12px;
+  corner-shape: superellipse(2);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px var(--border-light);
+}
+.accessory-keyspecs > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "icon value" "icon label";
+  column-gap: 10px;
+  align-content: center;
+  align-items: center;
+  padding: 0 14px;
+}
+.accessory-keyspecs > div:not(:has(.icon)) {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "value" "label";
+}
+.accessory-keyspecs > div + div {
+  border-left: 1px solid var(--border-light);
+}
+.accessory-keyspecs .icon {
+  grid-area: icon;
+  width: 22px;
+  height: 22px;
+  color: var(--brand-red);
+}
+.accessory-keyspecs dd {
+  grid-area: value;
+  margin: 0;
+  color: var(--background);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+/* One line each; a label too long for its cell ends with "…". */
+.accessory-keyspecs dd,
+.accessory-keyspecs dt {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.accessory-keyspecs dt {
+  grid-area: label;
+  color: var(--muted-light);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.accessory-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: min(560px, calc(100vh - 140px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.accessory-thumbs::-webkit-scrollbar {
+  display: none;
+}
+.accessory-thumbs button {
+  flex: none;
+  width: 84px;
+  height: 84px;
+  padding: 6px;
+  border-radius: 10px;
+  corner-shape: superellipse(2);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px var(--border-light);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+.accessory-thumbs button:hover,
+.accessory-thumbs button[aria-current="true"] {
+  box-shadow: inset 0 0 0 2px var(--brand-red);
+}
+.accessory-detail-page .accessory-thumbs .photo img,
+.accessory-detail-page .accessory-slide .photo img,
+.accessory-detail-page .accessory-inbox-photo .photo img {
+  object-fit: contain;
+}
+.accessory-main {
+  position: relative;
+  border-radius: 16px;
+  corner-shape: superellipse(2);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px var(--border-light);
+  overflow: hidden;
+}
+.accessory-strip {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.accessory-strip::-webkit-scrollbar {
+  display: none;
+}
+.accessory-slide {
+  flex: 0 0 100%;
+  aspect-ratio: 1;
+  padding: 32px;
+  scroll-snap-align: center;
+}
+/* Prev/next arrows: faint, shown while the pointer is over the photo; not on touch screens. */
+.accessory-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-top: -20px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #ffffffb3;
+  box-shadow: 0 2px 8px #1f293714;
+  color: var(--muted-light);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+}
+.accessory-nav[data-dir="prev"] {
+  left: 12px;
+}
+.accessory-nav[data-dir="next"] {
+  right: 12px;
+}
+.accessory-nav .icon {
+  width: 20px;
+  height: 20px;
+  transform: rotate(90deg);
+}
+.accessory-nav[data-dir="next"] .icon {
+  transform: rotate(-90deg);
+}
+.accessory-main:hover .accessory-nav,
+.accessory-nav:focus-visible {
+  opacity: 1;
+}
+.accessory-nav:hover {
+  color: var(--background);
+}
+@media (hover: none), (max-width: 809.98px) {
+  .accessory-nav {
+    display: none;
+  }
+}
+.accessory-counter {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--raised);
+  color: var(--muted-light);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.accessory-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.accessory-info h1 {
+  font-size: 56px;
+  color: var(--background);
+}
+.accessory-price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+}
+.accessory-price strong {
+  color: var(--brand-red);
+  font-size: 32px;
+  font-weight: 700;
+}
+.accessory-price s {
+  color: var(--muted-light);
+  font-size: 18px;
+}
+.accessory-badge {
+  align-self: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--brand-red-soft);
+  color: var(--brand-red);
+  font-size: 13px;
+  font-weight: 700;
+}
+.accessory-description {
+  font-size: 17px;
+  line-height: 1.6;
+}
+.accessory-highlights {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 18px 20px;
+  list-style: none;
+  border-radius: 12px;
+  corner-shape: superellipse(2);
+  background: var(--raised);
+}
+.accessory-highlights li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: var(--background);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.accessory-highlights .icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  color: var(--brand-red);
+}
+/* One row as wide as the content above: booking widest, call and Zalo equal. */
+.accessory-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+.accessory-actions .button {
+  width: 100%;
+  min-width: 0;
+}
+@media (max-width: 809.98px) {
+  .accessory-actions {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+  .accessory-actions .button {
+    padding-inline: 10px;
+  }
+}
+.accessory-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.accessory-note .icon {
+  width: 16px;
+  height: 16px;
+  color: var(--brand-red);
+}
+
+/* In-page section links, pinned under the site header. */
+.accessory-tabs {
+  position: sticky;
+  top: 76px;
+  z-index: 20;
+  background: var(--raised);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+.accessory-tabs .container {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.accessory-tabs a {
+  flex: none;
+  padding: 14px 0;
+  color: var(--muted-light);
+  font-size: 15px;
+  font-weight: 600;
+}
+.accessory-tabs a:hover {
+  color: var(--brand-red);
+}
+
+.accessory-detail-page .accessory-block {
+  padding-top: 72px;
+  padding-bottom: 72px;
+}
+.accessory-detail-page .accessory-block + .accessory-block {
+  border-top: 1px solid var(--border-light);
+}
+.accessory-block h2 {
+  margin-bottom: 32px;
+  font-size: 44px;
+  color: var(--background);
+}
+.accessory-body {
+  max-width: 860px;
+}
+/* Collapsed introduction: keep in sync with BODY_LIMIT in accessory-detail.tsx. */
+.accessory-body-wrap {
+  position: relative;
+  max-width: 860px;
+}
+.accessory-body-wrap[data-collapsed="true"] {
+  max-height: 520px;
+  overflow: hidden;
+}
+.accessory-body-wrap[data-collapsed="true"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 140px;
+  background: linear-gradient(#ffffff00, #ffffff);
+  pointer-events: none;
+}
+/* Text toggle centred over the fade while collapsed, below the text once expanded. */
+.accessory-body-toggle {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  max-width: 860px;
+  margin-top: 16px;
+}
+.accessory-body-toggle[data-collapsed="true"] {
+  margin-top: -56px;
+}
+.accessory-body-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  background: none;
+  color: var(--brand-red);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.accessory-body-toggle button:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.accessory-body-toggle .icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+.accessory-body-toggle button[aria-expanded="true"] .icon {
+  transform: rotate(180deg);
+}
+.accessory-specs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.accessory-specs > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 20px;
+  border-radius: 12px;
+  corner-shape: superellipse(2);
+  background: var(--raised);
+}
+.accessory-specs dt {
+  color: var(--muted-light);
+  font-size: 14px;
+}
+.accessory-specs dd {
+  color: var(--background);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.accessory-inbox {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.accessory-inbox li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  corner-shape: superellipse(2);
+  background: var(--raised);
+  color: var(--background);
+  font-weight: 600;
+  text-align: center;
+}
+.accessory-inbox-photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+.accessory-detail-page .accessory-related {
+  background: var(--raised);
+}
+
+@media (max-width: 1199.98px) {
+  .accessory-top {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .accessory-gallery,
+  .accessory-info {
+    position: static;
+  }
+  /* Thumbnails move under the photo as a swipeable row. */
+  .accessory-gallery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .accessory-keyspecs {
+    order: 3;
+  }
+  .accessory-thumbs {
+    order: 2;
+    flex-direction: row;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .accessory-thumbs button {
+    width: 68px;
+    height: 68px;
+  }
+  .accessory-info h1 {
+    font-size: 44px;
+  }
+  /* Full-width square photos get too tall on tablets. */
+  .accessory-slide {
+    aspect-ratio: 4 / 3;
+  }
+  .accessory-tabs {
+    top: 72px;
+  }
+  .accessory-specs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 809.98px) {
+  .accessory-detail-page .accessory-detail {
+    padding-top: 20px;
+    padding-bottom: 48px;
+  }
+  .accessory-slide {
+    padding: 16px;
+  }
+  .accessory-info h1 {
+    font-size: 36px;
+  }
+  .accessory-price strong {
+    font-size: 26px;
+  }
+  .accessory-tabs {
+    top: 68px;
+  }
+  .accessory-tabs .container {
+    justify-content: flex-start;
+    gap: 24px;
+  }
+  .accessory-detail-page .accessory-block {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+  .accessory-block h2 {
+    font-size: 34px;
+    margin-bottom: 24px;
+  }
+  .accessory-specs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .accessory-keyspecs {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 16px;
+    padding: 16px 0;
+  }
+  .accessory-keyspecs > div {
+    padding: 0 12px;
+  }
+  .accessory-keyspecs > div:nth-child(odd) {
+    border-left: 0;
+  }
+  .accessory-inbox {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .accessory-thumbs button,
+  .accessory-nav {
+    transition: none;
+  }
+}

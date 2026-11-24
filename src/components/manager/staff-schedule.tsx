@@ -1,6 +1,7 @@
 "use client";
+import { DateInput } from "@/components/advisor/date-input";
 import { useState, type FormEvent } from "react";
-import { createDemoId } from "@/lib/booking/logic";
+import { createDemoId, formatDate } from "@/lib/booking/logic";
 import type { WorkShift } from "@/lib/manager/operations";
 import { useManager } from "./manager-provider";
 import {
@@ -57,7 +58,7 @@ function PrototypeStaffSchedule() {
     }
     ask({
       title: "Cập nhật ca làm?",
-      message: `${data.staff.find((s) => s.id === editing.staffId)?.name} · ${editing.date} · ${editing.start}–${editing.end}. ${editing.note}`,
+      message: `${data.staff.find((s) => s.id === editing.staffId)?.name} · ${formatDate(editing.date)} · ${editing.start}–${editing.end}. ${editing.note}`,
       action: () => {
         update(
           (d) => ({
@@ -97,10 +98,9 @@ function PrototypeStaffSchedule() {
       <div className="mgr-toolbar">
         <label className="mgr-filter">
           Ngày
-          <input
-            type="date"
+          <DateInput
             value={date}
-            onChange={(e) => e.target.value && setDate(e.target.value)}
+            onValueChange={(v) => v && setDate(v)}
           />
         </label>
         <FilterSelect label="Vai trò" value={role} onChange={setRole}>
@@ -181,12 +181,11 @@ function PrototypeStaffSchedule() {
               </select>
             </ManagerField>
             <ManagerField label="Ngày">
-              <input
+              <DateInput
                 required
-                type="date"
                 value={editing.date}
-                onChange={(e) =>
-                  setEditing({ ...editing, date: e.target.value })
+                onValueChange={(v) =>
+                  setEditing({ ...editing, date: v })
                 }
               />
             </ManagerField>

@@ -1,3 +1,4 @@
+import type { PartnerSnapshot } from "@/lib/api/partners";
 export type BookingStatus =
   "pending" | "confirmed" | "arrived" | "completed" | "cancelled" | "no_show";
 export type BookingSource =
@@ -8,6 +9,7 @@ export interface Customer {
   phone: string;
   bookingCount?: number;
   vehicleCount?: number;
+  version?: number;
 }
 export interface Vehicle {
   id: string;
@@ -37,6 +39,8 @@ export interface BookingEvent {
 export interface Booking {
   id: string;
   code?: string;
+  /** Partner car (Xe đối tác): partner and sale names at the time. */
+  partner?: PartnerSnapshot | null;
   version?: number;
   scheduledAt?: string;
   allowedActions?: string[];
@@ -111,4 +115,6 @@ export interface BookingDraft {
   source: BookingSource;
   customerNote: string;
   internalNote: string;
+  /** Sale of a partner car; empty for a normal customer. */
+  partnerSaleId?: string;
 }

@@ -13,7 +13,9 @@ import {
   type CSSProperties,
   type PointerEvent,
 } from "react";
-import { homeVi as home } from "@/lib/home-vi";
+import { homeDefaults } from "@/lib/home-defaults";
+import { useImage, useSection } from "@/components/site/site-content";
+import type { SiteImage } from "@/lib/content";
 import { Photo } from "@/components/ui/photo";
 import { HomeSectionHeading as SectionHeading } from "./home-motion";
 
@@ -23,7 +25,13 @@ function subscribeDesktop(notify: () => void) {
   return () => query.removeEventListener("change", notify);
 }
 
-type Review = (typeof home.reviews)[number];
+type Review = {
+  name: string;
+  text: string;
+  service: string;
+  photo?: SiteImage;
+  layout?: string;
+};
 function Ticker({
   reviews,
   reverse = false,
@@ -79,7 +87,7 @@ function Ticker({
           reviews.map((review) => (
             <article
               key={`${copy}-${review.name}`}
-              className={`review-card ${review.name === "Michael R." ? "review-card--wide" : ""} ${review.name === "Jason M." ? "review-card--photo" : ""}`}
+              className={`review-card ${review.photo && review.layout === "wide" ? "review-card--wide" : ""} ${review.photo && review.layout !== "wide" ? "review-card--photo" : ""}`}
               aria-hidden={copy !== 0}
               data-review-copy={copy}
               data-review-name={review.name}
@@ -91,17 +99,7 @@ function Ticker({
                 } as CSSProperties
               }
             >
-              {(review.name === "Jason M." || review.name === "Michael R.") && (
-                <Photo
-                  src={
-                    review.name === "Jason M."
-                      ? "/images/goYpkWeKDzA4B82FnuXUu7k24k.webp"
-                      : "/images/Lkhwq0ZpwZj3WdTam0yk91jo.webp"
-                  }
-                  alt={`Đánh giá của ${review.name} tại HyperAuto Care`}
-                  unoptimized
-                />
-              )}
+              {review.photo && <Photo {...review.photo} />}
               <p>{review.text}</p>
               <div>
                 <h3>{review.name}</h3>
@@ -116,16 +114,36 @@ function Ticker({
 }
 
 export function ReviewsSection() {
+  const section = useSection("home.reviews", homeDefaults["home.reviews"]),
+    resolve = useImage();
+  if (!section) return null;
+  const reviews: Review[] = (
+    section.items as {
+      author?: string;
+      text?: string;
+      meta?: string;
+      image?: SiteImage | null;
+      label?: string;
+    }[]
+  ).map((r) => ({
+    name: r.author || "",
+    text: r.text || "",
+    service: r.meta || "",
+    photo: resolve(r.image),
+    layout: r.label,
+  }));
+  // Two rows that scroll in opposite directions, split like the original 3 + 4 layout.
+  const split = Math.ceil(reviews.length * (3 / 7));
   return (
     <section className="section light reviews-section">
       <div className="container">
         <SectionHeading
-          title="Khách hàng nói gì?"
-          description="Trải nghiệm thực tế của khách hàng tại HyperAuto Care."
+          title={section.title}
+          description={section.description}
         />
       </div>
-      <Ticker reviews={home.reviews.slice(0, 3)} reverse />
-      <Ticker reviews={home.reviews.slice(3)} />
+      <Ticker reviews={reviews.slice(0, split)} reverse />
+      <Ticker reviews={reviews.slice(split)} />
     </section>
   );
 }

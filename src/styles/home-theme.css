@@ -76,6 +76,13 @@ body.dpauto-theme .footer-brand > a > img,
   object-position: center;
 }
 
+/* Uploaded logos have their own proportions: show them whole inside the same box. */
+body.dpauto-theme .brand img[data-uploaded],
+body.dpauto-theme .footer-brand > a > img[data-uploaded],
+.home-page .pricing-title img[data-uploaded] {
+  object-fit: contain;
+}
+
 body.dpauto-theme .brand img {
   width: 124px;
   height: 62px;
@@ -108,6 +115,24 @@ body.dpauto-theme .footer-shader--logo canvas {
   body.dpauto-theme .brand img {
     width: 104px;
     height: 54px;
+  }
+}
+
+/* Uploaded logos keep their whole artwork (no padding to trim), so they get a larger box. */
+body.dpauto-theme .brand img[data-uploaded] {
+  width: 132px;
+  height: 64px;
+}
+@media (max-width: 1199.98px) {
+  body.dpauto-theme .brand img[data-uploaded] {
+    width: 116px;
+    height: 56px;
+  }
+}
+@media (max-width: 374px) {
+  body.dpauto-theme .brand img[data-uploaded] {
+    width: 104px;
+    height: 50px;
   }
 }
 
@@ -232,6 +257,15 @@ body.dpauto-theme .button--light .button-overlay {
 
 .home-page .home-social-overlay {
   background: var(--brand-red-soft);
+}
+
+/* Social icons keep the platforms' own logo colours. */
+.home-page .home-social-link[data-brand="facebook"] > .icon {
+  color: #1877f2;
+}
+.home-page .home-social-link[data-brand="tiktok"] > .icon {
+  color: #000000;
+  filter: drop-shadow(-1px -1px 0 #25f4ee) drop-shadow(1px 1px 0 #fe2c55);
 }
 
 .home-page .benefit-icon {

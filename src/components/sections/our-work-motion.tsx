@@ -10,20 +10,24 @@ import {
 import { useRef } from "react";
 import { Photo } from "@/components/ui/photo";
 import { Button } from "@/components/ui/button";
+import { BookingLauncher } from "@/components/public-booking/booking-dialog";
 import { site, type SiteImage } from "@/lib/content";
+import { cmsImageSrc, type CmsAsset } from "@/lib/api/cms";
+import { pageDefaults } from "@/lib/page-defaults";
+import { homeDefaults } from "@/lib/home-defaults";
+import { useImage, useSection, useSite } from "@/components/site/site-content";
 
 const imageSpring = { stiffness: 500, damping: 60, mass: 1 };
 
 export function WorkBanner({
-  title = "Thành quả",
-  image = {
-    src: "/images/5jFIDmf3fDYVLCeKxRoGZM5XCA.webp",
-    alt: "SUV đen mở cửa trong xưởng chăm sóc xe",
-  },
+  pageKey = "our-work",
 }: {
-  title?: string;
-  image?: SiteImage;
+  pageKey?: "our-work" | "contact";
 }) {
+  const banner =
+      useSection(pageKey, pageDefaults[pageKey]) || pageDefaults[pageKey],
+    title = banner.title,
+    image: SiteImage = useImage()(banner.image, pageDefaults[pageKey].image)!;
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, imageSpring);
@@ -34,7 +38,7 @@ export function WorkBanner({
         className="work-banner-image"
         style={reduced ? undefined : { scale }}
       >
-        <Photo {...image} priority unoptimized sizes="100vw" />
+        <Photo {...image} priority sizes="100vw" />
       </motion.div>
       <div className="work-banner-overlay" />
       <div className="container work-banner-heading">
@@ -49,7 +53,12 @@ export function WorkFinalCTA({
   copy,
 }: {
   vietnamese?: boolean;
-  copy?: { title: string; description: string; imageId: string | null };
+  copy?: {
+    title: string;
+    description: string;
+    imageId: string | null;
+    image?: CmsAsset;
+  };
 }) {
   const ref = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
@@ -60,6 +69,17 @@ export function WorkFinalCTA({
   const progress = useSpring(scrollYProgress, imageSpring);
   const scale = useTransform(progress, [0, 1], [1.06, 1]);
   const y = useTransform(progress, [0, 1], [-60, 0]);
+  const cta = useSection("home.cta", homeDefaults["home.cta"]),
+    { settings } = useSite(),
+    resolve = useImage();
+  if (!cta) return null;
+  const photo = copy?.imageId
+    ? {
+        src: cmsImageSrc(copy),
+        alt: homeDefaults["home.cta"].image.alt,
+        media: copy.image,
+      }
+    : resolve(cta.image, homeDefaults["home.cta"].image)!;
   return (
     <section className="work-final-cta" ref={ref}>
       <motion.div
@@ -67,17 +87,13 @@ export function WorkFinalCTA({
         style={reduced ? undefined : { scale, y }}
       >
         <Photo
-          src={
-            copy?.imageId
-              ? `/api/v1/public/cms/assets/${copy.imageId}`
-              : "/images/tzpnoVuiPL9CIASVtJD4w77vGPQ.jpg"
-          }
+          src={photo.src}
+          media={photo.media}
           alt={
             vietnamese
-              ? "Xe Mercedes màu bạc trong xưởng chăm sóc ô tô"
+              ? photo.alt
               : "Silver Mercedes sedan displayed inside a clean professional automotive workshop"
           }
-          unoptimized
           sizes="100vw"
         />
       </motion.div>
@@ -87,21 +103,26 @@ export function WorkFinalCTA({
           <h2>
             {copy?.title ??
               (vietnamese
-                ? "Chăm chút xứng tầm cho xe của bạn"
+                ? cta.title
                 : "Give Your Vehicle the Care It Deserves")}
           </h2>
           <p>
             {copy?.description ??
               (vietnamese
-                ? "Từ làm sạch đến bảo vệ lâu dài, HyperAuto Care luôn đồng hành để xe bạn bền đẹp."
-                : "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best.")}
+                ? cta.description
+                : "From routine detailing to long-term protection, DPAuto is here to help keep your vehicle looking its best.")}
           </p>
           <div className="work-final-cta-actions">
-            <Button href="/contact">
-              {vietnamese ? "Liên hệ ngay" : "Contact Us"}
-            </Button>
-            <Button href={site.phoneHref} variant="secondary" icon="phone">
-              {vietnamese ? "Gọi ngay" : "Call Now"}
+            <BookingLauncher label="Đặt lịch ngay" />
+            <Button
+              href={
+                cta.cta2?.href ||
+                (settings.custom ? settings.phoneHref : site.phoneHref)
+              }
+              variant="secondary"
+              icon="phone"
+            >
+              {vietnamese ? cta.cta2?.label || "Gọi ngay" : "Call Now"}
             </Button>
           </div>
         </div>

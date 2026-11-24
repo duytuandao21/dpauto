@@ -6,7 +6,7 @@
 >
 > Không thay đổi UI/UX và logic của `/co-van`, `/dieu-hanh`.
 >
-> **Đây là file dùng để triển khai.** Mỗi việc có ô `[ ]`, làm xong thì đánh dấu `[x]`. Thứ tự triển khai: **Phần A (ảnh)** trước, rồi đến **Phần B (nội dung và dashboard)**.
+> **Đây là file dùng để triển khai.** Mỗi việc có ô `[ ]`, làm xong thì đánh dấu `[x]`. Thứ tự triển khai: **Phần A (ảnh)** trước, rồi đến **Phần C (thiết kế lại /admin)**. Phần B cũ đã được thay bằng Phần C.
 
 ---
 
@@ -17,7 +17,7 @@
 | 1 | Hạ tầng | Web chạy trên **VPS**. Ảnh lưu trên **Cloudflare R2**. |
 | 2 | Link ảnh | **Giai đoạn đầu dùng link `r2.dev`.** Trước khi chạy chính thức, chuyển sang tên miền riêng `img.<tên-miền>`. Để chuyển được, DNS của tên miền phải nằm trên Cloudflare. |
 | 3 | Resize | **Resize một lần lúc upload** bằng `sharp` ở backend. Không dùng Cloudflare Images, cũng không dùng `/_next/image` cho ảnh CMS. |
-| 4 | Thư viện mới cho backend | `sharp`, `@aws-sdk/client-s3` (đã duyệt), `@fastify/multipart` (đề xuất; xác nhận lại trước khi cài). |
+| 4 | Thư viện mới cho backend | `sharp` 0.35.5, `@aws-sdk/client-s3` 3.1171.0 (đã cài). **Không cần `@fastify/multipart`:** ảnh được gửi nguyên file trong body (`application/octet-stream`), tên và alt đi qua query string. |
 | 5 | Ảnh HEIC | Không hỗ trợ. Báo lỗi để người dùng chọn lại ảnh JPEG/PNG. iPhone thường tự chuyển ảnh sang JPEG khi upload qua trình duyệt. |
 | 6 | Trình soạn thảo | Đầy đủ tính năng, dùng **Tiptap**, chỉ các extension miễn phí (MIT). Chi tiết ở mục B2. |
 | 7 | Duyệt bài | Không tách vai trò: một người vừa viết vừa xuất bản. Vẫn giữ quyền `cms.write`/`cms.publish` sẵn có. |
@@ -84,10 +84,14 @@ Trang công khai: <picture> AVIF → WebP với srcset/sizes; trình duyệt t�
 
 ### Quy ước
 
-**Key trên R2:**
-- `media/<assetId>/w<width>.<avif|webp>`
-- `media/<assetId>/og.jpg`
-- `originals/<assetId>.<jpg|png|webp|avif>`
+**Key trên R2** (đã triển khai, đặt theo **sha256 của file gốc** thay vì id ảnh):
+- `media/<sha256>/w<width>.<avif|webp>`
+- `media/<sha256>/og-<x%>-<y%>.jpg`: tên file chứa điểm lấy nét
+- `originals/<sha256>/original.<jpg|png|webp|avif>`
+
+Lý do đặt theo sha256: upload lại cùng một ảnh, hoặc request gửi lại do mạng chập chờn, sẽ ghi đè đúng các file giống hệt, không sinh file thừa trên R2.
+
+**Ảnh gốc** được giữ nguyên byte trong bucket riêng tư. Mọi file công khai đều đã xóa EXIF/GPS.
 
 **Header khi upload lên R2:**
 - `Content-Type` đúng định dạng.
@@ -128,170 +132,116 @@ MEDIA_LOCAL_DIR=storage/media
 
 - **Endpoint R2** tự ghép trong code: `https://<R2_ACCOUNT_ID>.r2.cloudflarestorage.com`, region `auto`.
 - **Khi `MEDIA_DRIVER=r2`:** backend kiểm tra đủ biến lúc khởi động. Thiếu biến nào thì dừng ngay và báo rõ tên biến, không đợi đến lúc upload mới lỗi.
-- **Khi `MEDIA_DRIVER=local`:** backend phát file tĩnh tại `/media/*` và `MEDIA_PUBLIC_URL=http://localhost:4002/media`. Chế độ này chỉ dùng cho dev và test.
+- **Khi `MEDIA_DRIVER=local`:** backend phát file tĩnh tại `/api/v1/public/media/*`, đi qua rewrite sẵn có của Next. Để trống `MEDIA_PUBLIC_URL` thì giá trị mặc định là `/api/v1/public/media`. Chế độ này chỉ dùng cho dev và test.
 
 ---
 
-## A1. Nền tảng backend (≈ 1,5 ngày)
+## A1. Nền tảng backend — ✅ đã xong
 
-- [ ] Cài phụ thuộc cho `backend/`, ghi version chính xác:
-  - `sharp`
-  - `@aws-sdk/client-s3`
-  - `@fastify/multipart` (sau khi xác nhận)
-- [ ] `config.ts`:
-  - Đọc các biến môi trường ở trên và kiểm tra hợp lệ.
-  - `MEDIA_PUBLIC_URL` không có `/` ở cuối.
-- [ ] `.env.example`: thêm các biến, để trống giá trị bí mật. Cập nhật `backend/README.md`, phần cấu hình.
-- [ ] `backend/src/media-store.ts`, chỉ có 4 hàm:
-  - `put(bucket, key, body, contentType)`
-  - `remove(bucket, keys[])`
-  - `get(bucket, key)`: đọc ảnh gốc khi cần tạo lại biến thể
-  - `url(key)`
+- [x] Phụ thuộc trong `backend/`: `sharp` 0.35.5 và `@aws-sdk/client-s3` 3.1171.0, ghi version chính xác.
+- [x] `config.ts` đọc và kiểm tra các biến `MEDIA_*` và `R2_*`. Khi `MEDIA_DRIVER=r2` mà thiếu biến, backend dừng ngay và báo đúng tên biến thiếu.
+- [x] `.env.example` thêm các biến (giá trị bí mật để trống). `backend/README.md` thêm mục "Ảnh website (Cloudflare R2)". `storage/` được thêm vào `.gitignore`.
+- [x] `backend/src/media-store.ts`: `put`, `get`, `removePrefix`, `url`. Có 2 driver `local` và `r2`.
+  - Key được kiểm tra hợp lệ.
+  - Driver `local` chặn đường dẫn thoát ra ngoài thư mục (`..`).
+- [x] `backend/src/image-pipeline.ts`: `inspect`, `processImage`, `regenerateOg`.
+  - Định dạng đọc từ nội dung file. Chỉ nhận JPEG, PNG, WebP, AVIF.
+  - Từ chối HEIC/HEIF, GIF, SVG, file hỏng, ảnh quá 50 MP.
+  - Chuẩn hóa ảnh CMYK và 16-bit về sRGB 8-bit.
+  - Xử lý tối đa 2 ảnh cùng lúc.
+- [x] **Upload gửi file trong body, không dùng multipart:**
+  - Parser `application/octet-stream` chỉ nhận ở đúng `POST /api/v1/admin/cms/assets` và giới hạn 20 MB. Route khác vẫn chỉ nhận JSON 2 MB.
+  - Giữ nguyên xác thực, CSRF, idempotency và rate limit. Mã sha256 của file được đưa vào dấu vân tay (fingerprint) idempotency.
+  - Phần xử lý ảnh và upload lên R2 chạy **trước** transaction, nên không giữ khóa trạm trong lúc xử lý.
 
-  Có 2 driver: `r2` (S3 client) và `local` (ghi file). Driver được chọn theo `MEDIA_DRIVER`.
-- [ ] `backend/src/image-pipeline.ts`, hàm `processImage(buffer)` trả về:
-  - metadata: `width`, `height`, `format`, `bytes`, `sha256`
-  - `variants[]`: mỗi biến thể có `{ width, height, format, key, bytes, body }`
-  - `og`
-  - `placeholder`
-  - ảnh gốc đã chuẩn hóa
+**Lưu ý khi deploy VPS:** chạy `npm ci` trên VPS, **không copy `node_modules` từ Windows sang**.
 
-  Xử lý:
-  - Từ chối: HEIC/HEIF, GIF, SVG (rủi ro XSS), file hỏng, ảnh quá 50 MP (`limitInputPixels`). Thông báo lỗi bằng tiếng Việt.
-  - Ảnh nhiều khung hình (GIF/WebP động): chỉ lấy khung đầu.
-  - Chỉ xử lý tối đa 2 ảnh cùng lúc (semaphore trong tiến trình). Request đến sau thì chờ, không bị lỗi.
-- [ ] Fastify multipart:
-  - Áp riêng cho route upload, giới hạn 20 MB và đúng 1 file. `bodyLimit` toàn cục vẫn giữ 2 MB.
-  - Giữ nguyên guard xác thực, CSRF và rate limit đang dùng cho các route `admin/*`.
+## A2. Database — ✅ đã xong
 
-**Lưu ý khi deploy VPS:** `sharp` có file chạy riêng cho từng hệ điều hành. Trên VPS phải chạy `npm ci`, **không copy `node_modules` từ Windows sang**.
+- [x] `migrations/0018_cms_assets_storage.sql`:
+  - Bỏ ràng buộc 200 KB và cho `content` được để trống.
+  - Thêm các cột `storage`, `width`, `height`, `mime`, `bytes`, `original_key`, `variants`, `og_key`, `placeholder`, `focal_x`, `focal_y`, `deleted_at`, `deleted_by`, `purged_at`.
+  - Thêm ràng buộc `cms_assets_storage_shape` (ảnh `db` phải có bytes; ảnh `r2`/`local` phải đủ metadata) và `cms_assets_purge_after_delete`.
+  - Thêm 3 index: tìm theo sha, thư viện ảnh, thùng rác.
+- [x] `schema-check.ts` tự nhận migration mới, không phải sửa.
+- [ ] **Bạn cần chạy** `npm run db:migrate` trong `backend/` trên DB dev, rồi sau này trên VPS.
+- [ ] Migration xóa cột `content`: chỉ làm sau khi `media migrate` đã chuyển hết ảnh cũ và đã kiểm tra.
 
-## A2. Database (≈ 0,5 ngày)
+## A3. API — ✅ đã xong
 
-- [ ] Migration `0018_cms_assets_storage.sql`:
-  - `content` bỏ `NOT NULL` và bỏ `CHECK` 200 KB. Ảnh cũ vẫn đọc được cho tới khi chuyển xong.
-  - Thêm cột:
+| Route | Kết quả |
+|---|---|
+| `POST admin/cms/assets?name=&alt=` (body là file) | Trả 201 `{ id, duplicate }`. Ảnh trùng sha: trả lại id cũ; nếu ảnh đó đang trong thùng rác thì khôi phục. |
+| `GET admin/cms/assets?search=&trash=true` | Danh sách: kích thước, `src`, `avif[]`, `webp[]`, `og`, `focal`, `placeholder`. |
+| `GET admin/cms/assets/:id` | Ảnh cũ (`db`): trả bytes. Ảnh mới: 302 tới bản WebP lớn nhất. |
+| `PATCH admin/cms/assets/:id` | Sửa `name`, `alt`, `focalX`/`focalY` (hai giá trị gửi cùng nhau). Đổi điểm lấy nét thì tạo lại `og-*.jpg`. |
+| `GET admin/cms/assets/:id/usage` | Danh sách nội dung đang dùng ảnh (bản mới nhất hoặc bản đang hiển thị), có cờ `live`. |
+| `DELETE admin/cms/assets/:id` | Ảnh đang dùng: 409 `CMS_ASSET_IN_USE`, kèm tên các nội dung. Ngược lại: chuyển vào thùng rác. |
+| `POST admin/cms/assets/:id/restore` | Khôi phục ảnh. Ảnh đã xóa hẳn: 409 `CMS_ASSET_PURGED`. |
+| `GET public/cms/assets/:id` | Giữ điều kiện "chỉ ảnh đã xuất bản". Ảnh mới: 302. |
+| `GET public/content` | Mỗi payload có `imageId` được gắn thêm `image` (asset đầy đủ). |
 
-    | Cột | Kiểu | Ghi chú |
-    |---|---|---|
-    | `storage` | `text`, `CHECK IN ('db','r2','local')` | Mặc định `'db'` |
-    | `width`, `height`, `bytes` | `integer` | |
-    | `mime` | `text` | |
-    | `original_key` | `text` | |
-    | `variants` | `jsonb` | Mặc định `[]` |
-    | `og_key` | `text` | |
-    | `placeholder` | `text` | |
-    | `focal_x`, `focal_y` | `numeric` | Mặc định `0.5`, `CHECK` trong khoảng 0..1 |
-    | `deleted_at` | `timestamptz` | |
-    | `deleted_by` | `uuid` | |
-    | `purged_at` | `timestamptz` | |
+- [x] Lưu nội dung bằng ảnh đã nằm trong thùng rác bị từ chối (`CMS_ASSET_INVALID`).
+- [x] Có audit `CMS_MEDIA_CREATED`, `CMS_MEDIA_UPDATED`, `CMS_MEDIA_DELETED`, `CMS_MEDIA_RESTORED`.
 
-  - Ràng buộc và index:
-    - `CHECK`: dòng có `storage='db'` thì phải có `content`; dòng `r2`/`local` thì phải có `original_key` và `variants`.
-    - Index `(station_id, sha256) WHERE deleted_at IS NULL`, dùng để chống trùng.
-    - Index `(station_id, created_at) WHERE deleted_at IS NULL`, dùng cho danh sách ảnh.
-- [ ] `schema-check.ts`: cập nhật nếu có kiểm tra cấu trúc bảng `cms_assets`.
-- [ ] Migration sau, **chỉ chạy khi script A4 đã chuyển xong và đã kiểm tra:** xóa cột `content`.
+## A4. Script vận hành — ✅ đã xong
 
-## A3. API (≈ 1 ngày)
+Gộp thành 1 lệnh `npm run media -- <lệnh>` (`backend/scripts/media.ts`):
 
-Dùng lại `Cms`, `audit`, `page`, `fail` và quyền `cms.*`.
-
-| Method & route | Quyền | Mô tả |
-|---|---|---|
-| `POST admin/cms/assets` (multipart: `file`, `alt`, `name`) | `cms.write` | Xem thứ tự xử lý ngay dưới bảng. Audit `CMS_MEDIA_CREATED`. Trả về asset đầy đủ (id, link các biến thể, placeholder). |
-| `GET admin/cms/assets?search=&cursor=` | `cms.read` | Danh sách ảnh chưa xóa, phân trang như hiện tại. Kèm link thumbnail `w320.webp`, kích thước, alt. |
-| `GET admin/cms/assets/:id` | `cms.read` | Ảnh `storage='db'`: trả bytes như cũ. Ảnh `r2`/`local`: **302** tới bản WebP lớn nhất. |
-| `PATCH admin/cms/assets/:id` (`alt`, `name`, `focalX`, `focalY`) | `cms.write` | Sửa thông tin ảnh. Nếu đổi điểm lấy nét: lấy ảnh gốc, tạo lại `og-<n>.jpg`, xóa bản OG cũ. Audit `CMS_MEDIA_UPDATED`. |
-| `GET admin/cms/assets/:id/usage` | `cms.read` | Các tài liệu đang dùng ảnh ở bản mới nhất hoặc bản đã xuất bản. |
-| `DELETE admin/cms/assets/:id` | `cms.write` | Ảnh đang được dùng: **409 `CMS_ASSET_IN_USE`**, kèm danh sách nơi dùng. Ngược lại: đặt `deleted_at` (vào thùng rác). Audit `CMS_MEDIA_DELETED`. |
-| `POST admin/cms/assets/:id/restore` | `cms.write` | Khôi phục ảnh khỏi thùng rác, chỉ khi chưa xóa hẳn. |
-| `GET public/cms/assets/:id` | công khai | Giữ điều kiện "chỉ ảnh đã xuất bản". Ảnh R2: **302** tới bản WebP lớn nhất. Ảnh DB: trả bytes như cũ. Link cũ vẫn chạy. |
-
-**Thứ tự xử lý khi upload:** pipeline → chống trùng → đẩy lên R2 (ảnh gốc và các biến thể) → `INSERT`.
-- Nếu `INSERT` lỗi thì xóa các file vừa đẩy (cố gắng hết sức) và ghi log.
-
-**Nội dung tham chiếu ảnh:**
-- `upsert` của `cms.ts` hiện kiểm tra `imageId` thuộc đúng trạm. Bổ sung thêm điều kiện **chưa bị xóa**.
-- Ảnh nằm trong rich text (Phần B) cũng phải ghi vào `cms_revision_assets`.
-
-**Contracts zod:**
-- `alt` tối đa 240 ký tự, `name` tối đa 120 ký tự, `focalX`/`focalY` trong khoảng 0..1.
-- Định dạng file kiểm tra bằng `sharp`, không tin `Content-Type` trình duyệt gửi lên.
-
-## A4. Script vận hành (≈ 0,5 ngày)
-
-- [ ] `backend/scripts/media-migrate.ts`: chuyển ảnh cũ trong DB lên R2.
-  - Xử lý các dòng `storage='db'`: lấy `content`, chạy pipeline, đẩy lên R2, rồi cập nhật dòng.
+- [x] `check`: upload, đọc lại qua `MEDIA_PUBLIC_URL`, rồi xóa file thử. **Đã chạy với R2 thật: OK.**
+- [x] `migrate [--dry-run]`: chuyển ảnh cũ trong Postgres sang storage.
   - Chạy lại nhiều lần vẫn an toàn.
-  - Có `--dry-run`. In ra số ảnh đã chuyển, bỏ qua, lỗi.
-- [ ] `backend/scripts/media-purge.ts`: xóa hẳn ảnh trong thùng rác quá 30 ngày.
-  - Xóa các file trên R2, rồi đặt `purged_at`.
-  - **Giữ lại dòng trong DB**, vì `cms_revision_assets` là lịch sử không được sửa và còn trỏ tới.
-  - Trên VPS, chạy bằng cron mỗi ngày một lần. Hướng dẫn cron ghi vào README.
-- [ ] Script kiểm tra kết nối `media-check`: upload một file nhỏ lên R2, đọc lại qua `MEDIA_PUBLIC_URL`, rồi xóa. Dùng để kiểm tra khóa trong `.env` ngay sau A1.
+  - Từ chối chuyển sang ổ đĩa local khi đang ở production.
+- [x] `purge [--days 30]`: xóa file trên R2 của ảnh đã nằm trong thùng rác quá số ngày quy định.
+  - Giữ lại file nếu còn ảnh khác dùng chung sha.
+  - Đặt `purged_at` và giữ lại dòng trong DB.
+  - README có mẫu cron chạy hằng ngày.
+- [ ] **Bạn cần chạy** `npm run media -- migrate --dry-run` rồi `npm run media -- migrate` sau khi đã chạy `db:migrate`.
 
-## A5. Tab Hình ảnh trong `/admin` (≈ 1,5 ngày)
+## A5. Tab Hình ảnh trong `/admin` — ✅ đã xong
 
-Dùng lại tab media sẵn có trong `live-cms.tsx`, cùng `ManagerPanel`, `ManagerModal` và các class `mgr-*`. Không thêm style mới khi đã có class tương ứng.
+Component mới `src/components/manager/cms-media.tsx` dùng lại `ManagerPanel`, `ManagerModal` và các class `adm-*`/`mgr-*`. CSS chỉ thêm `.mgr-focal-marker`, dùng token có sẵn `--mgr-brand` và `--adm-surface`.
 
-- [ ] **Upload:**
-  - Gửi **file gốc** bằng `FormData`, bỏ bước nén còn 200 KB ở trình duyệt (`prepareIntakePhoto`) cho CMS. Màn `/co-van` vẫn giữ nguyên bước này.
-  - Chọn nhiều file và kéo thả được.
-  - Có thanh tiến trình cho từng file. Lỗi hiện theo từng file: sai định dạng, quá 20 MB, HEIC.
-- [ ] **Lưới ảnh:**
-  - Dùng thumbnail `w320.webp`, có ảnh mờ placeholder trong lúc tải.
-  - Có tìm kiếm theo tên hoặc alt. Cảnh báo ảnh thiếu alt.
-- [ ] **Chi tiết ảnh** (`ManagerModal`):
-  - Xem ảnh lớn; sửa alt và tên.
-  - Chọn điểm lấy nét bằng cách bấm lên ảnh.
-  - Xem kích thước, dung lượng, các biến thể.
-  - Xem nơi đang dùng ảnh. Xóa hoặc khôi phục.
-- [ ] **Component `MediaPicker`:** hộp thoại chọn ảnh từ thư viện, hoặc upload mới ngay trong hộp thoại. Thay cho ô chọn ảnh hiện tại ở form Nội dung/Bài viết, và dùng lại cho Tiptap, dịch vụ, phụ kiện.
-- [ ] **Link ảnh** trong `live-cms.tsx` lấy từ API (`variants`), không tự ghép `/api/v1/admin/cms/assets/<id>`.
+- [x] **Upload:**
+  - Chọn nhiều file hoặc kéo thả. Gửi file gốc, không nén ở trình duyệt.
+  - Có thanh tiến trình và lỗi riêng cho từng file. Trình duyệt kiểm tra trước HEIC, kích thước, định dạng.
+  - Ô alt dùng chung cho cả lượt upload; để trống thì lấy tên file, sửa được sau.
+  - `uploadFile()` trong `src/lib/api/client.ts` dùng XHR để báo được tiến trình.
+- [x] **Lưới ảnh:** thumbnail `w320.webp`, tìm theo tên/alt (tìm ở server), nút "Thùng rác".
+- [x] **Chi tiết ảnh:**
+  - Sửa tên và alt.
+  - Chọn điểm lấy nét bằng cách bấm lên ảnh, hoặc bằng 2 thanh trượt (dùng được bằng bàn phím).
+  - Xem kích thước, dung lượng, các cỡ đã tạo, nơi đang dùng.
+  - Xóa (nút bị khóa khi ảnh đang được dùng) và khôi phục.
+- [x] **`MediaPicker`:** thay ô `<select>` chọn ảnh trong form Nội dung/Bài viết. Có hộp thoại chọn ảnh hoặc upload ngay; ảnh vừa upload được chọn luôn.
+- [x] **Ảnh xem trước trong editor** lấy `src` từ API.
+- [x] Màn `/co-van` vẫn dùng `prepareIntakePhoto` như cũ, không bị thay đổi.
 
-## A6. Hiển thị ở trang công khai (≈ 1 ngày)
+## A6. Hiển thị ở trang công khai — ✅ phần ảnh CMS đã xong
 
-- [ ] **API công khai:** trả kèm mỗi ảnh: `width`, `height`, `placeholder`, `focal`, danh sách link AVIF/WebP theo độ rộng, link OG.
-- [ ] **Component `Photo`** (`src/components/ui/photo.tsx`):
-  - Mở rộng để nhận asset CMS, render `<picture>` gồm `<source type="image/avif" srcset>` và `<img srcset sizes width height loading decoding>`.
-  - Giữ nguyên class, tỉ lệ và hiệu ứng hiện tại. `object-position` lấy theo điểm lấy nét.
-  - Trước khi sửa, kiểm tra tất cả nơi đang dùng `Photo`.
-- [ ] **Bảng `sizes` theo vị trí:**
+- [x] **`Photo`** (`src/components/ui/photo.tsx`):
+  - Ảnh có `media` (asset CMS): render `<picture>` gồm AVIF `srcset` và `<img>` WebP `srcset/sizes`, cùng kiểu định vị (absolute, phủ khung) như `next/image fill`.
+  - `object-position` chỉ đổi khi điểm lấy nét khác chính giữa.
+  - Ảnh không có `media`: giữ **nguyên** cách render cũ bằng `next/image`.
+- [x] **`hero.tsx`, `our-work-motion.tsx`, `cms-page.tsx`, `lib/cms-content.ts`:** truyền `media` và dùng `cmsImageSrc()`.
+- [x] **`publicMetadata`:** dùng `og-*.jpg` làm ảnh chia sẻ khi có.
+- [x] **Ảnh hero:** `fetchPriority="high"`, không lazy. Ảnh còn lại `loading="lazy"`.
+- [x] **Không thêm ảnh mờ placeholder ở trang công khai**, để giữ nguyên hiệu ứng hiện tại. Dữ liệu `placeholder` vẫn có trong API và đang dùng ở admin.
+- [ ] **Ảnh tĩnh `public/images` và 37 chỗ `unoptimized`:** làm cùng script seed ở Phần B (B-4), khi từng nhóm nội dung chuyển sang CMS. Lúc đó ảnh nội dung sẽ đi qua pipeline này.
 
-  | Vị trí | `sizes` |
-  |---|---|
-  | Hero/banner toàn màn hình | `100vw` |
-  | Thẻ dịch vụ, phụ kiện, bài viết | `(max-width: 809px) 50vw, 25vw` |
-  | Ảnh trong bài viết | `(max-width: 809px) 100vw, 800px` |
-  | Logo, ảnh nhỏ | ảnh cố định `w320` |
+## A7. Kiểm thử Phần A — ✅ đã chạy
 
-- [ ] **Thay link ảnh** `/api/v1/public/cms/assets/<id>` ở `hero.tsx`, `our-work-motion.tsx`, `cms-page.tsx`, `lib/cms-content.ts`, `lib/public-cms.ts` bằng dữ liệu asset mới. Route cũ vẫn chuyển hướng được, nên không có chỗ nào bị hỏng trong lúc chuyển.
-- [ ] **Ảnh hero đầu trang:** `fetchPriority="high"`, không lazy. Các ảnh còn lại để `loading="lazy"`.
-- [ ] **Metadata OG/Twitter:** dùng `og.jpg` của ảnh đại diện.
-- [ ] **Ảnh tĩnh `public/images`:**
-  - Ảnh nội dung (dịch vụ, bài viết, phụ kiện, thành quả): đưa vào thư viện bằng script seed ở Phần B.
-  - Ảnh giao diện (logo, nền, icon): giữ trong `public`, nén một lần bằng script `sharp` về đúng cỡ lớn nhất cần dùng.
-  - Bỏ `unoptimized` khi chỗ đó đã chuyển sang `Photo` mới.
-
-## A7. Kiểm thử Phần A
-
-Theo nguyên tắc kiểm thử tối thiểu trong `AGENTS.md`.
-
-- [ ] **Unit test `image-pipeline`:**
-  - Đúng các độ rộng; ảnh nhỏ không bị phóng to.
-  - Đã xóa EXIF và GPS; ảnh xoay đúng chiều.
-  - Từ chối file giả đổi đuôi, HEIC, SVG, ảnh quá 50 MP.
-  - Có `og.jpg` 1200×630.
-- [ ] **Integration test API** (driver `local`):
-  - Upload thành công. Ảnh trùng trả lại id cũ.
-  - Không có quyền thì nhận 403.
-  - Xóa ảnh đang dùng nhận 409. Xóa rồi khôi phục được.
-  - Route công khai không trả ảnh chưa xuất bản. Ảnh R2 trả 302.
-  - Ảnh cũ trong DB vẫn đọc được.
-- [ ] **Kiểm thử R2 thật:** chạy `media-check` một lần và `media-migrate --dry-run`.
-- [ ] **Typecheck** frontend và backend, mỗi bên chạy một lần.
-- Không chạy E2E hay build production nếu chưa được duyệt.
+- [x] **Unit `test/image-pipeline.test.ts`** (`npm run test:media`), 5/5 pass:
+  - đúng các độ rộng; ảnh nhỏ không bị phóng to
+  - xoay đúng chiều theo EXIF, đã xóa EXIF/GPS
+  - từ chối text, SVG, GIF
+  - OG 1200×630; tên file OG chứa điểm lấy nét
+- [x] **Integration `test/phase5.integration.test.ts`** (`npm run test:phase5`), chạy trên PostgreSQL tạm, 11/11 pass:
+  - Test cũ được cập nhật: upload dạng file, route ảnh trả 302, feed công khai có `image`, SVG nhận 422, gửi JSON vào route upload nhận 415.
+  - Test mới cho thư viện ảnh: chống trùng, tài khoản không có quyền nhận 403, tìm kiếm, phát file local có cache `immutable`, chặn `..`, sửa điểm lấy nét tạo OG mới, danh sách nơi dùng, xóa ảnh đang dùng nhận 409, thùng rác, không lưu được nội dung bằng ảnh đã xóa, khôi phục.
+- [x] **Typecheck** frontend và backend: pass.
+- [x] **`media check` với R2 thật:** pass.
+- [ ] **Chưa kiểm tra giao diện trên trình duyệt** (tab Hình ảnh, trang công khai). Không chạy E2E hay build production.
 
 ## A8. Chuyển sang tên miền riêng (trước khi chạy chính thức)
 
@@ -301,101 +251,163 @@ Theo nguyên tắc kiểm thử tối thiểu trong `AGENTS.md`.
 - [ ] Tắt `r2.dev` cho bucket.
 - Không phải sửa code hay dữ liệu, vì DB chỉ lưu key tương đối.
 
-**Ước lượng Phần A: khoảng 6 ngày làm việc.**
+**Phần A: đã triển khai trên nhánh `feature/media-r2` (chưa commit).**
 
 ---
 
-# PHẦN B — NỘI DUNG VÀ DASHBOARD
+# PHẦN C — THIẾT KẾ LẠI `/admin` (thay cho Phần B cũ)
 
-## B1. Mô hình nội dung
+> **Tham chiếu giao diện:** https://nexoria-topaz.vercel.app/dashboard-cms (cùng các trang `/projects` và `/settings` của site đó). Bạn đã cho phép tham khảo ngày 18/11/2026.
+> **Phạm vi ngoại lệ:** chỉ áp dụng cho `/admin`. Không đổi `/co-van`, `/dieu-hanh`, không đổi giao diện trang công khai.
 
-Giữ nguyên lõi CMS: document, revision, publish/withdraw, audit. Phần cần làm là mở rộng các loại nội dung (`kind`).
+## C0. Quyết định thiết kế
 
-| Loại | Kiểu | Trường chính |
-|---|---|---|
-| `SETTINGS` | 1 bản | Tên ("DPAuto - Trạm dịch vụ Toàn Trung"), logo, điện thoại, email, địa chỉ, bản đồ, giờ mở cửa, mạng xã hội, ngày nghỉ |
-| `NAVIGATION` | 1 bản | Menu header (thứ tự, nhãn, link), các cột footer |
-| `PAGE` | Theo khóa | Các khối trang: hero, banner, giới thiệu, CTA, khối trang chủ |
-| `SERVICE` | Danh sách | slug, tên, mô tả ngắn, ảnh đại diện, bài giới thiệu (rich text), quy trình, lợi ích, FAQ, thư viện ảnh, giá tham khảo, thứ tự |
-| `NEWS` | Danh sách (đã có) | Thêm: rich text, tác giả, lên lịch đăng |
-| `ACCESSORY` | Danh sách | Tên, thương hiệu, danh mục, giá, giá khuyến mãi, nhiều ảnh, mô tả, nổi bật trang chủ |
-| `ACCESSORY_BRAND` / `ACCESSORY_CATEGORY` | Danh mục | Tên, logo, thứ tự |
-| `PROJECT` | Danh sách | Tiêu đề, xe, dịch vụ, mô tả, ảnh trước/sau |
-| `PRICING` | 1 bản | Nhóm giá, dòng giá, liên kết dịch vụ |
-| `FAQ`, `REVIEW` | Danh sách | Câu hỏi/trả lời; đánh giá |
-| `SEO` | Theo đường dẫn (đã có) | Thêm: ảnh OG, canonical; SEO mặc định tự sinh |
-
-**Ràng buộc:**
-- Slug là duy nhất. Đổi slug sau khi đã xuất bản thì tự tạo chuyển hướng 301.
-- Mỗi lần lưu tạo một revision mới; xem lại và khôi phục được bản cũ.
-
-## B2. Trình soạn thảo Tiptap
-
-**Thư viện:** `@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit` và các extension MIT. Cài với version chính xác. **Không dùng Tiptap Pro.**
-
-**Tính năng:**
-- Định dạng chữ: tiêu đề H2–H4; đậm, nghiêng, gạch chân, gạch ngang; màu chữ và highlight theo **bảng màu có sẵn của trang** (không cho chọn màu tự do).
-- Bố cục: căn lề; danh sách thường, có số, checklist; trích dẫn; đường kẻ ngang.
-- Liên kết và ảnh: link (`https:`, `tel:`, `mailto:`, link nội bộ); ảnh chọn từ `MediaPicker`, có alt và chú thích.
-- Nhúng: bảng, video YouTube.
-- Thao tác: hoàn tác/làm lại; dán từ Word/Google Docs được làm sạch; đếm số chữ.
-
-**Lưu trữ:**
-- Lưu **JSON của Tiptap**, không lưu HTML.
-- Backend kiểm tra bằng zod: chỉ cho phép đúng các node/mark ở trên, giới hạn kích thước, link an toàn, ảnh phải thuộc đúng trạm và chưa bị xóa.
-- Ảnh trong bài được ghi vào `cms_revision_assets`.
-
-**Hiển thị:** trang công khai render JSON bằng component React riêng, dùng style của trang và component `Photo`. **Không dùng `dangerouslySetInnerHTML`.**
-
-**Bài viết cũ:** chuyển `blocks` cũ sang JSON Tiptap khi mở hoặc lưu lại. Renderer vẫn đọc được cả định dạng cũ.
-
-## B3. Dashboard `/admin`
-
-Dùng lại `CmsShell`, `PageHeading`, `mgr-tabs`, `ManagerPanel`, `ManagerTable`, `ManagerModal`. Không tạo hệ thống giao diện mới.
-
-| Mục | Chức năng |
+| Chủ đề | Quyết định |
 |---|---|
-| Tổng quan | Bản nháp, nội dung mới cập nhật, cảnh báo thiếu SEO hoặc alt, bài đã lên lịch |
-| Trang | Sửa từng khối của trang chủ, giới thiệu, liên hệ, chính sách |
-| Dịch vụ | Thêm, sửa, sắp xếp, ẩn/hiện; bài giới thiệu dịch vụ (Tiptap); quy trình, lợi ích, FAQ, thư viện ảnh |
-| Bài viết & tin tức | Lọc theo danh mục và trạng thái; soạn bài (Tiptap); lên lịch; xem trước |
-| Phụ kiện | Sản phẩm, giá, giá khuyến mãi, thương hiệu, danh mục, sản phẩm nổi bật |
-| Thành quả | Dự án có ảnh trước/sau |
-| Bảng giá, FAQ, đánh giá | Danh sách sửa nhanh, kéo thả thứ tự |
-| Thư viện ảnh | Phần A5 |
-| SEO | Tiêu đề, mô tả, ảnh OG, `noindex`; xem trước kết quả Google |
-| Cài đặt website | Thông tin cửa hàng, giờ mở cửa, menu, mạng xã hội |
-| Lịch sử | Nhật ký thay đổi; so sánh và khôi phục phiên bản |
+| Giao diện | Làm theo trang tham chiếu (phong cách shadcn/slate). Logo và tên dùng **DPAuto - Trạm dịch vụ Toàn Trung**; logo giữ màu đỏ thương hiệu, phần còn lại của admin dùng bảng màu slate. |
+| Token | Font Inter 14px. Màu chữ `#020817`, chữ phụ `#64748b`, viền `#e2e8f0`, nền ô nhập `#f1f5f9`, nút chính `#0f172a`. Bo góc: nút 6px, thẻ 8px. Viền 0.8px. Padding thẻ 24px. Menu trái rộng 255px, mỗi dòng cao 36px. Header cao 64px. H1 30px/700. Tiêu đề thẻ 18px/600. Số liệu 20px/700. Badge bo tròn hoàn toàn. Có chế độ tối. |
+| CSS | Một file riêng `src/styles/cms-admin.css`, mọi rule nằm trong `.cms-app`, nên không ảnh hưởng khu khác. |
+| Icon | SVG nét 2px vẽ sẵn trong `src/components/cms/icon.tsx`, cùng phong cách với trang tham chiếu. **Không cài thư viện icon.** |
+| Trình soạn thảo | Tiptap (bạn đã duyệt "tùy bạn"), chỉ dùng các extension miễn phí. |
+| Mặc định và ghi đè | Dữ liệu hiện có trong code (`site-content.json`, `home-vi.ts`, `accessories.ts`, `content.ts`, chữ trong component) trở thành **nội dung mặc định**. CMS lưu **bản ghi đè** theo từng khóa. Bấm "Khôi phục mặc định" là bỏ bản ghi đè. Vì vậy **không cần script seed**. |
+| Ẩn | "Ẩn" là trường `hidden` trong nội dung, tách riêng với "Gỡ". Gỡ một khối trang chủ không còn làm mất khối đó nữa. |
+| Lý do xuất bản | Không bắt buộc, mặc định "Xuất bản từ trang quản trị". Vẫn ghi nhật ký. |
 
-**Quy trình:** lưu nháp → xem trước (link có token, có hạn dùng) → xuất bản hoặc gỡ → trang công khai tự làm mới.
+## C1. Mô hình nội dung (backend)
 
-## B4. Trang công khai đọc từ CMS và cache
+Giữ bảng `cms_documents` / `cms_revisions`. Migration 0019 mở rộng `kind`:
 
-1. **Tách API công khai:** danh sách chỉ trả tóm tắt, chi tiết mới trả nội dung đầy đủ. Đây là việc xử lý ghi chú `shortcut` trong `cms.ts`.
-2. **Cache theo tag của Next 16:** bỏ `no-store`. Khi xuất bản, backend gọi một endpoint nội bộ có khóa bí mật để làm mới đúng tag liên quan. **Đọc `node_modules/next/dist/docs` trước khi code**, vì Next 16 đổi API.
-3. **Script seed:** đưa `site-content.json`, `home-vi.ts`, `accessories.ts`, `content.ts` và ảnh nội dung trong `public/images` vào CMS qua pipeline ảnh.
-   - Chạy lại nhiều lần vẫn an toàn.
-   - Thay "HyperAuto Care" bằng tên thật.
-4. **Tự sinh:** sitemap, `generateStaticParams`, metadata/OG.
-5. **Thứ tự chuyển trang:** Cài đặt/menu → Dịch vụ → Bài viết → Phụ kiện → Thành quả → khối trang chủ.
-   - Giao diện từng trang phải giữ nguyên.
-   - Kiểm tra bằng ảnh chụp trước/sau, chỉ làm khi bạn duyệt chạy trình duyệt.
-
-## B5. Lộ trình Phần B
-
-| Giai đoạn | Nội dung | Ước lượng |
+| `kind` | `key` | Nội dung (zod, mọi trường đều có giới hạn) |
 |---|---|---|
-| B-1 | Loại nội dung mới, contracts zod, quyền, slug/301 | 3–4 ngày |
-| B-2 | Tiptap: editor, kiểm tra ở backend, renderer, chuyển `blocks` cũ | 3–4 ngày |
-| B-3 | Dashboard: các mục ở B3 | 6–10 ngày |
-| B-4 | Seed, tách API, cache theo tag, chuyển từng trang | 3–5 ngày |
-| B-5 | Lên lịch đăng, cảnh báo SEO/alt, hướng dẫn sử dụng; kiểm tra tổng (khi bạn duyệt) | 2–3 ngày |
+| `SETTINGS` | `site` | tên, khẩu hiệu, điện thoại, email, địa chỉ, link Google Maps, link nhúng bản đồ, giờ mở cửa `[{label, value}]`, mạng xã hội, logo, chữ cuối footer |
+| `NAVIGATION` | `main` | `header[{label, href}]`, `footer[{title, links[{label, href}]}]` |
+| `PAGE` | `home.*`, `about`, `contact`, `privacy`, `terms`, `services`, `our-work`, `news`, `phu-kien` | **Section** dùng chung: `hidden, eyebrow, title, description, body (rich), image, images[], cta{label, href}, cta2, items[]`. Mỗi `Item` gồm: `title, text, image, href, label, price, note, rating, author, meta, features[]`. Ở frontend, mỗi khóa có cấu hình riêng quy định trường nào được hiện. |
+| `SERVICE` | slug | tên, mô tả, ảnh, bài giới thiệu (rich), ảnh giới thiệu[], đoạn mở đầu + các bước quy trình, tiêu đề/mở đầu + danh sách lợi ích, mở đầu FAQ + câu hỏi, thư viện ảnh[], `order`, `hidden` |
+| `NEWS` | slug | như hiện tại, thêm `body` (rich), `author`, `publishAt` (lên lịch đăng) |
+| `ACCESSORY` | slug | tên, thương hiệu, danh mục, giá, giá khuyến mãi, ảnh[], mô tả, `featured`, `order`, `hidden` |
+| `PROJECT` | slug | tiêu đề, xe, thời gian, dịch vụ, mô tả, ảnh trước, ảnh sau, `order`, `hidden` |
+| `SEO` | path | như hiện tại, thêm ảnh chia sẻ |
 
-**Kiểm thử Phần B:**
-- Dữ liệu không hợp lệ bị từ chối; link độc hại bị chặn.
-- Node lạ trong JSON Tiptap bị từ chối.
-- Revision và khôi phục hoạt động đúng; slug trùng bị chặn; đổi slug tạo 301.
-- Quyền đúng cho từng API.
+**Quy ước ảnh:** giá trị ảnh là `{ src, alt }`. Riêng ảnh trong thư viện có thêm `assetId`.
+- Backend duyệt toàn bộ payload để tìm `assetId`: kiểm tra ảnh thuộc đúng trạm và chưa bị xóa, rồi ghi vào `cms_revision_assets`.
+- Feed công khai trả kèm `assets{id: CmsAsset}`.
+
+**Rich text:** lưu JSON của Tiptap.
+- Chỉ nhận các node: `paragraph`, `heading` (2–4), `bulletList`, `orderedList`, `listItem`, `blockquote`, `horizontalRule`, `image` (assetId hoặc src, alt), `table*`, `youtube`, `hardBreak`.
+- Chỉ nhận các mark: `bold`, `italic`, `underline`, `strike`, `link` (chỉ `https:`, `tel:`, `mailto:` hoặc đường dẫn nội bộ), `highlight`.
+- Node lạ bị từ chối. Tối đa 200 KB.
+
+## C2. API bổ sung
+
+| Route | Mô tả |
+|---|---|
+| `GET admin/cms/overview` | Số lượng theo loại và trạng thái; bản nháp chưa xuất bản; bài đã lên lịch; số ảnh và dung lượng; 10 hoạt động gần nhất |
+| `GET admin/cms/activity?cursor=` | Nhật ký `CMS_*`, có phân trang, kèm tên người thao tác |
+| `GET admin/cms/documents?kind=&search=` | Thêm tìm kiếm và trường `hasDraft` |
+| `POST admin/cms/documents/:id/revert` | Bỏ bản ghi đè (`published_revision_id=NULL`, `withdrawn=false`) để trang quay về mặc định |
+| `POST …/publish` | `reason` không bắt buộc |
+| `POST admin/cms/preview` | Tạo token xem trước có ký HMAC, hạn 30 phút |
+| `GET public/cms/preview?token=` | Feed giống `public/content` nhưng dùng revision mới nhất |
+| Next `/api/preview?token=&path=` | Bật `draftMode`, lưu token vào cookie, rồi chuyển tới `path`. `publicContent()` đọc feed xem trước khi đang ở draft mode |
+
+## C3. Cấu trúc `/admin`
+
+**Menu trái** chia 4 nhóm:
+- **TỔNG QUAN:** Tổng quan
+- **NỘI DUNG:** Trang chủ, Dịch vụ, Phụ kiện, Thành quả, Tin tức, Các trang
+- **QUẢN LÝ:** Thư viện ảnh, SEO, Cài đặt website
+- **HỆ THỐNG:** Lịch sử, Tài khoản
+
+Dưới cùng có Trợ giúp.
+
+**Header:** nút thu gọn menu · breadcrumb · ô tìm kiếm nội dung · đổi sáng/tối · "Xem website" · menu người dùng (tên, vai trò, đăng xuất).
+
+| Route | Màn hình |
+|---|---|
+| `/admin` | **Tổng quan:** 6 thẻ thống kê (Dịch vụ, Tin tức, Phụ kiện, Thành quả, Ảnh, Bản nháp chờ xuất bản), biểu đồ cập nhật nội dung 12 tháng (lấy từ nhật ký), hoạt động gần đây, bài đã lên lịch, cảnh báo nội dung (thiếu SEO, ảnh thiếu alt, dữ liệu mẫu chưa thay), thao tác nhanh |
+| `/admin/trang-chu` | Danh sách khối theo đúng thứ tự trên trang. Mỗi khối có trạng thái Mặc định / Đã tùy chỉnh / Có bản nháp / Đang ẩn, công tắc ẩn/hiện, nút Sửa |
+| `/admin/trang-chu/[key]` | Màn biên tập khối |
+| `/admin/dich-vu`, `/[slug]`, `/moi` | Bảng dịch vụ (ảnh, tên, trạng thái, thứ tự) → màn biên tập có các tab: Thông tin · Giới thiệu · Quy trình · Lợi ích · FAQ · Thư viện ảnh |
+| `/admin/phu-kien`, `/[slug]`, `/moi` | Bảng sản phẩm có lọc thương hiệu/danh mục → màn biên tập |
+| `/admin/thanh-qua`, `/[slug]`, `/moi` | Thẻ dự án có ảnh trước/sau → màn biên tập |
+| `/admin/tin-tuc`, `/[slug]`, `/moi` | Bảng bài viết, lọc theo trạng thái/chuyên mục → trình soạn Tiptap, lên lịch đăng |
+| `/admin/trang`, `/[key]` | Giới thiệu, Liên hệ, Chính sách, Điều khoản, banner các trang danh sách |
+| `/admin/thu-vien-anh` | Thư viện ảnh (dùng chức năng Phần A với giao diện mới) |
+| `/admin/seo` | Bảng mọi đường dẫn công khai, kèm điểm kiểm tra (độ dài tiêu đề/mô tả, ảnh chia sẻ) và xem trước kết quả Google → hộp thoại sửa |
+| `/admin/cai-dat` | Các tab: Thông tin cửa hàng · Giờ mở cửa · Mạng xã hội · Menu header/footer |
+| `/admin/lich-su` | Nhật ký hoạt động có phân trang |
+| `/admin/tai-khoan` | Tài khoản CMS (tạo tài khoản, xem quyền) |
+| `/admin?tab=…` | Chuyển hướng sang route mới, để link cũ vẫn chạy |
+
+**Màn biên tập dùng chung (`DocumentEditor`):**
+- Phần đầu: tên + badge trạng thái + các nút: Xem trước · Lưu nháp · Xuất bản. Menu "⋯" chứa Khôi phục mặc định và Gỡ.
+- Hai cột:
+  - **Trái:** các thẻ form theo nhóm trường, giống trang Settings của mẫu.
+  - **Phải:** thẻ Trạng thái (đang hiển thị / có bản nháp, cập nhật lúc nào), thẻ Lịch sử phiên bản (bấm để mở bản cũ), thẻ Ảnh đại diện.
+- Rời trang khi còn thay đổi chưa lưu thì có cảnh báo.
+- Form tự điền sẵn nội dung mặc định khi chưa có bản ghi đè.
+
+**Thành phần giao diện** (`src/components/cms/`): Shell, Sidebar, Topbar, PageHeader, Card, StatCard, Badge, Button, Field (Input/Textarea/Select/Switch), Tabs, DataTable, EmptyState, Dialog, Toast, Repeater (thêm/xóa/sắp xếp mục), ImageField (chọn từ thư viện), RichText (Tiptap).
+
+## C4. Trang công khai đọc từ CMS
+
+- Tách các chuỗi cố định trong component ra `src/lib/site-defaults.ts`. Component nhận nội dung từ CMS và gộp với mặc định, **không đổi markup, class hay hiệu ứng**.
+- Loader gộp: `services`, `articles`, `projects`, `accessories` (mặc định + bản ghi đè + mục mới − mục bị ẩn), sắp theo `order`.
+- `SETTINGS` thay `site` trong header, footer, liên hệ, vị trí. `NAVIGATION` thay menu.
+- Rich text render bằng `RichText` (React, không dùng `dangerouslySetInnerHTML` cho nội dung CMS).
+
+## C5. Lộ trình
+
+| Giai đoạn | Nội dung | Trạng thái |
+|---|---|---|
+| C-1 | Backend: các kind mới và schema theo từng kind (`cms-contracts.ts`), quét ảnh trong payload, khôi phục mặc định, tổng quan, nhật ký, xem trước, tìm kiếm, tóm tắt trong API danh sách + migration 0019 + test | ✅ |
+| C-2 | Khung giao diện + bộ component + Tổng quan + Thư viện ảnh + Cài đặt (cửa hàng, giờ mở cửa, mạng xã hội, menu) + Lịch sử + Tài khoản + Trợ giúp | ✅ |
+| C-3 | `DocumentEditor` + Trang chủ (14 khối, ẩn/hiện nhanh) + Các trang (8 trang) + SEO | ✅ |
+| C-4 | Dịch vụ (6 tab), Tin tức (Tiptap, hẹn giờ đăng), Phụ kiện, Thành quả | ✅ |
+| C-5 | Trang công khai đọc từ CMS (`SiteContentProvider`, `site-content.ts`, `home-defaults.ts`, `page-defaults.ts`) + chế độ xem trước (`/api/preview`) | ✅ |
+| C-6 | Kiểm tra trên Chrome bằng môi trường riêng (PostgreSQL tạm + backend 4005 + dev 4003) | ✅ |
+
+### Ghi chú triển khai
+
+- **Rich text** được lưu dạng JSON của Tiptap. Trang công khai chuyển JSON thành HTML qua `richToHtml`: chỉ nhận các thẻ nằm trong danh sách cho phép và escape mọi giá trị, sau đó dùng lại đường hiển thị sẵn có (`rich-content`). Cách này giữ nguyên CSS hiện tại.
+- **Thông tin cửa hàng và menu** chỉ thay nội dung gốc khi đã **xuất bản** Cài đặt (cờ `custom`). Lý do là trước đây Hero và footer ghi giờ mở cửa, địa chỉ khác nhau; nếu thay ngay thì trang đổi nội dung dù bạn chưa bấm gì.
+- **Gỡ và Khôi phục:** "Gỡ khỏi website" vẫn ẩn hẳn phần nội dung. "Khôi phục nội dung mặc định" (route `…/revert`) đưa về nội dung gốc mà vẫn giữ lịch sử.
+- **Slug** chấp nhận cả dấu ngoặc, vì có một dịch vụ gốc tên `paint-protection-film-(ppf)`.
+- **Ảnh:** giảm mức nén AVIF (effort 4 xuống 2) cho nhanh hơn. Mỗi ảnh vẫn mất vài giây để xử lý; giao diện upload báo "Đang xử lý ảnh…" trong lúc chờ.
+
+### Kiểm tra đã làm
+
+- **Typecheck** frontend và backend: pass.
+- **Test:**
+  - Backend `test:phase5` 12/12, có thêm test cho: các kind mới, link độc hại, node lạ, ảnh lồng, revert, preview, overview, activity, hẹn giờ đăng.
+  - `test:media` 5/5.
+  - `tests/accessories.test.mts` 2/2.
+- **Chrome** (môi trường riêng, không đụng DB thật):
+  - Đăng nhập, Tổng quan.
+  - Sửa Hero, xuất bản, khôi phục mặc định.
+  - Danh sách và trình soạn Dịch vụ.
+  - Upload ảnh, chọn ảnh vào bài viết.
+  - Viết bài mới có định dạng, xuất bản, xem trên `/news/...`.
+  - Cài đặt xuất bản: footer, trang Liên hệ đổi theo.
+  - Xem trước bản nháp, thoát xem trước.
+  - Bố cục ở bề rộng 375px.
+- **So sánh văn bản** `main`, header, footer giữa bản mới và bản cũ (4001) khi chưa sửa gì: 8 trang giống hệt.
+
+### Còn lại / giới hạn
+
+- [ ] **Bạn cần chạy** `npm run db:migrate` trong `backend/` (migration 0018 và 0019), rồi build lại backend và frontend.
+- [ ] **Thương hiệu do CMS thêm mới** chưa có ô lọc kèm logo ở trang Phụ kiện (vẫn tìm và lọc theo danh mục được).
+- [ ] **Carousel trước/sau ở trang chủ** vẫn dùng 3 dự án gốc cố định (`du-an-5`, `du-an-2`, `du-an-1`); chưa chọn được trong admin.
+- [ ] **Danh sách tài khoản CMS** chưa xem được trong `/admin`; vẫn quản lý ở `/dieu-hanh/nhan-su`.
+- [ ] **Bố cục khảm 4 ảnh và 2 video** của khối "Hình ảnh xưởng" là cố định; video chưa đổi được qua admin.
+
+---|---|---|
+| C-1 | Backend: các kind mới + schema, quét asset trong payload, revert, overview, activity, preview, tìm kiếm + test | [ ] |
+| C-2 | Shell + UI kit + Tổng quan + Thư viện ảnh + Cài đặt + Lịch sử + Tài khoản | [ ] |
+| C-3 | `DocumentEditor` + Trang chủ + Các trang + SEO | [ ] |
+| C-4 | Dịch vụ, Tin tức (Tiptap), Phụ kiện, Thành quả | [ ] |
+| C-5 | Trang công khai đọc từ CMS + chế độ xem trước | [ ] |
+| C-6 | Kiểm tra trên trình duyệt (Chrome) ở máy tính, máy tính bảng, điện thoại; sửa lỗi | [ ] |
 
 ---
 
@@ -417,6 +429,6 @@ Dùng lại `CmsShell`, `PageHeading`, `mgr-tabs`, `ManagerPanel`, `ManagerTable
 
 ## 9. Còn cần bạn cung cấp hoặc xác nhận
 
-1. **Xác nhận cài `@fastify/multipart`**, cần trước khi bắt đầu A1.
+1. ~~Xác nhận cài `@fastify/multipart`~~: không cần nữa (xem A1).
 2. **Thông tin thật của gara** để nhập vào `SETTINGS`, cần ở Phần B: địa chỉ, số điện thoại, email, giờ mở cửa, link Google Maps, mạng xã hội, logo.
 3. **Tên miền** sẽ dùng cho `img.<tên-miền>`, cần ở bước A8.

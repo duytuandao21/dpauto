@@ -15,16 +15,19 @@
     "test:phase2": "tsx scripts/test-phase1.ts test/phase2.integration.test.ts",
     "test:phase3": "tsx scripts/test-phase1.ts test/phase3.integration.test.ts",
     "test:phase4": "tsx scripts/test-phase1.ts test/phase4.integration.test.ts",
-    "test:phase5": "tsx scripts/test-phase1.ts test/phase5.integration.test.ts test/operations-utils.test.ts",
+    "test:phase5": "tsx scripts/test-phase1.ts test/phase5.integration.test.ts test/operations-utils.test.ts test/cms-builtin.test.ts",
     "notifications:work": "node --env-file-if-exists=.env --import tsx scripts/notifications.ts",
     "legacy": "node --env-file-if-exists=.env --import tsx scripts/legacy.ts",
     "ops": "node --env-file-if-exists=.env --import tsx scripts/ops.ts",
-    "test:phase6": "tsx scripts/test-phase1.ts test/phase6.integration.test.ts test/legacy-file.test.ts"
+    "test:phase6": "tsx scripts/test-phase1.ts test/phase6.integration.test.ts test/legacy-file.test.ts",
+    "media": "node --env-file-if-exists=.env --import tsx scripts/media.ts",
+    "test:media": "tsx --test test/image-pipeline.test.ts"
   },
   "engines": {
     "node": ">=22"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.1171.0",
     "@fastify/cookie": "11.1.5",
     "@nestjs/common": "11.2.9",
     "@nestjs/core": "11.2.9",
@@ -34,6 +37,7 @@
     "pg": "8.23.1",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
+    "sharp": "0.35.5",
     "zod": "4.6.7"
   },
   "devDependencies": {

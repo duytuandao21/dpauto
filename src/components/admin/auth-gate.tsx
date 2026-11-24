@@ -14,6 +14,14 @@ import { apiEnabled, request, command, ApiFailure } from "@/lib/api/client";
 import type { AuthSession } from "@/lib/api/types";
 import { canOpenCms } from "@/lib/api/cms";
 import { AdminLoading } from "./primitives";
+import {
+  Alert,
+  Button,
+  Field,
+  Input,
+  Loading,
+  Switch,
+} from "@/components/cms/ui";
 
 const SessionContext = createContext<AuthSession | null>(null);
 export const useSession = () => useContext(SessionContext);
@@ -28,6 +36,7 @@ const managerPages = [
   "/dich-vu",
   "/nhan-su",
   "/khach-hang",
+  "/doi-tac",
   "/cau-hinh",
   "/nhat-ky",
   "/phieu-dich-vu",
@@ -67,9 +76,16 @@ export function AuthGate({
     [confirm, setConfirm] = useState(""),
     [busy, setBusy] = useState(false),
     [reveal, setReveal] = useState(false);
-  // Advisor and manager share the redesigned login; /admin (cms) keeps the old one.
+  // Advisor and manager share the redesigned login; /admin (cms) has its own below.
   const advisor = !cms,
     secret = advisor && reveal ? "text" : "password";
+  const [cmsTheme, setCmsTheme] = useState("light");
+  useEffect(() => {
+    try {
+      if (cms && localStorage.getItem("dpauto.cms.theme") === "dark")
+        setCmsTheme("dark");
+    } catch {}
+  }, [cms]);
   useEffect(() => {
     if (!apiEnabled) return;
     let active = true;
@@ -136,6 +152,108 @@ export function AuthGate({
       setBusy(false);
     }
   }
+  if (cms && (!ready || !session || session.mustChangePassword))
+    return (
+      <div className="cms-app cms-login" data-theme={cmsTheme}>
+        <main className="cms-card cms-login-card">
+          <div className="cms-login-brand">
+            <Image
+              // The logo uploaded in "Cài đặt website", or the built-in one.
+              src="/site-logo/current"
+              alt=""
+              width={1448}
+              height={1086}
+              unoptimized
+              priority
+            />
+            <span>
+              DPAuto
+              <small>Trạm dịch vụ Toàn Trung</small>
+            </span>
+          </div>
+          {!ready ? (
+            <Loading rows={3} />
+          ) : (
+            <>
+              <h1>{session ? "Đổi mật khẩu" : "Đăng nhập quản trị website"}</h1>
+              <p className="cms-help">
+                {session
+                  ? "Đặt mật khẩu mới trước khi tiếp tục."
+                  : "Dùng tài khoản được cấp quyền quản trị nội dung."}
+              </p>
+              <form onSubmit={submit} className="cms-stack">
+                {!session && (
+                  <Field label="Email">
+                    <Input
+                      type="email"
+                      autoComplete="username"
+                      required
+                      autoFocus
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </Field>
+                )}
+                <Field label={session ? "Mật khẩu hiện tại" : "Mật khẩu"}>
+                  <Input
+                    type={reveal ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </Field>
+                {session && (
+                  <>
+                    <Field label="Mật khẩu mới" help="Từ 15 đến 128 ký tự.">
+                      <Input
+                        type={reveal ? "text" : "password"}
+                        autoComplete="new-password"
+                        minLength={15}
+                        maxLength={128}
+                        required
+                        value={next}
+                        onChange={(e) => setNext(e.target.value)}
+                      />
+                    </Field>
+                    <Field label="Nhập lại mật khẩu mới">
+                      <Input
+                        type={reveal ? "text" : "password"}
+                        autoComplete="new-password"
+                        required
+                        value={confirm}
+                        onChange={(e) => setConfirm(e.target.value)}
+                      />
+                    </Field>
+                  </>
+                )}
+                <Switch
+                  label="Hiện mật khẩu"
+                  checked={reveal}
+                  onChange={setReveal}
+                />
+                {error && <Alert tone="danger">{error}</Alert>}
+                <Button
+                  variant="primary"
+                  type="submit"
+                  disabled={busy}
+                  className="cms-login-submit"
+                >
+                  {busy
+                    ? "Đang xử lý…"
+                    : session
+                      ? "Lưu mật khẩu"
+                      : "Đăng nhập"}
+                </Button>
+              </form>
+            </>
+          )}
+        </main>
+        <a className="cms-link cms-login-back" href="/">
+          ← Về website
+        </a>
+      </div>
+    );
   if (!ready)
     return (
       <div className="adm-app" data-theme="light">
@@ -240,20 +358,56 @@ export function AuthGate({
         </main>
       </div>
     );
+  if (cms && !canOpenCms(session))
+    return (
+      <div className="cms-app cms-login" data-theme={cmsTheme}>
+        <main className="cms-card cms-login-card">
+          <h1>Bạn không có quyền truy cập khu vực này</h1>
+          <p className="cms-help">
+            Tài khoản {session.staff.name} chưa được cấp quyền quản trị website.
+          </p>
+          <div className="cms-actions">
+            <a className="cms-btn cms-btn-primary" href="/co-van">
+              Mở khu vực được cấp quyền
+            </a>
+            <Button onClick={() => void signOut()}>Đăng xuất</Button>
+          </div>
+        </main>
+      </div>
+    );
   if (
     (manager && !session.roles.includes("MANAGER")) ||
     (cms && !canOpenCms(session)) ||
     (!manager && !cms && session.roles.includes("CMS_ADMIN"))
   )
     return (
-      <div className="adm-panel">
-        <h1>Bạn không có quyền truy cập khu vực này.</h1>
-        <Link
-          className="adm-btn"
-          href={session.roles.includes("CMS_ADMIN") ? "/admin" : "/co-van"}
-        >
-          Mở khu vực được cấp quyền
-        </Link>
+      <div className="adm-app adv-ui adv-login" data-theme="light">
+        <main className="adm-main">
+          <section className="adm-panel adm-form-page">
+            <h1>Không có quyền truy cập</h1>
+            <p>
+              Tài khoản {session.staff.name} chưa được cấp quyền vào khu vực
+              này.
+            </p>
+            <div className="adv-actions">
+              <Link
+                className="adm-btn adm-primary"
+                href={
+                  session.roles.includes("CMS_ADMIN")
+                    ? "/admin"
+                    : session.roles.includes("MANAGER")
+                      ? "/dieu-hanh"
+                      : "/co-van"
+                }
+              >
+                Mở khu vực được cấp quyền
+              </Link>
+              <button className="adm-btn" onClick={() => void signOut()}>
+                Đăng xuất
+              </button>
+            </div>
+          </section>
+        </main>
       </div>
     );
   const allowed = cms

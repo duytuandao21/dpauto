@@ -56,8 +56,8 @@ export function VideoPlayer({
         onClick={toggle}
         aria-label={
           vietnamese
-            ? "Video xưởng HyperAuto Care"
-            : "HyperAuto Care workshop video"
+            ? "Video xưởng DPAuto"
+            : "DPAuto workshop video"
         }
       />
       {!playing && !error && (

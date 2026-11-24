@@ -12,18 +12,37 @@ import {
   AuthGate,
   phase1ManagerPath,
   signOut,
+  useSession,
 } from "@/components/admin/auth-gate";
+import { canOpenCms } from "@/lib/api/cms";
 import { apiEnabled } from "@/lib/api/client";
+import { NotificationBell } from "@/components/advisor/notifications";
 import { AdminLoading } from "@/components/admin/primitives";
 import { managerSectionActive } from "@/lib/api/manager-presentation";
 
+// Menu entries hidden until the account holds the matching sensitive grant.
+const requiredPermission: Record<string, string> = {
+  "/tai-chinh": "finance.read",
+  "/kho": "inventory.read",
+  "/nhat-ky": "audit.read",
+  "/nhan-su": "staff.read",
+};
 function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { theme, toggleTheme, data, ready, error, refresh } = useManager();
   const [collapsed, setCollapsed] = useState(false);
   const [mobile, setMobile] = useState(false);
   const [account, setAccount] = useState(false);
-  const [groups, setGroups] = useState<Record<string, boolean>>({});
+  const session = useSession(),
+    name = session?.staff.name || "Quản lý",
+    initials =
+      name
+        .trim()
+        .split(/\s+/)
+        .slice(-2)
+        .map((w) => w[0])
+        .join("")
+        .toUpperCase() || "QL";
   const current =
     managerNavigation
       .flatMap((group) => [...group.items])
@@ -45,77 +64,81 @@ function Shell({ children }: { children: ReactNode }) {
         <Link href="/dieu-hanh" className="mgr-brand">
           <Image
             src="/images/logo-dpauto.png"
-            alt="Trạm dịch vụ Toàn Trung"
+            alt=""
             width={1448}
             height={1086}
-            sizes="110px"
+            sizes="64px"
           />
           <span>
-            <strong>TOÀN TRUNG</strong>
+            <strong>DPAuto</strong>
             <small>Điều hành cửa hàng</small>
           </span>
         </Link>
-        <div className="mgr-station">
-          <span className="adm-feature-icon">
-            <AdminIcon name="car" />
-          </span>
-          <div>
-            <strong>Trạm dịch vụ Toàn Trung</strong>
-            <small>Không gian quản lý</small>
-          </div>
-        </div>
         <nav aria-label="Điều hướng quản lý cửa hàng">
           {managerNavigation
             .map((group) => ({
               ...group,
               items: group.items.filter(
-                (item) => !apiEnabled || phase1ManagerPath(item.path),
+                (item) =>
+                  !apiEnabled ||
+                  (phase1ManagerPath(item.path) &&
+                    (!requiredPermission[item.path] ||
+                      !!session?.permissions.includes(
+                        requiredPermission[item.path],
+                      ))),
               ),
             }))
             .filter((group) => group.items.length)
             .map((group) => (
               <div className="mgr-nav-group" key={group.title}>
-                <button
-                  className="mgr-group-toggle"
-                  title={group.title}
-                  aria-expanded={!groups[group.title]}
-                  onClick={() =>
-                    setGroups((value) => ({
-                      ...value,
-                      [group.title]: !value[group.title],
-                    }))
-                  }
-                >
-                  <span>{group.title}</span>
-                  <span aria-hidden="true">
-                    {groups[group.title] ? "+" : "−"}
-                  </span>
-                </button>
-                {!groups[group.title] &&
-                  group.items.map((item) => (
-                    <Link
-                      key={item.path}
-                      href={`/dieu-hanh${item.path}`}
-                      title={item.label}
-                      className={`mgr-nav-link ${current.path === item.path ? "is-active" : ""}`}
-                      aria-label={item.label}
-                      aria-current={
-                        current.path === item.path ? "page" : undefined
-                      }
-                    >
-                      <AdminIcon name={item.icon} />
-                      <span>{item.label}</span>
-                      {item.path === "/lich-hen" && <small>{pending}</small>}
-                    </Link>
-                  ))}
+                <p className="mgr-group-title">{group.title}</p>
+                {group.items.map((item) => (
+                  <Link
+                    key={item.path}
+                    href={`/dieu-hanh${item.path}`}
+                    title={item.label}
+                    className={`mgr-nav-link ${current.path === item.path ? "is-active" : ""}`}
+                    aria-label={item.label}
+                    aria-current={
+                      current.path === item.path ? "page" : undefined
+                    }
+                  >
+                    <AdminIcon name={item.icon} />
+                    <span>{item.label}</span>
+                    {item.path === "/lich-hen" && pending > 0 && (
+                      <small>{pending}</small>
+                    )}
+                  </Link>
+                ))}
               </div>
             ))}
         </nav>
         <div className="mgr-sidebar-footer">
-          <span className="adm-avatar">QL</span>
-          <div>
-            <strong>Quản lý cửa hàng</strong>
-          </div>
+          {session && canOpenCms(session) && (
+            <Link
+              href="/admin"
+              className="mgr-nav-link"
+              title="Quản trị website"
+            >
+              <AdminIcon name="settings" />
+              <span>Quản trị website</span>
+            </Link>
+          )}
+          <Link href="/" className="mgr-nav-link" title="Xem website">
+            <AdminIcon name="website" />
+            <span>Xem website</span>
+          </Link>
+          {apiEnabled && (
+            <button
+              type="button"
+              className="mgr-nav-link"
+              title="Đăng xuất"
+              onClick={() => void signOut()}
+            >
+              <AdminIcon name="logout" />
+              <span>Đăng xuất</span>
+            </button>
+          )}
         </div>
       </>
     );
@@ -163,13 +186,17 @@ function Shell({ children }: { children: ReactNode }) {
             >
               <AdminIcon name={theme === "light" ? "moon" : "sun"} />
             </button>
-            <Link
-              className="adm-icon-btn mgr-notification"
-              aria-label="Thông báo"
-              href="/dieu-hanh/thong-bao"
-            >
-              <AdminIcon name="bell" />
-            </Link>
+            {apiEnabled ? (
+              <NotificationBell base="/dieu-hanh" />
+            ) : (
+              <Link
+                className="adm-icon-btn mgr-notification"
+                aria-label="Thông báo"
+                href="/dieu-hanh/thong-bao"
+              >
+                <AdminIcon name="bell" />
+              </Link>
+            )}
             <div className="mgr-account-wrap">
               <button
                 className="mgr-account"
@@ -177,15 +204,15 @@ function Shell({ children }: { children: ReactNode }) {
                 aria-expanded={account}
                 onClick={() => setAccount(!account)}
               >
-                <span className="adm-avatar">QL</span>
+                <span className="adm-avatar">{initials}</span>
                 <span>
-                  <strong>Quản lý</strong>
+                  <strong>{name}</strong>
                   <small>Quản lý cửa hàng</small>
                 </span>
               </button>
               {account && (
                 <div className="mgr-account-menu">
-                  <strong>Quản lý cửa hàng</strong>
+                  <strong>{name}</strong>
                   <Link
                     href="/dieu-hanh/cau-hinh"
                     onClick={() => setAccount(false)}
@@ -230,10 +257,6 @@ function Shell({ children }: { children: ReactNode }) {
             children
           )}
         </main>
-        <footer className="mgr-footer">
-          <strong>DPAuto · Toàn Trung</strong>
-          <span>Không gian điều hành cửa hàng</span>
-        </footer>
       </div>
       {mobile && (
         <ManagerModal

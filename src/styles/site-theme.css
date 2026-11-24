@@ -98,13 +98,14 @@ body.dpauto-theme .about-lightbox {
 /* Article reading surfaces and metadata. */
 body.dpauto-theme .article-detail-page .article-heading > p,
 body.dpauto-theme .article-detail-page .article-heading .article-meta,
-body.dpauto-theme .article-detail-page .article-body .rich-content,
 body.dpauto-theme .article-detail-page .back-link {
   color: var(--text-secondary);
 }
 
+/* Article text uses the dark text token: the grey secondary tone was hard to read in long posts. */
 body.dpauto-theme .article-detail-page .article-body .rich-content {
-  --text-muted: var(--text-secondary);
+  color: var(--text-primary);
+  --text-muted: var(--text-primary);
 }
 
 body.dpauto-theme .article-detail-page .article-body .rich-content :is(h2, h3),

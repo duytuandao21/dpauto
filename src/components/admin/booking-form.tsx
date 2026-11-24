@@ -1,4 +1,6 @@
 "use client";
+import { VehicleSelect } from "@/components/advisor/vehicle-select";
+import { PartnerPicker } from "@/components/advisor/partner-picker";
 import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import { DateInput } from "@/components/advisor/date-input";
 import { useEffect, useRef, useState } from "react";
@@ -100,11 +102,13 @@ function FormContent({ existing }: { existing?: Booking }) {
     source: existing?.source || "Điện thoại",
     customerNote: existing?.customerNote || "",
     internalNote: existing?.internalNote || "",
+    partnerSaleId: existing?.partner?.saleId || "",
   };
   const [draft, setDraft] = useState(initial),
     [errors, setErrors] = useState<Record<string, string>>({}),
     [saving, setSaving] = useState(false);
   const [noticeAcknowledged, setNoticeAcknowledged] = useState(false);
+  const [partnerOn, setPartnerOn] = useState(!!initial.partnerSaleId);
   const [warnings, setWarnings] = useState<string[] | null>(null);
   const baseline = useRef(JSON.stringify(initial)),
     form = useRef<HTMLFormElement>(null),
@@ -181,7 +185,12 @@ function FormContent({ existing }: { existing?: Booking }) {
       notify("Vui lòng xác nhận đã cung cấp thông tin đặt lịch cho khách.");
       return;
     }
-    const validation = validateDraft(draft, localDate(), existing);
+    const validation = {
+      ...validateDraft(draft, localDate(), existing),
+      ...(partnerOn && !draft.partnerSaleId
+        ? { partnerSaleId: "Chọn sale mang xe đến." }
+        : {}),
+    };
     if (Object.keys(validation).length) {
       setErrors(validation);
       requestAnimationFrame(() =>
@@ -263,6 +272,33 @@ function FormContent({ existing }: { existing?: Booking }) {
             </div>
           </div>
           <div className="adm-form-grid">
+            {apiEnabled && (!existing || existing.partner) && (
+              <PartnerPicker
+                value={draft.partnerSaleId || ""}
+                locked={!!existing}
+                current={existing?.partner}
+                error={errors.partnerSaleId}
+                onToggle={setPartnerOn}
+                onChange={(saleId, partner) => {
+                  // A partner car's customer is the partner profile (one profile per phone).
+                  const profile = partner?.phone
+                    ? data.customers.find(
+                        (c) => formatPhone(c.phone) === formatPhone(partner.phone!),
+                      )
+                    : undefined;
+                  if (!existing) customerChange(profile?.id || "");
+                  setDraft((d) => ({
+                    ...d,
+                    partnerSaleId: saleId,
+                    ...(!existing && partner
+                      ? { name: partner.name, phone: formatPhone(partner.phone) }
+                      : {}),
+                  }));
+                  setErrors((e) => ({ ...e, partnerSaleId: "" }));
+                }}
+              />
+            )}
+            {!draft.partnerSaleId && (
             <div className="adm-field adm-span-full">
               <label htmlFor="customerId">Hồ sơ khách hàng</label>
               <select
@@ -278,12 +314,13 @@ function FormContent({ existing }: { existing?: Booking }) {
                 ))}
               </select>
             </div>
+            )}
             <Field label="Họ và tên *" name="name" error={errors.name}>
               <input
                 {...inputProps("name")}
                 autoComplete="name"
                 value={draft.name}
-                readOnly={apiEnabled && !existing && !!draft.customerId}
+                readOnly={(apiEnabled && !existing && !!draft.customerId) || !!draft.partnerSaleId}
                 onChange={(e) => set("name", e.target.value)}
                 placeholder="Nhập họ tên khách hàng"
               />
@@ -295,7 +332,7 @@ function FormContent({ existing }: { existing?: Booking }) {
                 inputMode="tel"
                 autoComplete="tel"
                 value={draft.phone}
-                readOnly={apiEnabled && !existing && !!draft.customerId}
+                readOnly={(apiEnabled && !existing && !!draft.customerId) || !!draft.partnerSaleId}
                 onChange={(e) => set("phone", e.target.value)}
                 onBlur={() => set("phone", formatPhone(draft.phone))}
                 placeholder="09xx xxx xxx"
@@ -334,15 +371,19 @@ function FormContent({ existing }: { existing?: Booking }) {
                 </select>
               </div>
             )}
-            <Field label="Dòng xe *" name="model" error={errors.model}>
-              <input
-                {...inputProps("model")}
+            {apiEnabled && draft.vehicleId ? (
+              <Field label="Dòng xe *" name="model" error={errors.model}>
+                <input {...inputProps("model")} value={draft.model} readOnly />
+              </Field>
+            ) : (
+              // Make and model come from the admin catalogue (/admin/hang-xe), never typed.
+              <VehicleSelect
+                key={draft.vehicleId || "new"}
                 value={draft.model}
-                readOnly={apiEnabled && !!draft.vehicleId}
-                onChange={(e) => set("model", e.target.value)}
-                placeholder="VD: Toyota Vios"
+                error={errors.model}
+                onChange={(v) => set("model", v)}
               />
-            </Field>
+            )}
             <Field label="Biển số (không bắt buộc)" name="plate">
               <input
                 id="plate"
@@ -406,7 +447,11 @@ function FormContent({ existing }: { existing?: Booking }) {
             </p>
           )}
           {apiEnabled && !existing && (
-            <div className="adm-quick-filters" aria-label="Cách tạo lịch">
+            <div
+              className="adm-segment adv-form-segment"
+              role="group"
+              aria-label="Cách tạo lịch"
+            >
               <button
                 type="button"
                 aria-pressed={!draft.confirmNow}

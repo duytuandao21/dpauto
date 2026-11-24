@@ -1,4 +1,5 @@
 "use client";
+import { partnerLabel } from "@/lib/api/partners";
 import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import Link from "next/link";
 import {
@@ -130,6 +131,12 @@ export function BookingDetail({
             <dt>Nguồn đặt lịch</dt>
             <dd>{booking.source}</dd>
           </div>
+          {booking.partner && (
+            <div>
+              <dt>Đối tác · Sale</dt>
+              <dd>{partnerLabel(booking.partner)}</dd>
+            </div>
+          )}
         </dl>
       </div>
       <div className="adm-detail-section">

@@ -1,39 +1,65 @@
 "use client";
 
-import Image from "next/image";
+import { Photo } from "@/components/ui/photo";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useState, type ReactNode } from "react";
 import {
   accessories,
-  accessoryBrands,
   accessoryPrice,
   accessorySorts,
   filterAccessories,
-  type Accessory,
   type AccessorySort,
+  type CatalogItem,
 } from "@/lib/accessories";
+import { homeDefaults } from "@/lib/home-defaults";
+import { pageDefaults } from "@/lib/page-defaults";
+import { useSection, useSite } from "@/components/site/site-content";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { HomeScrollFrame, HomeSectionHeading } from "./home-motion";
 
-/** Homepage product card; without `href` the card is display-only (detail pages come later). */
-function AccessoryCard({
+/** Product card linking to its detail page (/phu-kien/[slug]). */
+export function AccessoryCard({
   product,
   href,
 }: {
-  product: Accessory;
+  product: CatalogItem;
   href?: string;
 }) {
+  const alt = `${product.category} ${product.name}`,
+    back = product.images?.[1];
   const body: ReactNode = (
     <>
-      <div className="service-card-top accessory-card-media">
-        <Image
-          src={product.image}
-          alt={`${product.category} ${product.name}`}
-          fill
-          sizes="(max-width: 809px) 50vw, (max-width: 1199px) 50vw, 25vw"
-        />
+      <div
+        className={`service-card-top accessory-card-media${back ? " has-flip" : ""}`}
+      >
+        {back ? (
+          // Hover flips to the second photo and back (CSS, hover devices only).
+          <div className="accessory-flip">
+            <Photo
+              className="accessory-flip-front"
+              src={product.image}
+              media={product.media}
+              alt={alt}
+              sizes="(max-width: 1199px) 50vw, 25vw"
+            />
+            <Photo
+              className="accessory-flip-back"
+              src={back.src}
+              media={back.media}
+              alt=""
+              sizes="(max-width: 1199px) 50vw, 25vw"
+            />
+          </div>
+        ) : (
+          <Photo
+            src={product.image}
+            media={product.media}
+            alt={alt}
+            sizes="(max-width: 1199px) 50vw, 25vw"
+          />
+        )}
       </div>
       <motion.div
         className="service-card-bottom accessory-card-copy"
@@ -108,39 +134,59 @@ function AccessoryCard({
 }
 
 export function AccessoriesSection() {
+  const section = useSection(
+    "home.accessories",
+    homeDefaults["home.accessories"],
+  );
+  const { accessories: list } = useSite();
+  if (!section) return null;
+  const items = list.length ? list : accessories;
+  const featured = list.length ? list.filter((p) => p.featured) : [];
   return (
     <section className="section accessories-section" id="accessories">
       <div className="container">
         <HomeSectionHeading
-          title="Phụ kiện ô tô"
-          description="Thêm tiện nghi, nâng tầm trải nghiệm lái xe với những phụ kiện phù hợp cho chiếc xe của bạn."
+          title={section.title}
+          description={section.description}
         />
         <ul className="accessories-grid" aria-label="Phụ kiện ô tô tham khảo">
-          {accessories.slice(0, 4).map((product) => (
+          {(featured.length ? featured : items).slice(0, 4).map((product) => (
             <li key={product.id}>
-              <AccessoryCard product={product} href="/contact" />
+              <AccessoryCard product={product} href={"/phu-kien/" + product.id} />
             </li>
           ))}
         </ul>
         <div className="accessories-help">
-          <p>Bạn cần chọn phụ kiện phù hợp với xe?</p>
-          <Button href="/phu-kien">Xem thêm phụ kiện</Button>
+          <p>{section.note}</p>
+          <Button href={section.cta?.href || "/phu-kien"}>
+            {section.cta?.label || "Xem thêm phụ kiện"}
+          </Button>
         </div>
       </div>
     </section>
   );
 }
 
-const categories = [...new Set(accessories.map((p) => p.category))];
-
 export function AccessoriesCatalog() {
+  const { accessories: list, catalog } = useSite();
+  const page =
+    useSection("phu-kien", pageDefaults["phu-kien"]) ||
+    pageDefaults["phu-kien"];
+  const items: CatalogItem[] = list.length ? list : [...accessories];
+  // Brands and categories come from the admin catalogue (built-in list until it is saved).
+  const categories = catalog.categories.map((c) => c.name);
   const [brand, setBrand] = useState(""),
     [category, setCategory] = useState(""),
     [query, setQuery] = useState(""),
     [sort, setSort] = useState<AccessorySort>("newest");
-  const results = filterAccessories({ query, brand, category, sort });
+  const results = filterAccessories({ query, brand, category, sort, items });
+  // 8 products at a time; a new filter or sort starts again from the first 8.
+  const PAGE = 8;
+  const filterKey = [query, brand, category, sort].join("|");
+  const [more, setMore] = useState({ key: filterKey, count: PAGE });
+  const count = more.key === filterKey ? more.count : PAGE;
   // Category counts follow the chosen brand so a tile never promises missing items.
-  const inBrand = accessories.filter((p) => !brand || p.brand === brand);
+  const inBrand = items.filter((p) => !brand || p.brand === brand);
   const filters = [
     { value: "", label: "Tất cả", count: inBrand.length },
     ...categories.map((c) => ({
@@ -159,8 +205,8 @@ export function AccessoriesCatalog() {
       <div className="container">
         <HomeSectionHeading
           pageTitle
-          title="Phụ kiện ô tô"
-          description="Thêm tiện nghi, nâng tầm trải nghiệm lái xe với những phụ kiện phù hợp cho chiếc xe của bạn."
+          title={page.title}
+          description={page.description}
         />
         <div className="accessories-panel">
           <form
@@ -200,9 +246,9 @@ export function AccessoriesCatalog() {
               role="group"
               aria-labelledby="accessories-brands"
             >
-              {[{ name: "", file: "" }, ...accessoryBrands].map((b) => (
+              {[{ id: "", name: "", logo: undefined }, ...catalog.brands].map((b) => (
                 <button
-                  key={b.name || "all"}
+                  key={b.id || "all"}
                   type="button"
                   className={`brand-card accessories-brand ${brand === b.name ? "is-selected" : ""}`}
                   aria-pressed={brand === b.name}
@@ -211,19 +257,22 @@ export function AccessoriesCatalog() {
                     setCategory("");
                   }}
                 >
-                  {"width" in b ? (
-                    <span className={`brand-logo brand-logo--${b.file}`}>
-                      <Image
-                        src={`/images/brands/${b.file}.png`}
+                  {b.logo ? (
+                    <span className={`brand-logo brand-logo--${b.id}`}>
+                      {/* Logos have any aspect ratio; CSS contains them in the tile. */}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={
+                          b.logo.media?.webp.find((v) => v.width >= 240)?.url ||
+                          b.logo.src
+                        }
                         alt={b.name}
-                        width={b.width}
-                        height={b.height}
-                        unoptimized
-                        sizes="160px"
+                        loading="lazy"
+                        decoding="async"
                       />
                     </span>
                   ) : (
-                    "Tất cả"
+                    b.name || "Tất cả"
                   )}
                 </button>
               ))}
@@ -277,9 +326,9 @@ export function AccessoriesCatalog() {
         </div>
         {results.length ? (
           <ul className="accessories-grid" aria-label="Danh sách phụ kiện">
-            {results.map((product) => (
+            {results.slice(0, count).map((product) => (
               <li key={product.id}>
-                <AccessoryCard product={product} />
+                <AccessoryCard product={product} href={"/phu-kien/" + product.id} />
               </li>
             ))}
           </ul>
@@ -291,10 +340,15 @@ export function AccessoriesCatalog() {
             </Button>
           </div>
         )}
-        <div className="accessories-help">
-          <p>Bạn cần chọn phụ kiện phù hợp với xe?</p>
-          <Button href="/contact">Liên hệ tư vấn</Button>
-        </div>
+        {results.length > count && (
+          <div className="accessories-more">
+            <Button
+              onClick={() => setMore({ key: filterKey, count: count + PAGE })}
+            >
+              Xem thêm {results.length - count} sản phẩm
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

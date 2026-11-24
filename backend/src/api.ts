@@ -13,6 +13,7 @@ import { PublicApi } from "./public";
 import { System } from "./system";
 import { Visits } from "./visits";
 import * as visits from "./visit-contracts";
+import { Partners } from "./partners";
 import { Workflow } from "./workflow";
 import * as workflow from "./workflow-contracts";
 import * as sf from "./stock-finance-contracts";
@@ -20,6 +21,7 @@ import { Finance } from "./finance";
 import { Inventory } from "./inventory";
 import { Operations } from "./operations";
 import { Cms } from "./cms";
+import * as cmsc from "./cms-contracts";
 import { Notifications } from "./notifications";
 import { Legacy } from './legacy';
 import { historyQuery } from './legacy-contracts';
@@ -46,6 +48,8 @@ type Endpoint = {
   manager?: boolean;
   public?: boolean;
   write?: boolean;
+  /** Read-only, but the (personal) input travels in a POST body, never in the URL. */
+  body?: boolean;
   status?: number;
 };
 const routes: Record<string, Endpoint> = {
@@ -86,22 +90,43 @@ const routes: Record<string, Endpoint> = {
     manager: true,
     write: true,
   },
-  cmsDocuments: { schema: ops.cmsQuery, permission: "cms.read" },
+  cmsDocuments: { schema: cmsc.cmsQuery, permission: "cms.read" },
+  cmsOverview: { permission: "cms.read" },
+  cmsActivity: { schema: cmsc.activityQuery, permission: "cms.read" },
+  cmsPreview: {
+    schema: cmsc.previewToken,
+    permission: "cms.read",
+    write: true,
+    status: 201,
+  },
+  publicCmsPreview: {
+    schema: z.strictObject({ token: z.string().max(400) }),
+    public: true,
+  },
+  cmsRevert: {
+    schema: cmsc.cmsCommand,
+    permission: "cms.publish",
+    write: true,
+  },
   cmsDocument: { permission: "cms.read" },
   cmsCreate: {
-    schema: ops.cmsCreate,
+    schema: cmsc.cmsCreate,
     permission: "cms.write",
     write: true,
     status: 201,
   },
-  cmsSave: { schema: ops.cmsSave, permission: "cms.write", write: true },
+  cmsSave: { schema: cmsc.cmsSave, permission: "cms.write", write: true },
   cmsPublish: {
-    schema: ops.cmsPublish,
+    schema: cmsc.cmsPublish,
     permission: "cms.publish",
     write: true,
   },
-  cmsWithdraw: { schema: ops.command, permission: "cms.publish", write: true },
-  cmsAssets: { schema: ops.jobsQuery, permission: "cms.read" },
+  cmsWithdraw: {
+    schema: cmsc.cmsCommand,
+    permission: "cms.publish",
+    write: true,
+  },
+  cmsAssets: { schema: ops.mediaQuery, permission: "cms.read" },
   cmsUpload: {
     schema: ops.mediaCreate,
     permission: "cms.write",
@@ -109,6 +134,14 @@ const routes: Record<string, Endpoint> = {
     status: 201,
   },
   cmsAsset: { permission: "cms.read" },
+  cmsAssetUpdate: {
+    schema: ops.mediaUpdate,
+    permission: "cms.write",
+    write: true,
+  },
+  cmsAssetUsage: { permission: "cms.read" },
+  cmsAssetDelete: { permission: "cms.write", write: true },
+  cmsAssetRestore: { permission: "cms.write", write: true },
   publicContent: { public: true },
   publicCmsAsset: { public: true },
   stockReconcile: {
@@ -366,6 +399,34 @@ const routes: Record<string, Endpoint> = {
     write: true,
     status: 201,
   },
+  visitPartner: {
+    schema: visits.visitPartner,
+    permission: "visits.update",
+    write: true,
+  },
+  partners: { permission: "catalog.read" },
+  partnerCreate: {
+    schema: v.partnerInput,
+    permission: "catalog.manage",
+    write: true,
+    status: 201,
+  },
+  partnerPatch: {
+    schema: v.partnerPatch,
+    permission: "catalog.manage",
+    write: true,
+  },
+  partnerSaleCreate: {
+    schema: v.partnerSaleInput,
+    permission: "catalog.manage",
+    write: true,
+    status: 201,
+  },
+  partnerSalePatch: {
+    schema: v.partnerSalePatch,
+    permission: "catalog.manage",
+    write: true,
+  },
   intake: {
     schema: visits.intakeInput,
     permission: "visits.update",
@@ -418,6 +479,21 @@ const routes: Record<string, Endpoint> = {
   },
   customers: { schema: v.customerQuery, permission: "customers.read" },
   customer: { schema: v.relatedQuery, permission: "customers.read" },
+  customerPatch: {
+    schema: v.customerPatch,
+    permission: "customers.manage",
+    write: true,
+  },
+  customerDelete: {
+    schema: v.customerDelete,
+    permission: "customers.delete",
+    write: true,
+  },
+  customerMerge: {
+    schema: v.customerMerge,
+    permission: "customers.manage",
+    write: true,
+  },
   vehicles: { schema: v.vehicleQuery, permission: "customers.read" },
   vehicle: { schema: v.relatedQuery, permission: "customers.read" },
   bookings: { schema: v.bookingQuery },
@@ -446,6 +522,11 @@ const routes: Record<string, Endpoint> = {
     write: true,
   },
   cancel: { schema: v.reasonInput, permission: "booking.cancel", write: true },
+  bookingDelete: {
+    schema: v.bookingDelete,
+    permission: "booking.cancel",
+    write: true,
+  },
   noShow: { schema: v.noShowInput, permission: "booking.no_show", write: true },
   assign: { schema: v.assignInput, permission: "booking.assign", write: true },
   transfer: {
@@ -497,6 +578,7 @@ const routes: Record<string, Endpoint> = {
     write: true,
   },
   publicServices: { schema: v.publicServicesQuery, public: true },
+  vehicleStatus: { schema: v.vehicleStatusInput, public: true, body: true },
   availability: { schema: v.availabilityQuery, public: true },
   publicCreate: {
     schema: v.publicCreate,
@@ -509,6 +591,7 @@ export class Api {
   readonly auth: Auth;
   readonly capacity: Capacity;
   readonly directory: Directory;
+  readonly partners = new Partners();
   readonly bookings: Bookings;
   readonly catalog: Catalog;
   readonly staff: Staff;
@@ -617,11 +700,15 @@ export class Api {
       else this.auth.origin(req);
       if (endpoint?.permission) permission(ctx, endpoint.permission);
     } else this.auth.origin(req);
+    // Image uploads send the file itself as the body; their fields travel in the query string.
+    const rawUpload = key === "cmsUpload";
     if (
       req.method !== "GET" &&
-      !req.headers["content-type"]?.startsWith("application/json")
+      !req.headers["content-type"]?.startsWith(
+        rawUpload ? "application/octet-stream" : "application/json",
+      )
     )
-      fail(415, "JSON_REQUIRED");
+      fail(415, rawUpload ? "IMAGE_REQUIRED" : "JSON_REQUIRED");
     if (key === "me")
       return {
         data: await this.auth.view(this.db.db, session!),
@@ -640,29 +727,49 @@ export class Api {
       };
     const input = parse(
       endpoint.schema || z.strictObject({}),
-      endpoint.write ? req.body || {} : req.query || {},
+      (endpoint.write || endpoint.body) && !rawUpload
+        ? req.body || {}
+        : req.query || {},
     ) as Row;
     const id = (req.params as Row).id;
     if (id) parse(uuid, id);
+    // SSR reads from Next arrive on loopback without a client IP; booking/lookup limits still apply.
+    const ssrRead =
+      req.ip === "127.0.0.1" &&
+      !["availability", "publicCreate", "vehicleStatus"].includes(key);
     if (endpoint.public) {
-      await this.auth.rate(
+      if (!ssrRead) await this.auth.rate(
         key === "availability"
           ? "availability"
           : key === "publicCreate"
             ? "public-create"
-            : "catalog",
+            : key === "vehicleStatus"
+              ? "vehicle-status"
+              : "catalog",
         req.ip,
-        key === "availability" ? 60 : key === "publicCreate" ? 5 : 120,
-        key === "publicCreate" ? 600 : 60,
+        key === "availability"
+          ? 60
+          : key === "publicCreate"
+            ? 5
+            : key === "vehicleStatus"
+              ? 10
+              : 120,
+        key === "publicCreate" || key === "vehicleStatus" ? 600 : 60,
       );
       if (key === "publicCreate")
         await this.auth.rate("public-contact", input.customer.phone, 3, 1800);
     } else if (endpoint.write)
       await this.auth.rate("staff-mutation", ctx.actor!.userId, 120, 60);
-    const prepared =
+    const prepared: Row | undefined =
       endpoint.write && key.startsWith("staff")
         ? await this.staff.prepare(input)
-        : undefined;
+        : rawUpload
+          ? await this.cms.prepareUpload(this.db.db, ctx, req.body)
+          : key === "cmsAssetUpdate"
+            ? await this.cms.prepareUpdate(this.db.db, ctx, id, input)
+            : undefined;
+    // The file hash joins the idempotency fingerprint, so one key cannot store two images.
+    if (rawUpload) input.sha256 = prepared!.sha256;
     let status = endpoint.status || 200,
       replayed = false;
     const result = await this.db.tx(
@@ -757,7 +864,9 @@ export class Api {
     reply.status(status);
     if(key==='legacyMedia')return reply.type(result.contentType).header('Content-Disposition',`attachment; filename="legacy-${(req.params as Row).id}.${({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','application/pdf':'pdf'} as Record<string,string>)[result.contentType]||'bin'}"`).send(result.bytes);
     if (key === "cmsAsset" || key === "publicCmsAsset")
-      return reply.type("image/jpeg").send(result.bytes);
+      return result.redirect
+        ? reply.redirect(result.redirect, 302)
+        : reply.type("image/jpeg").send(result.bytes);
     if (result && Array.isArray(result.data))
       return {
         data: result.data,
@@ -778,7 +887,7 @@ export class Api {
     key: string,
     id: string,
     input: Row,
-    prepared?: { hash: string; salt: string },
+    prepared?: Row,
   ): Promise<Row> {
     switch (key) {
       case 'legacyCustomer':return this.legacy.history(c,ctx,id,input);
@@ -808,6 +917,16 @@ export class Api {
         return this.cms.documents(c, ctx, input);
       case "cmsDocument":
         return this.cms.detail(c, ctx, id);
+      case "cmsOverview":
+        return this.cms.overview(c, ctx);
+      case "cmsActivity":
+        return this.cms.activity(c, ctx, input);
+      case "cmsPreview":
+        return this.cms.previewToken(ctx);
+      case "publicCmsPreview":
+        return this.cms.published(c, ctx, input.token);
+      case "cmsRevert":
+        return this.cms.revert(c, ctx, id, input);
       case "cmsCreate":
         return this.cms.save(c, ctx, input);
       case "cmsSave":
@@ -819,9 +938,17 @@ export class Api {
       case "cmsAssets":
         return this.cms.assets(c, ctx, input);
       case "cmsUpload":
-        return this.cms.upload(c, ctx, input);
+        return this.cms.upload(c, ctx, input, prepared!);
       case "cmsAsset":
         return this.cms.asset(c, ctx, id);
+      case "cmsAssetUpdate":
+        return this.cms.updateAsset(c, ctx, id, input, prepared);
+      case "cmsAssetUsage":
+        return this.cms.usage(c, ctx, id);
+      case "cmsAssetDelete":
+        return this.cms.removeAsset(c, ctx, id);
+      case "cmsAssetRestore":
+        return this.cms.removeAsset(c, ctx, id, true);
       case "publicCmsAsset":
         return this.cms.asset(c, ctx, id, true);
       case "publicContent":
@@ -941,6 +1068,18 @@ export class Api {
       }
       case "intake":
         return this.visits.mutate(c, ctx, id, "intake", input);
+      case "visitPartner":
+        return this.visits.mutate(c, ctx, id, "partner", input);
+      case "partners":
+        return this.partners.list(c, ctx);
+      case "partnerCreate":
+        return this.partners.create(c, ctx, input);
+      case "partnerPatch":
+        return this.partners.update(c, ctx, id, input);
+      case "partnerSaleCreate":
+        return this.partners.createSale(c, ctx, id, input);
+      case "partnerSalePatch":
+        return this.partners.updateSale(c, ctx, id, input);
       case "visitInspect":
         return this.visits.mutate(c, ctx, id, "inspect", input);
       case "visitTransfer":
@@ -958,11 +1097,28 @@ export class Api {
       case "staff":
         return this.staff.list(c, ctx, input);
       case "staffCreate":
-        return this.staff.create(c, ctx, input, prepared);
+        return this.staff.create(
+          c,
+          ctx,
+          input,
+          prepared as { hash: string; salt: string } | undefined,
+        );
       case "staffPatch":
-        return this.staff.patch(c, ctx, id, input, prepared);
+        return this.staff.patch(
+          c,
+          ctx,
+          id,
+          input,
+          prepared as { hash: string; salt: string } | undefined,
+        );
       case "staffReset":
-        return this.staff.reset(c, ctx, id, input, prepared!);
+        return this.staff.reset(
+          c,
+          ctx,
+          id,
+          input,
+          prepared as { hash: string; salt: string },
+        );
       case "services":
         return this.catalog.list(c, ctx, input);
       case "serviceCreate":
@@ -973,6 +1129,12 @@ export class Api {
         return this.directory.customers(c, ctx, input);
       case "vehicles":
         return this.directory.vehicles(c, ctx, input);
+      case "customerPatch":
+        return this.directory.updateCustomer(c, ctx, id, input);
+      case "customerMerge":
+        return this.directory.mergeCustomer(c, ctx, id, input);
+      case "customerDelete":
+        return this.directory.removeCustomer(c, ctx, id, input);
       case "customer": {
         const value = await this.directory.customer(
             c,
@@ -1018,6 +1180,8 @@ export class Api {
         return this.bookings.create(c, ctx, input);
       case "bookingPatch":
         return this.bookings.mutate(c, ctx, id, "edit", input);
+      case "bookingDelete":
+        return this.bookings.remove(c, ctx, id, input);
       case "confirm":
       case "reschedule":
       case "cancel":
@@ -1061,6 +1225,8 @@ export class Api {
         return this.publicApi.catalog(c, ctx);
       case "availability":
         return this.publicApi.availability(c, ctx, input);
+      case "vehicleStatus":
+        return this.visits.publicStatus(c, ctx, input);
       case "publicCreate":
         return this.bookings.create(
           c,

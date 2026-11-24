@@ -1,4 +1,5 @@
 "use client";
+import { DateInput } from "@/components/advisor/date-input";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AdminLoading, PageHeading } from "@/components/admin/primitives";
@@ -76,10 +77,9 @@ function Slots() {
         title={formatDate(date)}
         action={
           <ManagerField label="Ngày">
-            <input
-              type="date"
+            <DateInput
               value={date}
-              onChange={(e) => setDate(e.target.value || today)}
+              onValueChange={(v) => setDate(v || today)}
             />
           </ManagerField>
         }

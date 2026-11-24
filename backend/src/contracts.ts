@@ -127,6 +127,22 @@ export const customerQuery = z.strictObject({
   multipleVehicles: boolQuery,
   sort: z.enum(["name:asc", "createdAt:desc"]).default("name:asc"),
 });
+export const customerPatch = z.strictObject({
+  expectedVersion: version,
+  name: text(100),
+  phone,
+  reason,
+});
+export const customerDelete = z.strictObject({
+  expectedVersion: version,
+  reason: reason.default("Xóa khách hàng"),
+});
+export const customerMerge = z.strictObject({
+  expectedVersion: version,
+  targetId: uuid,
+  targetVersion: version,
+  reason,
+});
 export const vehicleQuery = z.strictObject({
   ...pagination,
   q: text(100).optional(),
@@ -198,6 +214,8 @@ export const bookingCreate = z
     advisorId: uuid.nullable().optional(),
     customerNote: text(1000).optional(),
     internalNote: text(1000).optional(),
+    // Partner car: the customer becomes the partner profile; the sale is kept for reconciliation.
+    partnerSaleId: uuid.optional(),
   })
   .refine((v) =>
     v.requestedStartAt
@@ -218,6 +236,8 @@ export const bookingPatch = z
     policyVersion: version.optional(),
     customerNote: z.string().trim().max(1000).optional(),
     internalNote: z.string().trim().max(1000).optional(),
+    // Only switches the sale of a partner booking; the partner flag itself is set at creation.
+    partnerSaleId: uuid.optional(),
   })
   .refine(nonempty);
 export const confirmInput = z.strictObject({
@@ -247,6 +267,30 @@ export const rescheduleInput = z
       : !!v.requestedDate && !!v.requestedPeriod,
   );
 export const reasonInput = z.strictObject({ expectedVersion: version, reason });
+export const partnerInput = z.strictObject({
+  name: text(120),
+  phone: phone.optional(),
+});
+export const partnerPatch = z.strictObject({
+  expectedVersion: version,
+  name: text(120),
+  phone: phone.nullable().optional(),
+  active: z.boolean(),
+});
+export const partnerSaleInput = z.strictObject({
+  name: text(100),
+  phone: phone.optional(),
+});
+export const partnerSalePatch = z.strictObject({
+  expectedVersion: version,
+  name: text(100),
+  phone: phone.nullable().optional(),
+  active: z.boolean(),
+});
+export const bookingDelete = z.strictObject({
+  expectedVersion: version,
+  reason: reason.default("Xóa lịch hẹn"),
+});
 export const noShowInput = z.strictObject({
   expectedVersion: version,
   reason,
@@ -437,3 +481,12 @@ export const settingsInput = z.strictObject({
 });
 export const availabilityQuery = z.strictObject({ date });
 export const publicServicesQuery = z.strictObject({});
+/** Public "Tra cứu": both plate and phone must match the ticket. */
+export const vehicleStatusInput = z.strictObject({
+  plate: z
+    .string()
+    .max(20)
+    .transform((s) => s.toUpperCase().replace(/[^A-Z0-9]/g, ""))
+    .refine((s) => s.length >= 5),
+  phone,
+});

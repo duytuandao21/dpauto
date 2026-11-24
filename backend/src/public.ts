@@ -52,6 +52,9 @@ export class PublicApi {
         name: s.name,
         description: s.description,
         estimatedDurationLabel: s.estimated_duration_minutes + " phút",
+        estimatedDurationMinutes: s.estimated_duration_minutes,
+        /** Website service key this booking service mirrors. */
+        marketingSlug: s.marketing_slug,
       })),
       catalogVersion: ctx.station.catalog_version,
       policyVersion: ctx.station.configuration_version,
@@ -78,6 +81,9 @@ export class PublicApi {
     const periods = (await this.capacity.periods(c, ctx, q.date)).map((p) => ({
       period: p.period,
       status: p.startAt === null ? "UNAVAILABLE" : "AVAILABLE",
+      /** Station hours of that half-day ("07:30"–"12:00"), shown to the customer. */
+      opensAt: p.opensAt,
+      closesAt: p.closesAt,
     }));
     return {
       date: q.date,

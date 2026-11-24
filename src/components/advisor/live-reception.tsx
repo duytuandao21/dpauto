@@ -1,4 +1,7 @@
 "use client";
+import { VehicleSelect } from "./vehicle-select";
+import { PartnerPicker } from "./partner-picker";
+import { partnerLabel } from "@/lib/api/partners";
 import {
   formatOdometer,
   formatPhone,
@@ -73,6 +76,8 @@ function RemoteReception({
     [meta, setMeta] = useState<Meta | null>(null);
   const [customers, setCustomers] = useState<ApiCustomer[]>([]),
     [vehicles, setVehicles] = useState<ApiVehicle[]>([]);
+  const [partnerSaleId, setPartnerSaleId] = useState(""),
+    [partnerOn, setPartnerOn] = useState(false);
   const [customerId, setCustomerId] = useState(""),
     [vehicleId, setVehicleId] = useState(""),
     [name, setName] = useState(""),
@@ -211,6 +216,10 @@ function RemoteReception({
     e.preventDefault();
     if (busy || photoBusy || !meta || submitting.current || submitted.current)
       return;
+    if (!id && partnerOn && !partnerSaleId) {
+      setError("Chọn sale mang xe đến.");
+      return;
+    }
     submitting.current = true;
     setBusy(true);
     setError("");
@@ -249,6 +258,7 @@ function RemoteReception({
               },
               intake: intakePayload(draft),
               followUpOfVisitId: followUp || undefined,
+              ...(partnerSaleId ? { partnerSaleId } : {}),
             },
       );
       submitted.current = true;
@@ -341,7 +351,14 @@ function RemoteReception({
         <PageHeading
           title="Chưa thể tiếp nhận"
           description="Xác nhận lịch hẹn trước khi tiếp nhận xe."
-        />
+        >
+          <Link
+            className="adm-btn"
+            href={manager ? "/dieu-hanh/lich-hen" : `/co-van/lich-hen/${id}`}
+          >
+            Xem lịch hẹn
+          </Link>
+        </PageHeading>
       </section>
     );
   const customer = booking?.customer ||
@@ -477,6 +494,27 @@ function RemoteReception({
                 Khách hàng
               </h2>
               {!id && (
+                <PartnerPicker
+                  value={partnerSaleId}
+                  onToggle={setPartnerOn}
+                  onChange={(saleId, partner) => {
+                    setPartnerSaleId(saleId);
+                    setVehicleId("");
+                    setVerified(false);
+                    // The partner profile is the customer; reuse it when it already exists.
+                    const profile = partner?.phone
+                      ? customers.find(
+                          (c) =>
+                            formatPhone(c.phone) === formatPhone(partner.phone!),
+                        )
+                      : undefined;
+                    setCustomerId(profile?.id || "");
+                    setName(partner ? partner.name : "");
+                    setPhone(partner ? formatPhone(partner.phone) : "");
+                  }}
+                />
+              )}
+              {!id && !partnerOn && (
                 <label className="adm-field">
                   Khách tiếp nhận
                   <select
@@ -496,7 +534,7 @@ function RemoteReception({
                   </select>
                 </label>
               )}
-              {!id && !customerId ? (
+              {!id && !customerId && !partnerSaleId ? (
                 <>
                   <label className="adm-field">
                     Họ tên *
@@ -547,10 +585,13 @@ function RemoteReception({
             </section>
             <div className="adv-reception-main">
               <section className="adm-panel adv-stack adv-reception-vehicle">
-                <h2>
-                  <AdminIcon name="car" />
-                  01. Thông tin xe
-                </h2>
+                <div className="adm-form-section-title">
+                  <span>01</span>
+                  <div>
+                    <h2>Thông tin xe</h2>
+                    <p>Dòng xe, biển số và nguồn xe.</p>
+                  </div>
+                </div>
                 <div className="adm-form-grid">
                   {(booking || customerId) && (
                     <label className="adm-field adm-span-full">
@@ -587,25 +628,24 @@ function RemoteReception({
                       </select>
                     </label>
                   )}
-                  <label className="adm-field adm-span-full">
-                    Dòng xe
-                    {vehicleId ? (
+                  {vehicleId ? (
+                    <label className="adm-field adm-span-full">
+                      Dòng xe
                       <input
                         readOnly
                         value={vehicleModel || "Chưa có thông tin"}
                       />
-                    ) : (
-                      <input
-                        required
-                        maxLength={100}
-                        value={model}
-                        onChange={(e) => {
-                          setModel(e.target.value);
-                          setVerified(false);
-                        }}
-                      />
-                    )}
-                  </label>
+                    </label>
+                  ) : (
+                    // Make and model come from the admin catalogue (/admin/hang-xe), never typed.
+                    <VehicleSelect
+                      value={model}
+                      onChange={(v) => {
+                        setModel(v);
+                        setVerified(false);
+                      }}
+                    />
+                  )}
                   <label className="adm-field">
                     Biển số
                     {vehicleId ? (
@@ -694,6 +734,12 @@ function RemoteReception({
                         {booking.assignedAdvisor?.name || "Chưa phân công"}
                       </dd>
                     </div>
+                    {booking.partner && (
+                      <div>
+                        <dt>Đối tác</dt>
+                        <dd>{partnerLabel(booking.partner)}</dd>
+                      </div>
+                    )}
                   </dl>
                 ) : (
                   <p className="adm-muted">

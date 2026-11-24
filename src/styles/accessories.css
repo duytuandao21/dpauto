@@ -1,5 +1,7 @@
 .home-page .accessories-section {
   background: var(--surface);
+  /* Same white as the next section: its top padding alone is the gap. */
+  padding-bottom: 0;
 }
 
 .home-page .accessories-grid {
@@ -47,6 +49,34 @@
   transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
 }
 
+/* Two-photo cards: hover flips to the second photo, leaving flips back (same easing as the card image). */
+.home-page .accessory-card-media.has-flip {
+  perspective: 1200px;
+}
+.home-page .accessory-flip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.44, 0, 0.56, 1);
+}
+.home-page .accessory-flip > .photo {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: var(--white);
+  backface-visibility: hidden;
+}
+.home-page .accessory-flip-back {
+  transform: rotateY(180deg);
+}
+@media (hover: hover) {
+  .home-page .accessory-card:hover .accessory-flip,
+  .home-page .accessory-card:focus-within .accessory-flip {
+    transform: rotateY(180deg);
+  }
+}
+
 .home-page .accessory-card-copy {
   display: flex;
   flex: 1;
@@ -88,6 +118,7 @@
     sans-serif;
 }
 
+/* Homepage block: note on the left, "Xem thêm phụ kiện" on the right. */
 .home-page .accessories-help {
   display: flex;
   align-items: center;
@@ -95,10 +126,18 @@
   gap: 24px;
   margin-top: 32px;
 }
+/* "Xem thêm" under the product grid: loads 8 more. */
+.accessories-page .accessories-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
 
 /* /phu-kien catalogue. Panel = homepage brand-card surface; field and filters = booking dialog styles. */
+/* The next block (FAQ) is grey, so the list needs its own bottom space, same as the top. */
 .accessories-page .accessories-catalog {
   padding-top: 72px;
+  padding-bottom: 72px;
 }
 .accessories-page .accessories-sr {
   position: absolute;
@@ -376,6 +415,7 @@
   }
   .accessories-page .accessories-catalog {
     padding-top: 48px;
+    padding-bottom: 48px;
   }
   .accessories-page .accessories-panel {
     gap: 20px;
@@ -419,6 +459,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-page .accessory-flip,
   .home-page .accessory-card-media img,
   .home-page .accessory-card-cta > .icon {
     transition: none;

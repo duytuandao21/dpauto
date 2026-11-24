@@ -186,7 +186,9 @@ export function CapacityBars({ slots }: { slots: CapacitySlot[] }) {
             aria-label={`${slot.time}, ${slot.reserved}/${slot.total} ${slot.unit}`}
             data-state={slot.state}
           />
-          <small>{slot.resource}</small>
+          <small>
+            {slot.reserved}/{slot.total} {slot.unit}
+          </small>
         </div>
       ))}
     </div>

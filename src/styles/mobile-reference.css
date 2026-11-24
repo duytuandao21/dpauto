@@ -98,7 +98,11 @@
     gap: 18px;
   }
   body.dpauto-theme .footer-brand > a {
-    display: none;
+    display: block;
+  }
+  body.dpauto-theme .footer-brand > a > img {
+    width: 150px;
+    height: 75px;
   }
   body.dpauto-theme .footer-brand > p {
     max-width: 300px;

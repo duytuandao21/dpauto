@@ -66,11 +66,11 @@ export function FinalCTA({ vietnamese = true }: { vietnamese?: boolean }) {
         </h2>
         <p>
           {vietnamese
-            ? "Từ làm sạch đến bảo vệ lâu dài, HyperAuto Care luôn đồng hành để xe bạn bền đẹp."
-            : "From routine detailing to long-term protection, HyperAuto Care is here to help keep your vehicle looking its best."}
+            ? "Từ làm sạch đến bảo vệ lâu dài, DPAuto luôn đồng hành để xe bạn bền đẹp."
+            : "From routine detailing to long-term protection, DPAuto is here to help keep your vehicle looking its best."}
         </p>
         <div className="button-row">
-          <Button href="/contact">
+          <Button href="/lien-he">
             {vietnamese ? "Liên hệ ngay" : "Contact Us"}
           </Button>
           <Button href={site.phoneHref} variant="secondary" icon="phone">
@@ -89,18 +89,22 @@ export function RichContent({
   blocks: ContentBlock[];
   className?: string;
 }) {
-  // Archived markup is trusted; CMS text is escaped at the publication boundary.
-  const html = blocks
-    .map(
-      (b) =>
-        `<${["h1", "h2", "h3", "h4", "h5", "h6", "p", "li"].includes(b.tag) ? b.tag : "p"}>${b.html}</${["h1", "h2", "h3", "h4", "h5", "h6", "p", "li"].includes(b.tag) ? b.tag : "p"}>`,
-    )
-    .join("")
-    .replace(/(?:<li>[\s\S]*?<\/li>)+/g, "<ul>$&</ul>");
   return (
     <div
       className={`rich-content ${className}`}
-      dangerouslySetInnerHTML={{ __html: html }}
+      dangerouslySetInnerHTML={{ __html: richHtml(blocks) }}
     />
   );
+}
+export function richHtml(blocks: ContentBlock[]) {
+  // Archived markup is trusted; CMS text is escaped at the publication boundary.
+  return blocks
+    .map((b) =>
+      // "html" blocks are rendered from validated CMS rich text (escaped whitelist).
+      b.tag === "html"
+        ? b.html
+        : `<${["h1", "h2", "h3", "h4", "h5", "h6", "p", "li"].includes(b.tag) ? b.tag : "p"}>${b.html}</${["h1", "h2", "h3", "h4", "h5", "h6", "p", "li"].includes(b.tag) ? b.tag : "p"}>`,
+    )
+    .join("")
+    .replace(/(?:<li>[\s\S]*?<\/li>)+/g, "<ul>$&</ul>");
 }

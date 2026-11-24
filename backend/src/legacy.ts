@@ -418,7 +418,7 @@ export class Legacy {
             r.entity_type === "CUSTOMER"
               ? await one(
                   c,
-                  sql`INSERT INTO customers(name,normalized_name,phone_normalized,origin) VALUES(${d.name},${normalize(d.name)},${d.phone},'MIGRATION') RETURNING id`,
+                  sql`INSERT INTO customers(name,normalized_name,phone_normalized,origin) VALUES(${d.name},${normalize(d.name)},${d.phone},'MIGRATION') ON CONFLICT(phone_normalized) WHERE merged_into_id IS NULL AND deleted_at IS NULL DO UPDATE SET updated_at=customers.updated_at RETURNING id`,
                 )
               : await one(
                   c,

@@ -1,17 +1,31 @@
+"use client";
 import Image from "next/image";
 import { HomeAppear } from "./home-motion";
-
-const brands = [
-  { name: "70mai", file: "70mai", width: 447, height: 447 },
-  { name: "HELIOZ", file: "helioz", width: 565, height: 353 },
-  { name: "ICAR", file: "icar", width: 1094, height: 658 },
-  { name: "VINCAR", file: "vincar", width: 225, height: 225 },
-  { name: "WOLVER", file: "wolver", width: 1181, height: 295 },
-  { name: "YueMi", file: "yuemi", width: 800, height: 200 },
-  { name: "Zestech", file: "zestech", width: 800, height: 228 },
-];
+import { brandLogos, homeDefaults } from "@/lib/home-defaults";
+import { useImage, useSection } from "@/components/site/site-content";
 
 export function BrandsSection() {
+  const section = useSection("home.brands", homeDefaults["home.brands"]),
+    resolve = useImage();
+  if (!section) return null;
+  // Built-in logos keep their tuned sizes/classes; logos added in the CMS use the asset's size.
+  const brands = (
+    section.images as { src: string; alt: string; assetId?: string }[]
+  ).map((img) => {
+    const known = brandLogos.find(
+      (b) => `/images/brands/${b.file}.png` === img.src,
+    );
+    const media = resolve(img)?.media;
+    return {
+      name: img.alt || known?.name || "",
+      file: known?.file || media?.id || img.src,
+      // Logo tiles are ≤240px wide: the smallest variant that stays sharp on 2x screens is enough.
+      src: media?.webp.find((v) => v.width >= 480)?.url || media?.src || img.src,
+      width: known?.width || media?.width || 400,
+      height: known?.height || media?.height || 200,
+      known: !!known,
+    };
+  });
   return (
     <section
       className="section brands-section"
@@ -20,23 +34,22 @@ export function BrandsSection() {
     >
       <div className="container">
         <div className="section-heading">
-          <h2 id="brands-heading">Thương hiệu được lựa chọn</h2>
-          <p>
-            Những thương hiệu được DPAuto lựa chọn cho các hạng mục chăm sóc và
-            nâng cấp xe.
-          </p>
+          <h2 id="brands-heading">{section.title}</h2>
+          <p>{section.description}</p>
         </div>
         <ul className="brands-grid" aria-label="Các thương hiệu được lựa chọn">
           {brands.map((brand, index) => (
             <li key={brand.file}>
               <HomeAppear className="brand-card" delay={(index % 4) * 0.08}>
-                <div className={`brand-logo brand-logo--${brand.file}`}>
+                <div
+                  className={`brand-logo ${brand.known ? `brand-logo--${brand.file}` : ""}`}
+                >
                   <Image
-                    src={`/images/brands/${brand.file}.png`}
+                    src={brand.src}
                     alt={brand.name}
                     width={brand.width}
                     height={brand.height}
-                    unoptimized={brand.file !== "wolver"}
+                    unoptimized={brand.file !== "wolver" || !brand.known}
                     sizes="(max-width: 809px) 160px, 240px"
                   />
                 </div>

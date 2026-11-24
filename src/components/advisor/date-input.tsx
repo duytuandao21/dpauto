@@ -45,7 +45,7 @@ export function DateInput({
     );
   }, [text, withTime, min, max]);
 
-  if (!path?.startsWith("/co-van"))
+  if (!/^\/(co-van|dieu-hanh)(\/|$)/.test(path || ""))
     return (
       <input
         {...props}

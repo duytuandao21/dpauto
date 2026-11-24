@@ -8,8 +8,12 @@ import { FeaturedArticleFrame } from "./news-page-motion";
 export function ArticleMeta({ article }: { article: Article }) {
   return (
     <div className="article-meta">
-      <span>{article.category}</span>
-      <span>/</span>
+      {article.category && (
+        <>
+          <span>{article.category}</span>
+          <span>/</span>
+        </>
+      )}
       <time>{article.date}</time>
     </div>
   );
@@ -18,27 +22,24 @@ export function ArticleMeta({ article }: { article: Article }) {
 export function NewsCard({
   article,
   className,
-  originalImages = false,
   vietnamese = true,
 }: {
   article: Article;
   className?: string;
-  originalImages?: boolean;
   vietnamese?: boolean;
 }) {
   return (
     <NewsCardFrame
       image={article.image}
       className={className}
-      originalImages={originalImages}
     >
       <div className="news-card-copy">
         <ArticleMeta article={article} />
         <h3>
-          <Link href={`/news/${article.slug}`}>{article.title}</Link>
+          <Link href={`/tin-tuc/${article.slug}`}>{article.title}</Link>
         </h3>
         <p>{article.description}</p>
-        <NewsButton href={`/news/${article.slug}`}>
+        <NewsButton href={`/tin-tuc/${article.slug}`}>
           {vietnamese ? "Đọc tiếp" : "Read More"}
         </NewsButton>
       </div>
@@ -47,16 +48,14 @@ export function NewsCard({
 }
 
 export function NewsSection({
-  title = "Latest News from Hyper Auto Care",
+  title = "Tin mới từ DPAuto",
   items,
   more = true,
-  originalImages = false,
   vietnamese = true,
 }: {
   title?: string;
   items?: Article[];
   more?: boolean;
-  originalImages?: boolean;
   vietnamese?: boolean;
 }) {
   return (
@@ -72,7 +71,6 @@ export function NewsSection({
                 key={article.slug}
                 article={article}
                 vietnamese={vietnamese}
-                originalImages={originalImages}
                 className={
                   !items && index === 3 ? "news-card--tablet-only" : undefined
                 }
@@ -82,7 +80,7 @@ export function NewsSection({
         </div>
         {more && (
           <div className="section-bottom">
-            <NewsButton href="/news" light>
+            <NewsButton href="/tin-tuc" light>
               {vietnamese ? "Xem thêm" : "View More"}
             </NewsButton>
           </div>
@@ -109,10 +107,10 @@ export function FeaturedArticle({
     >
       <ArticleMeta article={article} />
       <h3>
-        <Link href={`/news/${article.slug}`}>{article.title}</Link>
+        <Link href={`/tin-tuc/${article.slug}`}>{article.title}</Link>
       </h3>
       <p>{article.description}</p>
-      <Button href={`/news/${article.slug}`}>Đọc tiếp</Button>
+      <Button href={`/tin-tuc/${article.slug}`}>Đọc tiếp</Button>
     </FeaturedArticleFrame>
   );
 }

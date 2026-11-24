@@ -20,6 +20,17 @@ export function formatPlate(value: string | null | undefined) {
   return old ? `${old[1]}-${old[2]}` : plate;
 }
 
+/** Formats a plate while it is typed: "51M7963" → "51M-796.3", "51M79631" → "51M-796.31". */
+export function typePlate(value: string) {
+  const compact = value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+  const full = formatPlate(compact);
+  if (full !== compact) return full;
+  const m = /^(\d{2}[A-Z]{1,2})(\d+)$/.exec(compact);
+  if (!m) return compact;
+  const d = m[2];
+  return `${m[1]}-${d.length > 3 ? `${d.slice(0, 3)}.${d.slice(3)}` : d}`;
+}
+
 export function formatDateInput(value: string, withTime = false) {
   if (!value) return "";
   const date = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/.exec(value);

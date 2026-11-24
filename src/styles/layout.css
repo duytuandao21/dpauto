@@ -54,6 +54,10 @@
 .nav-link:hover {
   color: var(--orange);
 }
+.desktop-nav .nav-link {
+  font-size: 15px;
+  letter-spacing: -0.3px;
+}
 .nav-link svg {
   width: 16px;
   height: 16px;
@@ -121,11 +125,10 @@
 .services-menu-grid a:hover {
   color: var(--orange);
 }
-.services-menu-grid img {
+.services-menu-grid .photo {
   width: 60px;
   height: 54px;
   flex: none;
-  object-fit: cover;
   border-radius: 8px;
   corner-shape: superellipse(2);
 }
@@ -209,4 +212,151 @@
 }
 .final-cta .button-row {
   justify-content: center;
+}
+
+/* Back-to-top button: small brand-red square in the bottom-right corner. */
+.back-to-top {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  corner-shape: superellipse(2);
+  background: var(--brand-red, #e20000);
+  color: #fff;
+  box-shadow: 0 6px 16px #e2000033;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity 0.25s,
+    transform 0.25s,
+    visibility 0.25s,
+    background-color 0.25s;
+}
+.back-to-top[data-shown="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.back-to-top:hover {
+  background: var(--brand-red-deep, #c31829);
+}
+.back-to-top svg {
+  width: 20px;
+  height: 20px;
+}
+/* Round call + Zalo buttons, stacked above "back to top" (40px + 12px gap). */
+.contact-float {
+  position: fixed;
+  right: 16px;
+  bottom: 72px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.contact-float a {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #fff;
+  box-shadow: 0 6px 16px #1f293729;
+  transition:
+    transform 0.25s,
+    background-color 0.25s;
+}
+.contact-float a:hover {
+  transform: translateY(-2px);
+}
+.contact-float-call {
+  background: var(--brand-red, #e20000);
+}
+.contact-float-call:hover {
+  background: var(--brand-red-deep, #c31829);
+}
+.contact-float-call .icon {
+  width: 22px;
+  height: 22px;
+}
+.contact-float-zalo {
+  background: #0068ff;
+}
+.contact-float-zalo .icon {
+  width: 34px;
+  height: 34px;
+}
+.mobile-dock {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .contact-float a {
+    transition: none;
+  }
+}
+@media (max-width: 809.98px) {
+  .contact-float,
+  .header-actions .header-booking {
+    display: none;
+  }
+  /* Fixed bottom bar: booking first and widest, then call, Zalo, directions. */
+  .mobile-dock {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 45;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: 4px;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    background: #ffffff;
+    border-top: 1px solid var(--border-light, #e4e7ec);
+    box-shadow: 0 -6px 20px #1f293714;
+  }
+  .mobile-dock .mobile-dock-book {
+    min-height: 44px;
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+  .mobile-dock a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 0;
+    color: var(--background, #1f2937);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .mobile-dock a .icon {
+    width: 22px;
+    height: 22px;
+    color: var(--brand-red, #e20000);
+  }
+  /* Keep the page end and the back-to-top button clear of the bar. */
+  body:has(.mobile-dock) {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+  .back-to-top {
+    right: 16px;
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    width: 36px;
+    height: 36px;
+  }
+  .back-to-top svg {
+    width: 18px;
+    height: 18px;
+  }
 }

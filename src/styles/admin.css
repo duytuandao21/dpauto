@@ -556,6 +556,9 @@ html:has(.adm-app) {
 .adm-date-strip button.is-active strong {
   color: #fff;
 }
+.adm-date-strip.is-week button:disabled {
+  cursor: default;
+}
 .adm-date-strip.is-week button {
   min-width: 48px;
   flex: 1 0 48px;

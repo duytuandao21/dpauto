@@ -53,6 +53,19 @@ export type InboxNotice = {
   createdAt: string;
   readAt: string | null;
   version: number;
+  /** Event behind the notice (null for old notices without one). */
+  eventType?: string | null;
+  reason?: string | null;
+  occurredAt?: string | null;
+  actorName?: string | null;
+  subject?: {
+    code: string | null;
+    customerName: string | null;
+    plate: string | null;
+    model: string | null;
+    startAt: string | null;
+    status: string | null;
+  };
 };
 export type NotificationJob = {
   id: string;

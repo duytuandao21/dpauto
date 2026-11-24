@@ -120,6 +120,27 @@ Template có trường `null` và mảng rỗng cần điền; không phải see
 
 Thông tin đặt lịch hiện dùng registry `BOOKING_V1` tại `/chinh-sach-dat-lich`. Marketing mặc định không đồng ý; chưa có nội dung marketing được publish nên API không cho bật opt-in. Nội dung thông báo cần được trạm kiểm tra trước go-live.
 
+## Ảnh website (Cloudflare R2)
+
+Ảnh CMS được `sharp` xử lý một lần lúc upload: xoay đúng chiều, bỏ EXIF/GPS, cạnh dài tối đa 2560px, tạo AVIF + WebP ở 320/640/960/1280/1920px, ảnh chia sẻ `og-*.jpg` 1200×630 và ảnh mờ 16px. File được đặt tên theo sha256 của ảnh gốc, cache `immutable` một năm.
+
+- `MEDIA_DRIVER=local` (mặc định, dev/test): file nằm trong `MEDIA_LOCAL_DIR` (`storage/media`, đã gitignore), phát qua `/api/v1/public/media/*`.
+- `MEDIA_DRIVER=r2`: điền các biến `R2_*` và `MEDIA_PUBLIC_URL` (xem `.env.example`). Bucket `R2_BUCKET_PUBLIC` công khai; `R2_BUCKET_ORIGINALS` riêng tư, giữ ảnh gốc để tạo lại biến thể. Thiếu biến nào backend dừng ngay khi khởi động.
+- Đổi sang tên miền riêng: gắn `img.<tên-miền>` vào bucket công khai, đổi `MEDIA_PUBLIC_URL`, khởi động lại backend, tắt `r2.dev`. DB chỉ lưu key tương đối nên không cần sửa dữ liệu.
+- Trên VPS cài bằng `npm ci`; không chép `node_modules` từ Windows vì `sharp` có binary theo hệ điều hành.
+
+Lệnh vận hành:
+
+```powershell
+npm.cmd run db:migrate                     # migration 0018 thêm cột lưu trữ ảnh
+npm.cmd run media -- check                 # upload/đọc/xóa file thử, kiểm tra khóa R2
+npm.cmd run media -- migrate --dry-run     # xem ảnh cũ trong Postgres sẽ được chuyển
+npm.cmd run media -- migrate               # chuyển ảnh cũ sang MEDIA_DRIVER
+npm.cmd run media -- purge                 # xóa hẳn ảnh nằm trong thùng rác quá 30 ngày
+```
+
+Trên VPS, chạy purge mỗi ngày bằng cron, ví dụ `15 3 * * * cd /srv/dpauto/backend && npm run media -- purge >> /var/log/dpauto-media.log 2>&1`. Purge giữ lại dòng trong DB vì lịch sử revision vẫn trỏ tới ảnh.
+
 ## LAN và production
 
 - Để dùng cả localhost trên máy tính và IP trên điện thoại, giữ `APP_ORIGIN=http://localhost:4001`, thêm `APP_ALLOWED_ORIGINS=http://<IP-máy>:4001` trong `backend/.env`, rồi khởi động lại backend. Có thể thêm nhiều origin bằng dấu phẩy. Hai thiết bị dùng cùng mạng LAN; backend vẫn bind loopback, Next proxy public/admin API. Phiên đăng nhập tách riêng theo từng địa chỉ. Nếu muốn link/QR cũng mở được trên điện thoại, dùng địa chỉ IP làm `APP_ORIGIN`, thêm localhost vào `APP_ALLOWED_ORIGINS`.

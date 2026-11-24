@@ -9,7 +9,9 @@ import {
   useTransform,
 } from "motion/react";
 import { useRef, useSyncExternalStore } from "react";
-import { homeVi as home } from "@/lib/home-vi";
+import { homeDefaults } from "@/lib/home-defaults";
+import { useImage, useSection } from "@/components/site/site-content";
+import type { SiteImage } from "@/lib/content";
 import { Photo } from "@/components/ui/photo";
 
 const icons = [
@@ -32,7 +34,7 @@ function subscribeToBreakpoints(notify: () => void) {
     queries.forEach((query) => query.removeEventListener("change", notify));
 }
 
-function BenefitsImage() {
+function BenefitsImage({ photo }: { photo: SiteImage }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -54,11 +56,7 @@ function BenefitsImage() {
       className="benefits-image"
       style={reduced ? undefined : { scale, y }}
     >
-      <Photo
-        src="/images/5jFIDmf3fDYVLCeKxRoGZM5XCA.webp"
-        alt="Xe SUV trong xưởng chăm sóc ô tô HyperAuto Care"
-        sizes="(max-width: 1400px) 100vw, 1400px"
-      />
+      <Photo {...photo} sizes="(max-width: 1400px) 100vw, 1400px" />
       <motion.div
         className="benefits-image-overlay"
         style={reduced ? undefined : { y: overlayY }}
@@ -69,21 +67,31 @@ function BenefitsImage() {
 }
 
 export function BenefitsSection() {
+  const section = useSection("home.benefits", homeDefaults["home.benefits"]),
+    resolve = useImage();
+  const photo = resolve(section?.image, homeDefaults["home.benefits"].image)!;
+  const benefits = (
+    (section?.items || []) as { title?: string; text?: string }[]
+  ).map((b) => ({
+    title: b.title || "",
+    description: b.text || "",
+  }));
   const columns = useSyncExternalStore(
     subscribeToBreakpoints,
     () => (innerWidth >= 1200 ? 3 : innerWidth >= 810 ? 2 : 1),
     () => 3,
   );
   const reduced = useReducedMotion();
+  if (!section) return null;
 
   return (
     <section className="benefits-section">
       <div className="container benefits-content">
         <div className="benefits-heading">
-          <h2>Vì sao chọn HyperAuto Care?</h2>
+          <h2>{section.title}</h2>
         </div>
         <div className="benefits-grid">
-          {home.benefits.map((benefit, index) => (
+          {benefits.map((benefit, index) => (
             <motion.div
               key={benefit.title}
               className="benefit-item"
@@ -96,7 +104,7 @@ export function BenefitsSection() {
                 bounce: 0.2,
                 delay:
                   columns === 3
-                    ? desktopDelays[index]
+                    ? desktopDelays[index % desktopDelays.length]
                     : columns === 2
                       ? (index % 2) * 0.2
                       : 0,
@@ -105,7 +113,7 @@ export function BenefitsSection() {
               <span className="benefit-accent" aria-hidden="true" />
               <span className="benefit-icon">
                 <Image
-                  src={`/icons/benefits/${icons[index]}.svg`}
+                  src={`/icons/benefits/${icons[index % icons.length]}.svg`}
                   width={28}
                   height={28}
                   alt=""
@@ -119,7 +127,7 @@ export function BenefitsSection() {
           ))}
         </div>
       </div>
-      <BenefitsImage />
+      <BenefitsImage photo={photo} />
     </section>
   );
 }

@@ -148,6 +148,7 @@ export const managerNavigation: {
       { path: "/dich-vu", label: "Danh mục dịch vụ", icon: "tool" },
       { path: "/nhan-su", label: "Nhân sự & ca làm", icon: "customers" },
       { path: "/khach-hang", label: "Khách hàng & phương tiện", icon: "car" },
+      { path: "/doi-tac", label: "Đối tác", icon: "customers" },
     ],
   },
   {

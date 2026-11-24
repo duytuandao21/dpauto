@@ -1,4 +1,6 @@
 "use client";
+import { pageDefaults } from "@/lib/page-defaults";
+import { useImage, useSection } from "@/components/site/site-content";
 
 import {
   AnimatePresence,
@@ -28,6 +30,8 @@ const subscribePhone = (callback: () => void) => {
 };
 
 export function AboutBanner() {
+  const banner = useSection("about", pageDefaults.about) || pageDefaults.about,
+    image = useImage()(banner.image, banners.about)!;
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, imageSpring);
@@ -38,11 +42,11 @@ export function AboutBanner() {
         className="work-banner-image"
         style={reduced ? undefined : { scale }}
       >
-        <Photo {...banners.about} priority unoptimized sizes="100vw" />
+        <Photo {...image} priority sizes="100vw" />
       </motion.div>
       <div className="work-banner-overlay" />
       <div className="container work-banner-heading">
-        <h1>Về HyperAuto Care</h1>
+        <h1>{banner.title}</h1>
       </div>
     </section>
   );
@@ -138,7 +142,6 @@ export function AboutGalleryImage({ image }: { image: SiteImage }) {
           >
             <Photo
               {...image}
-              unoptimized
               sizes="(max-width: 1199px) 100vw, 50vw"
             />
           </button>
@@ -168,7 +171,7 @@ export function AboutGalleryImage({ image }: { image: SiteImage }) {
                     width: `min(1600px, calc((100dvh - 40px) * ${ratio}), calc(100vw - 40px))`,
                   }}
                 >
-                  <Photo {...image} unoptimized sizes="100vw" />
+                  <Photo {...image} sizes="100vw" />
                 </div>
               </motion.div>
             )}
@@ -192,11 +195,13 @@ export function AboutVideo({ src }: { src: string }) {
       <motion.div className="about-story-video-inner" style={style}>
         <video
           ref={video}
-          src={`${src}#t=0.001`}
+          // Start at 1 s: uploaded clips often fade in from black, which made the cover frame black.
+          src={`${src}#t=1`}
           muted
           loop
           playsInline
-          preload="auto"
+          // Uploaded videos can be up to 100 MB: load the first frame, the rest on play.
+          preload="metadata"
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
           onError={() => setError(true)}
@@ -229,35 +234,3 @@ export function AboutVideo({ src }: { src: string }) {
   );
 }
 
-export function AboutTeamImage({ image }: { image: SiteImage }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end end"],
-  });
-  const progress = useSpring(scrollYProgress, imageSpring);
-  const distance = useRef(80);
-  const y = useTransform(progress, (value) => value * distance.current);
-  const scale = useTransform(progress, [0, 1], [1.06, 1]);
-  useEffect(() => {
-    const query = matchMedia("(max-width: 1199.98px)");
-    const update = () => {
-      distance.current = query.matches ? 60 : 80;
-    };
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-  return (
-    <div className="about-team-image">
-      <motion.div
-        ref={ref}
-        className="about-team-image-inner"
-        style={reduced ? { y: distance.current } : { y, scale }}
-      >
-        <Photo {...image} unoptimized sizes="100vw" />
-      </motion.div>
-    </div>
-  );
-}

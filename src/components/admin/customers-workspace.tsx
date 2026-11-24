@@ -1,7 +1,7 @@
 "use client";
 import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { bookingTime, formatDate, slotLabel } from "@/lib/booking/logic";
 import type { Customer } from "@/lib/booking/types";
 import { useBookings } from "./booking-provider";
@@ -15,10 +15,13 @@ import {
 } from "./primitives";
 import { useAdvisor } from "@/components/advisor/advisor-provider";
 import { StageBadge } from "@/components/advisor/order-common";
-import { apiEnabled } from "@/lib/api/client";
+import { apiEnabled, command } from "@/lib/api/client";
+import { useState } from "react";
+import { useSession } from "./auth-gate";
 import { LiveVisits } from "@/components/advisor/live-visits";
 import { LegacyHistory } from "@/components/advisor/legacy-history";
 import { WorkspaceDrawer } from "@/components/advisor/workspace-drawer";
+import { softDetailLinks } from "@/components/advisor/soft-detail";
 
 function CustomerDetail({ customer }: { customer: Customer }) {
   const { data } = useBookings(),
@@ -144,10 +147,66 @@ function CustomerDetail({ customer }: { customer: Customer }) {
     </section>
   );
 }
-export function CustomersWorkspace({ id }: { id?: string }) {
+/** Hides the customer (bookings and tickets keep their snapshots); refused while work is open. */
+function DeleteCustomerButton({
+  customer,
+  onDeleted,
+}: {
+  customer: Customer;
+  onDeleted: () => void;
+}) {
+  const session = useSession();
+  const { notify } = useBookings();
+  const [busy, setBusy] = useState(false);
+  if (
+    !apiEnabled ||
+    customer.version === undefined ||
+    !session?.permissions.includes("customers.delete")
+  )
+    return null;
+  return (
+    <button
+      type="button"
+      className="adm-btn adm-subtle-danger"
+      disabled={busy}
+      aria-label={`Xóa khách hàng ${customer.name}`}
+      onClick={async () => {
+        if (
+          !window.confirm(
+            `Xóa khách hàng ${customer.name} (${formatPhone(customer.phone)})? Hồ sơ sẽ được ẩn, lịch hẹn và phiếu dịch vụ cũ vẫn giữ thông tin.`,
+          )
+        )
+          return;
+        setBusy(true);
+        try {
+          await command(
+            `admin/customers/${encodeURIComponent(customer.id)}`,
+            { expectedVersion: customer.version },
+            "DELETE",
+          );
+          onDeleted();
+          window.dispatchEvent(new Event("dpauto-data-updated"));
+          notify("Đã xóa khách hàng.");
+        } catch (e) {
+          notify(e instanceof Error ? e.message : "Chưa thể xóa khách hàng.");
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      {busy ? "Đang xóa…" : "Xóa"}
+    </button>
+  );
+}
+// `id` (from /co-van/khach-hang/[id]) is read back from the URL, which also covers soft opening.
+export function CustomersWorkspace(_: { id?: string }) {
   const { data, ready } = useBookings(),
     params = useSearchParams(),
     router = useRouter(),
+    path = usePathname(),
+    // The open detail comes from the URL (opening/closing only rewrite it, no navigation).
+    routeMatch = path.match(/^\/co-van\/khach-hang\/([^/]+)$/),
+    id = routeMatch ? decodeURIComponent(routeMatch[1]) : undefined,
     query = params.get("q") || "",
     filter = params.get("filter") || "all";
   const { orders } = useAdvisor();
@@ -183,7 +242,12 @@ export function CustomersWorkspace({ id }: { id?: string }) {
   if (!ready) return <AdminLoading />;
   if (id && !selected) return <NotFoundState kind="khách hàng" />;
   return (
-    <div className={`adm-workspace-page ${id ? "has-detail" : ""}`}>
+    <div
+      className={`adm-workspace-page ${id ? "has-detail" : ""}`}
+      onClickCapture={softDetailLinks((u) =>
+        /^\/co-van\/khach-hang\/[^/]+$/.test(u.pathname),
+      )}
+    >
       <div className="adm-list-heading">
         <PageHeading
           eyebrow="CỐ VẤN DỊCH VỤ"
@@ -237,6 +301,7 @@ export function CustomersWorkspace({ id }: { id?: string }) {
                   <th scope="col">Xe</th>
                   <th scope="col">Lịch gần nhất</th>
                   <th scope="col">Tổng lịch hẹn</th>
+                  <th scope="col">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -280,6 +345,26 @@ export function CustomersWorkspace({ id }: { id?: string }) {
                         {bs[0] ? formatDate(bookingTime(bs[0])) : "Chưa có"}
                       </td>
                       <td>{c.bookingCount ?? bs.length} lịch</td>
+                      <td>
+                        <div className="adv-table-actions">
+                          <Link
+                            className="adm-btn"
+                            href={`/co-van/khach-hang/${c.id}?${params}`}
+                            scroll={false}
+                          >
+                            Chi tiết
+                          </Link>
+                          <DeleteCustomerButton
+                            customer={c}
+                            onDeleted={() => {
+                              if (id === c.id)
+                                router.replace(`/co-van/khach-hang?${params}`, {
+                                  scroll: false,
+                                });
+                            }}
+                          />
+                        </div>
+                      </td>
                     </tr>
                   );
                 })}

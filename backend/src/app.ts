@@ -23,7 +23,9 @@ import {
 import cookie from "@fastify/cookie";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import { Api } from "./api";
+import { MAX_UPLOAD_BYTES } from "./image-pipeline";
 import { schemaCompatible } from './schema-check';
 import { ApiError } from "./common";
 import { Database, sql, one } from "./database";
@@ -114,6 +116,41 @@ class ApiController {
   ) {
     return this.api.run("cmsDocuments", req, reply);
   }
+  @Get("admin/cms/overview")
+  cmsOverview(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("cmsOverview", req, reply);
+  }
+  @Get("admin/cms/activity")
+  cmsActivity(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("cmsActivity", req, reply);
+  }
+  @Post("admin/cms/preview")
+  cmsPreview(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("cmsPreview", req, reply);
+  }
+  @Get("public/cms/preview")
+  publicCmsPreview(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("publicCmsPreview", req, reply);
+  }
+  @Post("admin/cms/documents/:id/revert")
+  cmsRevert(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("cmsRevert", req, reply);
+  }
   @Post("admin/cms/documents")
   cmsCreate(
     @Req() req: FastifyRequest,
@@ -169,6 +206,34 @@ class ApiController {
     @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     return this.api.run("cmsAsset", req, reply);
+  }
+  @Patch("admin/cms/assets/:id")
+  cmsAssetUpdate(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("cmsAssetUpdate", req, reply);
+  }
+  @Get("admin/cms/assets/:id/usage")
+  cmsAssetUsage(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("cmsAssetUsage", req, reply);
+  }
+  @Delete("admin/cms/assets/:id")
+  cmsAssetDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("cmsAssetDelete", req, reply);
+  }
+  @Post("admin/cms/assets/:id/restore")
+  cmsAssetRestore(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("cmsAssetRestore", req, reply);
   }
   @Get("public/content")
   publicContent(
@@ -564,6 +629,54 @@ class ApiController {
   ) {
     return this.api.run("receive", req, reply);
   }
+  @Patch("admin/service-visits/:id/partner")
+  @HttpCode(200)
+  visitPartner(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("visitPartner", req, reply);
+  }
+  @Get("admin/partners")
+  @HttpCode(200)
+  partners(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("partners", req, reply);
+  }
+  @Post("admin/partners")
+  @HttpCode(201)
+  partnerCreate(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("partnerCreate", req, reply);
+  }
+  @Patch("admin/partners/:id")
+  @HttpCode(200)
+  partnerPatch(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("partnerPatch", req, reply);
+  }
+  @Post("admin/partners/:id/sales")
+  @HttpCode(201)
+  partnerSaleCreate(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("partnerSaleCreate", req, reply);
+  }
+  @Patch("admin/partner-sales/:id")
+  @HttpCode(200)
+  partnerSalePatch(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("partnerSalePatch", req, reply);
+  }
   @Patch("admin/service-visits/:id/intake")
   intake(
     @Req() req: FastifyRequest,
@@ -732,6 +845,30 @@ class ApiController {
   ) {
     return this.api.run("customer", req, reply);
   }
+  @Patch("admin/customers/:id")
+  @HttpCode(200)
+  customerPatch(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("customerPatch", req, reply);
+  }
+  @Delete("admin/customers/:id")
+  @HttpCode(200)
+  customerDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("customerDelete", req, reply);
+  }
+  @Post("admin/customers/:id/merge")
+  @HttpCode(200)
+  customerMerge(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("customerMerge", req, reply);
+  }
   @Get("admin/vehicles")
   @HttpCode(200)
   vehicles(
@@ -784,6 +921,14 @@ class ApiController {
     @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     return this.api.run("bookingPatch", req, reply);
+  }
+  @Delete("admin/bookings/:id")
+  @HttpCode(200)
+  bookingDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("bookingDelete", req, reply);
   }
   @Post("admin/bookings/:id/confirm")
   @HttpCode(200)
@@ -974,6 +1119,14 @@ class ApiController {
   ) {
     return this.api.run("availability", req, reply);
   }
+  @Post("public/vehicle-status")
+  @HttpCode(200)
+  vehicleStatus(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("vehicleStatus", req, reply);
+  }
   @Post("public/bookings")
   @HttpCode(200)
   publicCreate(
@@ -1102,12 +1255,60 @@ export async function createApp(config: Config) {
     new FastifyAdapter({
       logger: false,
       bodyLimit: 2 * 1024 * 1024,
-      trustProxy: false,
+      // Nginx overwrites X-Forwarded-For with the Cloudflare-restored client IP; trust it only from Next on loopback.
+      trustProxy: "127.0.0.1",
       genReqId: () => randomUUID(),
     }),
     { logger: ["error"] },
   );
   await app.register(cookie);
+  const fastify = app.getHttpAdapter().getInstance();
+  // Only the CMS upload route accepts a binary body; everything else stays JSON-only (2 MB).
+  fastify.addContentTypeParser(
+    "application/octet-stream",
+    { bodyLimit: MAX_UPLOAD_BYTES },
+    async (request: FastifyRequest, payload: NodeJS.ReadableStream) => {
+      if (
+        request.method !== "POST" ||
+        request.routeOptions.url !== "/api/v1/admin/cms/assets"
+      )
+        throw new ApiError(415, "JSON_REQUIRED");
+      if (Number(request.headers["content-length"]) > MAX_UPLOAD_BYTES)
+        throw new ApiError(413, "INVALID_IMAGE", "Tệp quá lớn: ảnh tối đa 20 MB, video tối đa 100 MB.");
+      const chunks: Buffer[] = [];
+      let size = 0;
+      for await (const chunk of payload) {
+        size += (chunk as Buffer).length;
+        if (size > MAX_UPLOAD_BYTES)
+          throw new ApiError(413, "INVALID_IMAGE", "Tệp quá lớn: ảnh tối đa 20 MB, video tối đa 100 MB.");
+        chunks.push(chunk as Buffer);
+      }
+      return Buffer.concat(chunks);
+    },
+  );
+  const store = api.cms.store;
+  if (store.localPath)
+    // Dev/test stand-in for the R2 public bucket, reached through the Next /api/v1/public rewrite.
+    fastify.get("/api/v1/public/media/*", async (request, reply) => {
+      const key = (request.params as Record<string, string>)["*"],
+        file = store.localPath!(key),
+        data = file && (await readFile(file).catch(() => undefined));
+      if (!data) return reply.status(404).send();
+      return reply
+        .type(
+          (
+            {
+              avif: "image/avif",
+              webp: "image/webp",
+              jpg: "image/jpeg",
+              png: "image/png",
+            } as Record<string, string>
+          )[key.split(".").pop()!] || "application/octet-stream",
+        )
+        .header("Cache-Control", "public, max-age=31536000, immutable")
+        .header("X-Content-Type-Options", "nosniff")
+        .send(data);
+    });
   app.useGlobalFilters(new ErrorFilter());
   app.enableShutdownHooks();
   app

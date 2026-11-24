@@ -18,6 +18,7 @@ import { useAdvisor } from "./advisor-provider";
 import { apiEnabled } from "@/lib/api/client";
 import { LiveReception } from "./live-reception";
 import { OdometerInput } from "@/components/ui/odometer-input";
+import { photoUploadsLocked } from "./visit-intake-fields";
 
 const blank: ReceptionDraft = {
   odo: "",
@@ -352,6 +353,9 @@ function LocalReceptionPage({ id }: { id: string }) {
               />
             </label>
           </div>
+          {photoUploadsLocked ? (
+            <p className="adm-muted">Chức năng tải ảnh xe đang tạm khóa.</p>
+          ) : (
           <div className="adv-photo-inputs">
             <label className="adm-field adv-photo-input">
               Chụp ảnh xe
@@ -378,6 +382,7 @@ function LocalReceptionPage({ id }: { id: string }) {
               />
             </label>
           </div>
+          )}
           {draft.photos.length > 0 && (
             <div className="adv-photo-grid">
               {draft.photos.map((photo) => (

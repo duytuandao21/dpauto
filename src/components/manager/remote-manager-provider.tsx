@@ -1,4 +1,5 @@
 "use client";
+import { eventLabel } from "@/lib/event-labels";
 import {
   useCallback,
   useEffect,
@@ -16,7 +17,6 @@ import type {
   ApiStaff,
 } from "@/lib/api/types";
 import { stationTime } from "@/lib/api/types";
-import type { ApiCustomer, ApiVehicle } from "@/lib/api/booking-adapter";
 import type {
   ManagerData,
   ManagerService,
@@ -100,8 +100,6 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
       const [
         bookings,
         pending,
-        customers,
-        vehicles,
         services,
         staff,
         settings,
@@ -113,11 +111,9 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
           `admin/bookings?from=${period.from}&to=${period.to}`,
           signal,
         ),
-        path === "/dieu-hanh/lich-hen"
+        path === "/dieu-hanh/lich-hen" || path === "/dieu-hanh"
           ? collection<ApiBooking>("admin/bookings?status=PENDING", signal)
           : Promise.resolve([] as ApiBooking[]),
-        collection<ApiCustomer>("admin/customers", signal),
-        collection<ApiVehicle>("admin/vehicles", signal),
         collection<ApiService>("admin/services", signal),
         collection<ApiStaff>("admin/staff", signal),
         request<ApiSettings>("admin/site-settings", { signal }),
@@ -145,10 +141,17 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
       const appointments = Array.from(
         new Map([...bookings, ...pending].map((b) => [b.id, b])).values(),
       );
-      const vehicleOf = new Map<string, ApiVehicle>();
-      for (const v of vehicles)
-        for (const x of v.customerContacts)
-          if (!vehicleOf.has(x.customerId)) vehicleOf.set(x.customerId, v);
+      // Customer lookups come from the loaded bookings; the customer page searches the server itself.
+      const customerOf = new Map<string, ManagerData["customers"][number]>();
+      for (const b of appointments)
+        if (b.customerId && !customerOf.has(b.customerId))
+          customerOf.set(b.customerId, {
+            id: b.customerId,
+            name: b.customer.name,
+            phone: b.customer.phone,
+            model: b.vehicle?.model || "",
+            plate: b.vehicle?.plate || "",
+          });
       const result: ManagerData = {
         ...empty,
         bookings: appointments.map((b) => {
@@ -182,16 +185,7 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
             vehicleSnapshot: b.vehicle,
           };
         }),
-        customers: customers.map((c) => {
-          const vehicle = vehicleOf.get(c.id);
-          return {
-            id: c.id,
-            name: c.name,
-            phone: c.phone,
-            model: vehicle?.model || "",
-            plate: vehicle?.plate || "",
-          };
-        }),
+        customers: [...customerOf.values()],
         services: services.map((s) => ({
           id: s.id,
           code: s.code,
@@ -253,7 +247,11 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
           phone: settings.data.phone.replace(/^\+84/, "0"),
           address: settings.data.address,
           open: p?.hours[0]?.opensAt || "",
-          close: p?.hours[0]?.closesAt || "",
+          // With a lunch break a day has two ranges; closing time is the later one.
+          close:
+            p?.hours
+              .filter((h) => h.weekday === p.hours[0].weekday)
+              .reduce((m, h) => (h.closesAt > m ? h.closesAt : m), "") || "",
           leadMinutes: p?.leadMinutes || 0,
           advanceDays: p?.advanceDays || 30,
         },
@@ -261,7 +259,7 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
           id: e.id,
           time: stationTime(e.occurredAt).slice(11, 16),
           actor: typeof e.actor === "string" ? e.actor : e.actor.name,
-          action: e.summary,
+          action: eventLabel(e.summary),
           target: e.entityType,
         })),
       };
@@ -357,7 +355,14 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
         const old = raw.current.services.find((s) => s.id === item.id);
         const body = {
           name: item.name,
-          categoryCode: groupCodes[item.group] || "OTHER",
+          // Keep the stored category unless the group label was changed in the form.
+          categoryCode:
+            old && old.category.name === item.group
+              ? old.category.code
+              : groupCodes[item.group] ||
+                raw.current.services.find((x) => x.category.name === item.group)
+                  ?.category.code ||
+                "OTHER",
           active: item.active,
           bookable: !!item.bookable && item.active,
           sortOrder: old?.sortOrder || 0,

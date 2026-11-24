@@ -1,4 +1,9 @@
 "use client";
+import { PartnerName } from "@/components/advisor/partner-picker";
+import { PartnerTicketsBar, thisMonth } from "@/components/advisor/partner-tickets-bar";
+import { monthRange } from "@/lib/csv";
+import { DateInput } from "@/components/advisor/date-input";
+import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -49,7 +54,10 @@ function VisitsContent({
     [advisor, setAdvisor] = useState(params.get("advisor") || ""),
     [from, setFrom] = useState(params.get("from") || ""),
     [to, setTo] = useState(params.get("to") || ""),
-    [reload, setReload] = useState(0);
+    [reload, setReload] = useState(0),
+    [partnerTab, setPartnerTab] = useState(params.get("tab") === "doi-tac"),
+    [month, setMonth] = useState(thisMonth),
+    [partnerSale, setPartnerSale] = useState("");
   useEffect(() => {
     const timer = setTimeout(() => setSearch(query), 200);
     return () => clearTimeout(timer);
@@ -72,7 +80,15 @@ function VisitsContent({
   if (search) q.set("q", search);
   if (stage) q.set("stage", stage);
   if (advisor) q.set("advisorId", advisor);
-  if (from || to) {
+  const partnerView = partnerTab && !board && !customerId;
+  if (partnerView) {
+    // Partner tab: one month of partner cars, optionally one sale.
+    const range = monthRange(month);
+    q.set("partner", "true");
+    q.set("from", range.from);
+    q.set("to", range.to);
+    if (partnerSale) q.set("partnerSaleId", partnerSale);
+  } else if (from || to) {
     q.set("from", from || to);
     q.set("to", to || from);
   }
@@ -101,6 +117,27 @@ function VisitsContent({
               : "Danh sách phiếu dịch vụ"
         }
       >
+        {!customerId && !board && (
+          <div className="mgr-tabs" aria-label="Nhóm phiếu">
+            <button
+              aria-pressed={!partnerTab}
+              onClick={() => setPartnerTab(false)}
+            >
+              Tất cả phiếu
+            </button>
+            <button aria-pressed={partnerTab} onClick={() => setPartnerTab(true)}>
+              Đối tác
+            </button>
+          </div>
+        )}
+        {partnerView && (
+          <PartnerTicketsBar
+            month={month}
+            saleId={partnerSale}
+            onMonth={setMonth}
+            onSale={setPartnerSale}
+          />
+        )}
         {!customerId && (
           <div className="mgr-toolbar">
             <ManagerSearch
@@ -135,22 +172,24 @@ function VisitsContent({
                   </option>
                 ))}
             </FilterSelect>
+            {!partnerView && (
+            <>
             <label className="mgr-filter">
               Từ ngày
-              <input
-                type="date"
+              <DateInput
                 value={from}
-                onChange={(e) => setFrom(e.target.value)}
+                onValueChange={(v) => setFrom(v)}
               />
             </label>
             <label className="mgr-filter">
               Đến ngày
-              <input
-                type="date"
+              <DateInput
                 value={to}
-                onChange={(e) => setTo(e.target.value)}
+                onValueChange={(v) => setTo(v)}
               />
             </label>
+            </>
+            )}
             <button
               className="adm-btn"
               onClick={() => {
@@ -209,14 +248,20 @@ function VisitTable({ path, reload }: { path: string; reload: number }) {
                     >
                       {v.code}
                     </Link>
-                    <strong>{v.vehicle.plate || v.vehicle.model}</strong>
+                    <strong>{formatPlate(v.vehicle.plate) || v.vehicle.model}</strong>
                     <small>Tiếp nhận {workflowTime(v.receivedAt)}</small>
                   </td>
                   <td>
-                    {v.customer.name}
-                    <small>
-                      <a href={`tel:${v.customer.phone}`}>{v.customer.phone}</a>
-                    </small>
+                    {v.partner ? (
+                      <PartnerName sale={v.partner.saleName} />
+                    ) : (
+                      v.customer.name
+                    )}
+                    {!v.partner && (
+                      <small>
+                        <a href={`tel:${v.customer.phone}`}>{formatPhone(v.customer.phone)}</a>
+                      </small>
+                    )}
                   </td>
                   <td>
                     {v.assignedAdvisor.name}
@@ -291,9 +336,10 @@ function VisitBoard({ path, reload }: { path: string; reload: number }) {
   function card(v: Visit) {
     return (
       <article className="mgr-vehicle-card" key={v.id}>
-        <strong>{v.vehicle.plate || v.vehicle.model}</strong>
+        <strong>{formatPlate(v.vehicle.plate) || v.vehicle.model}</strong>
         <p>
-          {v.code} · {v.customer.name}
+          {v.code} · {v.partner ? v.partner.saleName : v.customer.name}
+          {v.partner && <span className="adv-partner-badge">Toàn Trung</span>}
         </p>
         <VisitStageBadge stage={v.stage} />
         <p>CVDV: {v.assignedAdvisor.name}</p>

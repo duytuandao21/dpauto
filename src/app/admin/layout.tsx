@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { WorkspaceShell } from "@/components/internal/workspace-shell";
+// admin.css styles the shared sign-in screen shown by CmsShell before a session exists.
 import "@/styles/admin.css";
-import "@/styles/advisor.css";
-import "@/styles/manager.css";
-import "@/styles/manager-coreui.css";
+import "@/styles/cms-admin.css";
 import { CmsShell } from "@/components/manager/cms-shell";
+import { CmsLayout } from "@/components/cms/shell";
 
 export const metadata: Metadata = {
   title: { absolute: "DPAuto | Quản trị website" },
@@ -18,9 +17,7 @@ export default function WebsiteAdminLayout({
 }) {
   return (
     <CmsShell>
-      <WorkspaceShell className="mgr-app mgr-desktop-scale">
-        {children}
-      </WorkspaceShell>
+      <CmsLayout>{children}</CmsLayout>
     </CmsShell>
   );
 }

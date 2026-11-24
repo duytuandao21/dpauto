@@ -8,12 +8,14 @@ import {
   useTransform,
 } from "motion/react";
 import { useRef } from "react";
-import { homeVi as home } from "@/lib/home-vi";
 import { Photo } from "@/components/ui/photo";
+import { homeDefaults } from "@/lib/home-defaults";
+import type { SiteImage } from "@/lib/content";
+import { useImage, useSection } from "@/components/site/site-content";
 
 const scrollSpring = { stiffness: 500, damping: 60, mass: 1 };
 
-function ProcessImage() {
+function ProcessImage({ photo, note }: { photo: SiteImage; note?: string }) {
   const image = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   // The reference maps entry progress until the whole image is inside the viewport.
@@ -33,17 +35,13 @@ function ProcessImage() {
         style={reduced ? { top: 0, bottom: 0 } : { scale, y }}
       >
         <Photo
-          src="/images/DtZUUfzGF1adTjqnD7pA9HwQuI.webp"
-          alt="Kỹ thuật viên đánh bóng sơn xe tại xưởng chăm sóc ô tô"
+          {...photo}
           sizes="(max-width: 809px) 100vw, (max-width: 1199px) 50vw, 58vw"
         />
       </motion.div>
       <aside className="process-note">
         <span className="process-note-accent" aria-hidden="true" />
-        <p>
-          Một số dịch vụ nhận xe trực tiếp. Với phủ ceramic, dán PPF, phim cách
-          nhiệt và chăm sóc chuyên sâu, bạn nên gọi trước.
-        </p>
+        <p>{note}</p>
       </aside>
     </div>
   );
@@ -53,7 +51,7 @@ function ProcessStep({
   step,
   index,
 }: {
-  step: (typeof home.process)[number];
+  step: { title: string; description: string };
   index: number;
 }) {
   const card = useRef<HTMLLIElement>(null);
@@ -85,16 +83,26 @@ function ProcessStep({
 }
 
 export function ProcessSection() {
+  const section = useSection("home.process", homeDefaults["home.process"]),
+    resolve = useImage();
+  if (!section) return null;
+  const image = resolve(section.image, homeDefaults["home.process"].image)!;
+  const steps = (section.items as { title?: string; text?: string }[]).map(
+    (s) => ({
+      title: s.title || "",
+      description: s.text || "",
+    }),
+  );
   return (
     <section className="section light process-section" id="Our Service Process">
       <div className="container">
         <div className="section-heading">
-          <h2>Quy trình chăm sóc xe</h2>
+          <h2>{section.title}</h2>
         </div>
         <div className="process-layout">
-          <ProcessImage />
+          <ProcessImage photo={image} note={section.note} />
           <ol className="process-steps">
-            {home.process.map((step, index) => (
+            {steps.map((step, index) => (
               <ProcessStep key={step.title} step={step} index={index} />
             ))}
           </ol>

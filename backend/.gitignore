@@ -8,3 +8,4 @@ dist/
 .ops/
 *.dump
 *.dump.manifest.json
+storage/

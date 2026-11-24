@@ -16,6 +16,7 @@ import {
   stationToday,
   validateCustomer,
   type CustomerFields,
+  vehicleName,
   type CustomerErrors,
   bookingServices,
   type BookingService,
@@ -29,29 +30,39 @@ import {
   StepIntro,
 } from "./booking-steps";
 import { BookingSchedule } from "./booking-schedule";
+import { useSite } from "@/components/site/site-content";
+import { bookingPreset } from "./booking-preset";
 import "./booking-dialog.css";
 
 const initialCustomer: CustomerFields = {
   name: "",
   phone: "",
   plate: "",
-  vehicle: "",
+  brand: "",
+  model: "",
 };
 const steps = ["Thông tin", "Dịch vụ", "Thời gian", "Xem lại"];
 
-export function BookingLauncher() {
+export function BookingLauncher({
+  label = "Đặt lịch hẹn",
+  className,
+}: {
+  label?: string;
+  className?: string;
+}) {
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
   return (
     <>
       <Button
+        className={className}
         onClick={(event) => {
           // Safari does not focus a button on pointer activation by default.
           event.currentTarget.focus({ preventScroll: true });
           setOpen(true);
         }}
       >
-        Đặt lịch hẹn
+        {label}
       </Button>
       <BookingDialog open={open} onClose={close} />
     </>
@@ -85,15 +96,35 @@ function BookingDialog({
   const [catalogError, setCatalogError] = useState("");
   const [catalogRetry, setCatalogRetry] = useState(0);
   const [acknowledged, setAcknowledged] = useState(false);
+  // Customers pick the services shown on the website; each has a mirrored operations
+  // service (synced when the admin publishes it) that bookings are filed under.
+  const site = useSite();
   const services: BookingService[] = apiEnabled
-    ? catalog?.services.map((s) => ({
-        id: s.id,
-        name: s.name,
-        description: s.description || "",
-        durationLabel: s.estimatedDurationLabel,
-        icon: "tool",
-      })) || []
+    ? catalog
+      ? site.services.map((s) => {
+          const op = catalog.services.find((o) => o.marketingSlug === s.key);
+          return {
+            id: s.slug,
+            name: s.title,
+            description: s.description,
+            durationLabel: op?.estimatedDurationLabel || "",
+            icon: "tool",
+            image: s.image,
+            opId: op?.id,
+            disabled: !op,
+          };
+        })
+      : []
     : bookingServices;
+  const opIds = apiEnabled
+    ? [
+        ...new Set(
+          serviceIds.flatMap(
+            (id) => services.find((s) => s.id === id)?.opId || [],
+          ),
+        ),
+      ]
+    : serviceIds;
   const dialog = useRef<HTMLDialogElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const submitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -104,6 +135,36 @@ function BookingDialog({
   useEffect(() => {
     setMounted(true);
   }, []);
+  // Once per opening, as soon as the service list is ready: tick the services of the page being
+  // viewed (kept alongside earlier picks) and suggest its note if the customer has not written one.
+  const presetApplied = useRef(false);
+  const presetNote = useRef("");
+  useEffect(() => {
+    if (!open) {
+      presetApplied.current = false;
+      return;
+    }
+    if (presetApplied.current || !services.length) return;
+    presetApplied.current = true;
+    const preset = bookingPreset();
+    if (!preset) return;
+    const ids = site.services
+      .filter((s) => s.key && preset.serviceKeys.includes(s.key))
+      .map((s) => s.slug)
+      .filter((id) => services.some((x) => x.id === id && !x.disabled));
+    if (ids.some((id) => !serviceIds.includes(id))) {
+      setServiceIds((prev) => [...new Set([...prev, ...ids])]);
+      setTime("");
+      setReady(false);
+    }
+    // A note we suggested earlier (another product) is replaced; one the customer wrote is kept.
+    if (preset.note)
+      setNote((prev) =>
+        !prev.trim() || prev === presetNote.current ? preset.note! : prev,
+      );
+    presetNote.current = preset.note || "";
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs when opened / when services arrive
+  }, [open, services.length]);
   useEffect(() => {
     if (!apiEnabled || !open) return;
     const controller = new AbortController();
@@ -111,9 +172,6 @@ function BookingDialog({
     request<PublicCatalog>("public/services", { signal: controller.signal })
       .then((r) => {
         setCatalog(r.data);
-        setServiceIds((ids) =>
-          ids.filter((id) => r.data.services.some((s) => s.id === id)),
-        );
       })
       .catch((e) => {
         if (e.name !== "AbortError") {
@@ -220,6 +278,8 @@ function BookingDialog({
   }
   function changeCustomer(field: keyof CustomerFields, value: string) {
     const next = { ...customer, [field]: value };
+    // A new make clears the model picked for the previous one.
+    if (field === "brand") next.model = "";
     setCustomer(next);
     if (errors[field])
       setErrors((previous) => ({
@@ -279,17 +339,17 @@ function BookingDialog({
           await command<{ bookingCode: string }>("public/bookings", {
             customer: { name: customer.name.trim(), phone: customer.phone },
             vehicle:
-              customer.vehicle.trim() || customer.plate.trim()
+              vehicleName(customer) || customer.plate.trim()
                 ? {
-                    ...(customer.vehicle.trim()
-                      ? { model: customer.vehicle.trim() }
+                    ...(vehicleName(customer)
+                      ? { model: vehicleName(customer) }
                       : {}),
                     ...(customer.plate.trim()
                       ? { plate: customer.plate.trim() }
                       : {}),
                   }
                 : null,
-            serviceIds,
+            serviceIds: opIds,
             // Day + period only; the advisor agrees the exact time with the customer.
             requestedDate: date,
             requestedPeriod: time === "morning" ? "MORNING" : "AFTERNOON",
@@ -516,7 +576,7 @@ function BookingDialog({
                     catalog={catalog}
                     today={today}
                     date={date}
-                    serviceIds={serviceIds}
+                    serviceIds={opIds}
                     selectedTime={time}
                     error={timeError}
                     onDate={setDate}

@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { partnerSale } from "./partners";
 import type { Config } from "./config";
 import { sql, one, rows, json, type Conn, type Row } from "./database";
 import {
@@ -65,6 +66,7 @@ export class Bookings {
       })),
       requestedStartAt: iso(b.requested_start_at),
       requestedPeriod: b.requested_period ?? null,
+      partner: b.partner_snapshot ?? null,
       originalRequestedPeriod: b.original_requested_period ?? null,
       scheduledStartAt: iso(b.scheduled_start_at),
       confirmedStartAt: b.confirmed_start_at ? iso(b.confirmed_start_at) : null,
@@ -291,10 +293,14 @@ export class Bookings {
       fail(403, "FORBIDDEN");
     if (advisorId) await this.validAdvisor(c, ctx, advisorId);
     if (input.confirmNow && !advisorId) fail(422, "ADVISOR_REQUIRED");
+    const partner =
+      !publicInput && input.partnerSaleId
+        ? await partnerSale(c, ctx, input.partnerSaleId)
+        : null;
     const customer = await this.directory.contact(
         c,
         ctx,
-        input.customer,
+        partner ? partner.customer : input.customer,
         publicInput,
       ),
       vehicle = await this.directory.bookingVehicle(
@@ -320,6 +326,10 @@ export class Bookings {
       sql`INSERT INTO bookings(id,station_id,code,customer_id,vehicle_id,contact_snapshot,vehicle_snapshot,requested_start_at,scheduled_start_at,requested_period,original_requested_period,confirmed_start_at,status,source,assigned_advisor_id,customer_note,internal_note,created_by)
       VALUES(${id},${ctx.station.id},${code},${customer.id},${vehicle?.id || null},${json({ name: customer.name, phone: customer.phone_normalized })},${vehicle ? json({ model: vehicle.model, plate: vehicle.plate_normalized, year: vehicle.model_year }) : sql`NULL`},${requestedAt},${requestedAt},${byPeriod ? input.requestedPeriod : null},${byPeriod ? input.requestedPeriod : null},${input.confirmNow ? requestedAt : null},${input.confirmNow ? "CONFIRMED" : "PENDING"},${publicInput ? publicSource : input.source},${advisorId},${input.note || input.customerNote || null},${publicInput ? null : input.internalNote || null},${ctx.actor?.userId || null}) RETURNING *`,
     );
+    if (partner)
+      await c.execute(
+        sql`UPDATE bookings SET partner_sale_id=${partner.snapshot.saleId},partner_snapshot=${json(partner.snapshot)} WHERE id=${id}`,
+      );
     await this.saveServices(c, ctx, id, plans);
     const reservation = await this.capacity.persist(c, ctx, id, allocated);
     if (advisorId)
@@ -400,6 +410,14 @@ export class Bookings {
       next.assigned_advisor_id = claimer;
     }
     if (action === "edit") {
+      if (input.partnerSaleId) {
+        if (!b.partner_sale_id)
+          fail(422, "PARTNER_ONLY", "Lịch này không phải xe đối tác.");
+        const p = await partnerSale(c, ctx, input.partnerSaleId);
+        await c.execute(
+          sql`UPDATE bookings SET partner_sale_id=${p.snapshot.saleId},partner_snapshot=${json(p.snapshot)} WHERE id=${id}`,
+        );
+      }
       if (input.customerContact)
         next.contact_snapshot = {
           name: input.customerContact.name,
@@ -588,6 +606,26 @@ export class Bookings {
         }
       : receipt(next, hold!, eventId, warnings);
   }
+  /** Soft delete in any status: hidden everywhere, history kept; an open hold is released. */
+  async remove(c: Conn, ctx: Context, id: string, input: Row) {
+    const b = await scopedBooking(c, ctx, id, true);
+    expectVersion(b, input.expectedVersion);
+    const hold = await one(
+      c,
+      sql`SELECT id FROM capacity_reservations WHERE booking_id=${id} AND status='ACTIVE'`,
+    );
+    if (hold) await this.capacity.release(c, ctx, hold.id, "DELETE");
+    // Open bookings become cancelled too, so counts and capacity never see them again.
+    const open = ["PENDING", "CONFIRMED"].includes(b.status);
+    await c.execute(
+      sql`UPDATE bookings SET ${open ? sql`status='CANCELLED',cancelled_at=${ctx.now},cancel_reason=${input.reason},change_kind='CANCELLED',` : sql``}deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId},version=version+1,updated_at=${ctx.now} WHERE id=${id}`,
+    );
+    const eventId = await event(c, ctx, id, "BOOKING_DELETED", input.reason, {
+      fromStatus: b.status,
+    });
+    // No bookingId: an idempotent replay must not re-check access to a now hidden booking.
+    return { id, deleted: true, version: b.version + 1, eventId };
+  }
   async conflicts(c: Conn, ctx: Context, b: Row, endAt?: Date) {
     if (!b.assigned_advisor_id) return [];
     const hold = endAt
@@ -600,7 +638,7 @@ export class Bookings {
       endAt || hold?.end_at || new Date(+b.scheduled_start_at + 15 * 60000);
     const clash = await one(
       c,
-      sql`SELECT 1 FROM bookings other JOIN capacity_reservations r ON r.booking_id=other.id AND r.status='ACTIVE'
+      sql`SELECT 1 FROM bookings other JOIN capacity_reservations r ON r.booking_id=other.id AND r.status='ACTIVE' AND other.deleted_at IS NULL
       WHERE other.station_id=${ctx.station.id} AND other.assigned_advisor_id=${b.assigned_advisor_id} AND other.status='CONFIRMED'
       AND other.scheduled_start_at<${end} AND r.end_at>${b.scheduled_start_at} AND other.id<>${b.id} LIMIT 1`,
     );

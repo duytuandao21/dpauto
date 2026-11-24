@@ -38,7 +38,7 @@ export function TrainingSection() {
             <p>
               <TrainingPointer />
               Học trực tiếp cùng đội ngũ giàu kinh nghiệm về chăm sóc xe và bảo
-              vệ sơn tại HyperAuto Care.
+              vệ sơn tại DPAuto.
             </p>
             <p>
               <TrainingPointer />
@@ -55,7 +55,6 @@ export function TrainingSection() {
             <Photo
               src="/images/IgURz8uFfe3CNgAaya6hHvyqaA.png"
               alt="Giảng viên hướng dẫn học viên đánh bóng nắp ca-pô"
-              unoptimized
               sizes="100vw"
             />
           </HomeScrollFrame>

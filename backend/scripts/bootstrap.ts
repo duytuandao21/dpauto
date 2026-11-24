@@ -42,6 +42,10 @@ export async function bootstrap(db: Database, config: Config, raw: unknown) {
         c,
         sql`INSERT INTO stations(code,name,phone,address,directions_url,privacy_notice_version,booking_enabled) VALUES(${config.stationCode},${input.stationName},${input.phone},${input.address},${input.directionsUrl},'BOOKING_V1',true) RETURNING *`,
       );
+    // Same default partner migration 0029 adds for existing stations.
+    await c.execute(
+      sql`INSERT INTO partners(station_id,name) SELECT ${station!.id}::uuid,'Xe Lướt Toàn Trung' WHERE NOT EXISTS(SELECT 1 FROM partners WHERE station_id=${station!.id}::uuid)`,
+    );
     const user = await one(
       c,
       sql`INSERT INTO users(email_normalized,status,must_change_password) VALUES(${input.email},'ACTIVE',true) RETURNING *`,

@@ -1,16 +1,6 @@
-import type { Metadata } from "next";
-import { ServicesBanner, ServicesList } from "@/components/sections/services";
-import { WorkFinalCTA } from "@/components/sections/our-work-motion";
-import { publicMetadata } from "@/lib/public-cms";
+import { permanentRedirect } from "next/navigation";
 
-export const generateMetadata = (): Promise<Metadata> =>
-  publicMetadata("/services", { title: "Dịch vụ" });
-export default function ServicesPage() {
-  return (
-    <div className="services-page">
-      <ServicesBanner />
-      <ServicesList />
-      <WorkFinalCTA />
-    </div>
-  );
+// The service list moved to /dich-vu; keep old links and search results working.
+export default function OldServicesPage() {
+  permanentRedirect("/dich-vu");
 }

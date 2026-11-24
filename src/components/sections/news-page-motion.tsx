@@ -1,4 +1,6 @@
 "use client";
+import { pageDefaults } from "@/lib/page-defaults";
+import { useImage, useSection } from "@/components/site/site-content";
 
 import {
   motion,
@@ -12,6 +14,8 @@ import { Photo } from "@/components/ui/photo";
 import { banners, type SiteImage } from "@/lib/content";
 
 export function NewsBanner() {
+  const banner = useSection("news", pageDefaults.news) || pageDefaults.news,
+    image = useImage()(banner.image, banners.news)!;
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, {
@@ -27,11 +31,11 @@ export function NewsBanner() {
         className="news-page-banner-image"
         style={reduced ? undefined : { scale }}
       >
-        <Photo {...banners.news} priority unoptimized sizes="100vw" />
+        <Photo {...image} priority sizes="100vw" />
       </motion.div>
       <div className="news-page-banner-overlay" />
       <div className="container news-page-banner-heading">
-        <h1>Tin tức từ HyperAuto Care</h1>
+        <h1>{banner.title}</h1>
       </div>
     </section>
   );
@@ -72,7 +76,6 @@ export function FeaturedArticleFrame({
             >
               <Photo
                 {...image}
-                unoptimized
                 sizes="(max-width: 809px) 100vw, 50vw"
               />
             </motion.div>

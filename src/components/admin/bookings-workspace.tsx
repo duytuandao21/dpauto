@@ -1,10 +1,12 @@
 "use client";
+import { useCloseOutside } from "@/components/advisor/use-close-outside";
+import { PartnerName } from "@/components/advisor/partner-picker";
 import { DateInput } from "@/components/advisor/date-input";
 import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import {
   advisors as seedAdvisors,
   bookingServices as seedServices,
@@ -36,7 +38,12 @@ import { OverviewTasks } from "@/components/advisor/overview-tasks";
 import { apiEnabled } from "@/lib/api/client";
 import { pendingQueue } from "@/lib/booking/queue";
 import { WorkspaceDrawer } from "@/components/advisor/workspace-drawer";
-import { EditBookingLink, RescheduleButton } from "./booking-actions";
+import { softDetailLinks } from "@/components/advisor/soft-detail";
+import {
+  DeleteBookingButton,
+  EditBookingLink,
+  RescheduleButton,
+} from "./booking-actions";
 
 export function BookingCard({
   booking,
@@ -203,12 +210,15 @@ export function BookingTable({
   params,
   date,
   overview = false,
+  byDay = false,
 }: {
   bookings: Booking[];
   selectedId?: string;
   params: URLSearchParams;
   date: string;
   overview?: boolean;
+  /** Week view: a heading row before each day's bookings (target of the week strip). */
+  byDay?: boolean;
 }) {
   const { data } = useBookings();
   const services = data.services ?? seedServices;
@@ -231,7 +241,12 @@ export function BookingTable({
           </tr>
         </thead>
         <tbody role="rowgroup">
-          {bookings.map((booking) => {
+          {bookings.map((booking, index) => {
+            const day = bookingTime(booking).slice(0, 10);
+            const dayHead =
+              byDay &&
+              (index === 0 ||
+                bookingTime(bookings[index - 1]).slice(0, 10) !== day);
             const customer =
               booking.customerSnapshot ||
               data.customers.find((c) => c.id === booking.customerId);
@@ -248,8 +263,17 @@ export function BookingTable({
                 "Chưa có tên dịch vụ",
             );
             return (
+              <Fragment key={booking.id}>
+              {dayHead && (
+                <tr className="adv-booking-day" id={`booking-day-${day}`}>
+                  <th scope="colgroup" colSpan={6}>
+                    {formatDate(day, { weekday: "long" })}, {formatDate(day)} ·{" "}
+                    {bookings.filter((b) => bookingTime(b).slice(0, 10) === day).length}{" "}
+                    lịch
+                  </th>
+                </tr>
+              )}
               <tr
-                key={booking.id}
                 role="row"
                 className={
                   selectedId === booking.id ? "is-selected" : undefined
@@ -269,9 +293,13 @@ export function BookingTable({
                 </td>
                 <td role="cell" className="adv-booking-customer">
                   <Link href={href} scroll={false}>
-                    <strong>{customer?.name || "Chưa có thông tin"}</strong>
+                    {booking.partner ? (
+                      <PartnerName sale={booking.partner.saleName} />
+                    ) : (
+                      <strong>{customer?.name || "Chưa có thông tin"}</strong>
+                    )}
                   </Link>
-                  {customer?.phone && (
+                  {customer?.phone && !booking.partner && (
                     <a
                       className="adv-table-secondary"
                       href={`tel:${formatPhone(customer.phone)}`}
@@ -318,9 +346,11 @@ export function BookingTable({
                     <Link className="adm-btn" href={href} scroll={false}>
                       Chi tiết
                     </Link>
+                    {!overview && <DeleteBookingButton booking={booking} />}
                   </div>
                 </td>
               </tr>
+              </Fragment>
             );
           })}
         </tbody>
@@ -330,17 +360,30 @@ export function BookingTable({
 }
 export function BookingsWorkspace({
   overview = false,
-  id,
+  id: routeId,
 }: {
   overview?: boolean;
   id?: string;
 }) {
   const { data, ready, selectedDate, setSelectedDate } = useBookings(),
     params = useSearchParams(),
-    router = useRouter();
+    router = useRouter(),
+    path = usePathname();
+  // The open detail comes from the URL (opening/closing only rewrite it, no navigation).
+  const routeMatch = path.match(/^\/co-van\/lich-hen\/([^/]+)$/);
+  const id =
+    routeMatch && routeMatch[1] !== "tao-moi"
+      ? decodeURIComponent(routeMatch[1])
+      : routeId && path.endsWith("/" + routeId)
+        ? routeId
+        : undefined;
   const advisors = data.advisors ?? seedAdvisors,
     bookingServices = data.services ?? seedServices;
   const [advanced, setAdvanced] = useState(false);
+  const filterBox = useRef<HTMLDivElement>(null);
+  const closeFilters = useCallback(() => setAdvanced(false), []);
+  // Overview reuses `advanced` to reveal its search row, so only the list page closes on outside clicks.
+  useCloseOutside(filterBox, advanced && !overview, closeFilters);
   const selectionId = id || (overview ? params.get("booking") : null);
   const selected = data.bookings.find((b) => b.id === selectionId);
   const queryDate = params.get("date");
@@ -360,6 +403,20 @@ export function BookingsWorkspace({
   useEffect(() => {
     if (ready && date !== selectedDate) setSelectedDate(date);
   }, [date, ready, selectedDate, setSelectedDate]);
+  // The strip scrolls sideways; keep the chosen day (or today) in view, centred.
+  const strip = useRef<HTMLDivElement>(null);
+  const centerStrip = () => {
+    const box = strip.current,
+      day = box?.querySelector<HTMLElement>(".is-active, .is-today");
+    if (!box || !day) return;
+    const b = box.getBoundingClientRect(),
+      d = day.getBoundingClientRect();
+    box.scrollBy({
+      left: d.left - b.left - (b.width - d.width) / 2,
+      behavior: "smooth",
+    });
+  };
+  useEffect(centerStrip, [date, ready]);
   const query = params.get("q") || "",
     status = overview ? "all" : params.get("status") || "all",
     service = params.get("service") || "",
@@ -457,6 +514,11 @@ export function BookingsWorkspace({
   return (
     <div
       className={`adm-workspace-page${detailOpen ? " has-detail" : ""}${overview ? " adm-overview" : ""}`}
+      onClickCapture={softDetailLinks((u) =>
+        overview
+          ? u.pathname === "/co-van" && u.searchParams.has("booking")
+          : /^\/co-van\/lich-hen\/(?!tao-moi$)[^/]+$/.test(u.pathname),
+      )}
     >
       <div className="adm-list-heading">
         <PageHeading
@@ -469,7 +531,7 @@ export function BookingsWorkspace({
           }
         >
           <div className="adv-actions">
-            {apiEnabled && !overview && (
+            {apiEnabled && (
               <Link href="/co-van/tiep-nhan/truc-tiep" className="adm-btn">
                 Tiếp nhận xe trực tiếp
               </Link>
@@ -596,7 +658,16 @@ export function BookingsWorkspace({
               <>
                 <div className="adm-date-controls">
                   <button
-                    className="adm-icon-btn"
+                    className="adm-btn adm-btn-sm"
+                    onClick={() => {
+                      update({ date: localDate() });
+                      centerStrip();
+                    }}
+                  >
+                    Hôm nay
+                  </button>
+                  <button
+                    className="adm-icon-btn adm-date-prev"
                     aria-label={mode === "week" ? "Tuần trước" : "Ngày trước"}
                     onClick={() =>
                       update({
@@ -606,16 +677,19 @@ export function BookingsWorkspace({
                   >
                     <span>‹</span>
                   </button>
-                  <button
-                    className="adm-btn adm-btn-sm"
-                    onClick={() => update({ date: localDate() })}
+                  <label
+                    className={`adm-date-picker${mode === "week" ? " is-week" : ""}`}
                   >
-                    Hôm nay
-                  </button>
-                  <label className="adm-date-picker">
                     <AdminIcon name="calendar" />
+                    {mode === "week" && (
+                      <span className="adm-date-range">
+                        {formatDate(weekStart).slice(0, 5)} – {formatDate(weekEnd)}
+                      </span>
+                    )}
                     <DateInput
-                      aria-label="Chọn ngày xem lịch"
+                      aria-label={
+                        mode === "week" ? "Chọn tuần xem lịch" : "Chọn ngày xem lịch"
+                      }
                       value={date}
                       onValueChange={(value) => {
                         if (validDate(value)) update({ date: value });
@@ -658,23 +732,34 @@ export function BookingsWorkspace({
                   </button>
                 </div>
                 <div
+                  ref={strip}
                   className={`adm-date-strip ${mode === "week" ? "is-week" : ""}`}
                   aria-label="Chọn ngày"
                 >
                   {days.map((d) => (
                     <button
                       key={d}
-                      className={`${date === d ? "is-active" : ""} ${d === localDate() ? "is-today" : ""}`}
-                      aria-pressed={date === d}
+                      className={`${mode !== "week" && date === d ? "is-active" : ""} ${d === localDate() ? "is-today" : ""}`}
+                      aria-pressed={mode === "week" ? undefined : date === d}
+                      disabled={
+                        mode === "week" &&
+                        !filtered.some((b) => bookingTime(b).slice(0, 10) === d)
+                      }
                       aria-label={`${formatDate(d)}${d === localDate() ? ", hôm nay" : ""}`}
-                      onClick={() => update({ date: d })}
+                      onClick={() =>
+                        mode === "week"
+                          ? document
+                              .getElementById(`booking-day-${d}`)
+                              ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                          : update({ date: d })
+                      }
                     >
                       <span>{formatDate(d, { weekday: "short" })}</span>
                       <strong>{d.slice(8)}</strong>
                       {mode === "week" ? (
                         <small>
                           {
-                            data.bookings.filter(
+                            filtered.filter(
                               (b) => bookingTime(b).slice(0, 10) === d,
                             ).length
                           }{" "}
@@ -709,33 +794,103 @@ export function BookingsWorkspace({
                 )}
               </label>
               {!overview && (
-                <button
-                  className={`adm-btn ${advanced ? "is-active" : ""}`}
-                  aria-label="Bộ lọc mở rộng"
-                  aria-expanded={advanced}
-                  onClick={() => setAdvanced(!advanced)}
-                >
-                  <AdminIcon name="filter" />
-                  Bộ lọc
-                  {filterCount > 0 && <small>{filterCount}</small>}
-                </button>
+                // Same popover as the ticket list filter: closes on an outside click or Escape.
+                <div className="adv-ticket-filters" ref={filterBox}>
+                  <button
+                    className={`adm-btn ${advanced ? "is-active" : ""}`}
+                    aria-label="Bộ lọc mở rộng"
+                    aria-expanded={advanced}
+                    onClick={() => setAdvanced(!advanced)}
+                  >
+                    <AdminIcon name="filter" />
+                    Bộ lọc
+                    {filterCount > 0 && <small>{filterCount}</small>}
+                  </button>
+                  {advanced && (
+                    <div className="adm-filters adv-ticket-filter-panel">
+                      <div className="adv-ticket-filter-head">
+                        <strong>Bộ lọc</strong>
+                        <button
+                          type="button"
+                          className="adm-text-link"
+                          onClick={() =>
+                            update({
+                              status: "",
+                              service: "",
+                              advisor: "",
+                              source: "",
+                            })
+                          }
+                        >
+                          Đặt lại
+                        </button>
+                      </div>
+                {view === "all" && (
+                  <label>
+                    Trạng thái
+                    <select
+                      aria-label="Lọc trạng thái đầy đủ"
+                      value={status}
+                      onChange={(e) => update({ status: e.target.value })}
+                    >
+                      <option value="all">Tất cả trạng thái</option>
+                      {Object.entries(statuses).map(([s, label]) => (
+                        <option key={s} value={s}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+                <label>
+                  Dịch vụ
+                  <select
+                    aria-label="Lọc dịch vụ"
+                    value={service}
+                    onChange={(e) => update({ service: e.target.value })}
+                  >
+                    <option value="">Tất cả dịch vụ</option>
+                    {bookingServices.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Cố vấn
+                  <select
+                    aria-label="Lọc cố vấn"
+                    value={advisor}
+                    onChange={(e) => update({ advisor: e.target.value })}
+                  >
+                    <option value="">Tất cả cố vấn</option>
+                    {advisors.map((a) => (
+                      <option key={a.id} value={a.id}>
+                        {a.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Nguồn
+                  <select
+                    aria-label="Lọc nguồn đặt lịch"
+                    value={source}
+                    onChange={(e) => update({ source: e.target.value })}
+                  >
+                    <option value="">Tất cả nguồn</option>
+                    {sources.map((s) => (
+                      <option key={s}>{s}</option>
+                    ))}
+                  </select>
+                </label>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
-            {view === "all" && (
-              <div className="adm-quick-filters" aria-label="Lọc trạng thái">
-                {(["all", "pending", "confirmed"] as const).map((s) => (
-                  <button
-                    key={s}
-                    aria-pressed={status === s}
-                    className={status === s ? "is-active" : ""}
-                    onClick={() => update({ status: s })}
-                  >
-                    {s === "all" ? "Tất cả" : statuses[s]}
-                  </button>
-                ))}
-              </div>
-            )}
-            {(advanced || filterCount > 0) && (
+            {overview && (advanced || filterCount > 0) && (
               <div className="adm-filters">
                 {view === "all" && (
                   <label>
@@ -797,6 +952,21 @@ export function BookingsWorkspace({
                     ))}
                   </select>
                 </label>
+
+              </div>
+            )}
+            {view === "all" && (
+              <div className="adm-quick-filters" aria-label="Lọc trạng thái">
+                {(["all", "pending", "confirmed"] as const).map((s) => (
+                  <button
+                    key={s}
+                    aria-pressed={status === s}
+                    className={status === s ? "is-active" : ""}
+                    onClick={() => update({ status: s })}
+                  >
+                    {s === "all" ? "Tất cả" : statuses[s]}
+                  </button>
+                ))}
               </div>
             )}
             <div className="adm-results-row">
@@ -864,6 +1034,7 @@ export function BookingsWorkspace({
                 params={params}
                 date={date}
                 overview={overview}
+                byDay={!overview && view === "all" && mode === "week"}
               />
             ) : (
               <div className="adm-booking-list">

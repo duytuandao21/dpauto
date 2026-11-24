@@ -3,12 +3,21 @@
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { projects } from "@/lib/content";
+import { useSite } from "@/components/site/site-content";
 import { BeforeAfter } from "./before-after";
 
-const slides = [projects[4], projects[1], projects[0]];
+const defaultSlides = [projects[4], projects[1], projects[0]];
+const slideKeys = ["du-an-5", "du-an-2", "du-an-1"];
 const titles = ["Phục hồi đèn pha", "Vệ sinh nội thất", "Hiệu chỉnh sơn"];
 
 export function ComparisonCarousel() {
+  const site = useSite().projects;
+  // Edited projects keep their slide; hidden ones drop out of the carousel.
+  const slides = site.length
+    ? slideKeys
+        .map((k) => site.find((p) => p.key === k))
+        .filter((p): p is NonNullable<typeof p> => !!p)
+    : defaultSlides;
   const [index, setIndex] = useState(0);
   const [hover, setHover] = useState(false);
   const [keyboardFocus, setKeyboardFocus] = useState(false);
@@ -79,7 +88,6 @@ export function ComparisonCarousel() {
               label={titles[i]}
               autoReveal={i === index}
               hoverFollow
-              originalImages
               vietnamese
             />
           </motion.div>

@@ -1,8 +1,11 @@
 "use client";
+import { useCloseOutside } from "./use-close-outside";
+import { PartnerTicketsBar, thisMonth } from "./partner-tickets-bar";
+import { monthRange } from "@/lib/csv";
 import { DateInput } from "@/components/advisor/date-input";
 import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AdminIcon } from "@/components/admin/admin-icon";
 import { AdminLoading, PageHeading } from "@/components/admin/primitives";
@@ -47,6 +50,14 @@ export function ServiceTicketsPage() {
         : "active",
   );
   const [query, setQuery] = useState("");
+  // The filter popover (<details>) closes on a click outside it or Escape.
+  const filters = useRef<HTMLDetailsElement>(null);
+  const closeFilters = useCallback(() => {
+    if (filters.current) filters.current.open = false;
+  }, []);
+  useCloseOutside(filters, true, closeFilters);
+  const [month, setMonth] = useState(thisMonth),
+    [partnerSale, setPartnerSale] = useState("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [values, setValues] = useState<Visit[]>([]);
@@ -72,10 +83,17 @@ export function ServiceTicketsPage() {
     setError("");
     const q = new URLSearchParams({ limit: "20" });
     if (view === "active") q.set("activeOnly", "true");
-    else if (view !== "all") q.set("ticketStage", view);
+    else if (view === "partner") {
+      // Partner tab: every stage, one month, optionally one sale.
+      const range = monthRange(month);
+      q.set("partner", "true");
+      q.set("from", range.from);
+      q.set("to", range.to);
+      if (partnerSale) q.set("partnerSaleId", partnerSale);
+    } else if (view !== "all") q.set("ticketStage", view);
     if (query.trim()) q.set("q", query.trim());
     if (cursor) q.set("cursor", cursor);
-    if (from || to) {
+    if (view !== "partner" && (from || to)) {
       q.set("from", from || to);
       q.set("to", to || from);
     }
@@ -106,7 +124,7 @@ export function ServiceTicketsPage() {
       controller.abort();
       clearTimeout(timer);
     };
-  }, [query, view, from, to, cursor, reload]);
+  }, [query, view, from, to, cursor, reload, month, partnerSale]);
   useEffect(() => {
     const refresh = () => {
       resetPage();
@@ -200,6 +218,7 @@ export function ServiceTicketsPage() {
             visit.stage === "RECEIVED",
             visit.pricing?.hasOpenQuote,
           ),
+          partnerSale: visit.partner?.saleName,
         };
       })
     : localValues.slice(localPage * 20, (localPage + 1) * 20).map((order) => {
@@ -307,14 +326,29 @@ export function ServiceTicketsPage() {
               </button>
             )}
           </label>
-          <details className="adv-ticket-filters">
+          <details className="adv-ticket-filters" ref={filters}>
             <summary className="adm-btn">
               <AdminIcon name="filter" />
               Bộ lọc
               {(from || to || ["PAUSED", "REWORK", "ABORTED"].includes(view)) &&
                 " •"}
             </summary>
-            <div className="adm-filters">
+            <div className="adm-filters adv-ticket-filter-panel">
+              <div className="adv-ticket-filter-head">
+                <strong>Bộ lọc</strong>
+                <button
+                  className="adm-text-link"
+                  type="button"
+                  onClick={() => {
+                    setFrom("");
+                    setTo("");
+                    setView("active");
+                    resetPage();
+                  }}
+                >
+                  Đặt lại
+                </button>
+              </div>
               <label>
                 Trạng thái
                 <select
@@ -336,6 +370,7 @@ export function ServiceTicketsPage() {
                   ))}
                 </select>
               </label>
+              <div className="adv-ticket-filter-dates">
               <label>
                 Từ ngày
                 <DateInput
@@ -358,21 +393,24 @@ export function ServiceTicketsPage() {
                   }}
                 />
               </label>
-              <button
-                className="adm-btn"
-                type="button"
-                onClick={() => {
-                  setFrom("");
-                  setTo("");
-                  setView("active");
-                  resetPage();
-                }}
-              >
-                Đặt lại bộ lọc
-              </button>
+              </div>
             </div>
           </details>
         </div>
+        {view === "partner" && apiEnabled && (
+          <PartnerTicketsBar
+            month={month}
+            saleId={partnerSale}
+            onMonth={(value) => {
+              setMonth(value);
+              resetPage();
+            }}
+            onSale={(value) => {
+              setPartnerSale(value);
+              resetPage();
+            }}
+          />
+        )}
         <div className="adm-results-row">
           <strong aria-live="polite">
             {loading
@@ -384,7 +422,9 @@ export function ServiceTicketsPage() {
               ? "Phiếu đang xử lý"
               : view === "all"
                 ? "Tất cả phiếu"
-                : ticketLabels[view as TicketStage]}
+                : view === "partner"
+                  ? "Xe đối tác trong tháng"
+                  : ticketLabels[view as TicketStage]}
           </span>
         </div>
         {deleteError && (
@@ -421,48 +461,50 @@ export function ServiceTicketsPage() {
             deletingId={deletingId}
           />
         )}
-        <nav
-          className="adv-ticket-pagination adv-pagination"
-          aria-label="Phân trang phiếu dịch vụ"
-        >
-          <button
-            className="adm-btn"
-            type="button"
-            aria-label="Trang trước"
-            disabled={loading || !!error || pageIndex === 0}
-            onClick={() => {
-              if (apiEnabled) {
-                setCursor(previous.at(-1) || "");
-                setPrevious(previous.slice(0, -1));
-              } else setLocalPage((value) => value - 1);
-            }}
+        {(pageIndex > 0 || hasNext) && (
+          <nav
+            className="adv-ticket-pagination adv-pagination"
+            aria-label="Phân trang phiếu dịch vụ"
           >
-            <AdminIcon name="back" />
-            Trước
-          </button>
-          <span
-            className="adv-pagination-current"
-            aria-current="page"
-            aria-live="polite"
-          >
-            Trang {pageIndex + 1}
-          </span>
-          <button
-            className="adm-btn"
-            type="button"
-            aria-label="Trang sau"
-            disabled={loading || !!error || !hasNext}
-            onClick={() => {
-              if (apiEnabled && next) {
-                setPrevious([...previous, cursor]);
-                setCursor(next);
-              } else if (!apiEnabled) setLocalPage((value) => value + 1);
-            }}
-          >
-            Tiếp
-            <AdminIcon name="back" />
-          </button>
-        </nav>
+            <button
+              className="adm-btn"
+              type="button"
+              aria-label="Trang trước"
+              disabled={loading || !!error || pageIndex === 0}
+              onClick={() => {
+                if (apiEnabled) {
+                  setCursor(previous.at(-1) || "");
+                  setPrevious(previous.slice(0, -1));
+                } else setLocalPage((value) => value - 1);
+              }}
+            >
+              <AdminIcon name="back" />
+              Trước
+            </button>
+            <span
+              className="adv-pagination-current"
+              aria-current="page"
+              aria-live="polite"
+            >
+              Trang {pageIndex + 1}
+            </span>
+            <button
+              className="adm-btn"
+              type="button"
+              aria-label="Trang sau"
+              disabled={loading || !!error || !hasNext}
+              onClick={() => {
+                if (apiEnabled && next) {
+                  setPrevious([...previous, cursor]);
+                  setCursor(next);
+                } else if (!apiEnabled) setLocalPage((value) => value + 1);
+              }}
+            >
+              Tiếp
+              <AdminIcon name="back" />
+            </button>
+          </nav>
+        )}
       </section>
     </div>
   );

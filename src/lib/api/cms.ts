@@ -14,7 +14,15 @@ export function canOpenCms(session: AuthSession | null) {
   );
 }
 
-export type CmsKind = "NEWS" | "PAGE" | "SEO";
+export type CmsKind =
+  | "SETTINGS"
+  | "NAVIGATION"
+  | "PAGE"
+  | "SERVICE"
+  | "NEWS"
+  | "ACCESSORY"
+  | "PROJECT"
+  | "SEO";
 export type CmsBlock = {
   tag: "p" | "h2" | "h3" | "li" | "blockquote";
   text: string;
@@ -27,32 +35,39 @@ export type CmsPayload = {
   noindex: boolean;
   category: string;
   date?: string;
+  /** Present only in the public feed: the resolved image for imageId. */
+  image?: CmsAsset;
 };
-export type CmsDocument = {
-  id: string;
-  kind: CmsKind;
-  key: string;
-  title: string;
-  version: number;
-  updatedAt: string;
-  publishedRevisionId: string | null;
-  withdrawn: boolean;
-};
-export type CmsRevision = {
-  id: string;
-  number: number;
-  payload: CmsPayload;
-  createdAt: string;
-};
-export type CmsDetail = Omit<CmsDocument, "title" | "updatedAt"> & {
-  revisions: CmsRevision[];
-  hasOlderRevisions: boolean;
-};
+export type CmsImageSource = { width: number; url: string };
 export type CmsAsset = {
   id: string;
+  /** "video": an uploaded MP4/WebM stored as-is; `src` is the file itself. */
+  kind?: "image" | "video";
   name: string;
   alt: string;
   createdAt: string;
+  deletedAt: string | null;
+  width: number | null;
+  height: number | null;
+  bytes: number | null;
+  mime: string;
+  focal: { x: number; y: number };
+  placeholder: string | null;
+  /** Largest WebP, or the legacy endpoint for images not yet moved to storage. */
+  src: string;
+  avif: CmsImageSource[];
+  webp: CmsImageSource[];
+  og: string | null;
+};
+/** Public URL for a payload's image: stored variant when available, legacy endpoint otherwise. */
+export const cmsImageSrc = (p: Pick<CmsPayload, "imageId" | "image">) =>
+  p.image?.src || `/api/v1/public/cms/assets/${p.imageId}`;
+export type CmsAssetUsage = {
+  id: string;
+  kind: CmsKind;
+  key: string;
+  title: string | null;
+  live: boolean;
 };
 export type PublicDocument = {
   kind: CmsKind;
@@ -61,47 +76,3 @@ export type PublicDocument = {
   revisionId: string | null;
   payload: CmsPayload | null;
 };
-export const cmsPages: Record<string, string> = {
-  "home.hero": "Trang chủ · Hero",
-  "home.services": "Trang chủ · Dịch vụ",
-  "home.pricing": "Trang chủ · Bảng giá",
-  "home.cta": "Trang chủ · Liên hệ cuối trang",
-  about: "Giới thiệu",
-  contact: "Liên hệ",
-  privacy: "Chính sách bảo mật",
-  terms: "Điều khoản",
-};
-export function blocksToText(blocks: CmsBlock[]) {
-  return blocks
-    .map(
-      (b) =>
-        (b.tag === "h2"
-          ? "## "
-          : b.tag === "h3"
-            ? "### "
-            : b.tag === "li"
-              ? "- "
-              : b.tag === "blockquote"
-                ? "> "
-                : "") + b.text,
-    )
-    .join("\n\n");
-}
-export function textToBlocks(value: string): CmsBlock[] {
-  return value
-    .split(/\n\s*\n/)
-    .map((v) => v.trim())
-    .filter(Boolean)
-    .map((v) => ({
-      tag: v.startsWith("### ")
-        ? "h3"
-        : v.startsWith("## ")
-          ? "h2"
-          : v.startsWith("- ")
-            ? "li"
-            : v.startsWith("> ")
-              ? "blockquote"
-              : "p",
-      text: v.replace(/^(### |## |- |> )/, ""),
-    }));
-}

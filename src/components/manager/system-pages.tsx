@@ -6,7 +6,9 @@ import { AdminIcon } from "@/components/admin/admin-icon";
 import type { ManagerSettings } from "@/lib/manager/mock";
 import { useManager } from "./manager-provider";
 import { apiEnabled } from "@/lib/api/client";
-import { LiveNotifications } from "./live-operations";
+import { DeliveryJobs } from "./live-operations";
+import { AdvisorNotifications } from "@/components/advisor/notifications";
+import { useSession } from "@/components/admin/auth-gate";
 import { ManagerPolicyEditor } from "./policy-editor";
 import { LiveAudit } from "./live-audit";
 import {
@@ -192,7 +194,17 @@ export function ManagerSettingsPage() {
 }
 
 export function ManagerNotificationsPage() {
-  return apiEnabled ? <LiveNotifications /> : <PrototypeNotificationsPage />;
+  return apiEnabled ? <ManagerLiveNotifications /> : <PrototypeNotificationsPage />;
+}
+function ManagerLiveNotifications() {
+  const session = useSession();
+  return (
+    <AdvisorNotifications base="/dieu-hanh">
+      {session?.permissions.includes("notifications.manage") && (
+        <DeliveryJobs />
+      )}
+    </AdvisorNotifications>
+  );
 }
 function PrototypeNotificationsPage() {
   const { data, notify } = useManager();

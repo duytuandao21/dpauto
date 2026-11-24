@@ -68,6 +68,8 @@ body:has(.home-page) {
   opacity: 0.8;
 }
 .home-page .hero-location {
+  /* Fits "Thứ Hai – Chủ nhật: 07:30 – 17:30" on one line. */
+  width: 256px;
   padding: 16px 18px;
   border: 3px solid white;
   border-radius: 12px;
@@ -91,6 +93,7 @@ body:has(.home-page) {
   margin-bottom: 0;
 }
 .home-page .hero-features > div {
+  align-items: center;
   padding: 10px 12px;
   gap: 8px;
 }
@@ -111,8 +114,12 @@ body:has(.home-page) {
 .home-page .services-grid {
   perspective: none;
 }
+/* Cards fill their grid row, so every card in a row has the same height. */
+.home-page .services-grid > div > .service-card {
+  height: 100%;
+}
 .home-page .service-card-top {
-  flex: 1;
+  flex: none;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -121,7 +128,9 @@ body:has(.home-page) {
   border-radius: 12px;
 }
 .home-page .service-card-top > .photo {
-  flex: 1;
+  /* Same image ratio on every card; the description box absorbs text-length differences. */
+  flex: none;
+  aspect-ratio: 4 / 3;
   min-height: 0;
   height: auto;
   width: calc(100% + 6px);
@@ -136,13 +145,13 @@ body:has(.home-page) {
   margin: 0;
 }
 .home-page .service-card-bottom {
-  flex: none;
+  flex: 1;
   gap: 16px;
   padding: 16px 12px 14px;
   border-radius: 12px;
 }
 .home-page .service-card-cta {
-  margin-top: 0;
+  margin-top: auto;
   border-color: var(--border-dark);
 }
 .home-page .service-card:hover .service-card-cta > .icon {
@@ -213,7 +222,7 @@ body:has(.home-page) {
   border: 0;
   border-radius: 16px;
   corner-shape: superellipse(2);
-  justify-content: center;
+  justify-content: space-between;
   gap: 24px 60px;
   flex-wrap: wrap;
 }
@@ -631,6 +640,39 @@ body:has(.home-page) {
   border-radius: 8px;
   background: var(--raised);
 }
+/* Compact desktop layout: cards size to their content and the map follows the column height. */
+@media (min-width: 1200px) {
+  .home-page .home-location .location-information {
+    gap: 24px;
+  }
+  .home-page .business-grid {
+    grid-template-rows: none;
+    grid-auto-flow: row dense;
+    flex: none;
+  }
+  .home-page .business-card {
+    justify-content: flex-start;
+    gap: 10px;
+  }
+  .home-page .business-hours {
+    grid-row: auto;
+    grid-column: span 2;
+  }
+  .home-page .business-address {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 16px;
+    align-items: center;
+  }
+  .home-page .business-address > .directions-button {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .home-page .home-location .location-map {
+    height: auto;
+    min-height: 440px;
+  }
+}
 .home-page .home-location .location-map iframe {
   position: relative;
   width: 100%;
@@ -684,6 +726,7 @@ body:has(.home-page) {
   }
   .home-page .hero-features > div {
     flex-direction: column;
+    align-items: flex-start;
     gap: 12px;
     padding: 16px 12px 14px;
   }
@@ -849,6 +892,7 @@ body:has(.home-page) {
   }
   .home-page .hero-features > div {
     flex-direction: column;
+    align-items: flex-start;
     padding: 16px 12px 14px;
     gap: 12px;
   }

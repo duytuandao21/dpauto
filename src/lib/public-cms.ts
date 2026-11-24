@@ -1,28 +1,75 @@
 import { cache } from "react";
+import { cookies, draftMode } from "next/headers";
+import { image as resolveImage, type Feed } from "./site-content";
+import { PREVIEW_COOKIE } from "./preview";
 import { mergePublishedArticles } from "./cms-content";
 import type { Metadata } from "next";
 import { articles as seedArticles, type Article } from "./content";
 import { homeArticles } from "./home-vi";
-import type { PublicDocument, CmsPayload } from "./api/cms";
+import { cmsImageSrc, type PublicDocument, type CmsPayload } from "./api/cms";
 
-export const publicContent = cache(async (): Promise<PublicDocument[]> => {
-  if (process.env.NEXT_PUBLIC_API_ENABLED !== "true") return [];
-  const origin = process.env.API_INTERNAL_URL || "http://127.0.0.1:4002";
-  // shortcut: SSR reads share the backend IP read limit, configure trusted proxy handling before high-traffic deployment.
-  const r = await fetch(`${origin}/api/v1/public/content`, {
-    cache: "no-store",
-    signal: AbortSignal.timeout(5000),
-  });
-  if (!r.ok)
-    throw new Error("Không tải được nội dung website. Vui lòng thử lại sau.");
-  const value = await r.json();
-  if (!Array.isArray(value?.data?.items))
-    throw new Error("Nội dung website không hợp lệ.");
-  return value.data.items;
-});
+const empty: Feed = { items: [], assets: {} };
+/** Published website content; in Next draft mode (admin preview) the latest drafts instead. */
+export const publicFeed = cache(
+  async (): Promise<Feed & { preview: boolean }> => {
+    if (process.env.NEXT_PUBLIC_API_ENABLED !== "true")
+      return { ...empty, preview: false };
+    const origin = process.env.API_INTERNAL_URL || "http://127.0.0.1:4002";
+    let token: string | undefined;
+    try {
+      if ((await draftMode()).isEnabled)
+        token = (await cookies()).get(PREVIEW_COOKIE)?.value;
+    } catch {}
+    // shortcut: SSR reads share the backend IP read limit, configure trusted proxy handling before high-traffic deployment.
+    let r: Response;
+    try {
+      r = await fetch(
+        token
+          ? `${origin}/api/v1/public/cms/preview?token=${encodeURIComponent(token)}`
+          : `${origin}/api/v1/public/content`,
+        { cache: "no-store", signal: AbortSignal.timeout(5000) },
+      );
+    } catch (e) {
+      // Backend unreachable (stopped, restarting, timeout): serve the built-in content instead of a 500 page.
+      console.warn(
+        `[public-cms] Không kết nối được backend ${origin}, dùng nội dung mặc định:`,
+        (e as Error & { cause?: Error }).cause?.message || (e as Error).message,
+      );
+      return { ...empty, preview: false };
+    }
+    if (!r.ok) {
+      // An expired preview link falls back to the live website instead of an error page.
+      if (token && r.status === 403) {
+        const live = await fetch(`${origin}/api/v1/public/content`, {
+          cache: "no-store",
+          signal: AbortSignal.timeout(5000),
+        });
+        if (live.ok) {
+          const v = await live.json();
+          return {
+            items: v.data.items,
+            assets: v.data.assets || {},
+            preview: false,
+          };
+        }
+      }
+      throw new Error("Không tải được nội dung website. Vui lòng thử lại sau.");
+    }
+    const value = await r.json();
+    if (!Array.isArray(value?.data?.items))
+      throw new Error("Nội dung website không hợp lệ.");
+    return {
+      items: value.data.items,
+      assets: value.data.assets || {},
+      preview: !!token,
+    };
+  },
+);
+export const publicContent = async (): Promise<PublicDocument[]> =>
+  (await publicFeed()).items;
 export function cmsImage(p?: CmsPayload | null) {
   return p?.imageId
-    ? { src: `/api/v1/public/cms/assets/${p.imageId}`, alt: p.title }
+    ? { src: p.image?.og || cmsImageSrc(p), alt: p.title }
     : undefined;
 }
 export async function publicPage(key: string) {
@@ -31,16 +78,19 @@ export async function publicPage(key: string) {
   );
 }
 export async function publicArticles(vietnamese = false): Promise<Article[]> {
+  const feed = await publicFeed();
   return mergePublishedArticles(
     vietnamese ? homeArticles : seedArticles,
-    await publicContent(),
+    feed.items,
+    feed.assets,
   );
 }
 export async function publicMetadata(
   path: string,
   fallback: Metadata,
 ): Promise<Metadata> {
-  const content = await publicContent();
+  const feed = await publicFeed(),
+    content = feed.items;
   const page = content.find(
     (d) =>
       d.kind === "PAGE" &&
@@ -52,7 +102,13 @@ export async function publicMetadata(
       page,
     p = d?.payload;
   if (!p) return fallback;
-  const image = cmsImage(p);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const value = (p as any).image?.src
+    ? resolveImage((p as any).image, feed.assets)
+    : undefined;
+  const image = value
+    ? { src: value.media?.og || value.src, alt: value.alt }
+    : cmsImage(p);
   return {
     ...fallback,
     title: p.title,

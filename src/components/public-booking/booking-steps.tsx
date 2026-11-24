@@ -1,12 +1,15 @@
 import type { ReactNode } from "react";
 import { Icon } from "@/components/ui/icon";
+import { Photo } from "@/components/ui/photo";
 import {
   bookingServices,
   displayDate,
   type CustomerFields,
   type CustomerErrors,
   type BookingService,
+  vehicleName,
 } from "@/lib/public-booking/mock";
+import { useSite } from "@/components/site/site-content";
 
 export function StepIntro({
   title,
@@ -66,11 +69,26 @@ export function CustomerStep({
       placeholder: "Ví dụ: 51K-123.45",
       maxLength: 20,
     },
+  ];
+  const { vehicles } = useSite();
+  const models = vehicles.find((b) => b.name === customer.brand)?.models || [];
+  const selects: {
+    key: "brand" | "model";
+    label: string;
+    empty: string;
+    options: string[];
+  }[] = [
     {
-      key: "vehicle",
-      label: "Hãng / Dòng xe",
-      placeholder: "Ví dụ: Toyota Vios",
-      maxLength: 100,
+      key: "brand",
+      label: "Hãng xe",
+      empty: "Chọn hãng xe",
+      options: vehicles.map((b) => b.name),
+    },
+    {
+      key: "model",
+      label: "Dòng xe",
+      empty: customer.brand ? "Chọn dòng xe" : "Chọn hãng xe trước",
+      options: models,
     },
   ];
   return (
@@ -113,6 +131,30 @@ export function CustomerStep({
             </div>
           ),
         )}
+        {selects.map(({ key, label, empty, options }) => (
+          <div className="pb-field" key={key}>
+            <label htmlFor={`pb-${key}`}>
+              {label} <span className="pb-optional">(không bắt buộc)</span>
+            </label>
+            <div className="pb-select">
+              <select
+                id={`pb-${key}`}
+                name={key}
+                value={customer[key]}
+                disabled={key === "model" && !options.length}
+                onChange={(event) => onChange(key, event.target.value)}
+              >
+                <option value="">{empty}</option>
+                {options.map((o) => (
+                  <option key={o} value={o}>
+                    {o}
+                  </option>
+                ))}
+              </select>
+              <Icon name="chevron" />
+            </div>
+          </div>
+        ))}
       </div>
     </>
   );
@@ -163,9 +205,17 @@ export function ServicesStep({
                     )
                   }
                 />
-                <span className="pb-service-icon">
-                  <Icon name={service.icon} />
-                </span>
+                {service.image ? (
+                  <Photo
+                    {...service.image}
+                    sizes="60px"
+                    className="pb-service-photo"
+                  />
+                ) : (
+                  <span className="pb-service-icon">
+                    <Icon name={service.icon} />
+                  </span>
+                )}
                 <span className="pb-service-copy">
                   <strong>{service.name}</strong>
                   <small>{service.durationLabel}</small>
@@ -231,11 +281,11 @@ export function BookingSummary({
             <span>{customer.phone}</span>
           </dd>
         </div>
-        {(customer.vehicle.trim() || customer.plate.trim()) && (
+        {(vehicleName(customer) || customer.plate.trim()) && (
           <div>
             <dt>Phương tiện</dt>
             <dd>
-              {[customer.vehicle.trim(), customer.plate.trim()]
+              {[vehicleName(customer), customer.plate.trim()]
                 .filter(Boolean)
                 .join(" · ")}
             </dd>

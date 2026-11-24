@@ -237,6 +237,7 @@
 }
 .pb-field input:not([type="checkbox"]),
 .pb-field textarea,
+.pb-field select,
 .pb-demo-scenarios select {
   width: 100%;
   min-width: 0;
@@ -262,7 +263,30 @@
   color: var(--muted-light);
   opacity: 1;
 }
-.pb-field :is(input, textarea):focus {
+/* Own chevron (as the accessories sort menu) instead of the browser arrow at the edge. */
+.pb-select {
+  position: relative;
+}
+.pb-field .pb-select select {
+  padding-right: 44px;
+  appearance: none;
+  cursor: pointer;
+}
+.pb-select > .icon {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  width: 18px;
+  height: 18px;
+  color: var(--muted-light);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.pb-field select:disabled {
+  color: var(--muted-light);
+  cursor: not-allowed;
+}
+.pb-field :is(input, textarea, select):focus {
   border-color: var(--brand-red);
   box-shadow: 0 0 0 3px var(--brand-red-soft);
   outline: none;
@@ -377,6 +401,14 @@
 .pb-service-icon .icon {
   width: 20px;
   height: 20px;
+}
+/* Website services: small photo, same box as the header services menu. */
+.pb-service-photo.photo {
+  width: 60px;
+  height: 54px;
+  flex: none;
+  border-radius: 8px;
+  corner-shape: superellipse(2);
 }
 .pb-service.is-selected .pb-service-icon {
   background: var(--surface);
@@ -988,10 +1020,21 @@
     font-size: 12px;
   }
   .pb-progress li {
+    position: relative;
     gap: 8px;
   }
+  .pb-progress button {
+    justify-content: flex-start;
+  }
+  /* Labels sit under the circles here, so the connector runs between circle centres
+     (28px circles, 12px column gap, 4px clearance each side); red once the step is done. */
   .pb-progress li:not(:last-child)::after {
-    display: none;
+    position: absolute;
+    top: 13px;
+    left: calc(50% + 18px);
+    width: calc(100% - 24px);
+    min-width: 0;
+    transition: background-color 300ms;
   }
   .pb-scroll {
     padding: 20px;

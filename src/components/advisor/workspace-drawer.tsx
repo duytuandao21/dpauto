@@ -1,9 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
+/**
+ * Closing only rewrites the URL (History API, which Next keeps in sync with usePathname/
+ * useSearchParams): no navigation, so the page behind is not re-rendered or reloaded.
+ */
+function leave(href: string) {
+  window.history.replaceState(null, "", href);
+}
 export function WorkspaceDrawer({
   title,
   closeHref,
@@ -14,7 +20,6 @@ export function WorkspaceDrawer({
   children: ReactNode;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
-  const router = useRouter();
   const [closing, setClosing] = useState(false);
   useEffect(() => {
     const element = dialog.current;
@@ -23,17 +28,14 @@ export function WorkspaceDrawer({
   }, []);
   useEffect(() => {
     if (!closing) return;
-    const timer = setTimeout(
-      () => router.replace(closeHref, { scroll: false }),
-      500,
-    );
+    const timer = setTimeout(() => leave(closeHref), 500);
     return () => clearTimeout(timer);
-  }, [closing, closeHref, router]);
+  }, [closing, closeHref]);
 
   function close() {
     if (closing) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      router.replace(closeHref, { scroll: false });
+      leave(closeHref);
       return;
     }
     setClosing(true);
@@ -51,7 +53,7 @@ export function WorkspaceDrawer({
           event.target === event.currentTarget &&
           event.animationName === "adv-drawer-out"
         ) {
-          router.replace(closeHref, { scroll: false });
+          leave(closeHref);
         }
       }}
       onCancel={(event) => {

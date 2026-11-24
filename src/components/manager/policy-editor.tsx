@@ -67,6 +67,38 @@ function PolicyForm({ onClose }: { onClose: () => void }) {
   );
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  // A day is one hour range, or two with a lunch break between them (bookings split at noon).
+  type Day = {
+    opensAt: string;
+    closesAt: string;
+    breakFrom: string;
+    breakTo: string;
+  };
+  const dayOf = (weekday: number): Day | null => {
+    const r = hours
+      .filter((h) => h.weekday === weekday)
+      .sort((a, b) => (a.opensAt < b.opensAt ? -1 : 1));
+    return r.length
+      ? {
+          opensAt: r[0].opensAt,
+          closesAt: r[r.length - 1].closesAt,
+          breakFrom: r.length > 1 ? r[0].closesAt : "",
+          breakTo: r.length > 1 ? r[1].opensAt : "",
+        }
+      : null;
+  };
+  const setDay = (weekday: number, d: Day | null) =>
+    setHours([
+      ...hours.filter((h) => h.weekday !== weekday),
+      ...(!d
+        ? []
+        : d.breakFrom && d.breakTo
+          ? [
+              { weekday, opensAt: d.opensAt, closesAt: d.breakFrom },
+              { weekday, opensAt: d.breakTo, closesAt: d.closesAt },
+            ]
+          : [{ weekday, opensAt: d.opensAt, closesAt: d.closesAt }]),
+    ]);
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (busy || !savePolicy) return;
@@ -124,41 +156,38 @@ function PolicyForm({ onClose }: { onClose: () => void }) {
         </div>
         <h3>Giờ hoạt động</h3>
         {days.map((name, weekday) => {
-          const h = hours.find((h) => h.weekday === weekday);
+          const d = dayOf(weekday);
           return (
             <div className="adm-panel mgr-form" key={weekday}>
               <label className="adm-toggle-row">
                 <span>{name}</span>
                 <input
                   type="checkbox"
-                  checked={!!h}
+                  checked={!!d}
                   onChange={(e) =>
-                    setHours(
+                    setDay(
+                      weekday,
                       e.target.checked
-                        ? [
-                            ...hours,
-                            { weekday, opensAt: "07:30", closesAt: "17:30" },
-                          ]
-                        : hours.filter((h) => h.weekday !== weekday),
+                        ? {
+                            opensAt: "07:30",
+                            closesAt: "17:30",
+                            breakFrom: "",
+                            breakTo: "",
+                          }
+                        : null,
                     )
                   }
                 />
               </label>
-              {h && (
+              {d && (
                 <div className="mgr-form-columns">
                   <ManagerField label="Mở cửa">
                     <input
                       type="time"
                       required
-                      value={h.opensAt}
+                      value={d.opensAt}
                       onChange={(e) =>
-                        setHours(
-                          hours.map((h) =>
-                            h.weekday === weekday
-                              ? { ...h, opensAt: e.target.value }
-                              : h,
-                          ),
-                        )
+                        setDay(weekday, { ...d, opensAt: e.target.value })
                       }
                     />
                   </ManagerField>
@@ -166,15 +195,27 @@ function PolicyForm({ onClose }: { onClose: () => void }) {
                     <input
                       type="time"
                       required
-                      value={h.closesAt}
+                      value={d.closesAt}
                       onChange={(e) =>
-                        setHours(
-                          hours.map((h) =>
-                            h.weekday === weekday
-                              ? { ...h, closesAt: e.target.value }
-                              : h,
-                          ),
-                        )
+                        setDay(weekday, { ...d, closesAt: e.target.value })
+                      }
+                    />
+                  </ManagerField>
+                  <ManagerField label="Nghỉ trưa từ">
+                    <input
+                      type="time"
+                      value={d.breakFrom}
+                      onChange={(e) =>
+                        setDay(weekday, { ...d, breakFrom: e.target.value })
+                      }
+                    />
+                  </ManagerField>
+                  <ManagerField label="Nghỉ trưa đến">
+                    <input
+                      type="time"
+                      value={d.breakTo}
+                      onChange={(e) =>
+                        setDay(weekday, { ...d, breakTo: e.target.value })
                       }
                     />
                   </ManagerField>

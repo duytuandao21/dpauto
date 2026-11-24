@@ -25,7 +25,6 @@ export function BeforeAfter({
   autoReveal = true,
   hoverFollow = false,
   className = "",
-  originalImages = false,
   vietnamese = true,
 }: {
   before: SiteImage;
@@ -34,7 +33,6 @@ export function BeforeAfter({
   autoReveal?: boolean;
   hoverFollow?: boolean;
   className?: string;
-  originalImages?: boolean;
   vietnamese?: boolean;
 }) {
   const root = useRef<HTMLDivElement>(null);
@@ -148,7 +146,6 @@ export function BeforeAfter({
       <Photo
         {...after}
         sizes="(max-width:809px) 100vw, 80vw"
-        unoptimized={originalImages}
       />
       <div
         className="before-after__before"
@@ -157,7 +154,6 @@ export function BeforeAfter({
         <Photo
           {...before}
           sizes="(max-width:809px) 100vw, 80vw"
-          unoptimized={originalImages}
         />
       </div>
       <span className="comparison-label comparison-label--before">

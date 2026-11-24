@@ -1,4 +1,5 @@
 "use client";
+import { eventLabel } from "@/lib/event-labels";
 import { formatPhone, formatPlate } from "@/lib/advisor/formats";
 import {
   useCallback,
@@ -117,7 +118,7 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
         booking.events = timeline.map((e) => ({
           id: e.id,
           at: e.occurredAt,
-          label: e.summary,
+          label: eventLabel(e.summary),
           detail: e.reason || "",
         }));
         const index = values.findIndex((b) => b.id === booking.id);
@@ -150,9 +151,18 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
     },
     [selectedDate, path],
   );
+  const loaded = useRef(false);
   useEffect(() => {
     const c = new AbortController();
-    setReady(false);
+    // Opening/closing a detail changes the path and refreshes the data. Do it in the background
+    // (no loading screen) unless this is the first load or the record shown is not loaded yet.
+    const bookingId = /^\/co-van\/(?:lich-hen|tiep-nhan)\/([a-f\d-]{36})/.exec(path)?.[1];
+    const customerId = /^\/co-van\/khach-hang\/([a-f\d-]{36})/.exec(path)?.[1];
+    const missing =
+      (bookingId && !ref.current.bookings.some((b) => b.id === bookingId)) ||
+      (customerId && !ref.current.customers.some((x) => x.id === customerId));
+    if (!loaded.current || missing) setReady(false);
+    loaded.current = true;
     void refresh(c.signal).catch((e) => {
       if (e.name !== "AbortError") {
         setError(e.message);
@@ -160,6 +170,7 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
       }
     });
     return () => c.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- path is part of `refresh`
   }, [refresh]);
   useEffect(() => {
     try {
@@ -241,6 +252,10 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
             ...common,
             expectedVersion: existing.version,
             reason: "Cập nhật thông tin theo yêu cầu khách",
+            ...(draft.partnerSaleId &&
+            draft.partnerSaleId !== existing.partner?.saleId
+              ? { partnerSaleId: draft.partnerSaleId }
+              : {}),
             customerContact: {
               name: draft.name,
               phone: formatPhone(draft.phone),
@@ -268,6 +283,9 @@ export function RemoteBookingProvider({ children }: { children: ReactNode }) {
               ? { confirmNow: true, customerAgreed: true }
               : {}),
             source: sourceCode[draft.source],
+            ...(draft.partnerSaleId
+              ? { partnerSaleId: draft.partnerSaleId }
+              : {}),
             ...(session.roles.includes("MANAGER")
               ? { advisorId: draft.advisorId || null }
               : {}),

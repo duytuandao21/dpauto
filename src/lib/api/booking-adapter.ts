@@ -29,6 +29,7 @@ export function bookingFromApi(b: ApiBooking): Booking {
       : b.originalRequestedPeriod;
   return {
     id: b.id,
+    partner: b.partner ?? null,
     code: b.code,
     version: b.version,
     customerId: b.customerId!,
@@ -95,6 +96,7 @@ export const customerFromApi = (c: ApiCustomer): Customer => ({
   phone: c.phone,
   bookingCount: c.bookingCount,
   vehicleCount: c.vehicleCount,
+  version: c.version,
 });
 export const vehicleFromApi = (v: ApiVehicle): Vehicle => ({
   id: v.id,

@@ -581,17 +581,9 @@ body:has(.about-page) {
   padding: 0;
   background: transparent;
 }
-.about-team-image {
-  height: 850px;
+.about-team-photo {
   position: relative;
-  overflow: clip;
-}
-.about-team-image-inner {
-  position: absolute;
-  top: -80px;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
 }
 .about-training-copy p {
   color: var(--muted-light);

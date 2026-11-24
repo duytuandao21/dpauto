@@ -2,10 +2,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { PageHeading } from "@/components/admin/primitives";
+import { useSession } from "@/components/admin/auth-gate";
 import { AdminIcon, type AdminIconName } from "@/components/admin/admin-icon";
 import { formatDate, shiftDate } from "@/lib/booking/logic";
 import { useManager } from "./manager-provider";
-import { managerBookingSummary } from "@/lib/api/manager-presentation";
+import {
+  managerBookingNeedsAdvisor,
+  managerBookingSummary,
+} from "@/lib/api/manager-presentation";
 import { FilterSelect, ManagerPanel, ManagerSearch } from "./manager-ui";
 import { LiveOperations, LiveAlerts } from "./live-operations";
 import { ManagerBookingTable, ManagerBookingDetail } from "./booking-list";
@@ -16,21 +20,31 @@ import {
 } from "./manager-charts";
 
 export function LiveManagerDashboard() {
-  const { data, today, setRange } = useManager();
+  const { data, today, setRange } = useManager(),
+    session = useSession();
   const [range, setDays] = useState(1),
     [query, setQuery] = useState(""),
     [status, setStatus] = useState("pending"),
     [selected, setSelected] = useState("");
-  const start = shiftDate(today, 1 - range);
+  // Upcoming window (today … today + range - 1); the trend chart still needs the past days.
+  const end = shiftDate(today, range - 1);
   useEffect(() => {
-    setRange?.(shiftDate(today, 1 - Math.max(7, range)), today);
-  }, [range, today, setRange]);
-  const summary = managerBookingSummary(data.bookings, start, today),
+    setRange?.(shiftDate(today, 1 - Math.max(7, range)), end);
+  }, [range, today, end, setRange]);
+  const summary = managerBookingSummary(data.bookings, today, end),
     bookings = summary.bookings,
+    // Open requests count whatever their date: an unconfirmed booking is work either way.
+    open = data.bookings.filter(
+      (b) =>
+        b.status === "pending" ||
+        (b.status === "confirmed" && b.date >= today && !b.advisorId),
+    ),
+    pendingCount = open.filter((b) => b.status === "pending").length,
+    unassignedCount = open.filter(managerBookingNeedsAdvisor).length,
     slots = data.capacity.filter((s) => s.date === today);
   const total = slots.reduce((sum, s) => sum + s.total, 0),
     held = slots.reduce((sum, s) => sum + s.reserved, 0);
-  const suffix = "&from=" + start + "&to=" + today;
+  const suffix = "&from=" + today + "&to=" + end;
   const kpis: {
     label: string;
     value: number | string;
@@ -41,20 +55,20 @@ export function LiveManagerDashboard() {
   }[] = [
     {
       label:
-        range === 1 ? "Tổng lịch hẹn hôm nay" : "Tổng lịch " + range + " ngày",
+        range === 1 ? "Lịch hẹn hôm nay" : "Lịch " + range + " ngày tới",
       value: summary.total,
-      sub: "Toàn bộ lịch trong kỳ",
+      sub: range === 1 ? "Toàn bộ lịch hôm nay" : "Từ hôm nay đến " + formatDate(end),
       icon: "calendar",
       tone: "neutral",
-      href: "/dieu-hanh/lich-hen?from=" + start + "&to=" + today,
+      href: "/dieu-hanh/lich-hen?from=" + today + "&to=" + end,
     },
     {
       label: "Chờ xác nhận",
-      value: summary.pending,
-      sub: "Cần liên hệ và xử lý",
+      value: pendingCount,
+      sub: "Mọi yêu cầu chưa chốt lịch",
       icon: "time",
       tone: "warning",
-      href: "/dieu-hanh/lich-hen?status=pending" + suffix,
+      href: "/dieu-hanh/lich-hen?status=pending",
     },
     {
       label: "Đã xác nhận",
@@ -66,11 +80,11 @@ export function LiveManagerDashboard() {
     },
     {
       label: "Chưa phân công",
-      value: summary.unassigned,
-      sub: "Cần giao cố vấn phụ trách",
+      value: unassignedCount,
+      sub: "Lịch chưa chốt hoặc sắp tới chưa có cố vấn",
       icon: "customers",
       tone: "danger",
-      href: "/dieu-hanh/lich-hen?advisor=unassigned" + suffix,
+      href: "/dieu-hanh/lich-hen?advisor=unassigned",
     },
     {
       label: "Đã tiếp nhận",
@@ -89,7 +103,9 @@ export function LiveManagerDashboard() {
       href: "/dieu-hanh/nang-luc?date=" + today,
     },
   ];
-  const filtered = bookings
+  const filtered = Array.from(
+    new Map([...bookings, ...open].map((b) => [b.id, b])).values(),
+  )
     .filter((b) => {
       const c = data.customers.find((c) => c.id === b.customerId);
       const haystack = [
@@ -106,11 +122,12 @@ export function LiveManagerDashboard() {
     .sort(
       (a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time),
     );
+  const staffName = session?.staff.name || "Quản lý";
   return (
     <>
       <div className="mgr-welcome">
         <PageHeading
-          title="Xin chào, Quản lý!"
+          title={`Xin chào, ${staffName}!`}
           description="Cùng theo dõi lịch hẹn và sắp xếp vận hành hôm nay."
         />
         <div className="mgr-welcome-date">
@@ -126,14 +143,19 @@ export function LiveManagerDashboard() {
               aria-pressed={range === days}
               onClick={() => setDays(days)}
             >
-              {days === 1 ? "Hôm nay" : days + " ngày"}
+              {days === 1 ? "Hôm nay" : days + " ngày tới"}
             </button>
           ))}
         </div>
-        <Link className="adm-btn adm-primary" href="/dieu-hanh/lich-hen">
-          <AdminIcon name="calendar" />
-          Xem lịch toàn trạm
-        </Link>
+        <div className="mgr-row-actions">
+          <Link className="adm-btn" href="/dieu-hanh/tiep-nhan/truc-tiep">
+            Tiếp nhận xe trực tiếp
+          </Link>
+          <Link className="adm-btn adm-primary" href="/dieu-hanh/lich-hen">
+            <AdminIcon name="calendar" />
+            Xem lịch toàn trạm
+          </Link>
+        </div>
       </div>
       <div className="mgr-kpis">
         {kpis.map((k) => (
@@ -166,13 +188,7 @@ export function LiveManagerDashboard() {
           }
         >
           <CapacityBars
-            slots={[...slots]
-              .sort(
-                (a, b) =>
-                  b.reserved / Math.max(1, b.total) -
-                  a.reserved / Math.max(1, a.total),
-              )
-              .slice(0, 6)}
+            slots={[...slots].sort((a, b) => a.time.localeCompare(b.time))}
           />
           {!slots.length && (
             <p className="adm-muted">Hôm nay không có khung nhận lịch.</p>
@@ -197,7 +213,7 @@ export function LiveManagerDashboard() {
       </div>
       <ManagerPanel
         title="Lịch cần xử lý"
-        description="Theo khoảng thời gian đang chọn"
+        description="Lịch trong kỳ đang chọn và mọi yêu cầu chưa chốt"
         action={
           <Link className="adm-text-link" href="/dieu-hanh/lich-hen">
             Tất cả lịch <AdminIcon name="arrow" />

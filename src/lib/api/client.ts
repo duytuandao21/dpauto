@@ -68,34 +68,74 @@ export async function request<T>(
   }
   if (response.status === 204) return { data: undefined as T, meta: {} };
   const value = await response.json().catch(() => null);
-  if (!response.ok) {
-    if (response.status === 401) {
-      csrf = "";
-      window.dispatchEvent(new Event("dpauto-session-expired"));
-    }
-    const code = value?.error?.code || "SERVICE_UNAVAILABLE",
-      message: string | undefined = value?.error?.message;
-    throw new ApiFailure(
-      response.status,
-      code,
-      (message === generic && codeMessages[code]) ||
-        message ||
-        "Dịch vụ chưa sẵn sàng. Vui lòng thử lại sau.",
-      Array.isArray(value?.error?.fields)
-        ? value.error.fields.filter(
-            (field: unknown): field is { path: string; code: string } =>
-              !!field &&
-              typeof field === "object" &&
-              "path" in field &&
-              typeof field.path === "string" &&
-              "code" in field &&
-              typeof field.code === "string",
-          )
-        : [],
-    );
-  }
+  if (!response.ok) throw failure(response.status, value);
   if (value?.data?.csrfToken) csrf = value.data.csrfToken;
   return value;
+}
+// value is the parsed error body, whose shape the server does not guarantee.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function failure(status: number, value: any) {
+  if (status === 401) {
+    csrf = "";
+    window.dispatchEvent(new Event("dpauto-session-expired"));
+  }
+  const code = value?.error?.code || "SERVICE_UNAVAILABLE",
+    message: string | undefined = value?.error?.message;
+  return new ApiFailure(
+    status,
+    code,
+    (message === generic && codeMessages[code]) ||
+      message ||
+      "Dịch vụ chưa sẵn sàng. Vui lòng thử lại sau.",
+    Array.isArray(value?.error?.fields)
+      ? value.error.fields.filter(
+          (field: unknown): field is { path: string; code: string } =>
+            !!field &&
+            typeof field === "object" &&
+            "path" in field &&
+            typeof field.path === "string" &&
+            "code" in field &&
+            typeof field.code === "string",
+        )
+      : [],
+  );
+}
+/** Sends a file as the raw request body; XHR is used because fetch cannot report upload progress. */
+export async function uploadFile<T>(
+  path: string,
+  file: Blob,
+  query: Record<string, string>,
+  onProgress?: (fraction: number) => void,
+) {
+  if (!csrf) await request("admin/auth/csrf");
+  return new Promise<Envelope<T>>((resolve, reject) => {
+    const x = new XMLHttpRequest();
+    x.open("POST", `/api/v1/${path}?${new URLSearchParams(query)}`);
+    x.setRequestHeader("Content-Type", "application/octet-stream");
+    x.setRequestHeader("X-CSRF-Token", csrf);
+    x.setRequestHeader("Idempotency-Key", newRequestKey());
+    x.upload.onprogress = (e) =>
+      e.lengthComputable && onProgress?.(e.loaded / e.total);
+    x.onerror = () =>
+      reject(
+        new ApiFailure(
+          0,
+          "NETWORK_ERROR",
+          "Chưa nhận được phản hồi. Vui lòng thử lại để kiểm tra kết quả.",
+        ),
+      );
+    x.onload = () => {
+      let value = null;
+      try {
+        value = JSON.parse(x.responseText);
+      } catch {}
+      if (x.status >= 200 && x.status < 300) return resolve(value);
+      const error = failure(x.status, value);
+      if (error.code === "CSRF_INVALID") csrf = "";
+      reject(error);
+    };
+    x.send(file);
+  });
 }
 export async function command<T>(
   path: string,

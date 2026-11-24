@@ -1,141 +1,175 @@
-import { about, site } from "@/lib/content";
 import { Photo } from "@/components/ui/photo";
-import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
+import type { SiteImage } from "@/lib/content";
 import {
   AboutGalleryImage,
   AboutReveal,
-  AboutTeamImage,
   AboutVideo,
 } from "./about-motion";
 
-export function AboutContent() {
-  const b = about.blocks;
+type Item = { title: string; text: string };
+type Block = {
+  subtitle?: string;
+  title?: string;
+  description?: string;
+  note?: string;
+  image?: SiteImage;
+  images: (SiteImage | undefined)[];
+  video?: string;
+  items: Item[];
+};
+/** Each block is null when hidden in the admin. */
+export type AboutBlocks = {
+  story: Block | null;
+  approach: Block | null;
+  workshop: Block | null;
+  team: Block | null;
+};
+
+export function AboutContent({ story, approach, workshop, team }: AboutBlocks) {
+  // The lead's first sentence is set apart, as in the original layout.
+  const lead = story?.description?.match(/^(.+?[.!?])\s+([\s\S]*)$/);
+  // The approach heading breaks after its first comma.
+  const comma = approach?.title?.indexOf(",") ?? -1;
   return (
     <>
-      <section className="light about-story">
-        <div className="container">
-          <div className="story-heading">
-            <Photo
-              {...about.images[2]}
-              unoptimized
-              className="story-floating-image story-floating-image--one"
-            />
-            <Photo
-              {...about.images[3]}
-              unoptimized
-              className="story-floating-image story-floating-image--two"
-            />
-            <p className="story-label">CÂU CHUYỆN</p>
-            <div className="story-title">
-              <h2>{b[1].text}</h2>
+      {story && (
+        <section className="light about-story">
+          <div className="container">
+            <div className="story-heading">
+              {story.images[0] && (
+                <Photo
+                  {...story.images[0]}
+                  className="story-floating-image story-floating-image--one"
+                />
+              )}
+              {story.images[1] && (
+                <Photo
+                  {...story.images[1]}
+                  className="story-floating-image story-floating-image--two"
+                />
+              )}
+              {story.subtitle && <p className="story-label">{story.subtitle}</p>}
+              <div className="story-title">
+                <h2>{story.title}</h2>
+              </div>
             </div>
-          </div>
-          <div className="story-support">
-            <AboutVideo src={about.video[0].src} />
-            <div className="story-copy">
-              <p className="story-lead">
-                <span>
-                  Mỗi chiếc xe đến với chúng tôi trong một tình trạng khác
-                  nhau.{" "}
-                </span>
-                {b[2].text.slice(
-                  "Mỗi chiếc xe đến với chúng tôi trong một tình trạng khác nhau. "
-                    .length,
+            <div className="story-support">
+              {story.video && <AboutVideo src={story.video} />}
+              <div className="story-copy">
+                {story.description && (
+                  <p className="story-lead">
+                    {lead ? (
+                      <>
+                        <span>{lead[1]} </span>
+                        {lead[2]}
+                      </>
+                    ) : (
+                      story.description
+                    )}
+                  </p>
                 )}
-              </p>
-              <Photo
-                {...about.images[4]}
-                unoptimized
-                className="story-center-image"
-              />
-              <p className="story-description">{b[3].text}</p>
+                {story.images[2] && (
+                  <Photo {...story.images[2]} className="story-center-image" />
+                )}
+                {story.note && (
+                  <p className="story-description">{story.note}</p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-      <section className="about-approach">
-        <div className="container">
-          <h2>
-            Cách chúng tôi làm việc,
-            <br />
-            Tận tâm từng bước
-          </h2>
-          <div className="approach-grid">
-            {about.approach.map((item, i) => (
-              <AboutReveal key={item.title} className="approach-card">
-                <span className="approach-number">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="approach-copy">
-                  <h3>{item.title}</h3>
-                  <p>{item.description}</p>
-                </div>
-              </AboutReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section className="light about-workshop">
-        <div className="container">
-          <div className="about-workshop-heading">
-            <h2>Xưởng chăm sóc xe chuyên nghiệp</h2>
-            <p>
-              {b.find((e) => e.text.startsWith("Xưởng của chúng tôi"))?.text}
-            </p>
-          </div>
-          <div className="workshop-panel">
-            <Photo {...about.images[5]} unoptimized sizes="100vw" />
-            <div className="workshop-grid">
-              {about.workshop.map((item, i) => (
-                <AboutReveal
-                  key={item.title}
-                  className="workshop-card"
-                  delay={i * 0.2}
-                >
-                  <span className="workshop-check">
-                    <Icon name="check" />
+        </section>
+      )}
+      {approach && (
+        <section className="about-approach">
+          <div className="container">
+            <h2>
+              {comma > 0 ? (
+                <>
+                  {approach.title!.slice(0, comma + 1)}
+                  <br />
+                  {approach.title!.slice(comma + 1).trim()}
+                </>
+              ) : (
+                approach.title
+              )}
+            </h2>
+            <div className="approach-grid">
+              {approach.items.map((item, i) => (
+                <AboutReveal key={i} className="approach-card">
+                  <span className="approach-number">
+                    {String(i + 1).padStart(2, "0")}
                   </span>
-                  <div>
+                  <div className="approach-copy">
                     <h3>{item.title}</h3>
-                    <p>{item.description}</p>
+                    <p>{item.text}</p>
                   </div>
                 </AboutReveal>
               ))}
             </div>
           </div>
-        </div>
-      </section>
-      <section className="about-team">
-        <div className="container team-layout">
-          <div className="about-team-copy">
-            <h2>Những con người tận tâm với công việc</h2>
-            <p className="about-team-lead">
-              {
-                b.find((e) => e.text.startsWith("Chăm sóc xe tốt phụ thuộc"))
-                  ?.text
-              }
-            </p>
-            <p>{b.find((e) => e.text.startsWith("Mọi công đoạn"))?.text}</p>
+        </section>
+      )}
+      {workshop && (
+        <section className="light about-workshop">
+          <div className="container">
+            <div className="about-workshop-heading">
+              <h2>{workshop.title}</h2>
+              {workshop.description && <p>{workshop.description}</p>}
+            </div>
+            <div className="workshop-panel">
+              {workshop.image && <Photo {...workshop.image} sizes="100vw" />}
+              <div className="workshop-grid">
+                {workshop.items.map((item, i) => (
+                  <AboutReveal
+                    key={i}
+                    className="workshop-card"
+                    delay={i * 0.2}
+                  >
+                    <span className="workshop-check">
+                      <Icon name="check" />
+                    </span>
+                    <div>
+                      <h3>{item.title}</h3>
+                      <p>{item.text}</p>
+                    </div>
+                  </AboutReveal>
+                ))}
+              </div>
+            </div>
           </div>
-          <AboutGalleryImage image={about.images[6]} />
-        </div>
-      </section>
-      <AboutTeamImage image={about.images[7]} />
-      <section className="light about-training">
-        <div className="container">
-          <AboutGalleryImage image={about.images[8]} />
-          <div className="about-training-copy">
-            <h2>
-              Đào tạo chăm sóc xe chuyên nghiệp, dựa trên kinh nghiệm thực tế
-              tại xưởng
-            </h2>
-            <p>{b.find((e) => e.text.startsWith("Kỹ thuật, dụng cụ"))?.text}</p>
-            <p>{b.find((e) => e.text.startsWith("Từ chuẩn bị"))?.text}</p>
-            <Button href={site.phoneHref}>Tìm hiểu khóa đào tạo</Button>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
+      {team && (
+        <>
+          <section className="about-team">
+            <div className="container team-layout">
+              <div className="about-team-copy">
+                <h2>{team.title}</h2>
+                {team.description && (
+                  <p className="about-team-lead">{team.description}</p>
+                )}
+                {team.note && <p>{team.note}</p>}
+              </div>
+              {team.image && <AboutGalleryImage image={team.image} />}
+            </div>
+          </section>
+          {team.images[0] && (
+            // Whole team photo at its own proportions, never cropped.
+            <div
+              className="about-team-photo"
+              style={{
+                aspectRatio:
+                  team.images[0].media?.width && team.images[0].media?.height
+                    ? `${team.images[0].media.width} / ${team.images[0].media.height}`
+                    : "16 / 9",
+              }}
+            >
+              <Photo {...team.images[0]} sizes="100vw" />
+            </div>
+          )}
+        </>
+      )}
     </>
   );
 }

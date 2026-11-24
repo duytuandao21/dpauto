@@ -1,25 +1,40 @@
 "use client";
+import { headerDefaults } from "@/lib/cms-defaults";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { navigation, services, site } from "@/lib/content";
+import { services, site as staticSite } from "@/lib/content";
+import { useSite } from "@/components/site/site-content";
 import { homeNavigation, homeServices } from "@/lib/home-vi";
 import { HeaderButton } from "./header-button";
+import { Photo } from "@/components/ui/photo";
+import { SiteLogo } from "./site-logo";
+import { BookingLauncher } from "@/components/public-booking/booking-dialog";
 
+/** Main menu items, shared by the header and the footer's "Khám phá" column. */
+export function headerLinks(menu: ReturnType<typeof useSite>["navigation"]) {
+  return menu.custom
+    ? menu.header
+    : [
+        homeNavigation[0],
+        { label: "Phụ kiện", href: "/phu-kien" },
+        ...headerDefaults(),
+      ];
+}
 export function Header() {
   const path = usePathname();
   const vietnamese = true;
-  const base = vietnamese ? homeNavigation : navigation;
-  // Header only: Accessories replaces Brands (the footer keeps the shared list).
-  const links = [
-    base[0],
-    { label: vietnamese ? "Phụ kiện" : "Accessories", href: "/phu-kien" },
-    ...base.slice(1, 5),
-  ];
-  const menuServices = vietnamese ? homeServices : services;
+  const content = useSite();
+  const site = content.settings.custom ? content.settings : staticSite;
+  const { navigation: menu, services: cmsServices } = content;
+  const links = headerLinks(menu);
+  const menuServices = cmsServices.length
+    ? cmsServices
+    : vietnamese
+      ? homeServices
+      : services;
   const [mobile, setMobile] = useState(false);
   const [dropdown, setDropdown] = useState(false);
   const root = useRef<HTMLElement>(null);
@@ -74,14 +89,7 @@ export function Header() {
           aria-label={vietnamese ? "Trang chủ DPAuto" : "DPAuto home"}
           onClick={close}
         >
-          <Image
-            src="/images/logo-dpauto.png"
-            alt="DPAuto Logo"
-            width={1448}
-            height={1086}
-            sizes="146px"
-            priority
-          />
+          <SiteLogo sizes="132px" priority />
         </Link>
         <nav
           className="desktop-nav"
@@ -93,7 +101,7 @@ export function Header() {
             onMouseLeave={() => setDropdown(false)}
           >
             <Link
-              href="/services"
+              href="/dich-vu"
               className="nav-link"
               aria-haspopup="true"
               aria-expanded={dropdown}
@@ -134,22 +142,17 @@ export function Header() {
                     {menuServices.map((service) => (
                       <Link
                         key={service.slug}
-                        href={`/services/${service.slug}`}
+                        href={`/dich-vu/${service.slug}`}
                         onClick={close}
                       >
-                        <Image
-                          src={service.image.src}
-                          alt=""
-                          width={60}
-                          height={54}
-                        />
+                        <Photo {...service.image} alt="" sizes="60px" />
                         <span>{service.title}</span>
                       </Link>
                     ))}
                   </div>
                   <Link
                     className="services-menu-all"
-                    href="/services"
+                    href="/dich-vu"
                     onClick={close}
                   >
                     {vietnamese ? "Xem tất cả dịch vụ" : "View All Services"}
@@ -179,13 +182,10 @@ export function Header() {
               {vietnamese ? "Gọi ngay" : "Call Us"}
             </span>
           </HeaderButton>
-          <HeaderButton
-            href="/contact"
-            className="header-contact"
-            onClick={close}
-          >
-            {vietnamese ? "Liên hệ" : "Contact Us"}
-          </HeaderButton>
+          <BookingLauncher
+            label="Đặt lịch"
+            className="header-button header-booking"
+          />
           <button
             type="button"
             aria-label={
@@ -263,9 +263,6 @@ export function Header() {
               <div className="mobile-menu-actions">
                 <HeaderButton href={site.phoneHref} phone onClick={close}>
                   {vietnamese ? "Gọi" : "Call Us:"} {site.phone}
-                </HeaderButton>
-                <HeaderButton href="/contact" onClick={close}>
-                  {vietnamese ? "Liên hệ" : "Contact Us"}
                 </HeaderButton>
               </div>
             </div>

@@ -1,6 +1,14 @@
 import type { Config } from "./config";
 import { sql, rows, one, type Conn, type Row } from "./database";
-import { page, scope, fail, normalize, type Context } from "./common";
+import {
+  audit,
+  expectVersion,
+  page,
+  scope,
+  fail,
+  normalize,
+  type Context,
+} from "./common";
 
 export class Directory {
   constructor(readonly config: Config) {}
@@ -20,7 +28,7 @@ export class Directory {
     const base = sql`SELECT c.*,${key} AS cursor_key,
       (SELECT count(*)::int FROM (${this.relatedVehicles(ctx)}) AS related_vehicles) AS vehicle_count,
       (SELECT count(*)::int FROM bookings b WHERE b.customer_id=c.id AND ${scope(ctx)}) AS booking_count
-      FROM customers c WHERE ${this.customerScope(ctx)} ${q.q ? sql`AND (c.normalized_name LIKE ${"%" + normalize(q.q) + "%"} OR c.phone_normalized LIKE ${"%" + q.q.replace(/[\s().-]/g, "") + "%"})` : sql``}
+      FROM customers c WHERE c.merged_into_id IS NULL AND c.deleted_at IS NULL AND ${this.customerScope(ctx)} ${q.q ? sql`AND (c.normalized_name LIKE ${"%" + normalize(q.q) + "%"} OR c.phone_normalized LIKE ${"%" + q.q.replace(/[\s().-]/g, "") + "%"})` : sql``}
       ${q.multipleVehicles ? sql`AND (SELECT count(*) FROM (${this.relatedVehicles(ctx)}) AS related_vehicles)>1` : sql``}`;
     const result = await page(
       c,
@@ -83,7 +91,7 @@ export class Directory {
   async customer(c: Conn, ctx: Context, id: string, limit: number) {
     const r = await one(
       c,
-      sql`SELECT c.* FROM customers c WHERE c.id=${id} AND ${this.customerScope(ctx)}`,
+      sql`SELECT c.* FROM customers c WHERE c.id=${id} AND c.deleted_at IS NULL AND ${this.customerScope(ctx)}`,
     );
     if (!r) fail(404, "NOT_FOUND");
     const vehicles = await this.vehicles(c, ctx, {
@@ -97,6 +105,7 @@ export class Directory {
       name: r.name,
       phone: r.phone_normalized,
       version: r.version,
+      mergedIntoId: r.merged_into_id,
       vehicles: vehicles.data,
       related: {
         vehiclesHasMore: vehicles.page.hasMore,
@@ -104,6 +113,96 @@ export class Directory {
         bookingsUrl: "/api/v1/admin/bookings?customerId=" + id,
       },
     };
+  }
+  private async lockedCustomer(c: Conn, ctx: Context, id: string) {
+    const r = await one(
+      c,
+      sql`SELECT c.* FROM customers c WHERE c.id=${id}::uuid AND c.deleted_at IS NULL AND ${this.customerScope(ctx)} FOR UPDATE`,
+    );
+    if (!r) fail(404, "NOT_FOUND");
+    if (r!.merged_into_id) fail(409, "CUSTOMER_MERGED", "Hồ sơ này đã được gộp.");
+    return r!;
+  }
+  async updateCustomer(c: Conn, ctx: Context, id: string, input: Row) {
+    const r = await this.lockedCustomer(c, ctx, id);
+    expectVersion(r, input.expectedVersion);
+    await this.phoneFree(c, input.phone, id);
+    await c.execute(
+      sql`UPDATE customers SET name=${input.name},normalized_name=${normalize(input.name)},phone_normalized=${input.phone},version=version+1,updated_at=${ctx.now} WHERE id=${id}::uuid`,
+    );
+    await audit(c, ctx, "CUSTOMER_UPDATED", "customer", id, input.reason);
+    return { id, version: r.version + 1 };
+  }
+  /** A phone identifies one customer; the unique index backs this up under races. */
+  private async phoneFree(c: Conn, phone: string, except?: string) {
+    const other = await one(
+      c,
+      sql`SELECT name FROM customers WHERE phone_normalized=${phone} AND merged_into_id IS NULL AND deleted_at IS NULL ${except ? sql`AND id<>${except}::uuid` : sql``}`,
+    );
+    if (other)
+      fail(
+        409,
+        "PHONE_TAKEN",
+        `Số điện thoại này đã thuộc khách hàng ${other.name}.`,
+      );
+  }
+  /** Hides the customer; bookings and tickets keep their snapshots. Open work must finish first. */
+  async removeCustomer(c: Conn, ctx: Context, id: string, input: Row) {
+    const r = await this.lockedCustomer(c, ctx, id);
+    expectVersion(r, input.expectedVersion);
+    const open = await one(
+      c,
+      sql`SELECT (SELECT count(*)::int FROM bookings WHERE customer_id=${id}::uuid AND deleted_at IS NULL AND status IN ('PENDING','CONFIRMED','ARRIVED')) AS bookings,
+        (SELECT count(*)::int FROM service_visits WHERE customer_id=${id}::uuid AND deleted_at IS NULL AND stage NOT IN ('HANDED_OVER','ABORTED')) AS visits`,
+    );
+    if (open!.bookings || open!.visits)
+      fail(
+        409,
+        "CUSTOMER_IN_USE",
+        "Khách đang có lịch hẹn hoặc phiếu dịch vụ chưa xong. Hãy hoàn tất hoặc hủy trước khi xóa.",
+      );
+    await c.execute(
+      sql`UPDATE customers SET deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId},version=version+1,updated_at=${ctx.now} WHERE id=${id}::uuid`,
+    );
+    await audit(c, ctx, "CUSTOMER_DELETED", "customer", id, input.reason);
+    return { id, deleted: true, version: r.version + 1 };
+  }
+  /** Moves bookings, visits, vehicles and imported history to the kept record. */
+  async mergeCustomer(c: Conn, ctx: Context, id: string, input: Row) {
+    if (id === input.targetId) fail(422, "CUSTOMER_MERGE_SELF");
+    // Lock in a fixed order so two opposite merges cannot deadlock.
+    const [first, second] = [id, input.targetId].sort();
+    const a = await this.lockedCustomer(c, ctx, first),
+      b = await this.lockedCustomer(c, ctx, second);
+    const source = a.id === id ? a : b,
+      target = a.id === id ? b : a;
+    expectVersion(source, input.expectedVersion);
+    expectVersion(target, input.targetVersion);
+    for (const table of [
+      sql`bookings`,
+      sql`service_visits`,
+      sql`legacy_records`,
+      sql`legacy_identities`,
+    ])
+      await c.execute(
+        sql`UPDATE ${table} SET customer_id=${target.id} WHERE customer_id=${source.id}`,
+      );
+    // Vehicles the kept customer already has stay single; the rest move across.
+    await c.execute(
+      sql`UPDATE customer_vehicle_links l SET valid_to=${ctx.now} WHERE l.customer_id=${source.id} AND l.valid_to IS NULL AND EXISTS(SELECT 1 FROM customer_vehicle_links t WHERE t.customer_id=${target.id} AND t.vehicle_id=l.vehicle_id AND t.relationship=l.relationship AND t.valid_to IS NULL)`,
+    );
+    await c.execute(
+      sql`UPDATE customer_vehicle_links SET customer_id=${target.id} WHERE customer_id=${source.id} AND valid_to IS NULL`,
+    );
+    await c.execute(
+      sql`UPDATE customers SET merged_into_id=${target.id},merged_at=${ctx.now},version=version+1,updated_at=${ctx.now} WHERE id=${source.id}`,
+    );
+    await c.execute(
+      sql`UPDATE customers SET version=version+1,updated_at=${ctx.now} WHERE id=${target.id}`,
+    );
+    await audit(c, ctx, "CUSTOMER_MERGED", "customer", source.id, input.reason);
+    await audit(c, ctx, "CUSTOMER_MERGED", "customer", target.id, input.reason);
+    return { id: target.id, mergedId: source.id, version: target.version + 1 };
   }
   async vehicle(c: Conn, ctx: Context, id: string) {
     const r = await one(
@@ -122,14 +221,15 @@ export class Directory {
       if (publicInput) fail(400, "VALIDATION_FAILED");
       const r = await one(
         c,
-        sql`SELECT c.* FROM customers c WHERE c.id=${input.id} AND ${this.customerScope(ctx)}`,
+        sql`SELECT c.* FROM customers c WHERE c.id=${input.id} AND c.merged_into_id IS NULL AND c.deleted_at IS NULL AND ${this.customerScope(ctx)}`,
       );
       if (!r) fail(422, "CONTACT_REFERENCE_INVALID");
       return r;
     }
     return (await one(
       c,
-      sql`INSERT INTO customers(name,normalized_name,phone_normalized,origin) VALUES(${input.name},${normalize(input.name)},${input.phone},${publicInput ? "PUBLIC" : "STAFF"}) RETURNING *`,
+      // Same phone = same customer: reuse the existing record (its name stays; the booking keeps its own snapshot).
+      sql`INSERT INTO customers(name,normalized_name,phone_normalized,origin) VALUES(${input.name},${normalize(input.name)},${input.phone},${publicInput ? "PUBLIC" : "STAFF"}) ON CONFLICT(phone_normalized) WHERE merged_into_id IS NULL AND deleted_at IS NULL DO UPDATE SET updated_at=customers.updated_at RETURNING *`,
     ))!;
   }
   async bookingVehicle(

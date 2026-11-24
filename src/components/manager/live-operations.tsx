@@ -1,10 +1,15 @@
 "use client";
+import { DateInput } from "@/components/advisor/date-input";
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { request, command, collection } from "@/lib/api/client";
 import { useApiPage } from "@/lib/api/use-page";
 import { useSession } from "@/components/admin/auth-gate";
-import { AdminLoading, PageHeading } from "@/components/admin/primitives";
+import {
+  AdminLoading,
+  EmptyState,
+  PageHeading,
+} from "@/components/admin/primitives";
 import { ManagerPanel, ManagerTable } from "./manager-ui";
 import { PageButtons } from "./live-stock";
 import { workflowTime, vnd } from "@/lib/api/workflow";
@@ -24,6 +29,12 @@ import {
   type NotificationJob,
 } from "@/lib/api/operations";
 
+/** 1169 → "19 giờ 29 phút"; short spans stay in minutes. */
+export function durationText(minutes: number) {
+  const m = Math.round(minutes),
+    h = Math.floor(m / 60);
+  return h ? `${h} giờ${m % 60 ? ` ${m % 60} phút` : ""}` : `${m} phút`;
+}
 export function LiveOperations({ report = false }: { report?: boolean }) {
   const manager = useManager();
   const today = stationToday(),
@@ -128,19 +139,17 @@ export function LiveOperations({ report = false }: { report?: boolean }) {
           <div className="mgr-toolbar">
             <label className="adm-field">
               Từ ngày
-              <input
-                type="date"
+              <DateInput
                 value={from}
-                onChange={(e) => setFrom(e.target.value || today)}
+                onValueChange={(v) => setFrom(v || today)}
               />
             </label>
             <label className="adm-field">
               Đến ngày
-              <input
-                type="date"
+              <DateInput
                 value={to}
                 min={from}
-                onChange={(e) => setTo(e.target.value || today)}
+                onValueChange={(v) => setTo(v || today)}
               />
             </label>
             {session?.permissions.includes("reports.export") && (
@@ -205,7 +214,7 @@ export function LiveOperations({ report = false }: { report?: boolean }) {
               <strong>
                 {data.averageTurnaroundMinutes === null
                   ? "—"
-                  : `${Math.round(data.averageTurnaroundMinutes)} phút`}
+                  : durationText(data.averageTurnaroundMinutes)}
               </strong>{" "}
               · Tính trên xe bàn giao trong kỳ.
             </p>
@@ -450,10 +459,9 @@ export function LiveShifts() {
     <ManagerPanel title="Ca làm việc & lịch nghỉ">
       <label className="adm-field">
         Ngày
-        <input
-          type="date"
+        <DateInput
           value={date}
-          onChange={(e) => setDate(e.target.value || today)}
+          onValueChange={(v) => setDate(v || today)}
         />
       </label>
       {manage && (
@@ -551,89 +559,7 @@ export function LiveShifts() {
   );
 }
 
-export function LiveNotifications({ advisor = false }: { advisor?: boolean }) {
-  const [reload, setReload] = useState(0),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState(""),
-    [unread, setUnread] = useState(0),
-    session = useSession();
-  const p = useApiPage<InboxNotice>("admin/notifications", reload),
-    base = advisor ? "/co-van" : "/dieu-hanh";
-  useEffect(() => {
-    const a = new AbortController();
-    request<InboxNotice[]>("admin/notifications?limit=1", { signal: a.signal })
-      .then((r) => setUnread(Number(r.meta.unread || 0)))
-      .catch((e) => {
-        if (!a.signal.aborted) setError(e.message);
-      });
-    return () => a.abort();
-  }, [reload]);
-  async function read(n: InboxNotice) {
-    if (busy) return;
-    setBusy(true);
-    setError("");
-    try {
-      await command(`admin/notifications/${n.id}/read`, {
-        expectedVersion: n.version,
-      });
-      setReload((v) => v + 1);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Không thể cập nhật.");
-    } finally {
-      setBusy(false);
-    }
-  }
-  return (
-    <div className="adv-stack">
-      <PageHeading
-        title="Thông báo"
-        description={`${unread} thông báo chưa đọc`}
-      />
-      <button className="adm-btn" onClick={() => setReload((n) => n + 1)}>
-        Cập nhật
-      </button>
-      {(error || p.error) && (
-        <p className="adm-error-text" role="alert">
-          {error || p.error}
-        </p>
-      )}
-      {p.loading ? (
-        <AdminLoading />
-      ) : (
-        p.data.map((n) => (
-          <section className="adm-panel" key={n.id}>
-            <Link
-              className="adm-text-link"
-              href={subjectHref(base, n.subjectType, n.subjectId)}
-            >
-              <strong>{n.title}</strong>
-            </Link>
-            <p>{workflowTime(n.createdAt)}</p>
-            {n.readAt ? (
-              <span className="adm-muted">Đã đọc</span>
-            ) : (
-              <button
-                className="adm-btn"
-                disabled={busy}
-                onClick={() => void read(n)}
-              >
-                Đánh dấu đã đọc
-              </button>
-            )}
-          </section>
-        ))
-      )}
-      {!p.loading && !p.data.length && !p.error && (
-        <p className="adm-muted">Bạn chưa có thông báo.</p>
-      )}
-      <PageButtons manager={!advisor} page={p} />
-      {!advisor && session?.permissions.includes("notifications.manage") && (
-        <DeliveryJobs />
-      )}
-    </div>
-  );
-}
-function DeliveryJobs() {
+export function DeliveryJobs() {
   const [reload, setReload] = useState(0),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),

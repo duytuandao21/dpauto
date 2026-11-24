@@ -1,4 +1,5 @@
 "use client";
+import { DateInput } from "@/components/advisor/date-input";
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -536,11 +537,10 @@ function SubjectPicker({
       {kind === "booking" && (
         <label className="adm-field">
           Ngày hẹn
-          <input
+          <DateInput
             required
-            type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onValueChange={(v) => setDate(v)}
           />
         </label>
       )}
@@ -998,20 +998,18 @@ function FinanceReport({ reload }: { reload: number }) {
       <div className="adm-form-grid">
         <label className="adm-field">
           Từ ngày
-          <input
-            type="date"
+          <DateInput
             required
             value={from}
-            onChange={(e) => setFrom(e.target.value)}
+            onValueChange={(v) => setFrom(v)}
           />
         </label>
         <label className="adm-field">
           Đến ngày
-          <input
-            type="date"
+          <DateInput
             required
             value={to}
-            onChange={(e) => setTo(e.target.value)}
+            onValueChange={(v) => setTo(v)}
           />
         </label>
       </div>

@@ -1306,6 +1306,8 @@ export class Workflow {
           vehicle: v.vehicle_snapshot,
           request: v.request,
         },
+        // Current partner/sale (it can still be corrected after the quote was frozen).
+        partner: v.partner_snapshot ?? null,
         revision: view,
       };
     }
@@ -1314,10 +1316,11 @@ export class Workflow {
       sql`SELECT a.*,s.name AS inspector_name FROM acceptances a JOIN staff_profiles s ON s.id=a.inspector_id JOIN service_visits v ON v.id=a.visit_id WHERE a.id=${id} AND ${scope(ctx, "v")}`,
     );
     if (!a) fail(404, "NOT_FOUND");
-    await this.visit(c, ctx, a.visit_id);
+    const visit = await this.visit(c, ctx, a.visit_id);
     return {
       kind: "acceptance",
       snapshot: a.print_snapshot,
+      partner: visit.partner_snapshot ?? null,
       acceptance: {
         id: a.id,
         result: a.result,

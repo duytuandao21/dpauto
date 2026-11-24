@@ -1,5 +1,6 @@
 "use client";
 
+import { DateInput } from "@/components/advisor/date-input";
 import { Suspense, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import {
@@ -178,13 +179,12 @@ function BookingsContent() {
             >
               <AdminIcon name="back" />
             </button>
-            <input
-              type="date"
+            <DateInput
               aria-label="Ngày xem lịch"
               value={date}
-              onChange={(event) => {
-                if (event.target.value)
-                  resetPage(() => setDate(event.target.value));
+              onValueChange={(v) => {
+                if (v)
+                  resetPage(() => setDate(v));
               }}
             />
             <button
@@ -222,11 +222,10 @@ function BookingsContent() {
         {queue === "all" && mode === "range" && (
           <label className="mgr-filter">
             Đến ngày
-            <input
-              type="date"
+            <DateInput
               min={date}
               value={endDate}
-              onChange={(e) => resetPage(() => setEndDate(e.target.value))}
+              onValueChange={(v) => resetPage(() => setEndDate(v))}
             />
           </label>
         )}

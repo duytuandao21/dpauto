@@ -141,7 +141,7 @@ export function VehicleProfile({ id }: { id: string }) {
             bookings.map((booking) => (
               <Link key={booking.id} href={`/co-van/lich-hen/${booking.id}`}>
                 <div>
-                  <strong>{booking.id}</strong>
+                  <strong>{booking.code || booking.id}</strong>
                   <small>
                     {formatDate(bookingTime(booking))} · {slotLabel(booking)}
                   </small>

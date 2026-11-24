@@ -10,6 +10,9 @@ import {
 import Link from "next/link";
 import { banners, services, type Service } from "@/lib/content";
 import { homeServices } from "@/lib/home-vi";
+import { homeDefaults } from "@/lib/home-defaults";
+import { pageDefaults } from "@/lib/page-defaults";
+import { useImage, useSection, useSite } from "@/components/site/site-content";
 import { Photo } from "@/components/ui/photo";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
@@ -17,18 +20,27 @@ import { HomeScrollFrame } from "./home-motion";
 import { HomeSectionHeading as SectionHeading } from "./home-motion";
 
 export function ServicesSection({
-  title = "Dịch vụ chăm sóc xe",
-  description = "Từ làm sạch đến bảo vệ chuyên sâu, chọn dịch vụ phù hợp cho xe của bạn.",
+  title,
+  description,
 }: {
   title?: string;
   description?: string;
 }) {
+  const section = useSection("home.services", homeDefaults["home.services"]);
+  const { services: list } = useSite();
+  if (!section) return null;
+  title = section.title || title || homeDefaults["home.services"].title;
+  description =
+    section.description ??
+    description ??
+    homeDefaults["home.services"].description;
+  const shown = list.length ? list : homeServices;
   return (
     <section className="section services-section" id="services">
       <div className="container">
         <SectionHeading title={title} description={description} />
         <div className="services-grid">
-          {homeServices.map((service) => (
+          {shown.map((service) => (
             <HomeScrollFrame
               from={{ x: 24, y: 48, rotateX: 6, rotateY: 20 }}
               key={service.slug}
@@ -55,11 +67,11 @@ export function ServicesSection({
                 }}
               >
                 <Link
-                  href={`/services/${service.slug}`}
+                  href={`/dich-vu/${service.slug}`}
                   className="service-card-link"
                 >
                   <div className="service-card-top">
-                    <Photo {...service.image} unoptimized />
+                    <Photo {...service.image} />
                     <h3>{service.title}</h3>
                   </div>
                   <motion.div
@@ -113,6 +125,10 @@ export function ServicesSection({
 }
 
 export function ServicesBanner() {
+  const banner =
+      useSection("services", pageDefaults.services) || pageDefaults.services,
+    resolve = useImage(),
+    image = resolve(banner.image, banners.services)!;
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, {
@@ -127,22 +143,23 @@ export function ServicesBanner() {
         className="work-banner-image"
         style={reduced ? undefined : { scale }}
       >
-        <Photo {...banners.services} priority unoptimized sizes="100vw" />
+        <Photo {...image} priority sizes="100vw" />
       </motion.div>
       <div className="work-banner-overlay" />
       <div className="container work-banner-heading">
-        <h1>Dịch vụ của chúng tôi</h1>
+        <h1>{banner.title}</h1>
       </div>
     </section>
   );
 }
 
 export function ServicesList() {
+  const { services: list } = useSite();
   return (
     <section className="services-index">
       <div className="container">
         <div className="services-list">
-          {services.map((service) => (
+          {(list.length ? list : services).map((service) => (
             <ServiceStackCard key={service.slug} service={service} />
           ))}
         </div>
@@ -151,7 +168,11 @@ export function ServicesList() {
   );
 }
 
-function ServiceStackCard({ service }: { service: Service }) {
+function ServiceStackCard({
+  service,
+}: {
+  service: Pick<Service, "slug" | "title" | "description" | "image">;
+}) {
   const reduced = useReducedMotion();
   const enter = reduced ? { scale: 1, y: 0 } : { scale: 1.06, y: 40 };
   return (
@@ -169,14 +190,14 @@ function ServiceStackCard({ service }: { service: Service }) {
     >
       <article className="service-list-item">
         <div className="service-list-image">
-          <Photo {...service.image} unoptimized sizes="100vw" />
+          <Photo {...service.image} sizes="100vw" />
         </div>
         <div className="service-list-copy">
-          <Link href={`/services/${service.slug}`}>
+          <Link href={`/dich-vu/${service.slug}`}>
             <h2>{service.title}</h2>
           </Link>
           <p>{service.description}</p>
-          <Button href={`/services/${service.slug}`}>Xem chi tiết</Button>
+          <Button href={`/dich-vu/${service.slug}`}>Xem chi tiết</Button>
         </div>
       </article>
     </motion.div>

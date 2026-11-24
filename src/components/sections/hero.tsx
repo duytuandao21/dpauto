@@ -12,28 +12,11 @@ import Image from "next/image";
 import { Photo } from "@/components/ui/photo";
 import { Button } from "@/components/ui/button";
 import { Icon, type IconName } from "@/components/ui/icon";
-import { site } from "@/lib/content";
+import { heroFeatures, homeDefaults } from "@/lib/home-defaults";
+import { useImage, useSection, useSite } from "@/components/site/site-content";
 import { BookingLauncher } from "@/components/public-booking/booking-dialog";
 import type { CmsPayload } from "@/lib/api/cms";
-
-const features: { icon: IconName; text: string }[] = [
-  {
-    icon: "award",
-    text: "Đội ngũ giàu kinh nghiệm, chăm chút từng chi tiết.",
-  },
-  {
-    icon: "box",
-    text: "Sản phẩm và thiết bị chuyên dụng, được chọn lọc kỹ.",
-  },
-  {
-    icon: "shield",
-    text: "Chăm sóc chuyên nghiệp, giữ xe sạch đẹp và bền lâu.",
-  },
-  {
-    icon: "door",
-    text: "Nhận xe trực tiếp với một số dịch vụ.",
-  },
-];
+import type { SiteImage } from "@/lib/content";
 
 const desktopQuery = "(min-width: 1200px)";
 function subscribeDesktop(notify: () => void) {
@@ -43,6 +26,28 @@ function subscribeDesktop(notify: () => void) {
 }
 
 export function Hero({ copy }: { copy?: CmsPayload | null }) {
+  const { settings } = useSite(),
+    resolve = useImage();
+  const hero =
+    useSection("home.hero", homeDefaults["home.hero"]) ||
+    homeDefaults["home.hero"];
+  // Legacy pages saved only imageId; those resolve through the old endpoint.
+  const background: SiteImage =
+    resolve(hero.image) ||
+    (copy?.imageId
+      ? {
+          src: `/api/v1/public/cms/assets/${copy.imageId}`,
+          alt: hero.image.alt,
+        }
+      : homeDefaults["home.hero"].image);
+  const teamPhoto = resolve(
+    hero.images?.[0],
+    homeDefaults["home.hero"].images[0],
+  )!;
+  const features = (hero.items as { text?: string }[]).map((f, i) => ({
+    icon: (heroFeatures[i % heroFeatures.length]?.icon || "award") as IconName,
+    text: f.text || "",
+  }));
   const root = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const desktop = useSyncExternalStore(
@@ -92,14 +97,10 @@ export function Hero({ copy }: { copy?: CmsPayload | null }) {
         style={reduced ? undefined : { scale, y: desktop ? y : 0 }}
       >
         <Photo
-          src={
-            copy?.imageId
-              ? `/api/v1/public/cms/assets/${copy.imageId}`
-              : "/images/hero-dpauto-1.png"
-          }
-          alt="Kỹ thuật viên Toàn Trung thi công phim cách nhiệt cho ô tô"
+          src={background.src}
+          media={background.media || (copy?.imageId ? copy.image : undefined)}
+          alt={background.alt}
           priority
-          unoptimized
           sizes="(max-width: 809px) 1920px, 100vw"
         />
       </motion.div>
@@ -110,7 +111,7 @@ export function Hero({ copy }: { copy?: CmsPayload | null }) {
           style={reduced ? undefined : { scale: copyScale, rotateY }}
         >
           <motion.a
-            href="https://share.google/pVB8v0vWu4Mhx44U6"
+            href={hero.note || homeDefaults["home.hero"].note}
             target="_blank"
             rel="noopener noreferrer"
             className="google-review"
@@ -132,14 +133,15 @@ export function Hero({ copy }: { copy?: CmsPayload | null }) {
             </span>
             <span className="google-review-rating">5/5</span>
           </motion.a>
-          <motion.h1>{copy?.title || "Chăm sóc ô tô chuyên nghiệp"}</motion.h1>
-          <motion.p>
-            {copy?.description ??
-              "Giữ xe sạch đẹp, sáng bóng và bền lâu với dịch vụ vệ sinh, phủ ceramic, dán phim cách nhiệt và bảo vệ sơn."}
-          </motion.p>
+          <motion.h1>{hero.title}</motion.h1>
+          <motion.p>{hero.description}</motion.p>
           <motion.div className="button-row">
-            <Button href={site.phoneHref} variant="secondary" icon="phone">
-              Gọi ngay
+            <Button
+              href={hero.cta?.href || settings.phoneHref}
+              variant="secondary"
+              icon="phone"
+            >
+              {hero.cta?.label || "Gọi ngay"}
             </Button>
             <BookingLauncher />
           </motion.div>
@@ -147,31 +149,35 @@ export function Hero({ copy }: { copy?: CmsPayload | null }) {
       </div>
       <aside className="hero-location">
         <a
-          href="https://maps.app.goo.gl/tQo14o41XcLVovCV7"
+          href={
+            settings.directions || "https://maps.app.goo.gl/tQo14o41XcLVovCV7"
+          }
           target="_blank"
           rel="noopener noreferrer"
           className="hero-address"
         >
           <Icon name="pin" />
           <span>
-            787–789 Quốc lộ 13,
-            <br /> Hiệp Bình, TP. Hồ Chí Minh
+            {`${settings.address},`}
+            <br /> {settings.city}
           </span>
         </a>
-        <Photo
-          src="/images/garage-team.jpg"
-          alt="Đội ngũ Trạm dịch vụ Toàn Trung trước gara"
-          unoptimized
-        />
+        <Photo {...teamPhoto} />
         <p>
           <Icon name="clock" />
           Giờ mở cửa
         </p>
         <dl className="hours hours--compact">
-          {["T2 – T6:", "Thứ Bảy:", "Chủ Nhật:"].map((day) => (
-            <div key={day}>
-              <dt>{day}</dt>
-              <dd>07:30 – 17:30</dd>
+          {(settings.custom
+            ? settings.hours
+            : ["T2 – T6", "Thứ Bảy", "Chủ Nhật"].map((label) => ({
+                label,
+                value: "07:30 – 17:30",
+              }))
+          ).map((h) => (
+            <div key={h.label}>
+              <dt>{`${h.label}:`}</dt>
+              <dd>{h.value}</dd>
             </div>
           ))}
         </dl>

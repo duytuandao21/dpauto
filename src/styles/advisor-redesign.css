@@ -481,6 +481,38 @@ body[data-workspace="advisor"] .adm-toast[data-theme="dark"]:not(.mgr-toast) {
   max-width: none;
   padding-right: 44px;
 }
+/* Week view: the picker shows the week range; the calendar button still jumps to another week. */
+/* Date bar: "Hôm nay" left; "‹ date 📅 ›" packed together on the right. */
+.adm-app.adv-ui .adm-date-controls .adm-date-prev {
+  margin-left: auto;
+}
+.adm-app.adv-ui .adm-date-controls .adm-date-picker {
+  flex: none;
+  margin-left: 0;
+}
+.adm-app.adv-ui .adm-date-controls .adv-date-input > input:first-child {
+  flex: none;
+  width: calc(10.5ch + 48px);
+  padding-right: 44px;
+  font-size: calc(16px + var(--adm-font-increase));
+  font-variant-numeric: tabular-nums;
+}
+.adm-app.adv-ui .adm-date-picker .adm-date-range {
+  padding: 4px;
+  color: var(--adm-text);
+  font-size: calc(16px + var(--adm-font-increase));
+  font-weight: 500;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.adm-app.adv-ui .adm-date-picker.is-week .adv-date-input {
+  width: 44px;
+  min-height: 44px;
+  flex: none;
+}
+.adm-app.adv-ui .adm-date-picker.is-week .adv-date-input > input:first-child {
+  display: none;
+}
 .adm-app.adv-ui .adv-date-input > .adm-icon-btn {
   position: absolute;
   right: 0;
@@ -755,6 +787,19 @@ body[data-workspace="advisor"] .adm-toast[data-theme="dark"]:not(.mgr-toast) {
 .adm-app.adv-ui .adv-bookings-table {
   min-width: 900px;
 }
+/* Week view: one heading row per day, scrolled to from the week strip. */
+.adm-app.adv-ui .adv-bookings-table tr.adv-booking-day {
+  background: var(--adm-surface);
+  scroll-margin-top: 80px;
+}
+.adm-app.adv-ui .adv-bookings-table tr.adv-booking-day th {
+  padding: 12px 16px;
+  color: var(--adm-text);
+  font-weight: 600;
+}
+.adm-app.adv-ui .adv-bookings-table tr.adv-booking-day:not(:first-child) th {
+  border-top: 1px solid var(--adm-border);
+}
 .adm-app.adv-ui .adv-bookings-table td:nth-child(1) {
   width: 18%;
 }
@@ -791,7 +836,7 @@ body[data-workspace="advisor"] .adm-toast[data-theme="dark"]:not(.mgr-toast) {
   flex: none;
 }
 .adm-app.adv-ui .adv-customers-table {
-  min-width: 680px;
+  min-width: 820px;
 }
 .adm-app.adv-ui .adv-table-actions {
   display: flex;
@@ -869,6 +914,57 @@ body[data-workspace="advisor"] .adm-toast[data-theme="dark"]:not(.mgr-toast) {
 }
 .adm-app.adv-ui .adv-ticket-filters > .adm-filters {
   background: var(--adm-surface);
+}
+/* Filter popover: title + reset, full-width status, the two dates side by side; one field look. */
+.adm-app.adv-ui .adv-ticket-filter-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  width: min(400px, calc(100vw - 32px));
+  margin-top: 8px;
+  padding: 16px;
+}
+.adm-app.adv-ui .adv-ticket-filter-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.adm-app.adv-ui .adv-ticket-filter-head strong {
+  color: var(--adm-text);
+  font-size: calc(14px + var(--adm-font-increase));
+  font-weight: 600;
+}
+.adm-app.adv-ui .adv-ticket-filter-head .adm-text-link {
+  min-height: 0;
+  padding: 0;
+}
+.adm-app.adv-ui .adv-ticket-filter-dates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.adm-app.adv-ui .adv-ticket-filter-panel :is(select, .adv-date-input > input:first-child) {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: var(--adm-text);
+  background: var(--adm-input);
+  border: 1px solid var(--adm-border);
+  border-radius: 4px;
+  font: inherit;
+  font-size: calc(13px + var(--adm-font-increase));
+}
+.adm-app.adv-ui .adv-ticket-filter-panel .adv-date-input > input:first-child {
+  padding-right: 44px;
+}
+.adm-app.adv-ui .adv-ticket-filter-panel :is(select, input):focus-visible {
+  border-color: var(--adm-muted);
+}
+@media (max-width: 380px) {
+  .adm-app.adv-ui .adv-ticket-filter-dates {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* Native dialog provides keyboard focus containment and Escape handling. */
@@ -1361,6 +1457,19 @@ body:has(.adv-workspace-drawer[open]) {
     border: 1px solid var(--adm-border);
     border-radius: 6px;
   }
+  .adm-app.adv-ui .adv-bookings-table tbody tr.adv-booking-day {
+    display: block;
+    padding: 4px 0 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+  .adm-app.adv-ui .adv-bookings-table tr.adv-booking-day th {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
   .adm-app.adv-ui .adv-bookings-table tbody td {
     display: block;
     grid-column: 1 / -1;
@@ -1641,4 +1750,617 @@ body:has(.adv-workspace-drawer[open]) {
 .adm-app.adv-login .adm-btn.adm-primary {
   min-height: 48px;
   font-size: 16px;
+}
+
+/* ---------- Shell following the /admin layout (sidebar + header) ---------- */
+.adm-app.adv-ui .adv-sidebar-toggle {
+  display: none;
+}
+.adm-app.adv-ui .adm-header-breadcrumb a {
+  color: var(--adm-muted);
+}
+.adm-app.adv-ui .adm-header-breadcrumb a:hover {
+  color: var(--adm-text);
+}
+.adm-app.adv-ui .adv-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--adm-text);
+}
+.adm-app.adv-ui .adv-user:hover {
+  background: var(--adm-raised);
+}
+.adm-app.adv-ui .adv-user .adm-avatar {
+  width: 32px;
+  height: 32px;
+}
+.adm-app.adv-ui .adv-user-name {
+  display: none;
+}
+@media (min-width: 768px) {
+  .adm-app.adv-ui .adm-sidebar {
+    width: 72px;
+    padding: 0 0 8px;
+  }
+  .adm-app.adv-ui .adm-sidebar-brand {
+    justify-content: center;
+    gap: 10px;
+    height: 64px;
+    min-height: 64px;
+    margin: 0;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--adm-border);
+  }
+  .adm-app.adv-ui .adm-sidebar-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: contain;
+    background: #fff;
+  }
+  .adm-app.adv-ui .adm-sidebar-brand strong {
+    font-size: calc(17px + var(--adm-font-increase));
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+  .adm-app.adv-ui .adm-sidebar-brand small {
+    margin: 0;
+    font-size: calc(10px + var(--adm-font-increase));
+    line-height: 1.4;
+  }
+  .adm-app.adv-ui .adv-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 8px 8px;
+  }
+  .adm-app.adv-ui .adm-sidebar .adm-nav-link {
+    min-height: 40px;
+    margin-bottom: 2px;
+    padding: 8px 12px;
+    gap: 12px;
+    font-size: calc(13px + var(--adm-font-increase));
+    line-height: 20px;
+    white-space: nowrap;
+  }
+  .adm-app.adv-ui .adm-sidebar .adm-nav-link.is-active {
+    font-weight: 500;
+  }
+  .adm-app.adv-ui .adm-sidebar .adm-nav-group {
+    padding: 0 12px;
+    margin: 0 0 8px;
+    font-size: calc(11px + var(--adm-font-increase));
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .adm-app.adv-ui .adm-sidebar .adm-nav-link + .adm-nav-group {
+    margin-top: 20px;
+  }
+  .adm-app.adv-ui .adm-sidebar-bottom {
+    padding: 8px 8px 0;
+    border-top: 1px solid var(--adm-border);
+  }
+  .adm-app.adv-ui .adm-header {
+    gap: 16px;
+    min-height: 64px;
+    padding: 0 24px;
+  }
+  .adm-app.adv-ui .adm-header-breadcrumb {
+    gap: 6px;
+    min-width: 0;
+    white-space: nowrap;
+  }
+  .adm-app.adv-ui .adm-header-breadcrumb > span {
+    display: inline;
+  }
+  .adm-app.adv-ui .adm-header-breadcrumb strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .adm-app.adv-ui .adm-header-actions {
+    gap: 4px;
+  }
+}
+@media (min-width: 1024px) {
+  .adm-app.adv-ui .adv-sidebar-toggle {
+    position: static;
+    display: inline-flex;
+    flex: none;
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    min-height: 36px;
+    padding: 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+  }
+  .adm-app.adv-ui .adv-sidebar-toggle:hover {
+    background: var(--adm-raised);
+    color: var(--adm-text);
+  }
+  .adm-app.adv-ui .adv-user-name {
+    display: grid;
+    line-height: 1.25;
+  }
+  .adm-app.adv-ui .adv-user-name strong {
+    font-size: calc(13px + var(--adm-font-increase));
+    font-weight: 500;
+  }
+  .adm-app.adv-ui .adv-user-name small {
+    color: var(--adm-muted);
+    font-size: calc(11px + var(--adm-font-increase));
+  }
+  .adm-app.adv-ui:not(.adm-collapsed) .adm-sidebar {
+    width: 255px;
+    padding-inline: 0;
+  }
+  .adm-app.adv-ui:not(.adm-collapsed) .adm-body {
+    margin-left: 255px;
+  }
+  .adm-app.adv-ui:not(.adm-collapsed)
+    :is(.adm-sidebar-label, .adm-nav-group) {
+    display: block;
+  }
+  .adm-app.adv-ui:not(.adm-collapsed) .adm-nav-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: auto;
+    padding: 0 6px;
+    border-radius: 999px;
+    font-size: calc(11px + var(--adm-font-increase));
+  }
+  .adm-app.adv-ui:not(.adm-collapsed)
+    :is(.adm-sidebar-brand, .adm-sidebar .adm-nav-link) {
+    justify-content: flex-start;
+  }
+  .adm-app.adv-ui.adm-collapsed
+    :is(.adm-sidebar-label, .adm-nav-group, .adm-nav-count) {
+    display: none;
+  }
+  .adm-app.adv-ui.adm-collapsed .adm-sidebar .adm-nav-link {
+    justify-content: center;
+  }
+  /* Page buttons stay visible; the sidebar no longer has its own create button. */
+  .adm-app.adv-ui .adm-list-heading .adm-page-heading > .adm-btn {
+    display: inline-flex;
+  }
+}
+
+/* ---------- Cards, stats and tables following /admin ---------- */
+.adm-app.adv-ui .adm-page-heading .adm-muted {
+  font-size: calc(13px + var(--adm-font-increase));
+}
+.adm-app.adv-ui .adm-kpi {
+  border-radius: 8px;
+  box-shadow: 0 1px 2px #0f172a0d;
+}
+.adm-app.adv-ui .adm-kpi > div {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.adm-app.adv-ui .adm-kpi .icon,
+.adm-app.adv-ui .adm-kpi strong {
+  color: var(--adm-text);
+}
+.adm-app.adv-ui .adm-kpi .icon {
+  order: 0;
+  color: var(--adm-muted);
+}
+.adm-app.adv-ui .adm-kpi strong {
+  font-weight: 600;
+}
+.adm-app.adv-ui .adm-panel {
+  border-radius: 8px;
+}
+.adm-app.adv-ui .adv-data-scroll {
+  border-radius: 8px;
+}
+.adm-app.adv-ui
+  :is(.adv-data-table, .adv-ticket-table, .adv-quote-table)
+  tbody
+  tr:nth-child(even) {
+  background: transparent;
+}
+.adm-app.adv-ui .adv-data-table tbody td {
+  border-bottom: 1px solid var(--adm-border);
+}
+.adm-app.adv-ui .adv-data-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.adm-app.adv-ui :is(.adv-data-table, .adv-ticket-table) tbody tr:hover {
+  background: var(--adm-raised);
+}
+/* The whole customer row opens the profile; the phone link stays on top. */
+.adm-app.adv-ui .adv-customers-table tbody tr {
+  position: relative;
+  cursor: pointer;
+}
+.adm-app.adv-ui .adv-customers-table td:first-child .adm-text-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.adm-app.adv-ui .adv-customers-table td a[href^="tel:"],
+.adm-app.adv-ui .adv-customers-table .adv-table-actions {
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .adm-app.adv-ui .adm-kpi {
+    padding: 24px;
+  }
+  .adm-app.adv-ui :is(.adm-master, .adv-tasks, .adv-ticket-panel) {
+    padding: 24px;
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+    background: var(--adm-surface);
+    box-shadow: 0 1px 2px #0f172a0d;
+  }
+  .adm-app.adv-ui .adv-data-table :is(th, td) {
+    padding: 12px 16px;
+  }
+}
+.adm-app.adv-ui .adv-form-segment {
+  display: flex;
+  margin: 16px 0;
+}
+.adm-app.adv-ui .adv-form-segment button {
+  flex: 1;
+  min-height: 36px;
+  border: 0;
+  font-weight: 500;
+}
+@media (min-width: 1100px) {
+  /* Section 03 fills the space under the shorter first card. */
+  .adm-app.adv-ui .adm-form-page:not(.adv-reception) > .adm-booking-form {
+    grid-template-rows: auto 1fr;
+  }
+  .adm-app.adv-ui
+    .adm-form-page:not(.adv-reception)
+    > .adm-booking-form
+    > section:nth-of-type(2) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .adm-app.adv-ui
+    .adm-form-page:not(.adv-reception)
+    > .adm-booking-form
+    > section:nth-of-type(3) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+}
+/* Sticky action column follows the plain rows. */
+.adm-app.adv-ui .adv-ticket-table tbody tr:nth-child(even) td:last-child {
+  background: var(--adm-surface);
+}
+.adm-app.adv-ui .adv-ticket-table tbody tr:hover td:last-child {
+  background: var(--adm-raised);
+}
+.adm-app.adv-ui .adv-ticket-table tbody tr:not(:last-child) td {
+  border-bottom: 1px solid var(--adm-border);
+}
+/* Ticket summary reads as one card, like the /admin page cards. */
+.adm-app.adv-ui .adv-service-header.adm-panel {
+  padding: 20px 24px;
+  border: 1px solid var(--adm-border);
+}
+/* Vehicle profile: the embedded service history gets the same card as its siblings. */
+.adm-app.adv-ui .adv-detail-page > .adm-detail-section {
+  padding: 20px;
+  border: 1px solid var(--adm-border);
+  border-radius: 8px;
+  background: var(--adm-surface);
+  box-shadow: 0 1px 2px #0f172a0d;
+}
+.adm-app.adv-ui .adv-detail-page > .adm-detail-section h3 {
+  margin: 0 0 12px;
+  font-size: calc(17px + var(--adm-font-increase));
+  font-weight: 600;
+}
+.adm-app.adv-ui .adm-panel > .adm-section-line {
+  margin-bottom: 12px;
+}
+.adm-app.adv-ui .adm-info-grid dd .adm-text-link {
+  min-height: 0;
+}
+.adm-app.adv-ui .adm-panel > :is(h2, h3) + .adm-info-grid {
+  margin-top: 12px;
+}
+
+/* Notifications (/co-van and /dieu-hanh): header bell popup and the detail list page. */
+.adm-app .adv-notify {
+  position: relative;
+}
+.adm-app .adv-notify .adm-notification {
+  position: relative;
+}
+.adm-app .adv-notify .adm-notification i {
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--adm-surface);
+  box-sizing: content-box;
+}
+.adm-app .adv-notify-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  max-height: min(480px, calc(100dvh - 96px));
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px #1623391a;
+  overflow: hidden;
+}
+.adm-app .adv-notify-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--adm-border);
+}
+.adm-app .adv-notify-head strong {
+  font-size: calc(14px + var(--adm-font-increase));
+  font-weight: 600;
+}
+.adm-app .adv-notify-head span,
+.adm-app .adv-notify-list time {
+  font-size: calc(12px + var(--adm-font-increase));
+}
+.adm-app .adv-notify-list {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+}
+.adm-app .adv-notify-list li + li {
+  border-top: 1px solid var(--adm-border);
+}
+.adm-app .adv-notify-list button {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 12px 16px 12px 28px;
+  background: none;
+  border: 0;
+  color: var(--adm-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.adm-app .adv-notify-list button:hover {
+  background: var(--adm-accent-soft);
+}
+.adm-app .adv-notify-list strong {
+  font-size: calc(13px + var(--adm-font-increase));
+  font-weight: 500;
+}
+.adm-app .adv-notify-list .is-unread strong {
+  font-weight: 600;
+}
+.adm-app .adv-notify-list span {
+  color: var(--adm-muted);
+  font-size: calc(12px + var(--adm-font-increase));
+  overflow-wrap: anywhere;
+}
+.adm-app .adv-notify-list time {
+  color: var(--adm-muted);
+}
+.adm-app .adv-notify-list .is-unread::before,
+.adm-app .adv-notice.is-unread::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  left: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--adm-accent);
+}
+.adm-app .adv-notify-empty {
+  margin: 0;
+  padding: 24px 16px;
+  text-align: center;
+}
+.adm-app .adv-notify-all {
+  display: block;
+  padding: 12px 16px;
+  border-top: 1px solid var(--adm-border);
+  text-align: center;
+}
+.adm-app .adv-notice-list {
+  padding: 0;
+}
+.adm-app .adv-notice {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 20px 24px 20px 36px;
+}
+.adm-app .adv-notice + .adv-notice {
+  border-top: 1px solid var(--adm-border);
+}
+.adm-app .adv-notice.is-unread::before {
+  top: 27px;
+  left: 16px;
+}
+.adm-app .adv-notice-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+}
+.adm-app .adv-notice-head h2 {
+  margin: 0;
+  font-size: calc(15px + var(--adm-font-increase));
+  font-weight: 600;
+}
+.adm-app .adv-notice-head time,
+.adm-app .adv-notice-subject {
+  margin: 0;
+  color: var(--adm-muted);
+  font-size: calc(13px + var(--adm-font-increase));
+}
+.adm-app .adv-notice-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  margin: 4px 0 0;
+}
+.adm-app .adv-notice-meta div {
+  display: grid;
+  gap: 2px;
+}
+.adm-app .adv-notice-meta .adv-notice-reason {
+  flex-basis: 100%;
+}
+.adm-app .adv-notice-meta dt {
+  color: var(--adm-muted);
+  font-size: calc(12px + var(--adm-font-increase));
+}
+.adm-app .adv-notice-meta dd {
+  margin: 0;
+  font-size: calc(13px + var(--adm-font-increase));
+  overflow-wrap: anywhere;
+}
+.adm-app .adv-notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+@media (max-width: 767.98px) {
+  .adm-app .adv-notify-panel {
+    position: fixed;
+    top: 64px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+  }
+  .adm-app.mgr-app .adv-notify-panel {
+    top: 80px;
+  }
+  .adm-app .adv-notice {
+    padding: 16px 16px 16px 32px;
+  }
+  .adm-app .adv-notice.is-unread::before {
+    top: 23px;
+    left: 14px;
+  }
+}
+
+/* Partner cars: "Đối tác" badge with the sale under the customer name; sale picker on a ticket. */
+/* Sale name on its own line, the "Toàn Trung" tag below it (long names never push the tag). */
+.adm-app .adv-partner-name {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+/* Red "Toàn Trung" tag (brand accent, white text) marking partner cars. */
+.adm-app .adv-partner-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--adm-accent);
+  color: #fff;
+  font-size: calc(11px + var(--adm-font-increase));
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.adm-app .adv-partner-name .adv-partner-badge {
+  margin-left: 0;
+}
+.adm-app .adv-partner-edit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-top: 2px;
+  color: var(--adm-muted);
+  font-size: calc(12px + var(--adm-font-increase));
+  font-weight: 400;
+}
+.adm-app .adv-partner-edit .adm-text-link {
+  min-height: 0;
+  padding: 0;
+  font-size: inherit;
+}
+.adm-app .adv-partner-edit.is-editing {
+  gap: 8px;
+  margin-top: 6px;
+}
+.adm-app .adv-partner-edit .adm-field {
+  flex: 1 1 160px;
+  max-width: 240px;
+}
+/* The tick sits inside .adm-field, so undo the text-input look for this checkbox. */
+.adm-app .adm-field .adv-partner-toggle {
+  justify-content: flex-start;
+  padding: 4px 0;
+}
+.adm-app .adm-field .adv-partner-toggle input[type="checkbox"] {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+  accent-color: var(--adm-accent);
+}
+/* "Đối tác" tab: month + sale filters and the export button in one row under the search. */
+.adm-app .adv-partner-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+.adm-app .adv-partner-bar .adm-field {
+  flex: 0 1 220px;
+}
+.adm-app .adv-partner-bar .adm-field :is(input, select) {
+  min-height: 44px;
+}
+.adm-app .adv-partner-bar > .adm-btn {
+  min-height: 44px;
+}
+.adm-app .adv-partner-bar-note {
+  flex-basis: 100%;
+  margin: 0;
+}
+@media (max-width: 767.98px) {
+  .adm-app .adv-partner-bar .adm-field,
+  .adm-app .adv-partner-bar > .adm-btn {
+    flex: 1 1 100%;
+  }
 }

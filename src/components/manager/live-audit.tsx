@@ -1,4 +1,6 @@
 "use client";
+import { eventLabel } from "@/lib/event-labels";
+import { DateInput } from "@/components/advisor/date-input";
 import { useEffect, useState } from "react";
 import { request } from "@/lib/api/client";
 import { stationTime } from "@/lib/api/types";
@@ -13,6 +15,18 @@ type Audit = {
   summary: string;
   occurredAt: string;
   correlationId: string;
+};
+const entityLabels: Record<string, string> = {
+  user: "Tài khoản",
+  staff: "Nhân sự",
+  booking: "Lịch hẹn",
+  visit: "Phiếu dịch vụ",
+  quote: "Báo giá",
+  cms: "Nội dung website",
+  cms_asset: "Ảnh website",
+  notification: "Thông báo",
+  stock_document: "Chứng từ kho",
+  legacy_batch: "Dữ liệu cũ",
 };
 export function LiveAudit() {
   const [from, setFrom] = useState(stationToday),
@@ -44,22 +58,20 @@ export function LiveAudit() {
       <ManagerPanel title="Lịch sử thao tác">
         <div className="mgr-form-columns">
           <ManagerField label="Từ ngày">
-            <input
-              type="date"
+            <DateInput
               value={from}
-              onChange={(e) => {
-                setFrom(e.target.value);
+              onValueChange={(v) => {
+                setFrom(v);
                 setCursor("");
                 setPrevious([]);
               }}
             />
           </ManagerField>
           <ManagerField label="Đến ngày">
-            <input
-              type="date"
+            <DateInput
               value={to}
-              onChange={(e) => {
-                setTo(e.target.value);
+              onValueChange={(v) => {
+                setTo(v);
                 setCursor("");
                 setPrevious([]);
               }}
@@ -85,13 +97,15 @@ export function LiveAudit() {
               {rows.map((r) => (
                 <tr key={r.id}>
                   <td>
-                    {stationTime(r.occurredAt).slice(0, 16).replace("T", " ")}
+                    {stationTime(r.occurredAt)
+                      .slice(0, 16)
+                      .replace(/^(\d{4})-(\d{2})-(\d{2})T/, "$3/$2/$1 ")}
                   </td>
                   <td>
                     {typeof r.actor === "string" ? "Hệ thống" : r.actor.name}
                   </td>
-                  <td>{r.summary}</td>
-                  <td>{r.entityType}</td>
+                  <td>{eventLabel(r.summary)}</td>
+                  <td>{entityLabels[r.entityType] || r.entityType}</td>
                 </tr>
               ))}
             </tbody>

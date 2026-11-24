@@ -29,8 +29,9 @@
   .header-actions {
     gap: 4px;
   }
+  /* Phones and tablets keep only the booking button next to the menu; calling stays in the menu. */
   .desktop-nav,
-  .header-contact {
+  .header-call {
     display: none;
   }
   .menu-toggle {
@@ -399,15 +400,6 @@
     flex: none;
     width: 100%;
     height: 500px;
-  }
-  .about-team-image {
-    height: 800px;
-  }
-  .about-team-image-inner {
-    top: -60px;
-  }
-  .about-team-image img {
-    object-position: 35.3% center;
   }
 }
 @media (max-width: 1139px) and (min-width: 768px) {
@@ -1207,15 +1199,6 @@
     width: 100%;
     height: 500px;
   }
-  .about-team-image {
-    height: 600px;
-  }
-  .about-team-image-inner {
-    top: -60px;
-  }
-  .about-team-image img {
-    object-position: 53.5% center;
-  }
   .legal-page {
     padding: 80px 20px;
   }
@@ -1279,12 +1262,6 @@
   }
   .footer-email {
     font-size: 12px;
-  }
-  .footer-wordmark {
-    height: 150px;
-  }
-  .footer-wordmark img {
-    width: 100%;
   }
   .footer-bottom {
     flex-direction: column;

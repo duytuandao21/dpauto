@@ -1,41 +1,48 @@
+import { localPath } from "@/lib/public-paths";
 import type { MetadataRoute } from "next";
-import { services } from "@/lib/content";
-import { publicArticles, publicContent } from "@/lib/public-cms";
+import { publicArticles, publicContent, publicFeed } from "@/lib/public-cms";
+import { siteServices } from "@/lib/site-content";
 
 export const revalidate = 0;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const origin = process.env.NEXT_PUBLIC_SITE_URL;
   if (!origin) return [];
   const articles = await publicArticles(),
-    content = await publicContent();
+    content = await publicContent(),
+    services = siteServices(await publicFeed());
+  // SEO settings are keyed by the old "/services/<key>" path; map them to the public URL.
+  const servicePath = new Map(
+    services.map((s) => ["/services/" + s.key, "/dich-vu/" + s.slug]),
+  );
   const hidden = new Set(
     content
       .filter((d) => !d.withdrawn && d.payload?.noindex)
       .map((d) =>
         d.kind === "NEWS"
-          ? "/news/" + d.key
+          ? "/tin-tuc/" + d.key
           : d.kind === "SEO"
-            ? d.key
+            ? servicePath.get(d.key) ||
+              (d.key === "/services" ? "/dich-vu" : localPath(d.key))
             : d.key === "home.hero"
               ? "/"
-              : "/" + d.key,
+              : localPath("/" + d.key),
       ),
   );
   for (const d of content)
     if (d.kind === "PAGE" && d.withdrawn && !d.key.startsWith("home."))
-      hidden.add("/" + d.key);
+      hidden.add(localPath("/" + d.key));
   return [
     "",
-    "/services",
-    "/our-work",
+    "/dich-vu",
+    "/thanh-qua",
     "/phu-kien",
-    "/news",
-    "/about",
-    "/contact",
-    "/privacy",
-    "/terms",
-    ...services.map((s) => `/services/${s.slug}`),
-    ...articles.map((a) => `/news/${a.slug}`),
+    "/tin-tuc",
+    "/gioi-thieu",
+    "/lien-he",
+    "/chinh-sach-bao-mat",
+    "/dieu-khoan-dich-vu",
+    ...services.map((s) => `/dich-vu/${s.slug}`),
+    ...articles.map((a) => `/tin-tuc/${a.slug}`),
   ]
     .filter((path) => !hidden.has(path || "/"))
     .map((path) => ({ url: `${origin.replace(/\/$/, "")}${path}` }));

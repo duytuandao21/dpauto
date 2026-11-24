@@ -55,7 +55,7 @@
 }
 .social-links {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: flex-start;
 }
@@ -73,20 +73,6 @@
 .social-links .icon {
   width: 16px;
   height: 16px;
-}
-.footer-wordmark {
-  position: relative;
-  height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.footer-wordmark img {
-  width: 78%;
-  height: 100%;
-  object-fit: contain;
-  filter: grayscale(1) brightness(4);
-  opacity: 0.95;
 }
 .footer-shader {
   position: relative;

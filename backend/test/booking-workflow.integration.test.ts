@@ -185,6 +185,10 @@ before(async () => {
     }),
     200,
   );
+  // Migration 0025 hides legacy services; these workflow tests still book RUA_XE.
+  await api.db.db.execute(
+    sql`UPDATE services SET active=true,bookable=true WHERE code='RUA_XE'`,
+  );
   service = expect(
     await guest.call("GET", "public/services"),
     200,
@@ -325,6 +329,23 @@ test("phase2: unreachable remains shared, callback and contact count are recorde
     ),
   );
   assert.ok(history.some((e: any) => e.reason === "Xe gặp sự cố trên đường"));
+  // Delete works in any status: hidden from lists/detail, row and history kept, replay is safe.
+  const key = randomUUID();
+  const del = () =>
+    user.call("DELETE", `admin/bookings/${id}`, { expectedVersion: cancelled.version }, key);
+  assert.equal(expect(await del(), 200).deleted, true);
+  assert.equal(expect(await del(), 200).deleted, true);
+  expect(await user.call("GET", `admin/bookings/${id}`), 404);
+  const row = await one(
+    api.db.db,
+    sql`SELECT status,deleted_at FROM bookings WHERE id=${id}`,
+  );
+  assert.equal(row!.status, "CANCELLED");
+  assert.ok(row!.deleted_at);
+  assert.equal(
+    (await one(api.db.db, sql`SELECT count(*)::int AS n FROM capacity_reservations WHERE booking_id=${id} AND status='ACTIVE'`))!.n,
+    0,
+  );
 });
 
 test("phase2: two advisors cannot overwrite the same request and other advisors cannot read the claimed booking", async () => {
@@ -765,4 +786,89 @@ test("phase6: manager sees future backlog, confirms in one save and can transfer
     200,
   );
   assert.ok(history.some((e: any) => e.reason === "Điều phối theo ca làm"));
+});
+
+test("customers: one record per phone across bookings; delete waits for open work, then frees the phone", async () => {
+  const p = await payload("2026-12-03");
+  const a = expect(await guest.call("POST", "public/bookings", p), 201);
+  const b = expect(
+    await guest.call("POST", "public/bookings", {
+      ...p,
+      customer: { ...p.customer, name: "Tên khác" },
+    }),
+    201,
+  );
+  const owners = await rows(
+    api.db.db,
+    sql`SELECT DISTINCT customer_id FROM bookings WHERE id IN (${a.bookingId}::uuid,${b.bookingId}::uuid)`,
+  );
+  assert.equal(owners.length, 1);
+  const id = owners[0].customer_id;
+  const customer = expect(await manager.call("GET", `admin/customers/${id}`), 200);
+  const blocked = await manager.call("DELETE", `admin/customers/${id}`, {
+    expectedVersion: customer.version,
+  });
+  assert.equal(blocked.status, 409, JSON.stringify(blocked.body));
+  await api.db.db.execute(
+    sql`UPDATE bookings SET status='CANCELLED',cancelled_at=now(),cancel_reason='Test',change_kind='CANCELLED' WHERE customer_id=${id}`,
+  );
+  expect(
+    await manager.call("DELETE", `admin/customers/${id}`, {
+      expectedVersion: customer.version,
+    }),
+    200,
+  );
+  expect(await manager.call("GET", `admin/customers/${id}`), 404);
+  const c = expect(await guest.call("POST", "public/bookings", p), 201);
+  const fresh = (await one(
+    api.db.db,
+    sql`SELECT customer_id FROM bookings WHERE id=${c.bookingId}::uuid`,
+  ))!.customer_id;
+  assert.notEqual(fresh, id);
+});
+
+test("partners: picking a sale makes the partner the customer; snapshots keep old names; inactive sales are refused", async () => {
+  const [partner] = expect(await manager.call("GET", "admin/partners"), 200);
+  assert.equal(partner.name, "Xe Lướt Toàn Trung");
+  const sale = expect(
+    await manager.call("POST", `admin/partners/${partner.id}/sales`, { name: "Sale A" }),
+    201,
+  );
+  const body = {
+    ...(await payload("2026-12-04")),
+    ...(await versions()),
+    source: "AT_STATION",
+    partnerSaleId: sale.id,
+  };
+  const noPhone = await manager.call("POST", "admin/bookings", body);
+  assert.equal(noPhone.status, 422, JSON.stringify(noPhone.body));
+  expect(
+    await manager.call("PATCH", `admin/partners/${partner.id}`, {
+      expectedVersion: partner.version,
+      name: partner.name,
+      phone: "0912345678",
+      active: true,
+    }),
+    200,
+  );
+  const booking = expect(await manager.call("POST", "admin/bookings", body), 201);
+  const row = (await one(
+    api.db.db,
+    sql`SELECT b.partner_snapshot,c.name,c.phone_normalized FROM bookings b JOIN customers c ON c.id=b.customer_id WHERE b.id=${booking.bookingId}::uuid`,
+  ))!;
+  assert.equal(row.name, "Xe Lướt Toàn Trung");
+  assert.equal(row.phone_normalized, "+84912345678");
+  expect(
+    await manager.call("PATCH", `admin/partner-sales/${sale.id}`, {
+      expectedVersion: 1,
+      name: "Sale B",
+      active: false,
+    }),
+    200,
+  );
+  const detail = expect(await manager.call("GET", `admin/bookings/${booking.bookingId}`), 200);
+  assert.equal(detail.partner.saleName, "Sale A");
+  const inactive = await manager.call("POST", "admin/bookings", body);
+  assert.equal(inactive.status, 422);
+  assert.equal(inactive.body.error.code, "PARTNER_SALE_INVALID");
 });

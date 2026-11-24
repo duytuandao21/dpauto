@@ -16,12 +16,10 @@ export function NewsCardFrame({
   image,
   children,
   className = "",
-  originalImages = false,
 }: {
   image: SiteImage;
   children: ReactNode;
   className?: string;
-  originalImages?: boolean;
 }) {
   const imageRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
@@ -58,7 +56,6 @@ export function NewsCardFrame({
         >
           <Photo
             {...image}
-            unoptimized={originalImages}
             sizes="(max-width: 809px) 100vw, (max-width: 1199px) 50vw, 33vw"
           />
         </motion.div>

@@ -150,10 +150,13 @@ export function FAQ({
       <div className="container faq-layout">
         <div className="faq-heading">
           <h2>{title}</h2>
-          <p>
-            {description ??
-              "Giải đáp về lịch hẹn, thời gian thực hiện và chi phí dịch vụ."}
-          </p>
+          {/* An empty string hides the line; undefined keeps the default text. */}
+          {description !== "" && (
+            <p>
+              {description ??
+                "Giải đáp về lịch hẹn, thời gian thực hiện và chi phí dịch vụ."}
+            </p>
+          )}
         </div>
         {list}
       </div>

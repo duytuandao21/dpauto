@@ -1,15 +1,26 @@
 import Link from "next/link";
-import { services, site, type Service } from "@/lib/content";
+import { site } from "@/lib/content";
+import type { SiteService } from "@/lib/site-content";
 import { Photo } from "@/components/ui/photo";
 import { Button } from "@/components/ui/button";
+import { BookingLauncher } from "@/components/public-booking/booking-dialog";
+import { BookingPreset } from "@/components/public-booking/booking-preset";
 import { FAQ } from "@/components/sections/faq";
 import { WorkFinalCTA } from "@/components/sections/our-work-motion";
-import { AboutGalleryImage } from "./about-motion";
+import { AboutGalleryImage, AboutVideo } from "./about-motion";
 import { ServiceHero } from "./service-detail-motion";
 
-export function ServiceDetail({ service }: { service: Service }) {
+export function ServiceDetail({
+  service,
+  others,
+  phone = { text: site.phone, href: site.phoneHref },
+}: {
+  service: SiteService;
+  others: SiteService[];
+  phone?: { text: string; href: string };
+}) {
   // These two process photos precede the four gallery photos in the archive.
-  const hasProcessImages = service.slug === "detail-wash";
+  const hasProcessImages = service.slug === "detail-wash" && service.isDefault;
   const gallery = hasProcessImages ? service.gallery.slice(2) : service.gallery;
   const overviewHtml = service.overviewHtml.replace(/<img\b[^>]*>/g, (tag) => {
     const width = tag.match(/\bwidth="(\d+)"/)?.[1];
@@ -20,14 +31,23 @@ export function ServiceDetail({ service }: { service: Service }) {
       <span>{service.title}</span> <span>qua hình ảnh</span>
     </h2>
   );
-  const galleryImages = gallery.map((image, index) => (
-    <div className="service-gallery-photo" key={image.src + index}>
-      <Photo {...image} unoptimized sizes="(max-width: 809px) 100vw, 50vw" />
-    </div>
-  ));
+  // Uploaded videos sit in the same grid as the photos, first.
+  const galleryImages = [
+    ...service.videos.map((video, index) => (
+      <div className="service-gallery-photo" key={"video" + video.src + index}>
+        <AboutVideo src={video.src} />
+      </div>
+    )),
+    ...gallery.map((image, index) => (
+      <div className="service-gallery-photo" key={image.src + index}>
+        <Photo {...image} sizes="(max-width: 809px) 100vw, 50vw" />
+      </div>
+    )),
+  ];
 
   return (
     <div className="detail-page service-detail-page">
+      <BookingPreset serviceKeys={[service.key]} />
       <ServiceHero service={service} />
       <div className="container service-body">
         <div className="service-main">
@@ -107,30 +127,28 @@ export function ServiceDetail({ service }: { service: Service }) {
         <aside className="service-sidebar">
           <div className="service-contact-card">
             <div className="service-contact-copy">
-              <h3>Sẵn sàng làm mới xe của bạn?</h3>
+              <h3>Sẵn sàng chăm sóc xe của bạn?</h3>
               <p>
-                Hãy để HyperAuto Care chăm sóc chiếc xe của bạn một cách chuyên
-                nghiệp.
+                Đặt lịch trước để DPAuto chuẩn bị sẵn sàng, bạn đến là được phục
+                vụ ngay.
               </p>
             </div>
             <div className="service-contact-actions">
-              <Button href="/contact">Liên hệ ngay</Button>
-              <Button href={site.phoneHref} variant="secondary" icon="phone">
-                Gọi {site.phone}
+              <BookingLauncher label="Đặt lịch ngay" />
+              <Button href={phone.href} variant="secondary" icon="phone">
+                Gọi {phone.text}
               </Button>
             </div>
           </div>
           <div className="other-services">
             <h3>Dịch vụ khác</h3>
             <div className="other-services-list">
-              {services
-                .filter((item) => item.slug !== service.slug)
-                .map((item) => (
-                  <Link href={"/services/" + item.slug} key={item.slug}>
-                    <Photo {...item.image} unoptimized />
-                    <span>{item.title}</span>
-                  </Link>
-                ))}
+              {others.map((item) => (
+                <Link href={"/dich-vu/" + item.slug} key={item.slug}>
+                  <Photo {...item.image} />
+                  <span>{item.title}</span>
+                </Link>
+              ))}
             </div>
           </div>
         </aside>

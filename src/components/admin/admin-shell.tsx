@@ -10,6 +10,7 @@ import { AdvisorProvider } from "@/components/advisor/advisor-provider";
 import { AuthGate, signOut, useSession } from "./auth-gate";
 import { AdminLoading } from "./primitives";
 import { apiEnabled } from "@/lib/api/client";
+import { NotificationBell } from "@/components/advisor/notifications";
 
 const nav: { href: string; label: string; icon: AdminIconName }[] = [
   { href: "/co-van", label: "Tổng quan", icon: "overview" },
@@ -33,7 +34,7 @@ const initials = (name: string) =>
 function ShellContent({ children }: { children: React.ReactNode }) {
   const path = usePathname(),
     { data, theme, toggleTheme, ready, error, reset } = useBookings();
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const sessionName = useSession()?.staff.name,
     staffName = sessionName || "Cố vấn dịch vụ",
     avatar = sessionName ? initials(sessionName) : "CV";
@@ -41,12 +42,37 @@ function ShellContent({ children }: { children: React.ReactNode }) {
     document.documentElement.lang = "vi";
     // Scopes the advisor redesign styles to this workspace only.
     document.body.dataset.workspace = "advisor";
+    try {
+      setCollapsed(localStorage.getItem("dpauto.advisor.collapsed") === "1");
+    } catch {}
     return () => {
       delete document.body.dataset.workspace;
     };
   }, []);
   const active = (href: string) =>
     href === "/co-van" ? path === href : path.startsWith(href);
+  const toggleNav = () => {
+    setCollapsed(!collapsed);
+    try {
+      localStorage.setItem("dpauto.advisor.collapsed", collapsed ? "0" : "1");
+    } catch {}
+  };
+  const navLink = (item: (typeof nav)[number]) => (
+    <Link
+      key={item.href}
+      href={item.href}
+      className={`adm-nav-link ${selectedNav(item.href) ? "is-active" : ""}`}
+      aria-current={selectedNav(item.href) ? "page" : undefined}
+      aria-label={item.label}
+      title={item.label}
+    >
+      <AdminIcon name={item.icon} />
+      <span className="adm-sidebar-label">{item.label}</span>
+      {item.icon === "calendar" && pending > 0 && (
+        <span className="adm-nav-count">{pending}</span>
+      )}
+    </Link>
+  );
   const pending = data.bookings.filter((b) => b.status === "pending").length;
   const current = active("/co-van/tiep-nhan")
     ? { label: "Tiếp nhận xe", icon: "car" as const }
@@ -87,52 +113,15 @@ function ShellContent({ children }: { children: React.ReactNode }) {
             sizes="64px"
           />
           <span className="adm-sidebar-label">
-            <strong>Trạm dịch vụ Toàn Trung</strong>
-            <small>Cố vấn dịch vụ</small>
+            <strong>DPAuto</strong>
+            <small>Trạm dịch vụ Toàn Trung</small>
           </span>
         </Link>
-        <button
-          type="button"
-          className="adm-icon-btn adm-collapse adv-sidebar-toggle"
-          onClick={() => setCollapsed(!collapsed)}
-          title={
-            collapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"
-          }
-          aria-label={
-            collapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"
-          }
-          aria-expanded={!collapsed}
-          aria-controls="advisor-navigation"
-        >
-          <AdminIcon name="collapse" />
-        </button>
-        <Link
-          href="/co-van/lich-hen/tao-moi"
-          className="adm-btn adm-primary adm-sidebar-create"
-          aria-label="Tạo lịch hẹn mới"
-        >
-          <AdminIcon name="plus" />
-          <span className="adm-sidebar-label">Tạo lịch hẹn</span>
-        </Link>
-        <span className="adm-nav-group">Vận hành</span>
-        <nav>
-          {mainNav.map((item) => (
-            <div key={item.href}>
-              <Link
-                href={item.href}
-                className={`adm-nav-link ${selectedNav(item.href) ? "is-active" : ""}`}
-                aria-current={selectedNav(item.href) ? "page" : undefined}
-                aria-label={item.label}
-                title={item.label}
-              >
-                <AdminIcon name={item.icon} />
-                <span className="adm-sidebar-label">{item.label}</span>
-                {item.icon === "calendar" && pending > 0 && (
-                  <span className="adm-nav-count">{pending}</span>
-                )}
-              </Link>
-            </div>
-          ))}
+        <nav className="adv-nav">
+          <span className="adm-nav-group">Vận hành</span>
+          {mainNav.map(navLink)}
+          <span className="adm-nav-group">Cá nhân</span>
+          {nav.filter((item) => !mainNav.includes(item)).map(navLink)}
         </nav>
         <div className="adm-sidebar-bottom">
           <Link
@@ -155,15 +144,6 @@ function ShellContent({ children }: { children: React.ReactNode }) {
               <span className="adm-sidebar-label">Đăng xuất</span>
             </button>
           )}
-          <div className="adm-advisor">
-            <span className="adm-avatar" aria-hidden="true">
-              {avatar}
-            </span>
-            <span className="adm-sidebar-label">
-              <strong>{staffName}</strong>
-              <small>Cố vấn dịch vụ</small>
-            </span>
-          </div>
         </div>
       </aside>
       <div className="adm-body">
@@ -182,9 +162,30 @@ function ShellContent({ children }: { children: React.ReactNode }) {
               </strong>
             </span>
           </Link>
-          <div className="adm-header-breadcrumb">
-            <strong>{current.label}</strong>
-          </div>
+          <button
+            type="button"
+            className="adm-icon-btn adm-collapse adv-sidebar-toggle"
+            onClick={toggleNav}
+            aria-label={
+              collapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"
+            }
+            title={
+              collapsed ? "Mở rộng thanh điều hướng" : "Thu gọn thanh điều hướng"
+            }
+            aria-expanded={!collapsed}
+            aria-controls="advisor-navigation"
+          >
+            <AdminIcon name="collapse" />
+          </button>
+          <nav className="adm-header-breadcrumb" aria-label="Vị trí">
+            <Link href="/co-van">Cố vấn dịch vụ</Link>
+            {current !== nav[0] && (
+              <>
+                <span aria-hidden="true">/</span>
+                <strong>{current.label}</strong>
+              </>
+            )}
+          </nav>
           <div className="adm-header-actions">
             <button
               className="adm-icon-btn"
@@ -198,20 +199,30 @@ function ShellContent({ children }: { children: React.ReactNode }) {
             >
               <AdminIcon name={theme === "dark" ? "sun" : "moon"} />
             </button>
-            <Link
-              className="adm-icon-btn adm-notification"
-              aria-label="Thông báo"
-              href="/co-van/thong-bao"
-            >
-              <AdminIcon name="bell" />
-            </Link>
+            {apiEnabled ? (
+              <NotificationBell />
+            ) : (
+              <Link
+                className="adm-icon-btn adm-notification"
+                aria-label="Thông báo"
+                href="/co-van/thong-bao"
+              >
+                <AdminIcon name="bell" />
+              </Link>
+            )}
             <Link
               href="/co-van/tai-khoan"
-              className="adm-avatar"
+              className="adv-user"
               aria-label={`Tài khoản: ${staffName}`}
               title={staffName}
             >
-              {avatar}
+              <span className="adm-avatar" aria-hidden="true">
+                {avatar}
+              </span>
+              <span className="adv-user-name">
+                <strong>{staffName}</strong>
+                <small>Cố vấn dịch vụ</small>
+              </span>
             </Link>
           </div>
         </header>

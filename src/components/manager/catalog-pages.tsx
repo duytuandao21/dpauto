@@ -1,5 +1,6 @@
 "use client";
 
+import { formatPhone } from "@/lib/advisor/formats";
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { staffWorkload } from "@/lib/manager/operations";
@@ -450,13 +451,13 @@ export function ManagerStaffPage() {
                       <span className="adm-avatar">
                         {item.name
                           .split(" ")
-                          .slice(0, 2)
+                          .slice(-2)
                           .map((word) => word[0])
-                          .join("")}
+                          .join("")
+                          .toUpperCase()}
                       </span>
                       <div>
                         <strong>{item.name}</strong>
-                        <small>{item.id}</small>
                       </div>
                     </div>
                   </td>
@@ -472,7 +473,7 @@ export function ManagerStaffPage() {
                     </span>
                   </td>
                   <td>
-                    <span>{item.phone}</span>
+                    <span>{formatPhone(item.phone)}</span>
                     <small>{item.email}</small>
                   </td>
                   <td>

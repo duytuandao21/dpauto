@@ -1,3 +1,4 @@
+import type { SiteImage } from "./content";
 // Sample products: the homepage shows the first four, /phu-kien shows all. Replace with DPAuto's catalogue.
 export const accessories = [
   {
@@ -197,8 +198,30 @@ export const accessories = [
 export type Accessory = (typeof accessories)[number];
 
 /** Giá VND (giá mẫu để xem trước), ví dụ 5.490.000đ; sản phẩm chưa có giá hiển thị "Liên hệ". */
-export const accessoryPrice = (product: Accessory) =>
-  "price" in product ? `${product.price.toLocaleString("vi-VN")}đ` : "Liên hệ";
+export const accessoryPrice = (product: {
+  price?: number | null;
+  salePrice?: number | null;
+}) => {
+  const price = product.salePrice ?? product.price;
+  return typeof price === "number"
+    ? `${price.toLocaleString("vi-VN")}đ`
+    : "Liên hệ";
+};
+/** Fields the catalogue needs; CMS products and the built-in list both fit. */
+export type CatalogItem = {
+  id: string;
+  name: string;
+  brand: string;
+  category: string;
+  description: string;
+  image: string;
+  /** Uploaded CMS image: pre-sized variants, so the card loads the width it needs. */
+  media?: SiteImage["media"];
+  /** All product photos (CMS); the card flips to the second one on hover. */
+  images?: SiteImage[];
+  price?: number | null;
+  salePrice?: number | null;
+};
 
 /** Brand filter tiles on /phu-kien; logos live in public/images/brands (shared with the homepage). */
 export const accessoryBrands = [
@@ -218,6 +241,12 @@ export const searchText = (value: string) =>
     .toLowerCase()
     .trim();
 
+/** Stable catalogue id from a name; older products stored the brand/category name itself. */
+export const catalogId = (name: string) =>
+  searchText(name)
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 export const accessorySorts = [
   { value: "newest", label: "Mới nhất" },
   { value: "name-asc", label: "Tên A → Z" },
@@ -226,19 +255,21 @@ export const accessorySorts = [
 export type AccessorySort = (typeof accessorySorts)[number]["value"];
 
 /** Brand + category + accent-insensitive search; "newest" keeps catalogue order (newest first). */
-export function filterAccessories({
+export function filterAccessories<T extends CatalogItem = Accessory>({
   query = "",
   brand = "",
   category = "",
   sort = "newest",
+  items = accessories as unknown as T[],
 }: {
   query?: string;
   brand?: string;
   category?: string;
   sort?: AccessorySort;
+  items?: T[];
 }) {
   const words = searchText(query).split(/\s+/).filter(Boolean);
-  const list = accessories.filter(
+  const list = items.filter(
     (p) =>
       (!brand || p.brand === brand) &&
       (!category || p.category === category) &&

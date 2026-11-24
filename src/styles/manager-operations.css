@@ -326,3 +326,333 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Shell following the /admin layout (light sidebar, plain header) ---------- */
+.adm-app.mgr-app .mgr-body,
+.adm-app.mgr-app .mgr-main {
+  background: var(--adm-surface);
+}
+.adm-app.mgr-app .mgr-sidebar {
+  padding: 0 0 8px;
+  color: var(--adm-text);
+  background: var(--adm-surface);
+  border-right: 1px solid var(--adm-border);
+}
+.adm-app.mgr-app .mgr-brand {
+  gap: 10px;
+  min-height: 64px;
+  height: 64px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--adm-border);
+}
+.adm-app.mgr-app .mgr-brand img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fff;
+}
+.adm-app.mgr-app .mgr-brand strong {
+  color: var(--adm-text);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.adm-app.mgr-app .mgr-brand small {
+  margin: 0;
+  color: var(--adm-muted);
+  font-size: 11px;
+}
+.adm-app.mgr-app .mgr-sidebar nav {
+  flex: 1;
+  padding: 16px 8px 8px;
+}
+.adm-app.mgr-app .mgr-nav-group {
+  margin: 0;
+}
+.adm-app.mgr-app .mgr-nav-group + .mgr-nav-group {
+  margin-top: 20px;
+}
+.adm-app.mgr-app .mgr-group-title {
+  margin: 0 0 8px;
+  padding: 0 12px;
+  color: var(--adm-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.adm-app.mgr-app .mgr-nav-link {
+  width: 100%;
+  min-height: 40px;
+  margin: 0 0 2px;
+  padding: 8px 12px;
+  gap: 12px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--adm-text);
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+.adm-app.mgr-app .mgr-nav-link > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.adm-app.mgr-app .mgr-nav-link:hover {
+  color: var(--adm-text);
+  background: var(--adm-raised);
+}
+.adm-app.mgr-app .mgr-nav-link.is-active {
+  color: var(--adm-accent-text);
+  background: var(--adm-accent-soft);
+  font-weight: 500;
+}
+.adm-app.mgr-app .mgr-nav-link.is-active::before {
+  content: none;
+}
+.adm-app.mgr-app .mgr-nav-link > small {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--mgr-brand);
+  font-size: 11px;
+  text-align: center;
+}
+.adm-app.mgr-app .mgr-sidebar-footer {
+  display: block;
+  margin: 0;
+  padding: 8px 8px 0;
+  border-top: 1px solid var(--adm-border);
+}
+.adm-app.mgr-app .mgr-header {
+  min-height: 64px;
+  padding: 0 24px;
+  gap: 16px;
+}
+.adm-app.mgr-app .mgr-breadcrumb {
+  gap: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.adm-app.mgr-app .mgr-breadcrumb > a:hover {
+  color: var(--adm-text);
+}
+.adm-app.mgr-app .mgr-account {
+  gap: 10px;
+  min-height: 44px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.adm-app.mgr-app .mgr-account:hover {
+  background: var(--adm-raised);
+}
+.adm-app.mgr-app .mgr-account .adm-avatar,
+.adm-app.mgr-app .mgr-sidebar .adm-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border-color: var(--mgr-brand);
+  color: #fff;
+  background: var(--mgr-brand);
+  font-weight: 600;
+}
+.adm-app.mgr-app .mgr-account strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+.adm-app.mgr-app .mgr-account small {
+  font-size: 11px;
+}
+.adm-app.mgr-app .mgr-account-menu {
+  top: calc(100% + 8px);
+  gap: 4px;
+  padding: 6px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px #0f172a1f;
+}
+.adm-app.mgr-app .mgr-account-menu > strong {
+  padding: 6px 10px;
+}
+.adm-app.mgr-app .mgr-account-menu > :is(a, button) {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--adm-text);
+  font-size: 14px;
+  text-decoration: none;
+}
+.adm-app.mgr-app .mgr-account-menu > :is(a, button):hover {
+  background: var(--adm-raised);
+}
+@media (min-width: 1024px) {
+  .adm-app.mgr-app .mgr-sidebar {
+    width: 255px;
+    padding: 0 0 8px;
+  }
+  .adm-app.mgr-app .mgr-body {
+    margin-left: 255px;
+  }
+  .adm-app.mgr-app.mgr-collapsed .mgr-sidebar {
+    width: 72px;
+  }
+  .adm-app.mgr-app.mgr-collapsed .mgr-body {
+    margin-left: 72px;
+  }
+  .adm-app.mgr-app .mgr-brand img {
+    width: 32px;
+    height: 32px;
+  }
+}
+.adm-app.mgr-app.mgr-collapsed
+  :is(.mgr-group-title, .mgr-nav-link > span, .mgr-nav-link > small) {
+  display: none;
+}
+.adm-app.mgr-app.mgr-collapsed .mgr-nav-link {
+  justify-content: center;
+}
+.adm-app.mgr-app.mgr-collapsed .mgr-brand {
+  justify-content: center;
+  padding: 0;
+}
+
+/* ---------- Stats, cards and tables following /admin ---------- */
+.adm-app.mgr-app .mgr-kpi {
+  border: 1px solid var(--adm-border);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px #0f172a0d;
+}
+.adm-app.mgr-app .mgr-kpi:hover {
+  border-color: var(--adm-border);
+}
+.adm-app.mgr-app .mgr-kpi .mgr-kpi-icon,
+.adm-app.mgr-app .mgr-kpi[data-tone] .mgr-kpi-icon {
+  width: auto;
+  height: auto;
+  color: var(--adm-muted);
+  background: transparent;
+}
+.adm-app.mgr-app .mgr-panel {
+  border-radius: 8px;
+  box-shadow: 0 1px 2px #0f172a0d;
+}
+.adm-app.mgr-app .mgr-table tbody tr:hover {
+  background: var(--adm-raised);
+}
+.adm-app.mgr-app .mgr-kpi .icon { color: var(--adm-muted); }
+
+/* dd/mm/yyyy date field shared with /co-van (DateInput). */
+.adm-app.mgr-app .adv-date-input,
+.mgr-dialog .adv-date-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+.adm-app.mgr-app .adv-date-input > input:first-child,
+.mgr-dialog .adv-date-input > input:first-child {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  padding-right: 44px;
+}
+.adm-app.mgr-app .adv-date-input > .adm-icon-btn,
+.mgr-dialog .adv-date-input > .adm-icon-btn {
+  position: absolute;
+  right: 0;
+  border: 0;
+  background: transparent;
+}
+.adm-app.mgr-app .adv-date-input > .adv-date-picker,
+.mgr-dialog .adv-date-input > .adv-date-picker {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Mobile navigation drawer uses the same light menu as the desktop sidebar. */
+.mgr-dialog .mgr-mobile-menu .mgr-brand {
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 4px 12px;
+  border-bottom: 1px solid var(--adm-border);
+}
+.mgr-dialog .mgr-mobile-menu .mgr-brand img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fff;
+}
+.mgr-dialog .mgr-mobile-menu .mgr-brand strong {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.mgr-dialog .mgr-mobile-menu nav {
+  padding: 16px 0 8px;
+}
+.mgr-dialog .mgr-mobile-menu .mgr-nav-group + .mgr-nav-group {
+  margin-top: 20px;
+}
+.mgr-dialog .mgr-mobile-menu .mgr-group-title {
+  margin: 0 0 8px;
+  padding: 0 12px;
+  color: var(--adm-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.mgr-dialog .mgr-mobile-menu .mgr-nav-link {
+  width: 100%;
+  min-height: 44px;
+  margin: 0 0 2px;
+  padding: 8px 12px;
+  gap: 12px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--adm-text);
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+}
+.mgr-dialog .mgr-mobile-menu .mgr-nav-link:hover {
+  background: var(--adm-raised);
+}
+.mgr-dialog .mgr-mobile-menu .mgr-nav-link.is-active {
+  color: var(--adm-accent-text);
+  background: var(--adm-accent-soft);
+  font-weight: 500;
+}
+.mgr-dialog .mgr-mobile-menu .mgr-nav-link.is-active::before {
+  content: none;
+}
+.mgr-dialog .mgr-mobile-menu .mgr-nav-link > small {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--mgr-brand);
+  font-size: 11px;
+  text-align: center;
+}
+.mgr-dialog .mgr-mobile-menu .mgr-sidebar-footer {
+  display: block;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--adm-border);
+}

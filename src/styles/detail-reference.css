@@ -63,8 +63,9 @@
   color: #ffffffcc;
   --text-muted: #ffffffcc;
 }
-.article-detail-page .article-body .rich-content p {
-  line-height: 1.55;
+.article-detail-page .article-body .rich-content :is(p, li) {
+  font-size: 17px;
+  line-height: 1.7;
 }
 .article-detail-page .article-body .rich-content > * {
   margin: 0;
@@ -72,14 +73,19 @@
 .article-detail-page .article-body .rich-content > * + * {
   margin-top: 20px;
 }
+.article-detail-page .article-body .rich-content > :first-child {
+  margin-top: 0;
+}
 .article-detail-page .article-body .rich-content h2 {
-  font-size: 54px;
-  line-height: 1.05;
-  letter-spacing: -0.7px;
+  margin-top: 48px;
+  font-size: 32px;
+  line-height: 1.25;
+  letter-spacing: -0.4px;
   color: white;
 }
 .article-detail-page .article-body .rich-content h3 {
-  font-size: 24px;
+  margin-top: 32px;
+  font-size: 22px;
   line-height: 1.2;
   color: white;
 }
@@ -433,6 +439,10 @@
   aspect-ratio: 1;
   max-height: 650px;
 }
+/* Uploaded service videos fill their gallery tile like the photos. */
+.service-detail-page .service-gallery-photo > .about-story-video {
+  height: 100%;
+}
 
 @media (min-width: 810px) and (max-width: 1199.98px) {
   .article-detail-page .article-heading {
@@ -446,7 +456,7 @@
     height: 440px;
   }
   .article-detail-page .article-body .rich-content h2 {
-    font-size: 44px;
+    font-size: 30px;
   }
   .article-detail-page > .news-section {
     padding: 100px 0;
@@ -574,10 +584,14 @@
     margin-top: 24px;
   }
   .article-detail-page .article-body .rich-content h2 {
-    font-size: 36px;
+    margin-top: 40px;
+    font-size: 26px;
   }
   .article-detail-page .article-body .rich-content h3 {
-    font-size: 21px;
+    font-size: 20px;
+  }
+  .article-detail-page .article-body .rich-content :is(p, li) {
+    font-size: 16px;
   }
   .article-detail-page > .news-section {
     padding: 80px 0;
@@ -653,5 +667,125 @@
   }
   .service-detail-page .service-gallery-photo {
     max-height: 580px;
+  }
+}
+
+/* Article table of contents: sticky side box on desktop, collapsible box above the text below 1200px. */
+.article-detail-page .rich-content :is(h2, h3) {
+  scroll-margin-top: 100px;
+}
+.article-toc-side .other-services,
+.article-toc-inline {
+  display: flex;
+  flex-direction: column;
+}
+.article-toc-list > a,
+.article-toc-inline nav > a {
+  padding: 7px 0;
+  color: var(--muted-dark);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.article-toc-list > a[data-level="3"],
+.article-toc-inline nav > a[data-level="3"] {
+  padding-left: 16px;
+  font-weight: 400;
+}
+.article-toc-list > a:hover,
+.article-toc-list > a[aria-current],
+.article-toc-inline nav > a:hover {
+  color: var(--orange);
+}
+/* Desktop list: a thin rail marks the section being read. */
+.article-toc-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  border-left: 1px solid var(--border-light);
+}
+.article-toc-list > a {
+  margin-left: -1px;
+  padding-left: 14px;
+  border-left: 2px solid transparent;
+}
+.article-toc-list > a[data-level="3"] {
+  padding-left: 28px;
+}
+.article-toc-list > a[aria-current] {
+  border-left-color: var(--orange);
+}
+.article-toc-inline > summary {
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+}
+.article-toc-inline nav {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has(.article-detail-page) {
+    scroll-behavior: auto;
+  }
+}
+@media (min-width: 1200px) {
+  .article-detail-page .article-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 64px;
+    align-items: start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px 60px;
+  }
+  .article-detail-page .article-layout .article-cover {
+    padding: 0 0 64px;
+  }
+  .article-detail-page .article-layout .article-cover-image {
+    height: 460px;
+    max-width: none;
+  }
+  .article-detail-page .article-layout .article-body {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+  .article-toc-side {
+    position: sticky;
+    top: 100px;
+  }
+  /* Only the list scrolls, so the box title stays visible. */
+  .article-toc-side .other-services {
+    max-height: calc(100vh - 120px);
+  }
+  .article-toc-side .other-services h3 {
+    flex: none;
+  }
+  /* Heading shares the 1200px grid: its left edge lines up with the cover image. */
+  .article-detail-page:has(.article-layout) .article-heading {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 96px 32px 56px;
+  }
+  .article-detail-page:has(.article-layout) .article-heading > :is(h1, p) {
+    max-width: calc(100% - 384px);
+  }
+  .article-detail-page:has(.article-layout) .article-heading h1 {
+    font-size: 56px;
+    line-height: 1.08;
+  }
+  .article-toc-inline {
+    display: none;
+  }
+}
+@media (max-width: 1199.98px) {
+  .article-toc-side {
+    display: none;
+  }
+  .article-toc-inline {
+    padding: 20px;
   }
 }

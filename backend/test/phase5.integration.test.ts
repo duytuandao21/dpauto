@@ -8,7 +8,9 @@ import { loadConfig } from "../src/config";
 import { createApp } from "../src/app";
 import { sql, one, rows } from "../src/database";
 import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { join, resolve } from "node:path";
+import { tmpdir } from "node:os";
+import sharp from "sharp";
 import { Notifications } from "../src/notifications";
 import { csv, shiftHours } from "../src/operations-utils";
 import { day } from "../src/common";
@@ -23,6 +25,7 @@ const config = {
     APP_ORIGIN: "http://localhost:4001",
     API_SECRET: "phase1-isolated-test-secret-".repeat(3),
     NODE_ENV: "test",
+    MEDIA_LOCAL_DIR: join(tmpdir(), "dpauto-media-" + randomUUID()),
   }),
   now: () => new Date(clock),
 };
@@ -81,6 +84,27 @@ class Client {
         : {};
     if (body.data?.csrfToken) this.csrf = body.data.csrfToken;
     return { status: response.statusCode, body, headers: response.headers };
+  }
+  async upload(body: Buffer, name: string, alt: string, key?: string) {
+    const response = await app.inject({
+      method: "POST",
+      url:
+        "/api/v1/admin/cms/assets?" +
+        new URLSearchParams({ name, alt }).toString(),
+      remoteAddress: "127.0.0." + ((sequence++ % 200) + 10),
+      headers: {
+        origin: config.origin,
+        cookie: this.cookie,
+        "content-type": "application/octet-stream",
+        "x-csrf-token": this.csrf,
+        "idempotency-key": key || randomUUID(),
+      },
+      payload: body,
+    });
+    return {
+      status: response.statusCode,
+      body: response.body ? JSON.parse(response.body) : {},
+    };
   }
   async login(email: string, pw = password) {
     await this.call("GET", "admin/auth/csrf");
@@ -278,7 +302,8 @@ after(async () => {
 
 let testDay = 12;
 beforeEach(async () => {
-  clock = new Date(`2026-11-${String(++testDay).padStart(2, "0")}T03:00:00Z`);
+  // Date.UTC rolls past the month's end, so the suite can grow beyond 18 cases.
+  clock = new Date(Date.UTC(2026, 10, ++testDay, 3));
   // Isolate cases without invoking the P3 handover flow, which is not part of these tests.
   await api.db.tx(async (c) => {
     await c.execute(
@@ -530,17 +555,22 @@ const baseContent = () => ({
   noindex: false,
   category: "",
 });
+let assetSeed = 0;
+/** A distinct photo per call, so content-hash de-duplication does not merge test fixtures. */
 async function asset() {
-  const dataUrl =
-    "data:image/jpeg;base64," +
-    (await readFile(resolve(__dirname, "fixtures/reception.jpg"))).toString(
-      "base64",
-    );
-  return success(manager, "POST", "admin/cms/assets", {
-    name: "garage.jpg",
-    alt: "Đội ngũ tại gara",
-    dataUrl,
-  });
+  const body = await sharp({
+    create: {
+      width: 1400,
+      height: 900,
+      channels: 3,
+      background: { r: 180, g: 20, b: (++assetSeed * 7) % 256 },
+    },
+  })
+    .jpeg()
+    .toBuffer();
+  const r = await manager.upload(body, "garage.jpg", "Đội ngũ tại gara");
+  assert.equal(r.status, 201, JSON.stringify(r.body));
+  return r.body.data;
 }
 
 test("P5 pure intervals and CSV protect leave boundaries and formula cells", () => {
@@ -661,7 +691,7 @@ test("P5 CMS draft/publish/withdraw is atomic, idempotent and keeps media privat
   );
   assert.equal(
     (await manager.call("GET", "admin/cms/assets/" + image.id)).status,
-    200,
+    302,
   );
   assert.equal(
     (await a.call("GET", "admin/cms/assets/" + image.id)).status,
@@ -677,9 +707,17 @@ test("P5 CMS draft/publish/withdraw is atomic, idempotent and keeps media privat
       reason: "Duyệt nội dung",
     },
   );
-  assert.equal(
-    (await new Client().call("GET", "public/cms/assets/" + image.id)).status,
-    200,
+  const live = await new Client().call("GET", "public/cms/assets/" + image.id);
+  assert.equal(live.status, 302);
+  assert.match(
+    String(live.headers.location),
+    /^\/api\/v1\/public\/media\/media\/[a-f0-9]{64}\/w1400\.webp$/,
+  );
+  const feed = (await pub()).items.find((d: any) => d.key === "home.hero");
+  assert.equal(feed.payload.image.id, image.id);
+  assert.deepEqual(
+    feed.payload.image.webp.map((v: any) => v.width),
+    [320, 640, 960, 1280, 1400],
   );
   const draft = await success(
     manager,
@@ -718,10 +756,30 @@ test("P5 CMS draft/publish/withdraw is atomic, idempotent and keeps media privat
       reason: "Duyệt bản hai",
     },
   );
-  await success(manager, "POST", `admin/cms/documents/${doc.id}/withdraw`, {
+  // An image another document also uses must survive the withdraw.
+  const shared = await asset();
+  await success(manager, "POST", "admin/cms/documents", {
+    kind: "PAGE",
+    key: "home.process",
+    payload: { ...baseContent(), imageId: shared.id },
+  });
+  const third = await success(manager, "PATCH", "admin/cms/documents/" + doc.id, {
     expectedVersion: second.version,
+    payload: { ...payload, imageId: shared.id },
+  });
+  await success(manager, "POST", `admin/cms/documents/${doc.id}/withdraw`, {
+    expectedVersion: third.version,
     reason: "Gỡ nội dung",
   });
+  // Withdrawing deletes the item's own images from storage for good.
+  assert.equal(
+    (await manager.call("GET", "admin/cms/assets/" + image.id)).status,
+    404,
+  );
+  assert.equal(
+    (await manager.call("GET", "admin/cms/assets/" + shared.id)).status,
+    302,
+  );
   const gone = (await pub()).items.find((d: any) => d.key === "home.hero");
   assert.equal(gone.withdrawn, true);
   assert.equal(gone.payload, null);
@@ -729,17 +787,129 @@ test("P5 CMS draft/publish/withdraw is atomic, idempotent and keeps media privat
     (await new Client().call("GET", "public/cms/assets/" + image.id)).status,
     404,
   );
-  await assert.rejects(() =>
-    api.db.db.execute(
-      sql`UPDATE cms_revisions SET payload='{}'::jsonb WHERE id=${doc.revisionId}`,
-    ),
+  // No version history: publishing removed the older revisions, withdrawing kept only the latest.
+  assert.equal(
+    (
+      await api.db.db.execute(
+        sql`SELECT id FROM cms_revisions WHERE document_id=${doc.id}`,
+      )
+    ).rows.length,
+    1,
   );
-  const invalid = await manager.call("POST", "admin/cms/assets", {
-    name: "bad.svg",
-    alt: "bad",
-    dataUrl: "data:image/svg+xml;base64,PHN2Zy8+",
-  });
+  const invalid = await manager.upload(
+    Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>'),
+    "bad.svg",
+    "bad",
+  );
   assert.equal(invalid.status, 422);
+  const json = await manager.call("POST", "admin/cms/assets", {
+    name: "bad.jpg",
+    alt: "bad",
+  });
+  assert.equal(json.status, 415);
+});
+
+test("P5 media library de-duplicates, guards deletion and serves stored variants", async () => {
+  const body = await sharp({
+    create: {
+      width: 800,
+      height: 600,
+      channels: 3,
+      background: { r: 9, g: 8, b: 7 },
+    },
+  })
+    .png()
+    .toBuffer();
+  const first = await manager.upload(body, "xe.png", "Xe trong xưởng");
+  assert.equal(first.status, 201, JSON.stringify(first.body));
+  const id = first.body.data.id;
+  const again = await manager.upload(body, "xe-2.png", "Bản trùng");
+  assert.equal(again.body.data.id, id);
+  assert.equal(again.body.data.duplicate, true);
+  assert.equal((await a.upload(body, "x.png", "x")).status, 403);
+  const [found] = await success(
+    manager,
+    "GET",
+    "admin/cms/assets?search=" + encodeURIComponent("trong xưởng"),
+  );
+  assert.equal(found.id, id);
+  assert.deepEqual(
+    [found.width, found.height, found.mime],
+    [800, 600, "image/png"],
+  );
+  assert.deepEqual(
+    found.avif.map((v: any) => v.width),
+    [320, 640, 800],
+  );
+  const file = await app.inject({
+    method: "GET",
+    url: found.webp.at(-1).url,
+  });
+  assert.equal(file.statusCode, 200);
+  assert.equal(file.headers["content-type"], "image/webp");
+  assert.match(String(file.headers["cache-control"]), /immutable/);
+  assert.equal(
+    (
+      await app.inject({
+        method: "GET",
+        url: "/api/v1/public/media/../../.env",
+      })
+    ).statusCode,
+    404,
+  );
+  const moved = await success(manager, "PATCH", "admin/cms/assets/" + id, {
+    alt: "Xe sau khi chăm sóc",
+    focalX: 0.2,
+    focalY: 0.7,
+  });
+  assert.equal(moved.id, id);
+  const [edited] = await success(manager, "GET", "admin/cms/assets?search=sau");
+  assert.deepEqual(edited.focal, { x: 0.2, y: 0.7 });
+  assert.match(edited.og, /og-20-70\.jpg$/);
+  assert.equal(
+    (await manager.call("PATCH", "admin/cms/assets/" + id, { focalX: 0.5 }))
+      .status,
+    400,
+  );
+  const doc = await success(manager, "POST", "admin/cms/documents", {
+    kind: "PAGE",
+    key: "about",
+    payload: { ...baseContent(), imageId: id },
+  });
+  const usage = await success(manager, "GET", `admin/cms/assets/${id}/usage`);
+  assert.deepEqual(
+    usage.map((u: any) => [u.id, u.live]),
+    [[doc.id, false]],
+  );
+  // Deleting works even while content still uses the image.
+  await success(manager, "DELETE", "admin/cms/assets/" + id, {});
+  // Deleting is permanent: gone from library and trash, files removed from storage.
+  assert.equal(
+    (await success(manager, "GET", "admin/cms/assets?search=sau")).length,
+    0,
+  );
+  assert.equal(
+    (await success(manager, "GET", "admin/cms/assets?trash=true&search=sau"))
+      .length,
+    0,
+  );
+  assert.equal(
+    (await app.inject({ method: "GET", url: found.webp.at(-1).url }))
+      .statusCode,
+    404,
+  );
+  const reuse = await manager.call("PATCH", "admin/cms/documents/" + doc.id, {
+    expectedVersion: doc.version,
+    payload: { ...baseContent(), imageId: id },
+  });
+  assert.equal(reuse.status, 422);
+  const restore = await manager.call(
+    "POST",
+    `admin/cms/assets/${id}/restore`,
+    {},
+  );
+  assert.equal(restore.status, 409);
+  assert.equal(restore.body.error.code, "CMS_ASSET_PURGED");
 });
 
 test("P5 news and SEO use strict keys and immutable published snapshots", async () => {
@@ -909,6 +1079,10 @@ test("P5 outbox concurrent claims deduplicate inbox, preserve transfer scope and
     notice = inbox.find((n: any) => n.subjectId === visit.visitId);
   assert.ok(notice);
   assert.ok(!notice.title.includes("0900"));
+  // Detail comes from the event behind the notice; the phone never leaks.
+  assert.ok(notice.eventType);
+  assert.ok(notice.subject.code);
+  assert.ok(!JSON.stringify(notice).includes("0900"));
   assert.equal(
     (await success(b, "GET", "admin/notifications")).some(
       (n: any) => n.id === notice.id,
@@ -1041,4 +1215,545 @@ test("P5 shift changes protect active technicians independently of booking slots
   });
   assert.equal(leave.status, 409);
   assert.equal(leave.body.error.code, "CAPACITY_IMPACT");
+});
+
+test("P5 CMS content kinds validate payloads, track nested images, revert, preview and report activity", async () => {
+  const image = await asset();
+  const pub = () => success(new Client(), "GET", "public/content");
+  const settings = {
+    name: "DPAuto - Trạm dịch vụ Toàn Trung",
+    phone: "0772 584 279",
+    email: "lienhe@example.test",
+    address: "Địa chỉ thử nghiệm",
+    hours: [{ label: "Thứ 2 - Chủ nhật", value: "08:00 - 18:00" }],
+    logo: {
+      src: "/api/v1/public/cms/assets/" + image.id,
+      alt: "Logo",
+      assetId: image.id,
+    },
+  };
+  const site = await success(manager, "POST", "admin/cms/documents", {
+    kind: "SETTINGS",
+    key: "site",
+    payload: settings,
+  });
+  assert.equal(
+    (
+      await manager.call("POST", "admin/cms/documents", {
+        kind: "SETTINGS",
+        key: "site",
+        payload: settings,
+      })
+    ).status,
+    409,
+  );
+  for (const bad of [
+    { kind: "SETTINGS", key: "other", payload: settings },
+    {
+      kind: "SERVICE",
+      key: "Bad Slug",
+      payload: { title: "x", description: "" },
+    },
+  ])
+    assert.equal(
+      (await manager.call("POST", "admin/cms/documents", bad)).status,
+      422,
+    );
+  const invalid = [
+    { ...settings, socials: { facebook: "javascript:alert(1)" } },
+    { ...settings, unknown: true },
+  ];
+  for (const payload of invalid)
+    assert.equal(
+      (
+        await manager.call("PATCH", "admin/cms/documents/" + site.id, {
+          expectedVersion: site.version,
+          payload,
+        })
+      ).status,
+      400,
+    );
+  const service = await success(manager, "POST", "admin/cms/documents", {
+    kind: "SERVICE",
+    key: "phu-ceramic",
+    payload: {
+      title: "Phủ ceramic",
+      description: "Bảo vệ sơn",
+      body: {
+        type: "doc",
+        content: [
+          {
+            type: "paragraph",
+            content: [{ type: "text", text: "Giới thiệu" }],
+          },
+        ],
+      },
+    },
+  });
+  const script = await manager.call(
+    "PATCH",
+    "admin/cms/documents/" + service.id,
+    {
+      expectedVersion: service.version,
+      payload: {
+        title: "Phủ ceramic",
+        description: "",
+        body: { type: "doc", content: [{ type: "script", text: "x" }] },
+      },
+    },
+  );
+  assert.equal(script.status, 400);
+  assert.equal(
+    (await new Client().call("GET", "public/cms/assets/" + image.id)).status,
+    404,
+  );
+  const live = await success(
+    manager,
+    "POST",
+    `admin/cms/documents/${site.id}/publish`,
+    { expectedVersion: site.version, revisionId: site.revisionId },
+  );
+  assert.equal(
+    (await new Client().call("GET", "public/cms/assets/" + image.id)).status,
+    302,
+  );
+  let feed = await pub();
+  assert.equal(
+    feed.items.find((d: any) => d.kind === "SETTINGS").payload.name,
+    settings.name,
+  );
+  assert.equal(feed.assets[image.id].id, image.id);
+  assert.equal(
+    feed.items.some((d: any) => d.kind === "SERVICE"),
+    false,
+  );
+  const usage = await success(
+    manager,
+    "GET",
+    `admin/cms/assets/${image.id}/usage`,
+  );
+  assert.deepEqual(
+    usage.map((u: any) => u.live),
+    [true],
+  );
+  const { token } = await success(manager, "POST", "admin/cms/preview", {});
+  const preview = await success(
+    new Client(),
+    "GET",
+    "public/cms/preview?token=" + encodeURIComponent(token),
+  );
+  assert.equal(preview.preview, true);
+  assert.equal(
+    preview.items.find((d: any) => d.kind === "SERVICE").payload.title,
+    "Phủ ceramic",
+  );
+  assert.equal(
+    (await new Client().call("GET", "public/cms/preview?token=x.y")).status,
+    403,
+  );
+  const overview = await success(manager, "GET", "admin/cms/overview");
+  assert.equal(overview.kinds.SETTINGS.live, 1);
+  assert.equal(overview.kinds.SERVICE.drafts, 1);
+  assert.ok(overview.drafts.some((d: any) => d.id === service.id));
+  assert.ok(overview.recent.some((a: any) => a.action === "CMS_PUBLISHED"));
+  const activity = await success(manager, "GET", "admin/cms/activity?limit=5");
+  assert.equal(activity[0].actor, "Store Manager");
+  const list = await success(
+    manager,
+    "GET",
+    "admin/cms/documents?kind=SERVICE&search=ceramic",
+  );
+  assert.deepEqual(
+    list.map((d: any) => [d.key, d.hasDraft]),
+    [["phu-ceramic", true]],
+  );
+  await success(manager, "POST", `admin/cms/documents/${site.id}/revert`, {
+    expectedVersion: live.version,
+  });
+  feed = await pub();
+  assert.equal(
+    feed.items.some((d: any) => d.kind === "SETTINGS"),
+    false,
+  );
+  // Reverting deletes the override, so the same key can be saved again from the defaults.
+  assert.equal(
+    (
+      await api.db.db.execute(
+        sql`SELECT id FROM cms_documents WHERE id=${site.id}`,
+      )
+    ).rows.length,
+    0,
+  );
+  const later = new Date(+clock + 86400000).toISOString();
+  const news = await success(manager, "POST", "admin/cms/documents", {
+    kind: "NEWS",
+    key: "bai-hen-gio",
+    payload: {
+      title: "Bài hẹn giờ",
+      description: "",
+      date: day(clock),
+      image: {
+        src: "/api/v1/public/cms/assets/" + image.id,
+        alt: "Ảnh",
+        assetId: image.id,
+      },
+      publishAt: later,
+    },
+  });
+  await success(manager, "POST", `admin/cms/documents/${news.id}/publish`, {
+    expectedVersion: news.version,
+    revisionId: news.revisionId,
+  });
+  assert.equal(
+    (await pub()).items.some((d: any) => d.key === "bai-hen-gio"),
+    false,
+  );
+  assert.equal(
+    (await success(manager, "GET", "admin/cms/overview")).scheduled[0].key,
+    "bai-hen-gio",
+  );
+});
+
+test("P5 manager edits and merges duplicate customers without touching immutable history", async () => {
+  const date = day(new Date(+clock + 86400000)),
+    first = await createBooking(date, "09:00"),
+    second = await createBooking(date, "10:00");
+  const detail = async (id: string) =>
+    success(manager, "GET", "admin/bookings/" + id);
+  const keep = await success(
+      manager,
+      "GET",
+      "admin/customers/" + (await detail(first.bookingId)).customerId,
+    ),
+    drop = await success(
+      manager,
+      "GET",
+      "admin/customers/" + (await detail(second.bookingId)).customerId,
+    );
+  assert.notEqual(keep.id, drop.id);
+  const denied = await a.call("PATCH", "admin/customers/" + keep.id, {
+    expectedVersion: keep.version,
+    name: "Không được sửa",
+    phone: "0911111111",
+    reason: "Cố vấn thử sửa",
+  });
+  assert.equal(denied.status, 403);
+  const edited = await success(manager, "PATCH", "admin/customers/" + keep.id, {
+    expectedVersion: keep.version,
+    name: "Nguyễn Văn Gộp",
+    phone: "0911 111 111",
+    reason: "Khách báo sai tên",
+  });
+  const stale = await manager.call("PATCH", "admin/customers/" + keep.id, {
+    expectedVersion: keep.version,
+    name: "Bản cũ",
+    phone: "0911111111",
+    reason: "Phiên bản cũ",
+  });
+  assert.equal(stale.status, 409);
+  const self = await manager.call("POST", `admin/customers/${keep.id}/merge`, {
+    expectedVersion: edited.version,
+    targetId: keep.id,
+    targetVersion: edited.version,
+    reason: "Gộp chính nó",
+  });
+  assert.equal(self.status, 422);
+  await success(manager, "POST", `admin/customers/${drop.id}/merge`, {
+    expectedVersion: drop.version,
+    targetId: keep.id,
+    targetVersion: edited.version,
+    reason: "Trùng hồ sơ",
+  });
+  assert.equal((await detail(second.bookingId)).customerId, keep.id);
+  const after = await success(manager, "GET", "admin/customers/" + keep.id);
+  assert.equal(after.name, "Nguyễn Văn Gộp");
+  assert.equal(after.phone, "+84911111111");
+  const list = await success(manager, "GET", "admin/customers?q=" + encodeURIComponent("Gộp"));
+  assert.ok(list.some((x: any) => x.id === keep.id));
+  const listed = await manager.call("GET", "admin/customers?limit=100");
+  assert.ok(!listed.body.data.some((x: any) => x.id === drop.id));
+  const again = await manager.call("POST", `admin/customers/${drop.id}/merge`, {
+    expectedVersion: drop.version + 1,
+    targetId: keep.id,
+    targetVersion: after.version,
+    reason: "Gộp lần hai",
+  });
+  // The merged record no longer owns bookings, so it drops out of the actor scope.
+  assert.equal(again.status, 404);
+});
+
+test("P5 CMS slugs are plain ASCII and new items cannot claim a built-in key", async () => {
+  const create = (key: string, builtIn?: boolean) =>
+    manager.call("POST", "admin/cms/documents", {
+      kind: "SERVICE",
+      key,
+      ...(builtIn === undefined ? {} : { builtIn }),
+      payload: { title: "Dịch vụ thử", description: "" },
+    });
+  for (const bad of ["dan-phim-(ppf)", "dán-phim", "dan--phim", "-dan", "dan-"])
+    assert.equal((await create(bad)).status, 422, bad);
+  assert.equal((await create("ceramic-coating")).status, 409);
+  assert.equal((await create("dich-vu-khong-co-san", true)).status, 422);
+  assert.equal((await create("ceramic-coating", true)).status, 201);
+  assert.equal((await create("ceramic-coating", true)).status, 409);
+  assert.equal((await create("dan-phim-moi")).status, 201);
+});
+
+test("P5 deleting a list item removes it from the admin and frees its slug", async () => {
+  const create = (key: string, builtIn?: boolean) =>
+    success(manager, "POST", "admin/cms/documents", {
+      kind: "SERVICE",
+      key,
+      ...(builtIn ? { builtIn } : {}),
+      payload: { title: "Dịch vụ xóa", description: "" },
+    });
+  const list = (key: string) =>
+    success(manager, "GET", `admin/cms/documents?kind=SERVICE&key=${key}`);
+  const doc = await create("dich-vu-se-xoa");
+  await success(manager, "POST", `admin/cms/documents/${doc.id}/withdraw`, {
+    expectedVersion: doc.version,
+  });
+  assert.equal((await manager.call("GET", "admin/cms/documents/" + doc.id)).status, 404);
+  assert.equal((await list("dich-vu-se-xoa")).length, 0);
+  // The slug is free again.
+  const again = await create("dich-vu-se-xoa");
+  assert.equal((await list("dich-vu-se-xoa"))[0].id, again.id);
+  // A deleted built-in keeps its key (flagged deleted) so the website default stays hidden.
+  const builtIn = await create("window-tint", true);
+  await success(manager, "POST", `admin/cms/documents/${builtIn.id}/withdraw`, {
+    expectedVersion: builtIn.version,
+  });
+  const [gone] = await list("window-tint");
+  assert.equal(gone.deleted, true);
+  const feed = await success(new Client(), "GET", "public/content");
+  assert.equal(
+    feed.items.find((d: any) => d.kind === "SERVICE" && d.key === "window-tint").withdrawn,
+    true,
+  );
+  // Saving the deleted built-in again from the admin brings it back under the same record.
+  const back = await create("window-tint", true);
+  assert.equal(back.id, builtIn.id);
+  const [revived] = await list("window-tint");
+  assert.equal(revived.deleted, false);
+  await success(manager, "POST", `admin/cms/documents/${back.id}/publish`, {
+    expectedVersion: back.version,
+    revisionId: back.revisionId,
+  });
+  const live = (await success(new Client(), "GET", "public/content")).items.find(
+    (d: any) => d.kind === "SERVICE" && d.key === "window-tint",
+  );
+  assert.equal(live.withdrawn, false);
+  assert.equal(live.payload.title, "Dịch vụ xóa");
+  // A built-in that is not deleted still cannot be created twice.
+  assert.equal(
+    (await manager.call("POST", "admin/cms/documents", {
+      kind: "SERVICE",
+      key: "window-tint",
+      builtIn: true,
+      payload: { title: "x", description: "" },
+    })).status,
+    409,
+  );
+});
+
+test("P5 accessory detail blocks are validated and stored", async () => {
+  const payload = {
+    name: "Camera thử",
+    images: [],
+    highlights: [{ text: "Hàng chính hãng" }],
+    specs: [
+      { label: "Độ phân giải", value: "4K", key: true, icon: "camera" },
+      { label: "Cảm biến", value: "Sony" },
+    ],
+    inBox: [{ title: "Giá đỡ", image: null }],
+    faq: [{ question: "Bảo hành bao lâu?", answer: "12 tháng" }],
+  };
+  const doc = await success(manager, "POST", "admin/cms/documents", {
+    kind: "ACCESSORY",
+    key: "camera-thu-chi-tiet",
+    payload,
+  });
+  const saved = await success(manager, "GET", "admin/cms/documents/" + doc.id);
+  assert.deepEqual(saved.revisions[0].payload.specs, payload.specs);
+  const bad = await manager.call("POST", "admin/cms/documents", {
+    kind: "ACCESSORY",
+    key: "camera-thu-sai",
+    payload: { ...payload, specs: [{ label: "x", value: "y", extra: 1 }] },
+  });
+  assert.ok([400, 422].includes(bad.status), String(bad.status));
+  const badIcon = await manager.call("POST", "admin/cms/documents", {
+    kind: "ACCESSORY",
+    key: "camera-thu-icon-sai",
+    payload: { ...payload, specs: [{ label: "x", value: "y", icon: "rocket" }] },
+  });
+  assert.ok([400, 422].includes(badIcon.status), String(badIcon.status));
+});
+
+test("P5 accessory catalog stores brands with logos and categories", async () => {
+  const logo = await asset();
+  const payload = {
+    brands: [
+      { id: "icar", name: "ICAR", logo: { src: "/api/v1/public/cms/assets/" + logo.id, alt: "ICAR", assetId: logo.id } },
+      { id: "moi1", name: "Hãng mới", logo: null },
+    ],
+    categories: [{ id: "camera-hanh-trinh", name: "Camera hành trình" }],
+  };
+  const doc = await success(manager, "POST", "admin/cms/documents", {
+    kind: "CATALOG",
+    key: "accessories",
+    builtIn: true,
+    payload,
+  });
+  await success(manager, "POST", `admin/cms/documents/${doc.id}/publish`, {
+    expectedVersion: doc.version,
+    revisionId: doc.revisionId,
+  });
+  const feed = await success(new Client(), "GET", "public/content");
+  const live = feed.items.find((d: any) => d.kind === "CATALOG");
+  assert.equal(live.payload.brands[0].logo.assetId, logo.id);
+  assert.ok(feed.assets[logo.id], "logo is served with the feed");
+  assert.equal(live.payload.categories[0].name, "Camera hành trình");
+  for (const bad of [
+    { kind: "CATALOG", key: "khac", payload },
+    {
+      kind: "CATALOG",
+      key: "accessories",
+      payload: { ...payload, categories: [payload.categories[0], payload.categories[0]] },
+    },
+  ]) {
+    const r = await manager.call("POST", "admin/cms/documents", bad);
+    assert.ok([400, 409, 422].includes(r.status), String(r.status));
+  }
+});
+
+test("P5 service URL slugs must be unique across services", async () => {
+  const create = (key: string, slug: string) =>
+    manager.call("POST", "admin/cms/documents", {
+      kind: "SERVICE",
+      key,
+      payload: { title: "Dịch vụ " + key, description: "", slug },
+    });
+  assert.equal((await create("dich-vu-mot", "duong-dan-chung")).status, 201);
+  assert.equal((await create("dich-vu-hai", "duong-dan-chung")).status, 409);
+  // Another service's key (old URL) is taken too, including built-in ones.
+  assert.equal((await create("dich-vu-ba", "dich-vu-mot")).status, 409);
+  assert.equal((await create("dich-vu-bon", "window-tint")).status, 409);
+  const bad = await create("dich-vu-nam", "Có Dấu");
+  assert.ok([400, 422].includes(bad.status), String(bad.status));
+});
+
+test("P5 saving content that points at a missing image names that image", async () => {
+  const r = await manager.call("POST", "admin/cms/documents", {
+    kind: "SERVICE",
+    key: "dich-vu-anh-mat",
+    payload: {
+      title: "Dịch vụ thử",
+      description: "",
+      image: {
+        src: "/api/v1/public/cms/assets/00000000-0000-4000-8000-000000000000",
+        alt: "Ảnh đã xóa",
+        assetId: "00000000-0000-4000-8000-000000000000",
+      },
+    },
+  });
+  assert.equal(r.status, 422, JSON.stringify(r.body));
+  assert.equal(r.body.error.code, "CMS_ASSET_INVALID");
+  assert.match(r.body.error.message, /Ảnh đã xóa/);
+  // A bare legacy imageId has no name of its own; the message still says which one.
+  const legacy = await manager.call("POST", "admin/cms/documents", {
+    kind: "SERVICE",
+    key: "dich-vu-anh-cu-mat",
+    payload: { title: "Dịch vụ thử", description: "", imageId: "00000000-0000-4000-8000-000000000001" },
+  });
+  assert.equal(legacy.status, 422, JSON.stringify(legacy.body));
+  assert.match(legacy.body.error.message, /ảnh cũ \(mã 00000000\)/);
+});
+
+test("P5 videos upload as-is, list separately and can be used in a service gallery", async () => {
+  // Minimal MP4 header: an ISO-BMFF `ftyp` box with an mp4 brand, then filler.
+  const mp4 = Buffer.concat([
+    Buffer.from([0, 0, 0, 24]),
+    Buffer.from("ftypisom", "latin1"),
+    Buffer.from([0, 0, 2, 0]),
+    Buffer.from("isomiso2", "latin1"),
+    Buffer.alloc(4096, assetSeed++),
+  ]);
+  const up = await manager.upload(mp4, "xuong.mp4", "Video xưởng");
+  assert.equal(up.status, 201, JSON.stringify(up.body));
+  const id = up.body.data.id;
+  const detail = await success(manager, "GET", `admin/cms/assets?type=video`);
+  const video = detail.find((a: any) => a.id === id);
+  assert.ok(video, "video listed under type=video");
+  assert.equal(video.kind, "video");
+  assert.equal(video.mime, "video/mp4");
+  assert.match(video.src, /video\.mp4$/);
+  const images = await success(manager, "GET", `admin/cms/assets?type=image`);
+  assert.ok(!images.some((a: any) => a.id === id), "videos stay out of the image picker");
+  // QuickTime is refused: it does not play in most browsers.
+  const mov = Buffer.from(mp4);
+  mov.write("qt  ", 8, "latin1");
+  assert.equal((await manager.upload(mov, "xuong.mov", "Video mov")).status, 422);
+  // A service may carry up to two videos.
+  const v = { src: video.src, alt: "Video xưởng", assetId: id };
+  const doc = await success(manager, "POST", "admin/cms/documents", {
+    kind: "SERVICE",
+    key: "dich-vu-co-video",
+    payload: { title: "Dịch vụ có video", description: "", videos: [v] },
+  });
+  await success(manager, "POST", `admin/cms/documents/${doc.id}/publish`, {
+    expectedVersion: doc.version,
+    revisionId: doc.revisionId,
+  });
+  const feed = await success(new Client(), "GET", "public/content");
+  assert.equal(feed.assets[id].kind, "video");
+  const tooMany = await manager.call("POST", "admin/cms/documents", {
+    kind: "SERVICE",
+    key: "dich-vu-ba-video",
+    payload: { title: "Ba video", description: "", videos: [v, v, v] },
+  });
+  assert.ok([400, 422].includes(tooMany.status), String(tooMany.status));
+});
+
+test("P5 the booking vehicle list is a CATALOG document with its own shape", async () => {
+  const doc = await success(manager, "POST", "admin/cms/documents", {
+    kind: "CATALOG",
+    key: "vehicles",
+    payload: { brands: [{ name: "Toyota", models: ["Vios", "Camry"] }] },
+  });
+  assert.ok(doc.id);
+  // Accessory-catalog fields are not accepted here, and unknown catalog keys are refused.
+  const wrong = await manager.call("POST", "admin/cms/documents", {
+    kind: "CATALOG",
+    key: "vehicles-2",
+    payload: { brands: [] },
+  });
+  assert.equal(wrong.status, 422);
+  const bad = await manager.call("PATCH", `admin/cms/documents/${doc.id}`, {
+    expectedVersion: doc.version,
+    payload: { brands: [{ id: "toyota", name: "Toyota" }] },
+  });
+  assert.ok([400, 422].includes(bad.status), String(bad.status));
+});
+
+test("P5 publishing a website service makes it the bookable operations service", async () => {
+  const doc = await success(manager, "POST", "admin/cms/documents", {
+    kind: "SERVICE",
+    key: "dan-ppf-dong-bo",
+    payload: { title: "Dán PPF", description: "", durationMinutes: 75 },
+  });
+  await success(manager, "POST", `admin/cms/documents/${doc.id}/publish`, {
+    expectedVersion: doc.version,
+    revisionId: doc.revisionId,
+  });
+  const listed = (await success(new Client(), "GET", "public/services")).services;
+  const svc = listed.find((s: any) => s.marketingSlug === "dan-ppf-dong-bo");
+  assert.ok(svc, "synced into the booking catalogue");
+  assert.equal(svc.name, "Dán PPF");
+  assert.equal(svc.estimatedDurationMinutes, 75);
+  // Removing it from the website takes it out of booking too.
+  await success(manager, "POST", `admin/cms/documents/${doc.id}/withdraw`, {
+    expectedVersion: doc.version + 1,
+  });
+  const after = (await success(new Client(), "GET", "public/services")).services;
+  assert.ok(!after.some((s: any) => s.marketingSlug === "dan-ppf-dong-bo"));
 });

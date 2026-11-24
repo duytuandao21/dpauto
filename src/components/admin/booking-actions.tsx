@@ -16,7 +16,7 @@ import { AdminIcon } from "./admin-icon";
 import { useAdvisor } from "@/components/advisor/advisor-provider";
 import { useSession } from "./auth-gate";
 import { BookingTimeForm } from "./booking-time-form";
-import { apiEnabled } from "@/lib/api/client";
+import { apiEnabled, command } from "@/lib/api/client";
 import { bookingServices as seedServices } from "@/lib/booking/seed";
 
 export function BookingActions({
@@ -211,6 +211,46 @@ export function RescheduleButton({
         )}
       </dialog>
     </>
+  );
+}
+/** Delete in any status, like service tickets: the booking is hidden, its history kept. */
+export function DeleteBookingButton({ booking }: { booking: Booking }) {
+  const session = useSession();
+  const { notify } = useBookings();
+  const [busy, setBusy] = useState(false);
+  if (!apiEnabled || !session?.permissions.includes("booking.cancel"))
+    return null;
+  return (
+    <button
+      type="button"
+      className="adm-btn adm-subtle-danger"
+      disabled={busy}
+      aria-label={`Xóa lịch ${booking.code || booking.id}`}
+      onClick={async () => {
+        if (
+          !window.confirm(
+            `Xóa lịch ${booking.code || booking.id}? Lịch sẽ được ẩn khỏi danh sách, lịch sử thao tác vẫn được giữ.${booking.serviceVisitId ? " Phiếu dịch vụ đã lập vẫn giữ nguyên." : ""}`,
+          )
+        )
+          return;
+        setBusy(true);
+        try {
+          await command(
+            `admin/bookings/${encodeURIComponent(booking.id)}`,
+            { expectedVersion: booking.version },
+            "DELETE",
+          );
+          window.dispatchEvent(new Event("dpauto-data-updated"));
+          notify("Đã xóa lịch hẹn.");
+        } catch (e) {
+          notify(e instanceof Error ? e.message : "Chưa thể xóa lịch hẹn.");
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      {busy ? "Đang xóa…" : "Xóa"}
+    </button>
   );
 }
 export function EditBookingLink({ booking }: { booking: Booking }) {
