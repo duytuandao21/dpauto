@@ -3,7 +3,7 @@
 import { Photo } from "@/components/ui/photo";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   accessories,
   accessoryPrice,
@@ -179,6 +179,12 @@ export function AccessoriesCatalog() {
     [category, setCategory] = useState(""),
     [query, setQuery] = useState(""),
     [sort, setSort] = useState<AccessorySort>("newest");
+  // Links from the homepage shortcuts: /phu-kien?q=… or ?danh-muc=…
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setQuery(params.get("q") || "");
+    setCategory(params.get("danh-muc") || "");
+  }, []);
   const results = filterAccessories({ query, brand, category, sort, items });
   // 8 products at a time; a new filter or sort starts again from the first 8.
   const PAGE = 8;

@@ -30,6 +30,9 @@ export type SiteData = {
     key?: string;
     /** null/absent = "Liên hệ báo giá". */
     price?: ServicePrice;
+    /** Homepage shortcut: uploaded icon image, else this line icon name (serviceIcons). */
+    shortcutImage?: SiteImage;
+    icon?: string;
   }[];
   accessories: SiteAccessory[];
   catalog: SiteCatalog;

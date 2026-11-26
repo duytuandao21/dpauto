@@ -36,13 +36,15 @@ async function siteData(): Promise<SiteData> {
         .map((d) => [d.key, d.withdrawn ? null : d.payload]),
     ),
     services: siteServices(feed).map(
-      ({ key, slug, title, description, image, price }) => ({
+      ({ key, slug, title, description, image, price, icon, shortcutImage }) => ({
         key,
         slug,
         title,
         description,
         image,
         price,
+        icon,
+        shortcutImage,
       }),
     ),
     accessories: siteAccessories(feed),

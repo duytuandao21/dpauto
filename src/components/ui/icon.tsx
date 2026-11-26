@@ -40,6 +40,9 @@ export type IconName =
   | "sun"
   | "drop"
   | "car"
+  | "engine"
+  | "spray"
+  | "roller"
   | "zalo";
 const paths: Record<
   Exclude<IconName, "facebook" | "instagram" | "tiktok" | "zalo">,
@@ -184,6 +187,27 @@ const paths: Record<
     </>
   ),
   drop: <path d="M12 3s7 7.5 7 12a7 7 0 0 1-14 0c0-4.5 7-12 7-12Z" />,
+  engine: (
+    <>
+      <path d="M9 4h6M12 4v3" />
+      <path d="M6 9h3l1-2h5l2 2h2v3h2v4h-2v2h-2l-2 2h-5l-2-2H6V9Z" />
+      <path d="M3 11v6M3 14h3" />
+    </>
+  ),
+  spray: (
+    <>
+      <path d="M8 11h7v9a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-9Z" />
+      <path d="M9.5 11V8h4v3M10 8V4h4.5l1.5 1.5" />
+      <path d="M19 4h.01M19.5 7.5h.01M21.5 5.5h.01" />
+    </>
+  ),
+  roller: (
+    <>
+      <rect x="3" y="3" width="15" height="6" rx="1.5" />
+      <path d="M18 6h2.5v5.5H11V15" />
+      <rect x="9.5" y="15" width="3" height="6" rx="1" />
+    </>
+  ),
   car: (
     <>
       <path d="M5 17H3v-5l2-5a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 5v5h-2M3 12h18m-11.5 5h5" />
@@ -214,6 +238,24 @@ export const specIcons = [
   ["sparkles", "Độ bóng"],
   ["star", "Nổi bật"],
 ] as const satisfies readonly (readonly [IconName, string])[];
+/** Icons for the homepage service shortcuts (CMS service form), with their meaning. */
+export const serviceIcons = [
+  ["tool", "Cờ lê – bảo dưỡng"],
+  ["engine", "Động cơ – sửa chữa"],
+  ["spray", "Bình xịt – vệ sinh"],
+  ["drop", "Giọt nước – rửa xe"],
+  ["roller", "Con lăn – decal, đổi màu"],
+  ["shield", "Khiên – bảo vệ sơn"],
+  ["sun", "Mặt trời – phim cách nhiệt"],
+  ["sparkles", "Lấp lánh – phủ, đánh bóng"],
+  ["layers", "Lớp phủ"],
+  ["box", "Hộp – phụ kiện"],
+  ["camera", "Camera"],
+  ["screen", "Màn hình"],
+  ["bolt", "Tia điện"],
+  ["car", "Ô tô – giao nhận"],
+] as const satisfies readonly (readonly [IconName, string])[];
+export type ServiceIcon = (typeof serviceIcons)[number][0];
 export function Icon({
   name,
   className = "",

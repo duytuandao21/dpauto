@@ -279,6 +279,8 @@ export function siteServices(feed: Feed) {
         priceFrom: p.priceFrom as string | undefined,
         price: servicePrice(p),
         pricing: servicePricing(p),
+        icon: p.shortcutIcon as string | undefined,
+        shortcutImage: image(p.shortcutImage, feed.assets),
         isDefault: !!base,
       };
     },
@@ -320,7 +322,13 @@ export function siteCatalog(feed: Feed) {
       name: b.name,
       logo: image(b.logo, feed.assets),
     })),
-    categories: (p.categories || []) as { id: string; name: string }[],
+    categories: (
+      (p.categories || []) as { id: string; name: string; image?: ImageValue }[]
+    ).map((c) => ({
+      id: c.id,
+      name: c.name,
+      image: image(c.image, feed.assets),
+    })),
   };
 }
 export type SiteCatalog = ReturnType<typeof siteCatalog>;

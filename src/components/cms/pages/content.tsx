@@ -33,7 +33,8 @@ import {
   type ImageValue,
   type Payload,
 } from "../data";
-import { specIcons } from "@/components/ui/icon";
+import { Icon, serviceIcons, specIcons } from "@/components/ui/icon";
+import { bundledServiceIcon, defaultServiceIcon } from "@/lib/service-icons";
 import { catalogEntry } from "@/lib/site-content";
 import { request } from "@/lib/api/client";
 import type { PublicCatalog } from "@/lib/api/types";
@@ -83,6 +84,18 @@ export function ServicesList() {
         {
           label: "Thứ tự",
           cell: (r) => <span className="cms-row-index">{r.order + 1}</span>,
+        },
+        {
+          label: "Icon lối tắt",
+          // Built-in services ship with an icon image; others show the default until one is set.
+          cell: (r) =>
+            r.meta.shortcutImage ||
+            r.meta.shortcutIcon ||
+            bundledServiceIcon(String(r.meta.slug || r.key)) ? (
+              "Đã có"
+            ) : (
+              <Badge tone="warn">Chưa có icon</Badge>
+            ),
         },
       ]}
     />
@@ -220,6 +233,59 @@ function ServiceForm({
               disabled={disabled}
               onChange={(image) => set({ image })}
             />
+            <ImageField
+              label="Icon lối tắt"
+              help="Hiện ở dải lối tắt dưới ảnh đầu trang chủ. Dùng ảnh PNG nền trong, vuông (160×160 trở lên), hình nằm giữa chừa lề khoảng 20%, màu đỏ thương hiệu."
+              value={payload.shortcutImage}
+              disabled={disabled}
+              onChange={(shortcutImage) => set({ shortcutImage })}
+            />
+            <Field
+              label="Icon dự phòng"
+              help={
+                payload.shortcutImage ? (
+                  "Chỉ dùng khi xóa ảnh icon ở trên."
+                ) : (
+                  <>
+                    Đang hiện:{" "}
+                    {payload.shortcutIcon ? (
+                      <Icon
+                        name={payload.shortcutIcon}
+                        style={{ width: 18, height: 18, verticalAlign: "-4px" }}
+                      />
+                    ) : (
+                      // eslint-disable-next-line @next/next/no-img-element -- tiny static preview
+                      <img
+                        src={
+                          bundledServiceIcon(String(payload.slug || docKey || "")) ||
+                          defaultServiceIcon
+                        }
+                        alt=""
+                        width={24}
+                        height={24}
+                        style={{ verticalAlign: "-6px" }}
+                      />
+                    )}
+                    . Tải ảnh icon riêng để khách dễ nhận ra dịch vụ.
+                  </>
+                )
+              }
+            >
+              <Select
+                disabled={disabled}
+                value={payload.shortcutIcon || ""}
+                onChange={(e) =>
+                  set({ shortcutIcon: e.target.value || undefined })
+                }
+              >
+                <option value="">Ảnh icon mặc định</option>
+                {serviceIcons.map(([v, l]) => (
+                  <option key={v} value={v}>
+                    Nét mảnh: {l}
+                  </option>
+                ))}
+              </Select>
+            </Field>
             <Field
               label="Kiểu giá"
               help="Hiện trên thẻ dịch vụ. Chưa nhập giá sẽ hiện “Liên hệ báo giá”."

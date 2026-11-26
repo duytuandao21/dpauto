@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/sections/hero";
+import { HomeShortcuts } from "@/components/sections/home-shortcuts";
 import { ServicesSection } from "@/components/sections/services";
 import { AccessoriesSection } from "@/components/sections/accessories";
 import {
@@ -48,6 +49,7 @@ export default async function HomePage() {
         !(hero?.payload as { hidden?: boolean } | null)?.hidden && (
           <Hero copy={hero?.payload} />
         )}
+      <HomeShortcuts />
       {!services?.withdrawn && (
         <ServicesSection
           title={services?.payload?.title}

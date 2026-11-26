@@ -256,6 +256,10 @@ const service = z.strictObject({
     .max(30)
     .optional(),
   pricingNote: opt(300),
+  /** Homepage shortcut icon: an uploaded image (transparent PNG), else a line icon by name
+   * (serviceIcons in src/components/ui/icon.tsx), else the site's default icon image. */
+  shortcutImage: image.nullable().optional(),
+  shortcutIcon: opt(20),
   /** Work time in minutes; drives booking availability (synced to the operations service). */
   durationMinutes: z.number().int().min(15).max(1440).optional(),
 });
@@ -365,7 +369,11 @@ const catalog = z
       .array(z.strictObject({ ...catalogEntry, logo: image.nullable().optional() }))
       .max(60)
       .default([]),
-    categories: z.array(z.strictObject(catalogEntry)).max(60).default([]),
+    // `image`: homepage shortcut tile for the category (transparent PNG).
+    categories: z
+      .array(z.strictObject({ ...catalogEntry, image: image.nullable().optional() }))
+      .max(60)
+      .default([]),
   })
   .refine(
     (c) =>

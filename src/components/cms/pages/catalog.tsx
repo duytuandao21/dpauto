@@ -8,7 +8,8 @@ import { findDocument, type ImageValue } from "../data";
 
 type Entry = { id: string; name: string };
 type Brand = Entry & { logo?: ImageValue | null };
-export type Catalog = { brands: Brand[]; categories: Entry[] };
+type Category = Entry & { image?: ImageValue | null };
+export type Catalog = { brands: Brand[]; categories: Category[] };
 
 // Ids never change after creation, so renaming keeps every product linked.
 const newId = () => Math.random().toString(36).slice(2, 10);
@@ -76,18 +77,28 @@ export function CatalogEditor() {
               disabled={disabled}
               max={60}
               addLabel="Thêm danh mục"
-              create={(): Entry => ({ id: newId(), name: "" })}
-              title={(c: Entry) => c.name}
+              create={(): Category => ({ id: newId(), name: "", image: null })}
+              title={(c: Category) =>
+                c.image ? c.name : `${c.name} · Chưa có ảnh`
+              }
               onChange={(categories) => set({ categories })}
-              render={(c: Entry, up) => (
-                <Field label="Tên danh mục" wide>
-                  <Input
-                    required
-                    maxLength={80}
-                    value={c.name}
-                    onChange={(e) => up({ name: e.target.value })}
+              render={(c: Category, up) => (
+                <>
+                  <Field label="Tên danh mục" wide>
+                    <Input
+                      required
+                      maxLength={80}
+                      value={c.name}
+                      onChange={(e) => up({ name: e.target.value })}
+                    />
+                  </Field>
+                  <ImageField
+                    label="Ảnh minh họa"
+                    help="Hiện ở dải lối tắt dưới ảnh đầu trang chủ. Dùng ảnh PNG nền trong, vuông (160×160 trở lên), hình nằm giữa chừa lề khoảng 20%, màu đỏ thương hiệu. Chưa có ảnh thì dùng ảnh mặc định."
+                    value={c.image}
+                    onChange={(image) => up({ image })}
                   />
-                </Field>
+                </>
               )}
             />
           </Card>
