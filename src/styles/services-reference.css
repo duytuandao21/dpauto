@@ -92,10 +92,6 @@ body:has(:is(.services-page, .detail-page)) .footer-brand {
   gap: 18px;
 }
 
-body:has(:is(.services-page, .detail-page)) .footer-brand > a {
-  display: none;
-}
-
 body:has(:is(.services-page, .detail-page)) .footer-brand > p {
   max-width: 300px;
   margin: 0;

@@ -15,6 +15,7 @@ import {
   ManagerSearch,
   ManagerEmpty,
   ManagerField,
+  ManagerDeleteButton,
 } from "./manager-ui";
 import { ManagerModal } from "./manager-modal";
 import { useManager } from "./manager-provider";
@@ -92,29 +93,28 @@ export function LiveManagerCustomers() {
   return (
     <>
       <PageHeading
-        title="Khách hàng & phương tiện"
-        description="Tra cứu hồ sơ và lịch sử đặt lịch của trạm."
+        title="Khách hàng"
+        description="Tra cứu hồ sơ khách, phương tiện và lịch sử đặt lịch của trạm."
       />
-      <ManagerPanel
-        title="Tra cứu"
-        action={
-          <div className="mgr-tabs">
+      <ManagerPanel title="Tra cứu">
+        <div className="adm-quick-filters" aria-label="Loại hồ sơ">
+          {(
+            [
+              ["customers", "Khách hàng"],
+              ["vehicles", "Phương tiện"],
+            ] as const
+          ).map(([value, label]) => (
             <button
-              aria-pressed={tab === "customers"}
-              onClick={() => changeTab("customers")}
+              key={value}
+              aria-pressed={tab === value}
+              className={tab === value ? "is-active" : ""}
+              onClick={() => changeTab(value)}
             >
-              Khách hàng
+              {label}
             </button>
-            <button
-              aria-pressed={tab === "vehicles"}
-              onClick={() => changeTab("vehicles")}
-            >
-              Phương tiện
-            </button>
-          </div>
-        }
-      >
-        <div className="mgr-toolbar">
+          ))}
+        </div>
+        <div className="adm-search-row">
           <ManagerSearch
             value={query}
             onChange={(v) => {
@@ -190,15 +190,23 @@ export function LiveManagerCustomers() {
                         {row.customerContacts.map((c) => c.name).join(", ")}
                       </td>
                       <td>
-                        {row.customerContacts.map((c) => (
-                          <button
-                            key={c.customerId}
-                            className="adm-btn"
-                            onClick={() => setSelected(c.customerId)}
-                          >
-                            {c.name}
-                          </button>
-                        ))}
+                        <div className="mgr-row-actions">
+                          {row.customerContacts.map((c) => (
+                            <button
+                              key={c.customerId}
+                              className="adm-btn"
+                              onClick={() => setSelected(c.customerId)}
+                            >
+                              {c.name}
+                            </button>
+                          ))}
+                          <ManagerDeleteButton
+                            path={`admin/vehicles/${row.id}`}
+                            version={row.version}
+                            message={vehicleMessage(row)}
+                            onDeleted={() => setReload((n) => n + 1)}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ),
@@ -257,9 +265,18 @@ export function LiveManagerCustomers() {
               <section className="mgr-detail-section">
                 <h3>Phương tiện</h3>
                 {detail.vehicles.map((v) => (
-                  <p key={v.id}>
-                    {v.model} · {v.plate || "Chưa có biển số"}
-                  </p>
+                  <div className="mgr-summary-row" key={v.id}>
+                    <span>
+                      {v.model} · {v.plate || "Chưa có biển số"}
+                    </span>
+                    <ManagerDeleteButton
+                      className="adm-text-link adm-subtle-danger"
+                      path={`admin/vehicles/${v.id}`}
+                      version={v.version}
+                      message={vehicleMessage(v)}
+                      onDeleted={() => setReload((n) => n + 1)}
+                    />
+                  </div>
                 ))}
               </section>
               <LiveManagerVisits customerId={detail.id} />
@@ -525,3 +542,5 @@ function CustomerTools({
     </section>
   );
 }
+const vehicleMessage = (v: { model: string | null; plate: string | null }) =>
+  `Xóa xe ${v.model || ""} ${v.plate || ""}? Xe sẽ bị ẩn khỏi hồ sơ khách. Lịch hẹn, phiếu cũ vẫn giữ thông tin xe.`;

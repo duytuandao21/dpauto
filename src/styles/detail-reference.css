@@ -789,3 +789,142 @@
     padding: 20px;
   }
 }
+
+/* Service price table: same pale red border as the process cards, prices like the card price. */
+.service-detail-page .service-pricing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+  scroll-margin-top: 100px;
+}
+.service-detail-page .service-pricing-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  /* A real border: an inset shadow would sit under the featured row's background. */
+  border: 1px solid #f3b8b8;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.service-detail-page .service-pricing-table :is(th, td) {
+  padding: 16px 20px;
+  text-align: right;
+  vertical-align: middle;
+}
+.service-detail-page .service-pricing-table :is(th, td):first-child {
+  text-align: left;
+}
+.service-detail-page .service-pricing-table tbody :is(th, td) {
+  border-top: 1px solid #f3b8b8;
+}
+.service-detail-page .service-pricing-table thead th {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+}
+.service-detail-page .service-pricing-table tr.is-featured {
+  background: var(--brand-red-soft);
+}
+.service-detail-page .service-pricing-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.service-detail-page .service-pricing-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--brand-red);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.service-detail-page .service-pricing-table th small {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+.service-detail-page .service-pricing-table td {
+  color: var(--brand-red);
+  font:
+    700 22px/1.2 "Barlow Condensed",
+    "Arial Narrow",
+    sans-serif;
+  white-space: nowrap;
+}
+.service-detail-page .service-pricing-table td.is-contact {
+  color: var(--text-secondary);
+  font-size: 18px;
+}
+.service-detail-page .service-pricing-link {
+  align-self: flex-start;
+  color: var(--brand-red);
+  font-weight: 600;
+}
+.service-detail-page .service-pricing-link:hover {
+  text-decoration: underline;
+}
+@media (max-width: 809.98px) {
+  /* Each package becomes a card; the header row is kept for screen readers only. */
+  .service-detail-page .service-pricing-table,
+  .service-detail-page .service-pricing-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+  .service-detail-page .service-pricing-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .service-detail-page .service-pricing-table tbody tr {
+    display: flex;
+    flex-direction: column;
+    padding: 18px;
+    border-radius: 16px;
+    box-shadow: inset 0 0 0 1px #f3b8b8;
+  }
+  .service-detail-page .service-pricing-table tbody :is(th, td) {
+    padding: 10px 0;
+    border-top: 0;
+  }
+  .service-detail-page .service-pricing-table tbody th {
+    padding-top: 0;
+  }
+  .service-detail-page .service-pricing-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    border-top: 1px solid #f3b8b8;
+    font-size: 20px;
+  }
+  .service-detail-page .service-pricing-table tbody td:last-child {
+    padding-bottom: 0;
+  }
+  .service-detail-page .service-pricing-table td::before {
+    content: attr(data-label);
+    color: var(--text-secondary);
+    font:
+      400 15px/1.4 Inter,
+      Arial,
+      sans-serif;
+  }
+  .service-detail-page .service-pricing-table td.is-contact {
+    font-size: 17px;
+  }
+}

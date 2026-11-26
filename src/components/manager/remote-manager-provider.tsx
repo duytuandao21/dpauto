@@ -195,6 +195,7 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
             qualityChecks: s.qualityChecks,
             technicianRequired: s.technicianRequired,
           active: s.active,
+          deleted: !!s.deletedAt,
           bookable: s.bookable,
           version: s.version,
           requirements: s.requirements.map(
@@ -213,6 +214,7 @@ export function RemoteManagerProvider({ children }: { children: ReactNode }) {
           phone: (s.phone || "").replace(/^\+84/, "0"),
           email: s.email || "",
           active: s.active,
+          deleted: !!s.deletedAt,
           version: s.version,
           accountEnabled: s.accountEnabled,
           workload: (

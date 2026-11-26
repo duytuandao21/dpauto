@@ -738,7 +738,8 @@ function RemoteVisitDetail({
     visit.workflowVersion === 2
       ? params.get("tab") === "tong-quan"
       : legacyOverview;
-  const workspace = !manager && visit.workflowVersion === 2;
+  // /dieu-hanh shares the /co-van ticket workspace; manager-only actions sit in vehicleContent.
+  const workspace = visit.workflowVersion === 2;
   const errorMessage = error && (
     <p className="adm-error-text" role="alert">
       {error}{" "}
@@ -843,7 +844,23 @@ function RemoteVisitDetail({
         </section>
       )}
       <section className="adm-panel">
-        <h2>Thông tin tiếp nhận</h2>
+        <div className="adm-section-line">
+          <h2>Thông tin tiếp nhận</h2>
+          {visit.allowedActions.includes("edit_intake") && (
+            <button
+              ref={intakeTrigger}
+              className="adm-btn"
+              onClick={() => {
+                setDraft({ ...visit.intake, photos: [] });
+                setReason("");
+                setError("");
+                setEditing(true);
+              }}
+            >
+              Cập nhật tiếp nhận
+            </button>
+          )}
+        </div>
         <dl className="adm-info-grid">
           <div>
             <dt>Yêu cầu</dt>
@@ -916,20 +933,6 @@ function RemoteVisitDetail({
             </figure>
           ))}
         </div>
-        {visit.allowedActions.includes("edit_intake") && (
-          <button
-            ref={intakeTrigger}
-            className="adm-btn"
-            onClick={() => {
-              setDraft({ ...visit.intake, photos: [] });
-              setReason("");
-              setError("");
-              setEditing(true);
-            }}
-          >
-            Cập nhật tiếp nhận
-          </button>
-        )}
       </section>
       {editing && draft && (
         <dialog
@@ -1032,7 +1035,7 @@ function RemoteVisitDetail({
         <section className="adm-panel">
           <h2>Chuyển cố vấn</h2>
           <form
-            className="adm-booking-form"
+            className="adm-booking-form adv-inline-form"
             onSubmit={(e) => {
               e.preventDefault();
               void run(`admin/service-visits/${id}/transfer`, {

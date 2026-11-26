@@ -19,6 +19,7 @@ import { useManager } from "./manager-provider";
 import { managerBookingNeedsAdvisor } from "@/lib/api/manager-presentation";
 import {
   FilterSelect,
+  ManagerFilters,
   ManagerPanel,
   ManagerPager,
   ManagerSearch,
@@ -107,228 +108,249 @@ function BookingsContent() {
     setPage(1);
     change();
   };
+  const pendingCount = data.bookings.filter(
+    (b) => b.status === "pending",
+  ).length;
+  const filtersActive =
+    !!(advisor || group || change || status || service) ||
+    (queue === "all" && mode !== "day");
+  const resetFilters = () =>
+    resetPage(() => {
+      setAdvisor("");
+      setGroup("");
+      setChange("");
+      setStatus("");
+      setService("");
+      setMode("day");
+    });
+  // Layout follows /co-van/lich-hen: one tab row, search + "Bộ lọc" popover, view switch.
   return (
     <>
       <PageHeading
-        title="Quản lý lịch hẹn"
+        title="Lịch hẹn"
         description="Theo dõi lịch toàn trạm và phân công cố vấn phụ trách."
       />
-      <div
-        className="mgr-tabs mgr-booking-queues"
-        aria-label="Nhóm yêu cầu lịch hẹn"
+      <ManagerPanel
+        title={
+          queue === "pending"
+            ? "Cần xử lý"
+            : queue === "unassigned"
+              ? "Chưa phân công"
+              : "Lịch theo ngày"
+        }
+        description={`${filtered.length} lịch hẹn`}
+        action={
+          <div className="adm-segment" aria-label="Chế độ hiển thị">
+            {(
+              [
+                ["table", "Danh sách"],
+                ["calendar", "Lịch"],
+              ] as const
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                aria-pressed={view === value}
+                className={view === value ? "is-active" : ""}
+                onClick={() =>
+                  resetPage(() => {
+                    setView(value);
+                    if (value === "calendar") setQueue("all");
+                  })
+                }
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        }
       >
-        {[
-          [
-            "pending",
-            `Cần xử lý (${data.bookings.filter((b) => b.status === "pending").length})`,
-          ],
-          [
-            "unassigned",
-            `Chưa phân công (${data.bookings.filter((b) => b.status === "pending" && !b.advisorId).length})`,
-          ],
-          ["all", "Lịch theo ngày"],
-        ].map(([value, label]) => (
-          <button
-            key={value}
-            aria-pressed={queue === value}
-            onClick={() =>
-              resetPage(() => {
-                setQueue(value);
-                setStatus("");
-                setAdvisor("");
-                setView("table");
-              })
-            }
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-      <div className="mgr-section-toolbar">
-        <div className="mgr-tabs" aria-label="Chế độ hiển thị">
-          <button
-            aria-pressed={view === "table"}
-            onClick={() => resetPage(() => setView("table"))}
-          >
-            <AdminIcon name="more" />
-            Danh sách
-          </button>
-          <button
-            aria-pressed={view === "calendar"}
-            onClick={() =>
-              resetPage(() => {
-                setView("calendar");
-                setQueue("all");
-              })
-            }
-          >
-            <AdminIcon name="calendar" />
-            Lịch
-          </button>
+        <div className="adm-quick-filters" aria-label="Nhóm yêu cầu lịch hẹn">
+          {[
+            ["pending", `Cần xử lý (${pendingCount})`],
+            [
+              "unassigned",
+              `Chưa phân công (${data.bookings.filter((b) => b.status === "pending" && !b.advisorId).length})`,
+            ],
+            ["all", "Lịch theo ngày"],
+          ].map(([value, label]) => (
+            <button
+              key={value}
+              aria-pressed={queue === value}
+              className={queue === value ? "is-active" : ""}
+              onClick={() =>
+                resetPage(() => {
+                  setQueue(value);
+                  setStatus("");
+                  setAdvisor("");
+                  setView("table");
+                })
+              }
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="adm-search-row">
+          <ManagerSearch
+            value={query}
+            onChange={(value) => resetPage(() => setQuery(value))}
+            placeholder="Tìm mã lịch, tên, SĐT, biển số…"
+          />
+          <ManagerFilters active={filtersActive} onReset={resetFilters}>
+            {queue === "all" && (
+              <FilterSelect
+                label="Khoảng xem"
+                value={mode}
+                onChange={(v) => resetPage(() => setMode(v))}
+              >
+                <option value="day">Theo ngày</option>
+                <option value="week">7 ngày từ ngày chọn</option>
+                <option value="range">Khoảng ngày</option>
+              </FilterSelect>
+            )}
+            {queue === "all" && mode === "range" && (
+              <label className="mgr-filter">
+                Đến ngày
+                <DateInput
+                  min={date}
+                  value={endDate}
+                  onValueChange={(v) => resetPage(() => setEndDate(v))}
+                />
+              </label>
+            )}
+            <FilterSelect
+              label="Trạng thái"
+              value={status}
+              onChange={(value) =>
+                resetPage(() => {
+                  setStatus(value);
+                  if (value && value !== "pending") setQueue("all");
+                })
+              }
+            >
+              <option value="">Tất cả trạng thái</option>
+              <option value="checkedin">Đã check-in (gồm hoàn tất)</option>
+              {Object.entries(statuses).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </FilterSelect>
+            <FilterSelect
+              label="Cố vấn phụ trách"
+              value={advisor}
+              onChange={(v) => resetPage(() => setAdvisor(v))}
+            >
+              <option value="">Tất cả</option>
+              <option value="unassigned">Chưa phân công</option>
+              {data.staff
+                .filter((s) => s.role === "advisor" && !s.deleted)
+                .map((s) => (
+                  <option value={s.id} key={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+            </FilterSelect>
+            <FilterSelect
+              label="Dịch vụ"
+              value={service}
+              onChange={(value) => resetPage(() => setService(value))}
+            >
+              <option value="">Tất cả dịch vụ</option>
+              {data.services.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </FilterSelect>
+            <FilterSelect
+              label="Nhóm dịch vụ"
+              value={group}
+              onChange={(v) => resetPage(() => setGroup(v))}
+            >
+              <option value="">Tất cả</option>
+              {[...new Set(data.services.map((s) => s.group))].map((g) => (
+                <option key={g}>{g}</option>
+              ))}
+            </FilterSelect>
+            <FilterSelect
+              label="Thay đổi"
+              value={change}
+              onChange={(v) => resetPage(() => setChange(v))}
+            >
+              <option value="">Tất cả</option>
+              <option value="new">Lịch mới</option>
+              <option value="rescheduled">Đã đổi lịch</option>
+              <option value="cancelled">Đã hủy</option>
+            </FilterSelect>
+          </ManagerFilters>
         </div>
         {queue === "all" && (
-          <div className="mgr-date-control">
+          <div className="adm-date-controls">
             <button
-              className="adm-icon-btn"
-              aria-label="Ngày trước"
+              className="adm-btn adm-btn-sm"
+              onClick={() => resetPage(() => setDate(today))}
+            >
+              Hôm nay
+            </button>
+            <button
+              className="adm-icon-btn adm-date-prev"
+              aria-label={mode === "week" ? "Tuần trước" : "Ngày trước"}
               onClick={() =>
                 resetPage(() =>
                   setDate(shiftDate(date, mode === "week" ? -7 : -1)),
                 )
               }
             >
-              <AdminIcon name="back" />
+              <span>‹</span>
             </button>
-            <DateInput
-              aria-label="Ngày xem lịch"
-              value={date}
-              onValueChange={(v) => {
-                if (v)
-                  resetPage(() => setDate(v));
-              }}
-            />
+            <label className="adm-date-picker">
+              <AdminIcon name="calendar" />
+              <DateInput
+                aria-label="Ngày xem lịch"
+                value={date}
+                onValueChange={(v) => {
+                  if (v) resetPage(() => setDate(v));
+                }}
+              />
+            </label>
             <button
-              className="adm-icon-btn mgr-arrow-next"
-              aria-label="Ngày sau"
+              className="adm-icon-btn"
+              aria-label={mode === "week" ? "Tuần sau" : "Ngày sau"}
               onClick={() =>
                 resetPage(() =>
                   setDate(shiftDate(date, mode === "week" ? 7 : 1)),
                 )
               }
             >
-              <AdminIcon name="back" />
+              <span>›</span>
             </button>
-            <button
-              className="adm-btn"
-              onClick={() => resetPage(() => setDate(today))}
-            >
-              Hôm nay
-            </button>
+            {view === "calendar" && mode !== "range" && (
+              <div className="adm-segment" aria-label="Khoảng lịch">
+                {(
+                  [
+                    ["day", "Ngày"],
+                    ["week", "Tuần"],
+                  ] as const
+                ).map(([value, label]) => (
+                  <button
+                    key={value}
+                    aria-pressed={mode === value}
+                    className={mode === value ? "is-active" : ""}
+                    onClick={() => setMode(value)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
-      </div>
-      <div className="mgr-toolbar">
-        {queue === "all" && (
-          <FilterSelect
-            label="Khoảng xem"
-            value={mode}
-            onChange={(v) => resetPage(() => setMode(v))}
-          >
-            <option value="day">Theo ngày</option>
-            <option value="week">7 ngày từ ngày chọn</option>
-            <option value="range">Khoảng ngày</option>
-          </FilterSelect>
+        {mode === "range" && endDate < date && (
+          <p role="alert" className="adm-error-text">
+            Ngày kết thúc phải từ ngày bắt đầu trở đi.
+          </p>
         )}
-        {queue === "all" && mode === "range" && (
-          <label className="mgr-filter">
-            Đến ngày
-            <DateInput
-              min={date}
-              value={endDate}
-              onValueChange={(v) => resetPage(() => setEndDate(v))}
-            />
-          </label>
-        )}
-        <FilterSelect
-          label="CVDV"
-          value={advisor}
-          onChange={(v) => resetPage(() => setAdvisor(v))}
-        >
-          <option value="">Tất cả</option>
-          <option value="unassigned">Chưa phân công</option>
-          {data.staff
-            .filter((s) => s.role === "advisor")
-            .map((s) => (
-              <option value={s.id} key={s.id}>
-                {s.name}
-              </option>
-            ))}
-        </FilterSelect>
-        <FilterSelect
-          label="Nhóm dịch vụ"
-          value={group}
-          onChange={(v) => resetPage(() => setGroup(v))}
-        >
-          <option value="">Tất cả</option>
-          {[...new Set(data.services.map((s) => s.group))].map((g) => (
-            <option key={g}>{g}</option>
-          ))}
-        </FilterSelect>
-        <FilterSelect
-          label="Thay đổi"
-          value={change}
-          onChange={(v) => resetPage(() => setChange(v))}
-        >
-          <option value="">Tất cả</option>
-          <option value="new">Lịch mới</option>
-          <option value="rescheduled">Đã đổi lịch</option>
-          <option value="cancelled">Đã hủy</option>
-        </FilterSelect>
-      </div>
-      {mode === "range" && endDate < date && (
-        <p role="alert" className="adm-error-text">
-          Ngày kết thúc phải từ ngày bắt đầu trở đi.
-        </p>
-      )}
-      <ManagerPanel
-        title={`${filtered.length} lịch hẹn`}
-        action={
-          view === "calendar" &&
-          mode !== "range" && (
-            <div className="mgr-tabs">
-              <button
-                aria-pressed={mode === "day"}
-                onClick={() => setMode("day")}
-              >
-                Ngày
-              </button>
-              <button
-                aria-pressed={mode === "week"}
-                onClick={() => setMode("week")}
-              >
-                Tuần
-              </button>
-            </div>
-          )
-        }
-      >
-        <div className="mgr-toolbar">
-          <ManagerSearch
-            value={query}
-            onChange={(value) => resetPage(() => setQuery(value))}
-            placeholder="Tìm mã lịch, tên, SĐT, biển số…"
-          />
-          <FilterSelect
-            label="Trạng thái"
-            value={status}
-            onChange={(value) =>
-              resetPage(() => {
-                setStatus(value);
-                if (value && value !== "pending") setQueue("all");
-              })
-            }
-          >
-            <option value="">Tất cả trạng thái</option>
-            <option value="checkedin">Đã check-in (gồm hoàn tất)</option>
-            {Object.entries(statuses).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </FilterSelect>
-          <FilterSelect
-            label="Dịch vụ"
-            value={service}
-            onChange={(value) => resetPage(() => setService(value))}
-          >
-            <option value="">Tất cả dịch vụ</option>
-            {data.services.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </FilterSelect>
-        </div>
         {view === "table" || mode === "range" ? (
           <>
             <ManagerBookingTable

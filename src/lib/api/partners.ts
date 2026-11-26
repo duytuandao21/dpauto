@@ -14,6 +14,7 @@ export type PartnerSale = {
   name: string;
   phone: string | null;
   active: boolean;
+  deletedAt?: string | null;
   version: number;
 };
 export type Partner = {
@@ -21,6 +22,8 @@ export type Partner = {
   name: string;
   phone: string | null;
   active: boolean;
+  /** Soft-deleted partners stay in the payload so old tickets resolve. */
+  deletedAt?: string | null;
   version: number;
   sales: PartnerSale[];
 };

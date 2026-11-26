@@ -51,7 +51,7 @@ export class Catalog {
           sql`SELECT s.*,cat.code AS category_code FROM services s JOIN service_categories cat ON cat.id=s.category_id WHERE s.id=${id}`,
         )
       : undefined;
-    if (id && !old) fail(404, "NOT_FOUND");
+    if (id && (!old || old.deleted_at)) fail(404, "NOT_FOUND");
     if (old) expectVersion(old, input.expectedVersion);
     const merged = {
       code: old?.code,
@@ -111,6 +111,34 @@ export class Catalog {
       eventId: randomUUID(),
     };
   }
+  /** Hides the service; bookings and tickets that used it keep showing its name. */
+  async remove(c: Conn, ctx: Context, id: string, input: Row) {
+    const old = await one(
+      c,
+      sql`SELECT * FROM services WHERE id=${id}::uuid AND deleted_at IS NULL FOR UPDATE`,
+    );
+    if (!old) fail(404, "NOT_FOUND");
+    expectVersion(old!, input.expectedVersion);
+    const inUse = await one(
+      c,
+      sql`SELECT EXISTS(SELECT 1 FROM booking_services bs JOIN bookings b ON b.id=bs.booking_id WHERE bs.service_id=${id}::uuid AND b.deleted_at IS NULL AND b.status IN ('PENDING','CONFIRMED'))
+        OR EXISTS(SELECT 1 FROM visit_services vs JOIN service_visits v ON v.id=vs.visit_id WHERE vs.service_id=${id}::uuid AND v.deleted_at IS NULL AND v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED')) AS used`,
+    );
+    if (inUse!.used)
+      fail(
+        409,
+        "SERVICE_IN_USE",
+        "Dịch vụ đang có trong lịch hẹn hoặc phiếu chưa xong. Hãy xử lý xong trước khi xóa.",
+      );
+    await c.execute(
+      sql`UPDATE services SET active=false,bookable=false,deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId},version=version+1,updated_at=${ctx.now} WHERE id=${id}::uuid`,
+    );
+    await c.execute(
+      sql`UPDATE stations SET catalog_version=catalog_version+1 WHERE id=${ctx.station.id}`,
+    );
+    await audit(c, ctx, "SERVICE_DELETED", "service", id, input.reason);
+    return { id, deleted: true, version: old!.version + 1 };
+  }
 }
 export function serviceView(s: Row, catalogVersion: number) {
   return {
@@ -127,6 +155,7 @@ export function serviceView(s: Row, catalogVersion: number) {
     estimatedDurationMinutes: s.estimated_duration_minutes,
     qualityChecks: s.quality_checks,
     technicianRequired: s.technician_required,
+    deletedAt: s.deleted_at ?? null,
     version: s.version,
     catalogVersion,
   };

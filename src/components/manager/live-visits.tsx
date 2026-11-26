@@ -8,6 +8,8 @@ import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { collection } from "@/lib/api/client";
+import { visitDeleteMessage } from "@/lib/api/delete";
+import { useSession } from "@/components/admin/auth-gate";
 import { useApiPage } from "@/lib/api/use-page";
 import { visitStages, serviceStage, type Visit, type VisitStage } from "@/lib/api/visits";
 import { workflowTime } from "@/lib/api/workflow";
@@ -17,8 +19,10 @@ import {
   ManagerPanel,
   ManagerSearch,
   FilterSelect,
+  ManagerFilters,
   ManagerEmpty,
   ManagerTable,
+  ManagerDeleteButton,
 } from "./manager-ui";
 import { PageButtons } from "./live-stock";
 import { useManager } from "./manager-provider";
@@ -97,7 +101,7 @@ function VisitsContent({
     <>
       {!customerId && (
         <PageHeading
-          title={board ? "Điều phối xe toàn trạm" : "Phiếu dịch vụ"}
+          title={board ? "Điều phối xe" : "Phiếu dịch vụ"}
           description="Theo dõi xe, người phụ trách và tiến độ trong phạm vi toàn trạm."
         >
           <Link
@@ -118,14 +122,19 @@ function VisitsContent({
         }
       >
         {!customerId && !board && (
-          <div className="mgr-tabs" aria-label="Nhóm phiếu">
+          <div className="adm-quick-filters" aria-label="Nhóm phiếu">
             <button
               aria-pressed={!partnerTab}
+              className={!partnerTab ? "is-active" : ""}
               onClick={() => setPartnerTab(false)}
             >
               Tất cả phiếu
             </button>
-            <button aria-pressed={partnerTab} onClick={() => setPartnerTab(true)}>
+            <button
+              aria-pressed={partnerTab}
+              className={partnerTab ? "is-active" : ""}
+              onClick={() => setPartnerTab(true)}
+            >
               Đối tác
             </button>
           </div>
@@ -139,69 +148,57 @@ function VisitsContent({
           />
         )}
         {!customerId && (
-          <div className="mgr-toolbar">
+          <div className="adm-search-row">
             <ManagerSearch
               value={query}
               onChange={setQuery}
               placeholder="Tìm mã phiếu, biển số, khách, SĐT…"
             />
-            <FilterSelect
-              label="Trạng thái xe"
-              value={stage}
-              onChange={setStage}
-            >
-              <option value="">Tất cả</option>
-              {Object.entries(visitStages)
-                .filter(
-                  ([key]) =>
-                    ["QUOTING","WAITING_FOR_WORK","IN_PROGRESS","HANDOVER","COMPLETED","ABORTED"].includes(key) && (!board || !["COMPLETED","ABORTED"].includes(key)),
-                )
-                .map(([key, label]) => (
-                  <option key={key} value={key}>
-                    {label}
-                  </option>
-                ))}
-            </FilterSelect>
-            <FilterSelect label="CVDV" value={advisor} onChange={setAdvisor}>
-              <option value="">Tất cả cố vấn</option>
-              {data.staff
-                .filter((s) => s.role === "advisor")
-                .map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-            </FilterSelect>
-            {!partnerView && (
-            <>
-            <label className="mgr-filter">
-              Từ ngày
-              <DateInput
-                value={from}
-                onValueChange={(v) => setFrom(v)}
-              />
-            </label>
-            <label className="mgr-filter">
-              Đến ngày
-              <DateInput
-                value={to}
-                onValueChange={(v) => setTo(v)}
-              />
-            </label>
-            </>
-            )}
-            <button
-              className="adm-btn"
-              onClick={() => {
-                setQuery("");
+            <ManagerFilters
+              active={!!(stage || advisor || from || to)}
+              onReset={() => {
                 setStage("");
                 setAdvisor("");
                 setFrom("");
                 setTo("");
               }}
             >
-              Xóa lọc
-            </button>
+              <FilterSelect label="Trạng thái xe" value={stage} onChange={setStage}>
+                <option value="">Tất cả</option>
+                {Object.entries(visitStages)
+                  .filter(
+                    ([key]) =>
+                      ["QUOTING","WAITING_FOR_WORK","IN_PROGRESS","HANDOVER","COMPLETED","ABORTED"].includes(key) && (!board || !["COMPLETED","ABORTED"].includes(key)),
+                  )
+                  .map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
+                  ))}
+              </FilterSelect>
+              <FilterSelect label="Cố vấn phụ trách" value={advisor} onChange={setAdvisor}>
+                <option value="">Tất cả cố vấn</option>
+                {data.staff
+                  .filter((s) => s.role === "advisor" && !s.deleted)
+                  .map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+              </FilterSelect>
+              {!partnerView && (
+                <div className="adv-ticket-filter-dates">
+                  <label className="mgr-filter">
+                    Từ ngày
+                    <DateInput value={from} onValueChange={(v) => setFrom(v)} />
+                  </label>
+                  <label className="mgr-filter">
+                    Đến ngày
+                    <DateInput value={to} onValueChange={(v) => setTo(v)} />
+                  </label>
+                </div>
+              )}
+            </ManagerFilters>
           </div>
         )}
         {board ? (
@@ -215,6 +212,7 @@ function VisitsContent({
 }
 function VisitTable({ path, reload }: { path: string; reload: number }) {
   const p = useApiPage<Visit>(path, reload);
+  const canDelete = !!useSession()?.permissions.includes("visits.update");
   return (
     <>
       {p.error && (
@@ -281,12 +279,21 @@ function VisitTable({ path, reload }: { path: string; reload: number }) {
                     )}
                   </td>
                   <td>
-                    <Link
-                      className="adm-btn"
-                      href={`/dieu-hanh/phieu-dich-vu/${v.id}`}
-                    >
-                      Xem chi tiết
-                    </Link>
+                    <div className="mgr-row-actions">
+                      <Link
+                        className="adm-btn"
+                        href={`/dieu-hanh/phieu-dich-vu/${v.id}`}
+                      >
+                        Xem chi tiết
+                      </Link>
+                      {canDelete && v.canDelete && (
+                        <ManagerDeleteButton
+                          path={`admin/service-visits/${encodeURIComponent(v.id)}`}
+                          version={v.version}
+                          message={visitDeleteMessage(v)}
+                        />
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -330,41 +337,39 @@ function VisitBoard({ path, reload }: { path: string; reload: number }) {
   const waiting = data.bookings.filter(
     (b) => b.date === today && ["pending", "confirmed"].includes(b.status),
   );
-  const groups = (Object.entries(visitStages) as [VisitStage, string][]).filter(
-    ([s]) => ["QUOTING","WAITING_FOR_WORK","IN_PROGRESS","HANDOVER"].includes(s),
-  );
+  // Columns follow the workflow order, not the label map's key order.
+  const groups = (
+    ["QUOTING", "WAITING_FOR_WORK", "IN_PROGRESS", "HANDOVER"] as VisitStage[]
+  ).map((s) => [s, visitStages[s]] as const);
+  // Compact board card: the whole card opens the ticket; the column already names the stage.
   function card(v: Visit) {
     return (
-      <article className="mgr-vehicle-card" key={v.id}>
+      <Link
+        className="mgr-vehicle-card"
+        key={v.id}
+        href={`/dieu-hanh/phieu-dich-vu/${v.id}`}
+      >
         <strong>{formatPlate(v.vehicle.plate) || v.vehicle.model}</strong>
         <p>
           {v.code} · {v.partner ? v.partner.saleName : v.customer.name}
           {v.partner && <span className="adv-partner-badge">Toàn Trung</span>}
         </p>
-        <VisitStageBadge stage={v.stage} />
-        <p>CVDV: {v.assignedAdvisor.name}</p>
-        <small>KTV: {v.work?.technicians.join(", ") || "Chưa phân công"}</small>
-        {v.work && (
+        {v.isPaused && <VisitStageBadge stage={v.stage} />}
+        <small>
+          CVDV: {v.assignedAdvisor.name}
+          <br />
+          KTV: {v.work?.technicians.join(", ") || "Chưa phân công"}
+        </small>
+        {!!v.work?.total && (
           <>
-            <progress max={v.work.total || 1} value={v.work.done} />
+            <progress max={v.work.total} value={v.work.done} />
             <small>
               {v.work.done}/{v.work.total} công việc hoàn tất
             </small>
           </>
         )}
-        {v.work?.dueAt && <p>Dự kiến: {workflowTime(v.work.dueAt)}</p>}
-        <div className="mgr-row-actions">
-          <Link className="adm-btn" href={`/dieu-hanh/phieu-dich-vu/${v.id}`}>
-            Chi tiết
-          </Link>
-          <Link
-            className="adm-text-link"
-            href={`/dieu-hanh/phieu-dich-vu/${v.id}?tab=thi-cong`}
-          >
-            Tiến độ
-          </Link>
-        </div>
-      </article>
+        {v.work?.dueAt && <small>Dự kiến: {workflowTime(v.work.dueAt)}</small>}
+      </Link>
     );
   }
   return (
@@ -375,7 +380,11 @@ function VisitBoard({ path, reload }: { path: string; reload: number }) {
             Đặt lịch hôm nay <small>{waiting.length}</small>
           </h3>
           {waiting.map((b) => (
-            <article className="mgr-vehicle-card" key={b.id}>
+            <Link
+              className="mgr-vehicle-card"
+              key={b.id}
+              href={`/dieu-hanh/lich-hen?selected=${b.id}&date=${b.date}`}
+            >
               <strong>
                 {b.vehicleSnapshot?.plate ||
                   b.vehicleSnapshot?.model ||
@@ -384,14 +393,10 @@ function VisitBoard({ path, reload }: { path: string; reload: number }) {
               <p>
                 {b.time} · {b.customerSnapshot?.name}
               </p>
-              <Link
-                className="adm-btn"
-                href={`/dieu-hanh/lich-hen?selected=${b.id}&date=${b.date}`}
-              >
-                {b.code || b.id}
-              </Link>
-            </article>
+              <small>{b.code || b.id}</small>
+            </Link>
           ))}
+          {!waiting.length && <p className="adm-muted">Không có lịch</p>}
           <Link className="adm-text-link" href="/dieu-hanh/lich-hen">
             Xem lịch hẹn
           </Link>

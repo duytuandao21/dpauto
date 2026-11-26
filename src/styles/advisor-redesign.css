@@ -2364,3 +2364,134 @@ body:has(.adv-workspace-drawer[open]) {
     flex: 1 1 100%;
   }
 }
+
+/* ---------- Service ticket detail: one spacing rhythm across all tabs ---------- */
+/* Header: title + status/actions on top, meta, then totals and progress below a divider. */
+.adm-app.adv-ui .adv-service-workspace .adv-service-header {
+  display: block;
+}
+.adm-app.adv-ui .adv-service-workspace .adv-service-header > .adm-section-line {
+  margin: 0;
+}
+.adm-app.adv-ui .adv-service-workspace .adv-service-header h1 {
+  margin: 4px 0;
+}
+.adm-app.adv-ui .adv-service-workspace .adv-service-actions {
+  align-items: center;
+  margin-left: auto;
+}
+.adm-app.adv-ui .adv-service-workspace .adv-service-header > .adv-service-meta {
+  margin: 8px 0 0;
+  font-size: calc(13px + var(--adm-font-increase));
+}
+.adm-app.adv-ui .adv-service-workspace .adv-service-header > .adv-service-totals {
+  flex-wrap: wrap;
+  gap: 12px clamp(24px, 4vw, 48px);
+  margin: 16px 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--adm-border);
+}
+.adm-app.adv-ui .adv-service-workspace .adv-service-totals > div {
+  flex: 0 0 auto;
+}
+.adm-app.adv-ui .adv-service-workspace .adv-service-header > .adv-service-progress {
+  margin-top: 16px;
+}
+/* Panels: 16px from heading to content. */
+.adm-app.adv-ui .adv-service-workspace .adm-panel > h2,
+.adm-app.adv-ui .adv-service-workspace .adm-panel > .adm-section-line {
+  margin: 0 0 16px;
+}
+.adm-app.adv-ui .adv-service-workspace .adm-panel > .adm-section-line:last-child {
+  margin-bottom: 0;
+}
+.adm-app.adv-ui .adv-service-workspace .adm-panel > .adm-section-line h2 {
+  margin: 0;
+}
+.adm-app.adv-ui .adv-service-workspace .adm-panel > :is(h2, h3) + .adm-info-grid,
+.adm-app.adv-ui .adv-service-workspace .adm-panel > .adm-section-line + .adm-info-grid {
+  margin-top: 0;
+}
+.adm-app.adv-ui .adv-service-workspace .adm-panel > :is(.adm-btn, .adm-text-link, button):not(:first-child),
+.adm-app.adv-ui .adv-service-workspace .adm-panel > .adm-muted:not(:first-child) {
+  margin-top: 16px;
+}
+.adm-app.adv-ui .adv-service-workspace .adm-panel > ul {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+}
+.adm-app.adv-ui .adv-service-workspace .adv-photo-grid:empty {
+  display: none;
+}
+/* Wider screens: info grids use the space instead of two half-empty columns. */
+@media (min-width: 768px) {
+  .adm-app.adv-ui .adv-service-workspace .adm-panel > .adm-info-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1100px) {
+  .adm-app.adv-ui .adv-service-workspace .adm-panel > .adm-info-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+/* Work tab: the scope list sits under the action row in the same card. */
+.adm-app.adv-ui .adv-service-workspace .adv-service-subhead {
+  margin: 20px 0 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--adm-border);
+  color: var(--adm-muted);
+  font-size: calc(13px + var(--adm-font-increase));
+  font-weight: 500;
+}
+/* Quote tab: the title row is a toolbar above the quote card, not a card of its own. */
+.adm-app.adv-ui .adv-service-workspace .adm-panel.adv-service-bar {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+/* Abort: a lone button until opened. */
+.adm-app.adv-ui .adv-service-workspace .adm-panel.adv-service-abort:not(:has(details[open])) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+/* Short forms (transfer advisor): fields side by side, button sized to its label. */
+.adm-app.adv-ui .adv-inline-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+  align-items: end;
+  gap: 16px;
+}
+.adm-app.adv-ui .adv-inline-form :is(input, select) {
+  height: 48px;
+}
+.adm-app.adv-ui .adv-inline-form > .adm-btn {
+  min-height: 48px;
+}
+@media (max-width: 767.98px) {
+  .adm-app.adv-ui .adv-inline-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Quote tables scroll sideways only (avoids a stray vertical scrollbar). */
+.adm-app.adv-ui .adv-quote-scroll {
+  overflow-y: hidden;
+}
+/* Only the tab row stays pinned while scrolling; the summary card scrolls away. */
+@media (min-width: 1100px) and (min-height: 800px) {
+  .adm-app.adv-ui .adv-service-workspace .adv-service-sticky {
+    display: contents;
+  }
+  .adm-app.adv-ui .adv-service-workspace .adv-service-sticky .adv-tabs {
+    position: sticky !important;
+    top: 64px;
+    margin-top: 0 !important;
+  }
+  .adm-app.adv-ui .adv-service-workspace :is(input, textarea, select, button, summary) {
+    scroll-margin-top: 184px;
+  }
+}

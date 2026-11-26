@@ -549,7 +549,9 @@ export function Quality({
   root,
   onDirty,
   customerName,
+  abort = true,
 }: {
+  abort?: boolean;
   data: Workflow;
   staff: ApiStaff[];
   run: RunWorkflow;
@@ -565,8 +567,7 @@ export function Quality({
     [checks, setChecks] = useState<Record<string, boolean>>({});
   const [recipient, setRecipient] = useState(customerName),
     [proof, setProof] = useState(""),
-    [moved, setMoved] = useState(false),
-    [reason, setReason] = useState("");
+    [moved, setMoved] = useState(false);
   const stockPending = !data.stock.fulfilled;
   const collectOnHandover = root === "/co-van" && data.workflowVersion === 2;
   const closed = !data.allowedActions.length,
@@ -696,7 +697,7 @@ export function Quality({
             </article>
           ))
         ) : (
-          <p>Chưa có kết quả nghiệm thu.</p>
+          <p className="adm-muted">Chưa có kết quả nghiệm thu.</p>
         )}
         {!closed &&
           data.stage === "QUALITY_CHECK" &&
@@ -823,73 +824,99 @@ export function Quality({
           <p>{data.handover.evidenceNote}</p>
         </section>
       )}
-      {!closed && session.permissions.includes("visits.abort") && (
-        <section className="adm-panel">
-          <details>
-            <summary className="adm-btn adm-subtle-danger">
-              Dừng phiếu dịch vụ
-            </summary>
-            <form
-              className="adm-booking-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (
-                  window.confirm(
-                    "Dừng phiếu sau khi đã đưa xe ra khỏi khu vực thi công?",
-                  )
-                )
-                  void run(`admin/service-visits/${data.visitId}/abort`, {
-                    reason,
-                    evidenceNote: proof,
-                    vehicleMoved: moved,
-                  });
-              }}
-            >
-              <label className="adm-field">
-                Lý do dừng *
-                <textarea
-                  required
-                  maxLength={400}
-                  rows={2}
-                  value={reason}
-                  onChange={(e) => {
-                    setReason(e.target.value);
-                    onDirty(true);
-                  }}
-                />
-              </label>
-              <label className="adm-field">
-                Căn cứ xử lý *
-                <textarea
-                  required
-                  maxLength={2000}
-                  rows={3}
-                  value={proof}
-                  onChange={(e) => {
-                    setProof(e.target.value);
-                    onDirty(true);
-                  }}
-                />
-              </label>
-              <label className="adv-checks">
-                <input
-                  required
-                  type="checkbox"
-                  checked={moved}
-                  onChange={(e) => {
-                    setMoved(e.target.checked);
-                    onDirty(true);
-                  }}
-                />{" "}
-                Đã đưa xe ra khỏi khu vực thi công
-              </label>
-              <button className="adm-btn adm-danger" disabled={busy}>
-                Xác nhận dừng phiếu
-              </button>
-            </form>
-          </details>
-        </section>
+      {abort && (
+        <AbortVisit data={data} run={run} busy={busy} onDirty={onDirty} />
       )}
     </div>
+  );
+}
+
+/** Stop-ticket form; the ticket workspace renders it last on the page. */
+export function AbortVisit({
+  data,
+  run,
+  busy,
+  onDirty,
+}: {
+  data: Workflow;
+  run: RunWorkflow;
+  busy: boolean;
+  onDirty: (v: boolean) => void;
+}) {
+  const session = useSession()!,
+    [reason, setReason] = useState(""),
+    [proof, setProof] = useState(""),
+    [moved, setMoved] = useState(false);
+  if (
+    !data.allowedActions.length ||
+    !session.permissions.includes("visits.abort")
+  )
+    return null;
+  return (
+    <section className="adm-panel adv-service-abort">
+      <details>
+        <summary className="adm-btn adm-subtle-danger">
+          Dừng phiếu dịch vụ
+        </summary>
+        <form
+          className="adm-booking-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (
+              window.confirm(
+                "Dừng phiếu sau khi đã đưa xe ra khỏi khu vực thi công?",
+              )
+            )
+              void run(`admin/service-visits/${data.visitId}/abort`, {
+                reason,
+                evidenceNote: proof,
+                vehicleMoved: moved,
+              });
+          }}
+        >
+          <label className="adm-field">
+            Lý do dừng *
+            <textarea
+              required
+              maxLength={400}
+              rows={2}
+              value={reason}
+              onChange={(e) => {
+                setReason(e.target.value);
+                onDirty(true);
+              }}
+            />
+          </label>
+          <label className="adm-field">
+            Căn cứ xử lý *
+            <textarea
+              required
+              maxLength={2000}
+              rows={3}
+              value={proof}
+              onChange={(e) => {
+                setProof(e.target.value);
+                onDirty(true);
+              }}
+            />
+          </label>
+          <label className="adv-checks">
+            <input
+              required
+              type="checkbox"
+              checked={moved}
+              onChange={(e) => {
+                setMoved(e.target.checked);
+                onDirty(true);
+              }}
+            />{" "}
+            Đã đưa xe ra khỏi khu vực thi công
+          </label>
+          <button className="adm-btn adm-danger" disabled={busy}>
+            Xác nhận dừng phiếu
+          </button>
+        </form>
+      </details>
+    </section>
   );
 }

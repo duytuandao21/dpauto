@@ -277,6 +277,14 @@ class ApiController {
   ) {
     return this.api.run("partPatch", req, reply);
   }
+  @Delete("admin/stock/parts/:id")
+  @HttpCode(200)
+  partDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("partDelete", req, reply);
+  }
   @Get("admin/stock/warehouses")
   warehouses(
     @Req() req: FastifyRequest,
@@ -297,6 +305,14 @@ class ApiController {
     @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     return this.api.run("warehousePatch", req, reply);
+  }
+  @Delete("admin/stock/warehouses/:id")
+  @HttpCode(200)
+  warehouseDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("warehouseDelete", req, reply);
   }
   @Get("admin/stock/balances")
   stockBalances(
@@ -332,6 +348,14 @@ class ApiController {
     @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     return this.api.run("stockSave", req, reply);
+  }
+  @Delete("admin/stock/documents/:id")
+  @HttpCode(200)
+  stockDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("stockDelete", req, reply);
   }
   @Post("admin/stock/documents/:id/post")
   stockPost(
@@ -661,6 +685,14 @@ class ApiController {
   ) {
     return this.api.run("partnerPatch", req, reply);
   }
+  @Delete("admin/partners/:id")
+  @HttpCode(200)
+  partnerDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("partnerDelete", req, reply);
+  }
   @Post("admin/partners/:id/sales")
   @HttpCode(201)
   partnerSaleCreate(
@@ -676,6 +708,14 @@ class ApiController {
     @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     return this.api.run("partnerSalePatch", req, reply);
+  }
+  @Delete("admin/partner-sales/:id")
+  @HttpCode(200)
+  partnerSaleDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("partnerSaleDelete", req, reply);
   }
   @Patch("admin/service-visits/:id/intake")
   intake(
@@ -797,6 +837,14 @@ class ApiController {
   ) {
     return this.api.run("staffPatch", req, reply);
   }
+  @Delete("admin/staff/:id")
+  @HttpCode(200)
+  staffDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("staffDelete", req, reply);
+  }
   @Post("admin/staff/:id/reset-password")
   @HttpCode(200)
   staffReset(
@@ -828,6 +876,14 @@ class ApiController {
     @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     return this.api.run("servicePatch", req, reply);
+  }
+  @Delete("admin/services/:id")
+  @HttpCode(200)
+  serviceDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("serviceDelete", req, reply);
   }
   @Get("admin/customers")
   @HttpCode(200)
@@ -884,6 +940,14 @@ class ApiController {
     @Res({ passthrough: true }) reply: FastifyReply,
   ) {
     return this.api.run("vehicle", req, reply);
+  }
+  @Delete("admin/vehicles/:id")
+  @HttpCode(200)
+  vehicleDelete(
+    @Req() req: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.api.run("vehicleDelete", req, reply);
   }
   @Get("admin/bookings")
   @HttpCode(200)

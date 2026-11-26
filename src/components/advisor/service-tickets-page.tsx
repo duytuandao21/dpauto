@@ -11,7 +11,8 @@ import { AdminIcon } from "@/components/admin/admin-icon";
 import { AdminLoading, PageHeading } from "@/components/admin/primitives";
 import { useBookings } from "@/components/admin/booking-provider";
 import { useSession } from "@/components/admin/auth-gate";
-import { apiEnabled, command, request } from "@/lib/api/client";
+import { apiEnabled, request } from "@/lib/api/client";
+import { confirmDelete, visitDeleteMessage } from "@/lib/api/delete";
 import type { Visit, TicketStage } from "@/lib/api/visits";
 import { stationTime } from "@/lib/api/types";
 import { quoteTotals } from "@/lib/advisor/seed";
@@ -148,18 +149,17 @@ export function ServiceTicketsPage() {
       !permissions.includes("visits.update")
     )
       return;
-    const message = `Xóa phiếu ${row.code}? Phiếu sẽ được ẩn khỏi danh sách, lịch sử và dữ liệu tài chính vẫn được giữ.${row.bookingId ? " Lịch hẹn đang tiếp nhận sẽ bị hủy." : ""}`;
-    if (!window.confirm(message)) return;
     setDeletingId(row.id);
     setDeleteError("");
     try {
-      await command(
-        `admin/service-visits/${encodeURIComponent(row.id)}`,
-        { expectedVersion: row.version },
-        "DELETE",
-      );
-      setValues((current) => current.filter((visit) => visit.id !== row.id));
-      window.dispatchEvent(new Event("dpauto-data-updated"));
+      if (
+        await confirmDelete(
+          `admin/service-visits/${encodeURIComponent(row.id)}`,
+          row.version,
+          visitDeleteMessage(row),
+        )
+      )
+        setValues((current) => current.filter((visit) => visit.id !== row.id));
     } catch (e) {
       setDeleteError(
         e instanceof Error ? e.message : "Chưa thể xóa phiếu dịch vụ.",

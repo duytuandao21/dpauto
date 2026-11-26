@@ -4,6 +4,7 @@ export type Part = {
   name: string;
   unit: string;
   active: boolean;
+  deletedAt?: string | null;
   version: number;
 };
 export type Warehouse = {
@@ -11,6 +12,7 @@ export type Warehouse = {
   code: string;
   name: string;
   active: boolean;
+  deletedAt?: string | null;
   version: number;
 };
 export type StockBalance = {

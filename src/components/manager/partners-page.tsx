@@ -6,7 +6,13 @@ import { usePartners, type Partner, type PartnerSale } from "@/lib/api/partners"
 import { AdminLoading, PageHeading } from "@/components/admin/primitives";
 import { AdminIcon } from "@/components/admin/admin-icon";
 import { useManager } from "./manager-provider";
-import { ManagerEmpty, ManagerField, ManagerPanel, ManagerTable } from "./manager-ui";
+import {
+  ManagerDeleteButton,
+  ManagerEmpty,
+  ManagerField,
+  ManagerPanel,
+  ManagerTable,
+} from "./manager-ui";
 import { ManagerModal } from "./manager-modal";
 
 // Same layout as "Danh mục dịch vụ": table per partner, edits in a modal.
@@ -24,7 +30,11 @@ type Editing =
 export function ManagerPartnersPage() {
   const { theme, ask } = useManager();
   const [reload, setReload] = useState(0);
-  const { partners, loading, error } = usePartners(reload);
+  const { partners: all, loading, error } = usePartners(reload);
+  // Deleted partners/sales stay in the API payload for old tickets; hide them here.
+  const partners = all
+    .filter((p) => !p.deletedAt)
+    .map((p) => ({ ...p, sales: p.sales.filter((s) => !s.deletedAt) }));
   const [editing, setEditing] = useState<Editing | null>(null),
     [formError, setFormError] = useState(""),
     [busy, setBusy] = useState(false);
@@ -113,21 +123,30 @@ export function ManagerPartnersPage() {
             title={p.name}
             description={`SĐT: ${p.phone ? formatPhone(p.phone) : "Chưa có"} · ${p.active ? "Đang hợp tác" : "Tạm ngưng"} · ${p.sales.filter((s) => s.active).length} sale đang làm`}
             action={
-              <button
-                className="adm-btn"
-                onClick={() => {
-                  setFormError("");
-                  setEditing({
-                    kind: "partner",
-                    partner: p,
-                    name: p.name,
-                    phone: formatPhone(p.phone),
-                    active: p.active,
-                  });
-                }}
-              >
-                Sửa thông tin đối tác
-              </button>
+              <div className="mgr-row-actions">
+                <button
+                  className="adm-btn"
+                  onClick={() => {
+                    setFormError("");
+                    setEditing({
+                      kind: "partner",
+                      partner: p,
+                      name: p.name,
+                      phone: formatPhone(p.phone),
+                      active: p.active,
+                    });
+                  }}
+                >
+                  Sửa thông tin đối tác
+                </button>
+                <ManagerDeleteButton
+                  path={`admin/partners/${p.id}`}
+                  version={p.version}
+                  message={`Xóa đối tác ${p.name} cùng toàn bộ sale? Đối tác sẽ không còn trong ô chọn. Lịch hẹn, phiếu cũ vẫn giữ tên.`}
+                  label="Xóa đối tác"
+                  onDeleted={done}
+                />
+              </div>
             }
           >
             {!p.phone && (
@@ -190,6 +209,13 @@ export function ManagerPartnersPage() {
                             >
                               {s.active ? "Ngừng" : "Mở lại"}
                             </button>
+                            <ManagerDeleteButton
+                              className="adm-text-link adm-subtle-danger"
+                              path={`admin/partner-sales/${s.id}`}
+                              version={s.version}
+                              message={`Xóa sale ${s.name}? Sale sẽ không còn trong ô chọn. Lịch hẹn, phiếu cũ vẫn giữ tên sale.`}
+                              onDeleted={done}
+                            />
                           </div>
                         </td>
                       </tr>

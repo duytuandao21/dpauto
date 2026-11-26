@@ -181,6 +181,24 @@ const routes: Record<string, Endpoint> = {
     write: true,
     manager: true,
   },
+  partDelete: {
+    schema: v.deleteInput,
+    permission: "inventory.manage",
+    write: true,
+    manager: true,
+  },
+  warehouseDelete: {
+    schema: v.deleteInput,
+    permission: "inventory.manage",
+    write: true,
+    manager: true,
+  },
+  stockDelete: {
+    schema: v.deleteInput,
+    permission: "inventory.manage",
+    write: true,
+    manager: true,
+  },
   stockBalances: {
     schema: sf.stockQuery,
     permission: "inventory.read",
@@ -427,6 +445,16 @@ const routes: Record<string, Endpoint> = {
     permission: "catalog.manage",
     write: true,
   },
+  partnerDelete: {
+    schema: v.deleteInput,
+    permission: "catalog.manage",
+    write: true,
+  },
+  partnerSaleDelete: {
+    schema: v.deleteInput,
+    permission: "catalog.manage",
+    write: true,
+  },
   intake: {
     schema: visits.intakeInput,
     permission: "visits.update",
@@ -464,6 +492,7 @@ const routes: Record<string, Endpoint> = {
     status: 201,
   },
   staffPatch: { schema: v.staffPatch, permission: "staff.manage", write: true },
+  staffDelete: { schema: v.deleteInput, permission: "staff.manage", write: true },
   staffReset: { schema: v.resetInput, permission: "roles.manage", write: true },
   services: { schema: v.serviceQuery, permission: "catalog.read" },
   serviceCreate: {
@@ -474,6 +503,11 @@ const routes: Record<string, Endpoint> = {
   },
   servicePatch: {
     schema: v.servicePatch,
+    permission: "catalog.manage",
+    write: true,
+  },
+  serviceDelete: {
+    schema: v.deleteInput,
     permission: "catalog.manage",
     write: true,
   },
@@ -496,6 +530,11 @@ const routes: Record<string, Endpoint> = {
   },
   vehicles: { schema: v.vehicleQuery, permission: "customers.read" },
   vehicle: { schema: v.relatedQuery, permission: "customers.read" },
+  vehicleDelete: {
+    schema: v.deleteInput,
+    permission: "customers.delete",
+    write: true,
+  },
   bookings: { schema: v.bookingQuery },
   booking: {},
   bookingPreview: { schema: v.bookingPreviewInput },
@@ -967,6 +1006,12 @@ export class Api {
         return this.inventory.catalogWrite(c, ctx, input, undefined, true);
       case "warehousePatch":
         return this.inventory.catalogWrite(c, ctx, input, id, true);
+      case "partDelete":
+        return this.inventory.catalogRemove(c, ctx, id, input);
+      case "warehouseDelete":
+        return this.inventory.catalogRemove(c, ctx, id, input, true);
+      case "stockDelete":
+        return this.inventory.removeDraft(c, ctx, id, input);
       case "stockBalances":
         return this.inventory.balances(c, ctx, input);
       case "stockDocs":
@@ -1080,6 +1125,10 @@ export class Api {
         return this.partners.createSale(c, ctx, id, input);
       case "partnerSalePatch":
         return this.partners.updateSale(c, ctx, id, input);
+      case "partnerDelete":
+        return this.partners.remove(c, ctx, id, input);
+      case "partnerSaleDelete":
+        return this.partners.removeSale(c, ctx, id, input);
       case "visitInspect":
         return this.visits.mutate(c, ctx, id, "inspect", input);
       case "visitTransfer":
@@ -1125,6 +1174,12 @@ export class Api {
         return this.catalog.write(c, ctx, input);
       case "servicePatch":
         return this.catalog.write(c, ctx, input, id);
+      case "serviceDelete":
+        return this.catalog.remove(c, ctx, id, input);
+      case "staffDelete":
+        return this.staff.remove(c, ctx, id, input);
+      case "vehicleDelete":
+        return this.directory.removeVehicle(c, ctx, id, input);
       case "customers":
         return this.directory.customers(c, ctx, input);
       case "vehicles":

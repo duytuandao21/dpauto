@@ -60,7 +60,7 @@ export class Directory {
       c,
       this.config,
       ctx,
-      sql`SELECT v.*,${key} AS cursor_key FROM vehicles v WHERE ${this.vehicleScope(ctx)}
+      sql`SELECT v.*,${key} AS cursor_key FROM vehicles v WHERE v.deleted_at IS NULL AND ${this.vehicleScope(ctx)}
       ${q.customerId ? sql`AND (EXISTS(SELECT 1 FROM bookings b WHERE b.vehicle_id=v.id AND b.customer_id=${q.customerId} AND ${scope(ctx)}) OR EXISTS(SELECT 1 FROM service_visits sv WHERE sv.vehicle_id=v.id AND sv.customer_id=${q.customerId} AND ${scope(ctx, "sv", true)}) ${ctx.actor?.role==='MANAGER'?sql`OR EXISTS(SELECT 1 FROM customer_vehicle_links l WHERE l.vehicle_id=v.id AND l.customer_id=${q.customerId} AND l.source='MIGRATION')`:sql``})` : sql``}
       ${q.q ? sql`AND (v.plate_normalized ILIKE ${"%" + q.q + "%"} OR v.normalized_model LIKE ${"%" + normalize(q.q) + "%"})` : sql``}`,
       q,
@@ -207,7 +207,7 @@ export class Directory {
   async vehicle(c: Conn, ctx: Context, id: string) {
     const r = await one(
       c,
-      sql`SELECT v.* FROM vehicles v WHERE v.id=${id} AND ${this.vehicleScope(ctx)}`,
+      sql`SELECT v.* FROM vehicles v WHERE v.id=${id} AND v.deleted_at IS NULL AND ${this.vehicleScope(ctx)}`,
     );
     if (!r) fail(404, "NOT_FOUND");
     return {
@@ -215,6 +215,34 @@ export class Directory {
       serviceHistoryAvailable: true,
       bookingsUrl: "/api/v1/admin/bookings?vehicleId=" + id,
     };
+  }
+  /** Hides the vehicle and ends its customer links; bookings and tickets keep their snapshots. */
+  async removeVehicle(c: Conn, ctx: Context, id: string, input: Row) {
+    const v = await one(
+      c,
+      sql`SELECT v.* FROM vehicles v WHERE v.id=${id}::uuid AND v.deleted_at IS NULL AND ${this.vehicleScope(ctx)} FOR UPDATE`,
+    );
+    if (!v) fail(404, "NOT_FOUND");
+    expectVersion(v!, input.expectedVersion);
+    const open = await one(
+      c,
+      sql`SELECT EXISTS(SELECT 1 FROM bookings WHERE vehicle_id=${id}::uuid AND deleted_at IS NULL AND status IN ('PENDING','CONFIRMED','ARRIVED'))
+        OR EXISTS(SELECT 1 FROM service_visits WHERE vehicle_id=${id}::uuid AND deleted_at IS NULL AND stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED')) AS used`,
+    );
+    if (open!.used)
+      fail(
+        409,
+        "VEHICLE_IN_USE",
+        "Xe đang có lịch hẹn hoặc phiếu dịch vụ chưa xong. Hãy hoàn tất hoặc hủy trước khi xóa.",
+      );
+    await c.execute(
+      sql`UPDATE customer_vehicle_links SET valid_to=${ctx.now} WHERE vehicle_id=${id}::uuid AND valid_to IS NULL AND valid_from<${ctx.now}`,
+    );
+    await c.execute(
+      sql`UPDATE vehicles SET deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId},version=version+1,updated_at=${ctx.now} WHERE id=${id}::uuid`,
+    );
+    await audit(c, ctx, "VEHICLE_DELETED", "vehicle", id, input.reason);
+    return { id, deleted: true, version: v!.version + 1 };
   }
   async contact(c: Conn, ctx: Context, input: Row, publicInput = false) {
     if (input.id) {
@@ -244,7 +272,7 @@ export class Directory {
       if (publicInput) fail(400, "VALIDATION_FAILED");
       const r = await one(
         c,
-        sql`SELECT v.* FROM vehicles v WHERE v.id=${input.id} AND ${this.vehicleScope(ctx)} AND EXISTS(SELECT 1 FROM customer_vehicle_links l WHERE l.customer_id=${customerId} AND l.vehicle_id=v.id AND l.valid_to IS NULL)`,
+        sql`SELECT v.* FROM vehicles v WHERE v.id=${input.id} AND v.deleted_at IS NULL AND ${this.vehicleScope(ctx)} AND EXISTS(SELECT 1 FROM customer_vehicle_links l WHERE l.customer_id=${customerId} AND l.vehicle_id=v.id AND l.valid_to IS NULL)`,
       );
       if (!r) fail(422, "CONTACT_REFERENCE_INVALID");
       return r;

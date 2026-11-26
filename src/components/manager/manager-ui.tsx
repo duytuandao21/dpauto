@@ -4,10 +4,16 @@ import {
   Children,
   cloneElement,
   isValidElement,
+  useCallback,
+  useRef,
+  useState,
   type ReactNode,
   type ReactElement,
 } from "react";
 import { AdminIcon } from "@/components/admin/admin-icon";
+import { useCloseOutside } from "@/components/advisor/use-close-outside";
+import { confirmDelete } from "@/lib/api/delete";
+import { useManager } from "./manager-provider";
 
 type TableNode = { children?: ReactNode; "data-label"?: string };
 function tableText(node: ReactNode): string {
@@ -137,6 +143,41 @@ export function FilterSelect({
     </label>
   );
 }
+/** The /co-van "Bộ lọc" popover (service-tickets-page): filters stay out of the toolbar row. */
+export function ManagerFilters({
+  active,
+  onReset,
+  children,
+}: {
+  active?: boolean;
+  onReset?: () => void;
+  children: ReactNode;
+}) {
+  const ref = useRef<HTMLDetailsElement>(null);
+  const close = useCallback(() => {
+    if (ref.current) ref.current.open = false;
+  }, []);
+  useCloseOutside(ref, true, close);
+  return (
+    <details className="adv-ticket-filters" ref={ref}>
+      <summary className="adm-btn">
+        <AdminIcon name="filter" />
+        Bộ lọc{active && " •"}
+      </summary>
+      <div className="adm-filters adv-ticket-filter-panel">
+        <div className="adv-ticket-filter-head">
+          <strong>Bộ lọc</strong>
+          {onReset && (
+            <button className="adm-text-link" type="button" onClick={onReset}>
+              Đặt lại
+            </button>
+          )}
+        </div>
+        {children}
+      </div>
+    </details>
+  );
+}
 export function ManagerField({
   label,
   error,
@@ -166,9 +207,12 @@ export function ManagerEmpty({
   onReset?: () => void;
 }) {
   return (
-    <div className="mgr-empty">
-      <AdminIcon name="search" />
-      <strong>{message}</strong>
+    // Same empty state as /co-van (EmptyState in admin/primitives).
+    <div className="adm-empty">
+      <span className="adm-empty-icon">
+        <AdminIcon name="search" />
+      </span>
+      <h3>{message}</h3>
       <p>Thử đổi ngày hoặc điều chỉnh bộ lọc.</p>
       {onReset && (
         <button type="button" className="adm-btn" onClick={onReset}>
@@ -222,5 +266,47 @@ export function ManagerPager({
         </button>
       </div>
     </div>
+  );
+}
+
+/** Soft-delete button shared by every /dieu-hanh list; result and errors go to the toast. */
+export function ManagerDeleteButton({
+  path,
+  version,
+  message,
+  label = "Xóa",
+  className = "adm-btn adm-subtle-danger",
+  onDeleted,
+}: {
+  onDeleted?: () => void;
+  path: string;
+  version?: number;
+  message: string;
+  label?: string;
+  className?: string;
+}) {
+  const { notify } = useManager();
+  const [busy, setBusy] = useState(false);
+  return (
+    <button
+      type="button"
+      className={className}
+      disabled={busy || version === undefined}
+      onClick={async () => {
+        setBusy(true);
+        try {
+          if (await confirmDelete(path, version!, message)) {
+            notify("Đã xóa.");
+            onDeleted?.();
+          }
+        } catch (e) {
+          notify(e instanceof Error ? e.message : "Chưa thể xóa.");
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      {busy ? "Đang xóa…" : label}
+    </button>
   );
 }

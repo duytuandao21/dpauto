@@ -38,6 +38,18 @@ import { catalogEntry } from "@/lib/site-content";
 import { request } from "@/lib/api/client";
 import type { PublicCatalog } from "@/lib/api/types";
 import { useCatalog } from "./catalog";
+import {
+  servicePrice,
+  singlePriceColumn,
+  type PricingColumn,
+} from "@/lib/service-price";
+
+type PricingRow = {
+  name: string;
+  text?: string;
+  featured?: boolean;
+  prices?: Record<string, number>;
+};
 
 type Spec = {
   label: string;
@@ -94,9 +106,17 @@ function ServiceForm({
   docKey,
 }: EditorApi & { defaultHtml?: string; docKey?: string | null }) {
   const opServices = useOpServices();
+  // Old documents only have the free-text price; show it in the new fields until edited.
+  const legacy = servicePrice(payload),
+    priceKind = (payload.priceKind as string | undefined) || legacy?.kind || "",
+    priceAmount = (payload.priceAmount as number | undefined) ?? legacy?.amount;
   const [tab, setTab] = useState<
-    "info" | "intro" | "process" | "benefits" | "faq" | "gallery"
+    "info" | "intro" | "pricing" | "process" | "benefits" | "faq" | "gallery"
   >("info");
+  const pricingColumns = (payload.pricingColumns || []) as PricingColumn[];
+  const priceColumns = pricingColumns.length
+    ? pricingColumns
+    : [singlePriceColumn];
   return (
     <Card pad>
       <Tabs
@@ -106,6 +126,10 @@ function ServiceForm({
         items={[
           { value: "info", label: "Thông tin" },
           { value: "intro", label: "Giới thiệu" },
+          {
+            value: "pricing",
+            label: `Bảng giá (${payload.pricing?.length || 0})`,
+          },
           {
             value: "process",
             label: `Quy trình (${payload.process?.length || 0})`,
@@ -197,15 +221,36 @@ function ServiceForm({
               onChange={(image) => set({ image })}
             />
             <Field
-              label="Giá tham khảo"
-              help="Ví dụ: Từ 1.500.000đ (để trống nếu không hiển thị)."
+              label="Kiểu giá"
+              help="Hiện trên thẻ dịch vụ. Chưa nhập giá sẽ hiện “Liên hệ báo giá”."
             >
-              <Input
-                maxLength={60}
+              <Select
                 disabled={disabled}
-                value={payload.priceFrom || ""}
+                value={priceKind}
                 onChange={(e) =>
-                  set({ priceFrom: e.target.value || undefined })
+                  set({
+                    priceKind: e.target.value || undefined,
+                    priceAmount: e.target.value ? priceAmount : undefined,
+                    priceFrom: undefined,
+                  })
+                }
+              >
+                <option value="">Liên hệ báo giá</option>
+                <option value="FROM">Giá từ</option>
+                <option value="FIXED">Giá chỉ</option>
+              </Select>
+            </Field>
+            <Field label="Giá (đ)" help="Chỉ nhập số, ví dụ 1500000.">
+              <Input
+                inputMode="numeric"
+                disabled={disabled || !priceKind}
+                value={priceAmount ? priceAmount.toLocaleString("vi-VN") : ""}
+                onChange={(e) =>
+                  set({
+                    priceKind,
+                    priceAmount: num(e.target.value) || undefined,
+                    priceFrom: undefined,
+                  })
                 }
               />
             </Field>
@@ -268,6 +313,105 @@ function ServiceForm({
               max={20}
               onChange={(overviewImages) => set({ overviewImages })}
             />
+          </>
+        )}
+        {tab === "pricing" && (
+          <>
+            <Repeater
+              label="Cột giá"
+              help="Ví dụ: Sedan, SUV, 7 chỗ. Để trống nếu dịch vụ chỉ có một mức giá cho mỗi gói (bảng chỉ có cột “Giá”)."
+              items={pricingColumns}
+              disabled={disabled}
+              max={6}
+              addLabel="Thêm cột"
+              // The id ties each package's prices to this column, so renaming or moving it keeps them.
+              create={() => ({
+                id: Math.random().toString(36).slice(2, 10),
+                name: "",
+              })}
+              title={(c: PricingColumn) => c.name}
+              onChange={(pricingColumns) =>
+                set({
+                  pricingColumns: pricingColumns.length
+                    ? pricingColumns
+                    : undefined,
+                })
+              }
+              render={(c: PricingColumn, up) => (
+                <Field label="Tên cột" wide>
+                  <Input
+                    maxLength={40}
+                    value={c.name}
+                    onChange={(e) => up({ name: e.target.value })}
+                  />
+                </Field>
+              )}
+            />
+            <Repeater
+              label="Gói dịch vụ"
+              help="Mỗi gói là một dòng trong bảng giá ở trang chi tiết dịch vụ. Chưa có gói nào thì không hiện bảng giá. Ô giá để trống sẽ hiện “Liên hệ”."
+              items={payload.pricing as PricingRow[] | undefined}
+              disabled={disabled}
+              max={30}
+              addLabel="Thêm gói"
+              create={(): PricingRow => ({ name: "" })}
+              title={(r: PricingRow) => r.name}
+              onChange={(pricing) => set({ pricing })}
+              render={(r: PricingRow, up) => (
+                <>
+                  <Field label="Tên gói" wide>
+                    <Input
+                      maxLength={120}
+                      value={r.name}
+                      onChange={(e) => up({ name: e.target.value })}
+                    />
+                  </Field>
+                  <Field label="Mô tả ngắn" help="Hạng mục bao gồm, thời gian làm…" wide>
+                    <Textarea
+                      maxLength={300}
+                      value={r.text || ""}
+                      onChange={(e) =>
+                        up({ text: e.target.value || undefined })
+                      }
+                    />
+                  </Field>
+                  {priceColumns.map((c) => (
+                    <Field key={c.id} label={`${c.name || "Giá"} (đ)`}>
+                      <Input
+                        inputMode="numeric"
+                        value={r.prices?.[c.id]?.toLocaleString("vi-VN") || ""}
+                        onChange={(e) => {
+                          const { [c.id]: _, ...rest } = r.prices || {};
+                          const v = num(e.target.value);
+                          up({ prices: v ? { ...rest, [c.id]: v } : rest });
+                        }}
+                      />
+                    </Field>
+                  ))}
+                  <Switch
+                    label="Gắn nhãn “Phổ biến”"
+                    checked={!!r.featured}
+                    onChange={(featured) =>
+                      up({ featured: featured || undefined })
+                    }
+                  />
+                </>
+              )}
+            />
+            <Field
+              label="Ghi chú bảng giá"
+              help="Hiện dưới tiêu đề “Bảng giá”, ví dụ: Giá tham khảo, chưa gồm VAT."
+              wide
+            >
+              <Textarea
+                maxLength={300}
+                disabled={disabled}
+                value={payload.pricingNote || ""}
+                onChange={(e) =>
+                  set({ pricingNote: e.target.value || undefined })
+                }
+              />
+            </Field>
           </>
         )}
         {tab === "process" && (
@@ -429,7 +573,7 @@ export function ServiceEditor({ slug }: { slug: string | null }) {
       basePath="/admin/dich-vu"
       back={{ href: "/admin/dich-vu", label: "Dịch vụ" }}
       title={(p) => p.title}
-      description="Nội dung trang chi tiết dịch vụ: thông tin, bài giới thiệu, quy trình, lợi ích, câu hỏi và thư viện ảnh."
+      description="Nội dung trang chi tiết dịch vụ: thông tin, bài giới thiệu, bảng giá, quy trình, lợi ích, câu hỏi và thư viện ảnh."
       defaults={d?.payload || null}
       defaultHtml={d?.html}
       previewPath={(k, p) => `/dich-vu/${p.slug || k}`}

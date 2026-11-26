@@ -7,6 +7,8 @@ export type AuthSession = {
   csrfToken: string;
 };
 export type ApiService = {
+  /** Set when soft-deleted: kept so old bookings still show the name. */
+  deletedAt?: string | null;
   qualityChecks?: string[];
   technicianRequired?: boolean;
   id: string;
@@ -55,6 +57,7 @@ export type ApiBooking = {
   callbackAt?: string | null;
 };
 export type ApiStaff = {
+  deletedAt?: string | null;
   id: string;
   name: string;
   jobRole: string;

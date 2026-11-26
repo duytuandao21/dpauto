@@ -6,7 +6,12 @@ import { request } from "@/lib/api/client";
 import { stationTime } from "@/lib/api/types";
 import { stationToday } from "@/lib/public-booking/mock";
 import { PageHeading } from "@/components/admin/primitives";
-import { ManagerPanel, ManagerField, ManagerTable } from "./manager-ui";
+import {
+  ManagerEmpty,
+  ManagerPanel,
+  ManagerField,
+  ManagerTable,
+} from "./manager-ui";
 type Audit = {
   id: string;
   actor: { name: string } | string;
@@ -54,9 +59,12 @@ export function LiveAudit() {
   }, [from, to, cursor]);
   return (
     <>
-      <PageHeading title="Nhật ký hoạt động" />
+      <PageHeading
+        title="Nhật ký"
+        description="Lịch sử thao tác của nhân viên trong trạm."
+      />
       <ManagerPanel title="Lịch sử thao tác">
-        <div className="mgr-form-columns">
+        <div className="mgr-form-columns mgr-audit-dates">
           <ManagerField label="Từ ngày">
             <DateInput
               value={from}
@@ -110,6 +118,9 @@ export function LiveAudit() {
               ))}
             </tbody>
           </ManagerTable>
+          {!error && !rows.length && (
+            <ManagerEmpty message="Không có thao tác trong khoảng ngày này" />
+          )}
         </div>
         <div className="adm-action-row">
           <button

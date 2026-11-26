@@ -48,7 +48,7 @@ export function ManagerOperationalOverview({
       value: data.capacity.filter(
         (s) => s.date === end && s.reserved >= s.total * 0.8 && !s.locked,
       ).length,
-      href: `/dieu-hanh/nang-luc?date=${end}`,
+      href: `/dieu-hanh/cau-hinh?tab=khung-gio&date=${end}`,
       tone: "warning",
     },
   ];
@@ -148,7 +148,7 @@ export function ManagerOperationalOverview({
                 </thead>
                 <tbody>
                   {data.staff
-                    .filter((s) => s.role !== "manager")
+                    .filter((s) => s.role !== "manager" && !s.deleted)
                     .map((s) => {
                       const w = staffWorkload(data, s.id, now);
                       return (

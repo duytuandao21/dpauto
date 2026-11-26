@@ -267,6 +267,11 @@ export const rescheduleInput = z
       : !!v.requestedDate && !!v.requestedPeriod,
   );
 export const reasonInput = z.strictObject({ expectedVersion: version, reason });
+/** Body of every soft-delete endpoint (service, staff, partner, part, vehicle…). */
+export const deleteInput = z.strictObject({
+  expectedVersion: version,
+  reason: reason.default("Xóa khỏi danh mục"),
+});
 export const partnerInput = z.strictObject({
   name: text(120),
   phone: phone.optional(),

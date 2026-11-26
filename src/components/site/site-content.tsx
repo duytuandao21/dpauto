@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, type ReactNode } from "react";
+import type { ServicePrice } from "@/lib/service-price";
 import type { CmsAsset } from "@/lib/api/cms";
 import type { SiteImage } from "@/lib/content";
 import { defaultNavigation, defaultSettings } from "@/lib/cms-defaults";
@@ -27,6 +28,8 @@ export type SiteData = {
     image: SiteImage;
     /** CMS key; the booking catalogue mirrors it as marketingSlug. */
     key?: string;
+    /** null/absent = "Liên hệ báo giá". */
+    price?: ServicePrice;
   }[];
   accessories: SiteAccessory[];
   catalog: SiteCatalog;

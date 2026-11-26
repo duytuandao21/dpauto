@@ -53,10 +53,20 @@ export function VisitSettlement({
       <section className="adm-panel">
         <div className="adm-section-line">
           <h2>Thu tiền và công nợ</h2>
-          <span
-            className={`adm-badge adm-status-${s.paymentStatus === "SETTLED" ? "completed" : s.paymentStatus === "PARTIAL" ? "confirmed" : "pending"}`}
-          >
-            {paymentLabels[s.paymentStatus]}
+          <span className="adv-service-actions">
+            <span
+              className={`adm-badge adm-status-${s.paymentStatus === "SETTLED" ? "completed" : s.paymentStatus === "PARTIAL" ? "confirmed" : "pending"}`}
+            >
+              {paymentLabels[s.paymentStatus]}
+            </span>
+            {session.roles.includes("MANAGER") && (
+              <Link
+                className="adm-btn"
+                href={`/dieu-hanh/tai-chinh?visitId=${data.visitId}`}
+              >
+                Mở sổ tiền của phiếu
+              </Link>
+            )}
           </span>
         </div>
         <dl className="adm-info-grid">
@@ -79,14 +89,6 @@ export function VisitSettlement({
             <dd>{s.credit !== null ? vnd(s.credit) : "Chưa xác định"}</dd>
           </div>
         </dl>
-        {session.roles.includes("MANAGER") && (
-          <Link
-            className="adm-btn"
-            href={`/dieu-hanh/tai-chinh?visitId=${data.visitId}`}
-          >
-            Mở sổ tiền của phiếu
-          </Link>
-        )}
       </section>
       <section className="adm-panel">
         <h2>Phụ tùng theo báo giá đã duyệt</h2>
@@ -109,7 +111,7 @@ export function VisitSettlement({
             />
           ))
         ) : (
-          <p>Phiếu không có phụ tùng phải xuất.</p>
+          <p className="adm-muted">Phiếu không có phụ tùng phải xuất.</p>
         )}
       </section>
       {!!data.financialCredits?.length && (

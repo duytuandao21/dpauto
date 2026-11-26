@@ -189,7 +189,7 @@ export function operationAlerts(
       detail: `${s.group} · ${s.reserved}/${s.total} ${s.unit}`,
       at: `${s.date}T${s.time.slice(0, 5)}:00+07:00`,
       target: s.time,
-      href: `/dieu-hanh/nang-luc?date=${s.date}`,
+      href: `/dieu-hanh/cau-hinh?tab=khung-gio&date=${s.date}`,
     });
   for (const o of data.orders.filter((o) => o.stage !== "done")) {
     const href = `/dieu-hanh/phieu-dich-vu?selected=${o.id}`;

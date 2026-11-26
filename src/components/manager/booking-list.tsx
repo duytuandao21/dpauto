@@ -347,9 +347,44 @@ export function ManagerBookingDetail({
       onClose={onClose}
       drawer
       footer={
-        <button className="adm-btn" onClick={onClose}>
-          Đóng chi tiết
-        </button>
+        <>
+          {apiEnabled && record?.version !== undefined && (
+            <button
+              className="adm-btn adm-subtle-danger mgr-footer-start"
+              disabled={busy}
+              onClick={async () => {
+                if (
+                  !window.confirm(
+                    `Xóa lịch ${booking.code || booking.id}? Lịch sẽ được ẩn khỏi danh sách, lịch sử thao tác vẫn được giữ.${record.serviceVisitId ? " Phiếu dịch vụ đã lập vẫn giữ nguyên." : ""}`,
+                  )
+                )
+                  return;
+                setBusy(true);
+                setError("");
+                try {
+                  await command(
+                    `admin/bookings/${encodeURIComponent(id)}`,
+                    { expectedVersion: record.version },
+                    "DELETE",
+                  );
+                  window.dispatchEvent(new Event("dpauto-data-updated"));
+                  onClose();
+                } catch (e) {
+                  setError(
+                    e instanceof Error ? e.message : "Chưa thể xóa lịch hẹn.",
+                  );
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              Xóa lịch hẹn
+            </button>
+          )}
+          <button className="adm-btn" onClick={onClose}>
+            Đóng chi tiết
+          </button>
+        </>
       }
     >
       <div className="mgr-detail-status">
@@ -376,7 +411,15 @@ export function ManagerBookingDetail({
         </Link>
       )}
       <section className="mgr-detail-section">
-        <h3>Khách hàng & phương tiện</h3>
+        <div className="adm-section-line">
+          <h3>Khách hàng & phương tiện</h3>
+          <Link
+            className="adm-text-link"
+            href={`/dieu-hanh/khach-hang?selected=${customer?.id}`}
+          >
+            Mở hồ sơ khách / xe ↗
+          </Link>
+        </div>
         <h2>{customer?.name}</h2>
         <p>{formatPhone(customer?.phone)}</p>
         {record?.partner && (
@@ -385,12 +428,6 @@ export function ManagerBookingDetail({
             Sale: {record.partner.saleName}
           </p>
         )}
-        <Link
-          className="adm-text-link"
-          href={`/dieu-hanh/khach-hang?selected=${customer?.id}`}
-        >
-          Mở hồ sơ khách / xe ↗
-        </Link>
         <div className="mgr-vehicle">
           <AdminIcon name="car" />
           <div>
@@ -398,6 +435,22 @@ export function ManagerBookingDetail({
             <span>{customer?.plate}</span>
           </div>
         </div>
+      </section>
+      <section className="mgr-detail-section">
+        <h3>Dịch vụ đã chọn</h3>
+        {data.services
+          .filter((item) => booking.serviceIds.includes(item.id))
+          .map((service) => (
+            <div className="mgr-summary-row" key={service.id}>
+              <strong>{service.name}</strong>
+              <span>~{service.duration} phút</span>
+            </div>
+          ))}
+      </section>
+      <section className="mgr-detail-section">
+        <h3>Ghi chú</h3>
+        <p>{record?.customerNote || booking.note || "Không có ghi chú."}</p>
+        {record?.internalNote && <p>Nội bộ: {record.internalNote}</p>}
       </section>
       {["pending", "confirmed"].includes(booking.status) && (
         <section className="mgr-detail-section">
@@ -486,6 +539,7 @@ export function ManagerBookingDetail({
                 )
                 .map((s) => ({ id: s.id, name: s.name }))}
               pickAdvisor={action === "confirm" && !booking.advisorId}
+              summary={false}
               onCancel={() => setAction(null)}
               onSave={async ({ date, time, advisorId, note }) => {
                 if (!commandBooking)
@@ -625,80 +679,79 @@ export function ManagerBookingDetail({
           )}
         </section>
       )}
-      <section className="mgr-detail-section">
-        <h3>Dịch vụ đã chọn</h3>
-        {data.services
-          .filter((item) => booking.serviceIds.includes(item.id))
-          .map((service) => (
-            <div className="mgr-summary-row" key={service.id}>
-              <strong>{service.name}</strong>
-              <span>~{service.duration} phút</span>
-            </div>
-          ))}
-      </section>
-      <section className="mgr-detail-section">
-        <h3>Phân công cố vấn</h3>
-        <ManagerField label="Cố vấn phụ trách">
-          <select
-            value={advisorId}
-            disabled={terminal}
-            onChange={(event) => setAdvisorId(event.target.value)}
-          >
-            <option value="">Chưa phân công</option>
-            {data.staff
-              .filter((item) => item.role === "advisor" && item.active)
-              .map((item) => (
-                <option value={item.id} key={item.id}>
-                  {item.name}
-                </option>
-              ))}
-          </select>
-        </ManagerField>
-        {!terminal && (
-          <ManagerField label="Lý do phân công / chuyển cố vấn *">
-            <textarea
-              maxLength={400}
-              value={assignmentReason}
-              onChange={(e) => setAssignmentReason(e.target.value)}
-            />
-          </ManagerField>
-        )}
-        <button
-          className="adm-btn adm-primary mgr-full"
-          disabled={terminal || !advisorId || advisorId === booking.advisorId}
-          onClick={assign}
-        >
-          Lưu phân công
-        </button>
-        {terminal && (
-          <p className="adm-muted">
-            {booking.status === "arrived"
-              ? "Điều phối cố vấn trên phiếu dịch vụ."
-              : "Lịch đã kết thúc, chỉ xem thông tin."}
-          </p>
-        )}
-      </section>
       {error && (
         <p className="adm-error-text" role="alert">
           {error}
         </p>
       )}
-      <section className="mgr-detail-section">
-        <h3>Ghi chú</h3>
-        <p>{record?.customerNote || booking.note || "Không có ghi chú."}</p>
-        {record?.internalNote && <p>Nội bộ: {record.internalNote}</p>}
-      </section>
+      {!(apiEnabled && action === "confirm" && !booking.advisorId) && (
+        <section className="mgr-detail-section">
+          <h3>Phân công cố vấn</h3>
+          <ManagerField label="Cố vấn phụ trách">
+            <select
+              value={advisorId}
+              disabled={terminal}
+              onChange={(event) => setAdvisorId(event.target.value)}
+            >
+              <option value="">Chưa phân công</option>
+              {data.staff
+                .filter((item) => item.role === "advisor" && item.active)
+                .map((item) => (
+                  <option value={item.id} key={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+            </select>
+          </ManagerField>
+          {!terminal && (
+            <ManagerField label="Lý do phân công / chuyển cố vấn *">
+              <textarea
+                rows={2}
+                maxLength={400}
+                value={assignmentReason}
+                onChange={(e) => setAssignmentReason(e.target.value)}
+              />
+            </ManagerField>
+          )}
+          {!terminal && (
+            <div className="adm-dialog-actions">
+              <button
+                className="adm-btn adm-primary"
+                disabled={!advisorId || advisorId === booking.advisorId}
+                onClick={assign}
+              >
+                Lưu phân công
+              </button>
+            </div>
+          )}
+          {terminal && (
+            <p className="adm-muted">
+              {booking.status === "arrived"
+                ? "Điều phối cố vấn trên phiếu dịch vụ."
+                : "Lịch đã kết thúc, chỉ xem thông tin."}
+            </p>
+          )}
+        </section>
+      )}
       <section className="mgr-detail-section">
         <h3>Nhật ký liên quan</h3>
         {apiEnabled ? (
           timeline.length ? (
-            timeline.map((event) => (
-              <p key={event.id}>
-                {formatDate(event.occurredAt)} {timeLabel(event.occurredAt)} ·{" "}
-                {eventLabel(event.summary)}
-                {event.reason ? ` · ${event.reason}` : ""}
-              </p>
-            ))
+            <ol className="adm-timeline">
+              {timeline.map((event) => (
+                <li key={event.id}>
+                  <i />
+                  <div>
+                    <strong>{eventLabel(event.summary)}</strong>
+                    <time dateTime={event.occurredAt}>
+                      {formatDate(event.occurredAt)} ·{" "}
+                      {timeLabel(event.occurredAt)}
+                    </time>
+                    {event.reason && <p>{event.reason}</p>}
+                  </div>
+                </li>
+              ))}
+            </ol>
           ) : (
             <p>Chưa có thao tác liên quan.</p>
           )
@@ -714,42 +767,6 @@ export function ManagerBookingDetail({
           <p>Chưa có thao tác liên quan.</p>
         )}
       </section>
-      {apiEnabled && record?.version !== undefined && (
-        <section className="mgr-detail-section">
-          {/* Delete in any status (same rule as /co-van): hidden everywhere, history kept. */}
-          <button
-            className="adm-btn adm-subtle-danger"
-            disabled={busy}
-            onClick={async () => {
-              if (
-                !window.confirm(
-                  `Xóa lịch ${booking.code || booking.id}? Lịch sẽ được ẩn khỏi danh sách, lịch sử thao tác vẫn được giữ.${record.serviceVisitId ? " Phiếu dịch vụ đã lập vẫn giữ nguyên." : ""}`,
-                )
-              )
-                return;
-              setBusy(true);
-              setError("");
-              try {
-                await command(
-                  `admin/bookings/${encodeURIComponent(id)}`,
-                  { expectedVersion: record.version },
-                  "DELETE",
-                );
-                window.dispatchEvent(new Event("dpauto-data-updated"));
-                onClose();
-              } catch (e) {
-                setError(
-                  e instanceof Error ? e.message : "Chưa thể xóa lịch hẹn.",
-                );
-              } finally {
-                setBusy(false);
-              }
-            }}
-          >
-            Xóa lịch hẹn
-          </button>
-        </section>
-      )}
     </ManagerModal>
   );
 }

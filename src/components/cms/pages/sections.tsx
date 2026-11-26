@@ -44,6 +44,7 @@ type Top =
   | "photo2"
   | "images"
   | "videos"
+  | "slides"
   | "cta"
   | "cta2"
   | "body"
@@ -74,31 +75,17 @@ export const homeConfig: Record<HomeKey, Config> = {
   "home.hero": {
     label: "Hero (đầu trang)",
     icon: "home",
-    hint: "Tiêu đề lớn, mô tả, ảnh nền và 4 điểm nổi bật.",
+    hint: "Ảnh đầu trang, tự chuyển khi có nhiều ảnh.",
     preview: "/",
-    fields: ["title", "description", "image", "photo2", "cta", "note", "items"],
+    fields: ["title", "slides"],
     labels: {
-      title: "Tiêu đề lớn",
-      image: "Ảnh nền",
-      photo2: "Ảnh ở khung địa chỉ",
-      cta: "Nút gọi điện",
-      note: "Link đánh giá Google",
+      title: "Tiêu đề trang (không hiện trên ảnh)",
+      slides: "Ảnh hero",
     },
     help: {
-      cta: "Để trống đường dẫn để dùng số điện thoại trong Cài đặt.",
-      note: "Link mở khi bấm huy hiệu “Google 5/5”.",
-    },
-    items: {
-      label: "Điểm nổi bật",
-      add: "Thêm điểm nổi bật",
-      fields: ["text"],
-      labels: { text: "Nội dung" },
-      title: (i) => i.text,
-      max: 8,
-    },
-    related: {
-      href: "/admin/cai-dat",
-      text: "Địa chỉ và giờ mở cửa lấy từ Cài đặt website.",
+      title: "Dùng cho Google và trình đọc màn hình.",
+      slides:
+        "Tối đa 10 ảnh, tự chuyển sau 5 giây theo thứ tự trên. Nên dùng ảnh ngang khoảng 1920×840; trên điện thoại ảnh được cắt gọn hai bên theo tỉ lệ 3:2.",
     },
   },
   "home.services": {
@@ -451,6 +438,7 @@ const topLabel: Record<Top, string> = {
   photo2: "Ảnh phụ",
   images: "Ảnh",
   videos: "Video",
+  slides: "Ảnh tự chuyển",
   cta: "Nút",
   cta2: "Nút thứ hai",
   body: "Nội dung",
@@ -479,7 +467,7 @@ function SectionForm({
     ["title", "subtitle", "description", "note"].includes(f),
   );
   const media = config.fields.filter((f) =>
-    ["image", "photo2", "images", "videos"].includes(f),
+    ["image", "photo2", "images", "videos", "slides"].includes(f),
   );
   const buttons = config.fields.filter((f) => f === "cta" || f === "cta2");
   return (
@@ -533,6 +521,16 @@ function SectionForm({
                   value={payload.videos}
                   disabled={disabled}
                   onChange={(videos) => set({ videos })}
+                />
+              ) : f === "slides" ? (
+                <GalleryField
+                  key={f}
+                  max={10}
+                  label={L(f)}
+                  help={H(f)}
+                  value={payload.slides}
+                  disabled={disabled}
+                  onChange={(slides) => set({ slides })}
                 />
               ) : f === "images" ? (
                 <GalleryField

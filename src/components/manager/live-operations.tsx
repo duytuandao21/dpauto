@@ -10,11 +10,12 @@ import {
   EmptyState,
   PageHeading,
 } from "@/components/admin/primitives";
-import { ManagerPanel, ManagerTable } from "./manager-ui";
+import { ManagerEmpty, ManagerPanel, ManagerTable } from "./manager-ui";
+import { ManagerModal } from "./manager-modal";
 import { PageButtons } from "./live-stock";
 import { workflowTime, vnd } from "@/lib/api/workflow";
 import { AdminIcon } from "@/components/admin/admin-icon";
-import { shiftDate } from "@/lib/booking/logic";
+import { formatDate, shiftDate } from "@/lib/booking/logic";
 import { useManager } from "./manager-provider";
 import { BookingTrend, BookingDistribution } from "./manager-charts";
 import {
@@ -99,81 +100,81 @@ export function LiveOperations({ report = false }: { report?: boolean }) {
       setBusy(false);
     }
   }
+  const days = Math.max(
+    7,
+    Math.round((Date.parse(to) - Date.parse(from)) / 86400000) + 1,
+  );
   return (
     <section className="adv-stack">
-      {report && (
-        <PageHeading
-          title="Báo cáo điều hành"
-          description="Số liệu theo giờ Việt Nam và phạm vi được cấp quyền."
-        />
-      )}
-      {report && (
-        <div className="mgr-section-toolbar">
-          <div className="mgr-tabs" aria-label="Khoảng thời gian">
-            {[1, 7, 30].map((days) => (
+      <PageHeading title="Báo cáo">
+        {session?.permissions.includes("reports.export") && (
+          <div className="adv-actions">
+            <button
+              className="adm-btn"
+              disabled={busy || !data}
+              onClick={() => void download("VISITS")}
+            >
+              Xuất phiếu dịch vụ
+            </button>
+            {session.permissions.includes("finance.read") && (
               <button
-                key={days}
-                aria-pressed={
-                  from === shiftDate(today, 1 - days) && to === today
-                }
+                className="adm-btn"
+                disabled={busy || !data}
+                onClick={() => void download("CASH")}
+              >
+                Xuất sổ tiền
+              </button>
+            )}
+          </div>
+        )}
+      </PageHeading>
+      <div className="mgr-report-bar">
+        <div className="adm-quick-filters" aria-label="Khoảng thời gian">
+          {[1, 7, 30].map((n) => {
+            const on = from === shiftDate(today, 1 - n) && to === today;
+            return (
+              <button
+                key={n}
+                aria-pressed={on}
+                className={on ? "is-active" : ""}
                 onClick={() => {
-                  setFrom(shiftDate(today, 1 - days));
+                  setFrom(shiftDate(today, 1 - n));
                   setTo(today);
                 }}
               >
-                {days === 1 ? "Hôm nay" : `${days} ngày`}
+                {n === 1 ? "Hôm nay" : `${n} ngày`}
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
-      )}
+        <div className="mgr-form-columns mgr-audit-dates">
+          <label className="adm-field">
+            Từ ngày
+            <DateInput value={from} onValueChange={(v) => setFrom(v || today)} />
+          </label>
+          <label className="adm-field">
+            Đến ngày
+            <DateInput
+              value={to}
+              min={from}
+              onValueChange={(v) => setTo(v || today)}
+            />
+          </label>
+        </div>
+      </div>
       <ManagerPanel
-        title={report ? "Khoảng thời gian báo cáo" : "Vận hành hôm nay"}
+        title={
+          from === to
+            ? `Ngày ${formatDate(from)}`
+            : `${formatDate(from)} – ${formatDate(to)}`
+        }
+        description={data ? `Cập nhật ${workflowTime(data.asOf)}` : undefined}
         action={
           <button className="adm-btn" onClick={() => setReload((n) => n + 1)}>
             Cập nhật
           </button>
         }
       >
-        {report && (
-          <div className="mgr-toolbar">
-            <label className="adm-field">
-              Từ ngày
-              <DateInput
-                value={from}
-                onValueChange={(v) => setFrom(v || today)}
-              />
-            </label>
-            <label className="adm-field">
-              Đến ngày
-              <DateInput
-                value={to}
-                min={from}
-                onValueChange={(v) => setTo(v || today)}
-              />
-            </label>
-            {session?.permissions.includes("reports.export") && (
-              <>
-                <button
-                  className="adm-btn"
-                  disabled={busy || !data}
-                  onClick={() => void download("VISITS")}
-                >
-                  Xuất phiếu dịch vụ CSV
-                </button>
-                {session.permissions.includes("finance.read") && (
-                  <button
-                    className="adm-btn"
-                    disabled={busy || !data}
-                    onClick={() => void download("CASH")}
-                  >
-                    Xuất sổ tiền CSV
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        )}
         {error && (
           <p className="adm-error-text" role="alert">
             {error}
@@ -182,42 +183,57 @@ export function LiveOperations({ report = false }: { report?: boolean }) {
         {!data && !error && <AdminLoading />}
         {data && (
           <>
-            <div className="mgr-kpis">
-              {[
-                ["Xe tiếp nhận", data.received, "blue"],
-                ["Xe bàn giao", data.handovers, "success"],
+            <div className="mgr-kpis mgr-kpis-4">
+              {(
                 [
-                  "Hoàn thành nhóm xe tiếp nhận",
-                  rateText(data.completionRate),
-                  "brand",
-                ],
-                ["Vắng hẹn đã xác định", rateText(data.noShowRate), "warning"],
-              ].map(([label, value, tone]) => (
+                  ["Xe tiếp nhận", data.received, "Xe đến trạm trong kỳ", "blue", "car"],
+                  ["Xe bàn giao", data.handovers, "Xe đã giao lại cho khách", "success", "check"],
+                  [
+                    "Tỉ lệ hoàn thành",
+                    rateText(data.completionRate),
+                    data.completionRate.denominator
+                      ? `${data.completionRate.numerator}/${data.completionRate.denominator} xe đã bàn giao`
+                      : "Chưa có xe tiếp nhận",
+                    "brand",
+                    "chart",
+                  ],
+                  [
+                    "Tỉ lệ vắng hẹn",
+                    rateText(data.noShowRate),
+                    data.noShowRate.denominator
+                      ? `${data.noShowRate.numerator}/${data.noShowRate.denominator} lịch khách không đến`
+                      : "Chưa có lịch đến hạn",
+                    "warning",
+                    "alert",
+                  ],
+                ] as const
+              ).map(([label, value, sub, tone, icon]) => (
                 <div key={label} className="adm-panel mgr-kpi" data-tone={tone}>
                   <div>
                     <span>{label}</span>
                     <span className="mgr-kpi-icon">
-                      <AdminIcon name="car" />
+                      <AdminIcon name={icon} />
                     </span>
                   </div>
                   <strong>{value}</strong>
+                  <p>{sub}</p>
                 </div>
               ))}
             </div>
-            <p className="adm-muted">
-              Hoàn thành: số xe đã bàn giao / số xe tiếp nhận trong kỳ. Vắng
-              hẹn: số lịch vắng / số lịch đã đến hoặc vắng trong kỳ, tính theo
-              giờ hẹn. Xe bàn giao tính theo thời điểm bàn giao.
-            </p>
-            <p>
+            <p className="adm-muted mgr-report-note">
               Thời gian xử lý trung bình:{" "}
               <strong>
                 {data.averageTurnaroundMinutes === null
                   ? "—"
                   : durationText(data.averageTurnaroundMinutes)}
-              </strong>{" "}
-              · Tính trên xe bàn giao trong kỳ.
+              </strong>
             </p>
+          </>
+        )}
+      </ManagerPanel>
+      {data && (
+        <>
+          <ManagerPanel title="Phiếu theo giai đoạn">
             <div className="mgr-kpis mgr-kpis-operations">
               {data.stages.map((s) => (
                 <Link
@@ -236,92 +252,69 @@ export function LiveOperations({ report = false }: { report?: boolean }) {
                 >
                   <div>{operationStages[s.stage]}</div>
                   <strong>{s.count}</strong>
-                  <p>Xem danh sách ↗</p>
                 </Link>
               ))}
             </div>
-            {report && (
-              <>
-                <div className="mgr-table-scroll">
-                  <ManagerTable className="mgr-table">
-                    <thead>
-                      <tr>
-                        <th>Kỹ thuật viên</th>
-                        <th>Công việc hoàn thành</th>
+          </ManagerPanel>
+          <ManagerPanel title="Kỹ thuật viên">
+            {data.technicians.length ? (
+              <div className="mgr-table-scroll">
+                <ManagerTable className="mgr-table">
+                  <thead>
+                    <tr>
+                      <th>Kỹ thuật viên</th>
+                      <th>Việc hoàn thành</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.technicians.map((t) => (
+                      <tr key={t.id}>
+                        <td>{t.name}</td>
+                        <td>{t.completed}</td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {data.technicians.map((t) => (
-                        <tr key={t.id}>
-                          <td>{t.name}</td>
-                          <td>{t.completed}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </ManagerTable>
-                </div>
-                <p className="adm-muted">
-                  Theo thời điểm hoàn thành công việc; việc chung được tính cho
-                  từng kỹ thuật viên được phân công, không cộng thành tổng số
-                  việc toàn trạm.
-                </p>
-                {data.finance && (
-                  <ManagerPanel title="Dòng tiền và nghĩa vụ">
-                    <dl className="adm-info-grid">
-                      {[
-                        ["Thực thu trong kỳ", data.finance.cashIn],
-                        ["Hoàn/đảo trong kỳ", data.finance.cashOut],
-                        ["Dòng tiền thuần", data.finance.netCash],
-                        ["Báo giá duyệt trong kỳ", data.finance.approvedQuotes],
-                        [
-                          "Công nợ hiện tại toàn trạm",
-                          data.finance.outstanding,
-                        ],
-                      ].map(([l, v]) => (
-                        <div key={l}>
-                          <dt>{l}</dt>
-                          <dd>{vnd(v)}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </ManagerPanel>
-                )}
-              </>
+                    ))}
+                  </tbody>
+                </ManagerTable>
+              </div>
+            ) : (
+              <p className="adm-muted">Chưa có việc hoàn thành trong kỳ.</p>
             )}
-            <small className="adm-muted">
-              Cập nhật: {workflowTime(data.asOf)}
-            </small>
-          </>
-        )}
-      </ManagerPanel>
-      {report && (
-        <div className="mgr-chart-layout">
-          <ManagerPanel
-            title="Xu hướng lịch hẹn"
-            description="Theo ngày hẹn; hiển thị tối thiểu 7 ngày đến ngày kết thúc"
-          >
-            <BookingTrend
-              bookings={manager.data.bookings}
-              today={to}
-              days={Math.max(
-                7,
-                Math.round((Date.parse(to) - Date.parse(from)) / 86400000) + 1,
-              )}
-            />
           </ManagerPanel>
-          <ManagerPanel title="Phân bố trạng thái">
-            <BookingDistribution
-              bookings={manager.data.bookings.filter(
-                (b) => b.date >= from && b.date <= to,
-              )}
-            />
-          </ManagerPanel>
-        </div>
+          {data.finance && (
+            <ManagerPanel title="Dòng tiền">
+              <dl className="adm-info-grid">
+                {[
+                  ["Thực thu", data.finance.cashIn],
+                  ["Hoàn/đảo", data.finance.cashOut],
+                  ["Dòng tiền thuần", data.finance.netCash],
+                  ["Báo giá đã duyệt", data.finance.approvedQuotes],
+                  ["Công nợ hiện tại", data.finance.outstanding],
+                ].map(([l, v]) => (
+                  <div key={l}>
+                    <dt>{l}</dt>
+                    <dd>{vnd(v)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </ManagerPanel>
+          )}
+        </>
       )}
+      <div className="mgr-chart-layout">
+        <ManagerPanel title="Xu hướng lịch hẹn">
+          <BookingTrend bookings={manager.data.bookings} today={to} days={days} />
+        </ManagerPanel>
+        <ManagerPanel title="Phân bố trạng thái">
+          <BookingDistribution
+            bookings={manager.data.bookings.filter(
+              (b) => b.date >= from && b.date <= to,
+            )}
+          />
+        </ManagerPanel>
+      </div>
     </section>
   );
 }
-
 export function LiveAlerts({ limit }: { limit?: number }) {
   const [reload, setReload] = useState(0),
     p = useApiPage<OperationAlert>("admin/operations/alerts", reload);
@@ -389,6 +382,10 @@ export function LiveAlerts({ limit }: { limit?: number }) {
   );
 }
 
+const halfHours = Array.from(
+  { length: 48 },
+  (_, i) => `${String(i >> 1).padStart(2, "0")}:${i % 2 ? "30" : "00"}`,
+);
 export function LiveShifts() {
   const session = useSession(),
     today = stationToday(),
@@ -398,7 +395,9 @@ export function LiveShifts() {
       { id: string; name: string; active: boolean }[]
     >([]),
     [error, setError] = useState(""),
-    [busy, setBusy] = useState(false);
+    [busy, setBusy] = useState(false),
+    [adding, setAdding] = useState(false),
+    { theme } = useManager();
   const p = useApiPage<StaffShift>(
     `admin/staff-shifts?from=${date}&to=${date}`,
     reload,
@@ -429,6 +428,7 @@ export function LiveShifts() {
         note: d.get("note"),
       });
       f.reset();
+      setAdding(false);
       setReload((n) => n + 1);
       window.dispatchEvent(new Event("dpauto-data-updated"));
     } catch (e) {
@@ -456,22 +456,65 @@ export function LiveShifts() {
     }
   }
   return (
-    <ManagerPanel title="Ca làm việc & lịch nghỉ">
-      <label className="adm-field">
-        Ngày
-        <DateInput
-          value={date}
-          onValueChange={(v) => setDate(v || today)}
-        />
-      </label>
-      {manage && (
-        <form className="adm-booking-form" onSubmit={save}>
-          <fieldset disabled={busy}>
-            <legend>Thêm ca / lịch nghỉ</legend>
+    <ManagerPanel
+      title="Ca làm việc & lịch nghỉ"
+      action={
+        manage && (
+          <button
+            className="adm-btn adm-primary"
+            onClick={() => {
+              setError("");
+              setAdding(true);
+            }}
+          >
+            <AdminIcon name="plus" />
+            Thêm ca
+          </button>
+        )
+      }
+    >
+      <div className="adm-date-controls">
+        <button
+          className="adm-btn adm-btn-sm"
+          onClick={() => setDate(today)}
+        >
+          Hôm nay
+        </button>
+        <button
+          className="adm-icon-btn adm-date-prev"
+          aria-label="Ngày trước"
+          onClick={() => setDate(shiftDate(date, -1))}
+        >
+          <span>‹</span>
+        </button>
+        <label className="adm-date-picker">
+          <AdminIcon name="calendar" />
+          <DateInput
+            aria-label="Ngày xem ca"
+            value={date}
+            onValueChange={(v) => setDate(v || today)}
+          />
+        </label>
+        <button
+          className="adm-icon-btn"
+          aria-label="Ngày sau"
+          onClick={() => setDate(shiftDate(date, 1))}
+        >
+          <span>›</span>
+        </button>
+      </div>
+      {adding && (
+        <ManagerModal
+          title="Thêm ca / lịch nghỉ"
+          theme={theme}
+          onClose={() => setAdding(false)}
+        >
+          <form className="mgr-form" onSubmit={save}>
+            <p className="adm-muted">Ngày {formatDate(date)}</p>
             <div className="adm-form-grid">
               <label className="adm-field">
                 Nhân viên
-                <select name="staff" required>
+                <select name="staff" required disabled={busy}>
                   <option value="">Chọn nhân viên</option>
                   {staff
                     .filter((s) => s.active)
@@ -484,29 +527,54 @@ export function LiveShifts() {
               </label>
               <label className="adm-field">
                 Loại
-                <select name="kind">
+                <select name="kind" disabled={busy}>
                   <option value="WORK">Làm việc</option>
                   <option value="LEAVE">Nghỉ</option>
                 </select>
               </label>
+              {/* Selects keep 24h times: <input type="time"> follows the OS locale (AM/PM). */}
               <label className="adm-field">
                 Bắt đầu
-                <input type="time" name="start" defaultValue="08:00" required />
+                <select name="start" defaultValue="08:00" required disabled={busy}>
+                  {halfHours.map((t) => (
+                    <option key={t}>{t}</option>
+                  ))}
+                </select>
               </label>
               <label className="adm-field">
                 Kết thúc
-                <input type="time" name="end" defaultValue="18:00" required />
-              </label>
-              <label className="adm-field">
-                Ghi chú / lý do
-                <input name="note" maxLength={400} required />
+                <select name="end" defaultValue="18:00" required disabled={busy}>
+                  {halfHours.map((t) => (
+                    <option key={t}>{t}</option>
+                  ))}
+                </select>
               </label>
             </div>
-            <button className="adm-btn adm-primary">Lưu ca</button>
-          </fieldset>
-        </form>
+            <label className="adm-field">
+              Ghi chú / lý do
+              <input name="note" maxLength={400} required disabled={busy} />
+            </label>
+            {error && (
+              <p className="adm-error-text" role="alert">
+                {error}
+              </p>
+            )}
+            <div className="adm-dialog-actions">
+              <button
+                type="button"
+                className="adm-btn"
+                onClick={() => setAdding(false)}
+              >
+                Hủy
+              </button>
+              <button className="adm-btn adm-primary" disabled={busy}>
+                Lưu ca
+              </button>
+            </div>
+          </form>
+        </ManagerModal>
       )}
-      {(error || p.error) && (
+      {((!adding && error) || p.error) && (
         <p className="adm-error-text" role="alert">
           {error || p.error}
         </p>
@@ -550,7 +618,7 @@ export function LiveShifts() {
             </tbody>
           </ManagerTable>
           {!p.data.length && !p.error && (
-            <p className="adm-muted">Chưa có ca cho ngày này.</p>
+            <ManagerEmpty message="Chưa có ca cho ngày này" />
           )}
         </div>
       )}

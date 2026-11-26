@@ -1044,3 +1044,100 @@ body:has(.home-page) {
     height: 300px;
   }
 }
+/* Phones: the service button reads "Xem chi tiết" without the arrow. */
+@media (max-width: 809.98px) {
+  /* Accessory cards reuse this button with the arrow only, so they keep it. */
+  .home-page .service-card-cta:not(.accessory-card-cta) > .icon {
+    display: none;
+  }
+}
+
+/* Image-only hero: photos crossfade, dots on a dark pill so they read on any photo. */
+.home-page .hero-slider {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  max-height: min(640px, calc(100svh - 76px));
+  overflow: hidden;
+  background: var(--brand-red-soft);
+  touch-action: pan-y;
+}
+.home-page .hero-slider-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.home-page .hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.home-page .hero-slide[data-active] {
+  opacity: 1;
+}
+.home-page .hero-slider-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  z-index: 1;
+  display: flex;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #0000004d;
+  transform: translateX(-50%);
+}
+.home-page .hero-slider-dots button {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.home-page .hero-slider-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #ffffff8c;
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease;
+}
+.home-page .hero-slider-dots button:hover span {
+  background: #ffffff;
+}
+.home-page .hero-slider-dots button[aria-current] span {
+  width: 24px;
+  background: #ffffff;
+}
+.home-page .hero-slider-dots button:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 0;
+  border-radius: 999px;
+}
+@media (max-width: 1199.98px) {
+  .home-page .hero-slider {
+    aspect-ratio: 16 / 9;
+  }
+}
+@media (max-width: 809.98px) {
+  .home-page .hero-slider {
+    aspect-ratio: 3 / 2;
+  }
+  .home-page .hero-slider-dots {
+    bottom: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-page .hero-slide,
+  .home-page .hero-slider-dots span {
+    transition: none;
+  }
+}

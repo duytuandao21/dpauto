@@ -109,37 +109,24 @@
   letter-spacing: 0;
 }
 
-.mgr-app,
-.mgr-app .mgr-body,
-.mgr-app .mgr-main {
+.mgr-app {
   background: var(--adm-bg);
 }
 
-.mgr-app .mgr-sidebar {
-  color: #eef1f6;
-  background: var(--adm-sidebar);
-  border-right-color: var(--mgr-sidebar-border);
-}
-
 .mgr-app .mgr-brand strong,
-.mgr-app .mgr-station strong,
 .mgr-app .mgr-sidebar-footer strong {
   color: #f5f7fb;
 }
 
 .mgr-app .mgr-brand small,
-.mgr-app .mgr-station small,
-.mgr-app .mgr-sidebar-footer small,
-.mgr-app .mgr-group-toggle {
+.mgr-app .mgr-sidebar-footer small {
   color: #b7c1d0;
 }
 
-.mgr-app .mgr-station,
 .mgr-app .mgr-sidebar-footer {
   border-color: var(--mgr-sidebar-border);
 }
 
-.mgr-app .mgr-station .adm-feature-icon,
 .mgr-app .mgr-sidebar-footer .adm-avatar {
   color: #fff;
   background: #3b4555;
@@ -175,18 +162,11 @@
   background: var(--mgr-brand);
 }
 
-.mgr-app .mgr-header {
-  background: var(--adm-surface);
-  border-bottom-color: var(--adm-border);
-}
-
-.mgr-app .mgr-header-actions .icon,
 .mgr-app .mgr-nav-link > .icon {
   width: 20px;
   height: 20px;
 }
 
-.mgr-app .mgr-page-heading h1,
 .mgr-app .adm-page-heading h1,
 .mgr-app .mgr-panel-head h2 {
   letter-spacing: -0.015em;
@@ -197,18 +177,12 @@
 }
 
 .mgr-app .mgr-panel,
-.mgr-app .mgr-kpi,
-.mgr-app .mgr-capacity-card,
-.mgr-app .mgr-media-card,
-.mgr-app .mgr-seo-preview,
-.mgr-app .mgr-account-menu {
+.mgr-app .mgr-kpi {
   border-radius: 6px;
   box-shadow: 0 1px 2px #1623390a;
 }
 
-.mgr-app .mgr-panel,
-.mgr-app .mgr-capacity-card,
-.mgr-app .mgr-media-card {
+.mgr-app .mgr-panel {
   background: var(--adm-surface);
   border: 1px solid var(--adm-border);
 }
@@ -429,8 +403,7 @@
   border-color: var(--adm-border);
 }
 
-.mgr-dialog .mgr-vehicle,
-.mgr-dialog .mgr-seo-preview {
+.mgr-dialog .mgr-vehicle {
   background: var(--adm-raised);
   border-radius: 6px;
 }

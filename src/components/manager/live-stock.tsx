@@ -15,7 +15,7 @@ import {
 import { vnd, workflowTime } from "@/lib/api/workflow";
 import { useSession } from "@/components/admin/auth-gate";
 import { AdminLoading, PageHeading } from "@/components/admin/primitives";
-import { ManagerTable, ManagerEmpty } from "./manager-ui";
+import { ManagerTable, ManagerEmpty, ManagerDeleteButton } from "./manager-ui";
 import { AdminIcon } from "@/components/admin/admin-icon";
 
 export function LiveInventory() {
@@ -69,6 +69,11 @@ function InventoryContent() {
       });
     return () => a.abort();
   }, [reload]);
+  useEffect(() => {
+    const refresh = () => setReload((n) => n + 1);
+    window.addEventListener("dpauto-data-updated", refresh);
+    return () => window.removeEventListener("dpauto-data-updated", refresh);
+  }, []);
   async function run(path: string, body: unknown, method = "POST") {
     if (busy) return null;
     setBusy(true);
@@ -139,7 +144,7 @@ function InventoryContent() {
                 onChange={(e) => setWarehouse(e.target.value)}
               >
                 <option value="">Tất cả kho</option>
-                {warehouses.map((w) => (
+                {warehouses.filter((w) => !w.deletedAt).map((w) => (
                   <option key={w.id} value={w.id}>
                     {w.name}
                   </option>
@@ -163,7 +168,12 @@ function InventoryContent() {
               reload={reload}
             />
           ) : tab === "chung-tu" ? (
-            <DocumentList warehouse={warehouse} reload={reload} open={open} />
+            <DocumentList
+              warehouse={warehouse}
+              reload={reload}
+              open={open}
+              manage={manage}
+            />
           ) : (
             <LedgerList warehouse={warehouse} reload={reload} />
           )}
@@ -635,7 +645,7 @@ function BalanceList({ path, reload }: { path: string; reload: number }) {
               ))}
             </tbody>
           </ManagerTable>
-          {!page.data.length && <p>Chưa có tồn kho phù hợp.</p>}
+          {!page.data.length && <ManagerEmpty message="Chưa có tồn kho phù hợp" />}
         </div>
       )}
       <PageButtons manager page={page} />
@@ -646,10 +656,12 @@ function DocumentList({
   warehouse,
   reload,
   open,
+  manage,
 }: {
   warehouse: string;
   reload: number;
   open: (id: string) => void;
+  manage: boolean;
 }) {
   const p = useApiPage<StockDocument>(
     "admin/stock/documents" + (warehouse ? "?warehouseId=" + warehouse : ""),
@@ -686,9 +698,18 @@ function DocumentList({
                   <td>{workflowTime(d.createdAt)}</td>
                   <td>{d.reason}</td>
                   <td>
-                    <button className="adm-btn" onClick={() => open(d.id)}>
-                      Chi tiết
-                    </button>
+                    <div className="mgr-row-actions">
+                      <button className="adm-btn" onClick={() => open(d.id)}>
+                        Chi tiết
+                      </button>
+                      {manage && d.status === "DRAFT" && (
+                        <ManagerDeleteButton
+                          path={`admin/stock/documents/${d.id}`}
+                          version={d.version}
+                          message="Xóa phiếu kho nháp này? Phiếu chưa ghi sổ nên tồn kho không thay đổi."
+                        />
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -959,7 +980,7 @@ function StockCatalog({
         ["warehouses", warehouses],
       ].map(([kind, items]) => (
         <div className="adv-lines" key={kind as string}>
-          {(items as (Part | Warehouse)[]).map((p) => (
+          {(items as (Part | Warehouse)[]).filter((p) => !p.deletedAt).map((p) => (
             <article className="adv-line" key={p.id}>
               <strong>
                 {p.code} · {p.name}
@@ -1008,6 +1029,11 @@ function StockCatalog({
                   >
                     {p.active ? "Ngừng sử dụng" : "Mở lại"}
                   </button>
+                  <ManagerDeleteButton
+                    path={`admin/stock/${kind}/${p.id}`}
+                    version={p.version}
+                    message={`Xóa ${"unit" in p ? "phụ tùng" : "kho"} ${p.code} · ${p.name}? Chỉ xóa được khi không còn tồn kho, phiếu nháp hoặc yêu cầu xuất kho. Chứng từ cũ vẫn giữ tên.`}
+                  />
                 </div>
               )}
             </article>

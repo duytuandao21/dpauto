@@ -29,6 +29,7 @@ export function BookingTimeForm({
   confirm = false,
   advisors,
   pickAdvisor = false,
+  summary = true,
   onSave,
   onCancel,
 }: {
@@ -36,6 +37,8 @@ export function BookingTimeForm({
   confirm?: boolean;
   advisors: Advisor[];
   pickAdvisor?: boolean;
+  /** false where the customer and vehicle are already shown above (manager drawer). */
+  summary?: boolean;
   onSave: (value: BookingTimeInput) => Promise<void>;
   onCancel: () => void;
 }) {
@@ -116,6 +119,7 @@ export function BookingTimeForm({
       onSubmit={submit}
       onChange={() => setWarnings(null)}
     >
+      {summary && (
       <div className={confirm ? "adv-booking-confirm-customer" : "adm-note"}>
         <div>
           <strong>
@@ -150,7 +154,8 @@ export function BookingTimeForm({
           </a>
         )}
       </div>
-      {confirm &&
+      )}
+      {summary && confirm &&
         (serviceNames.length > 2 ? (
           <details className="adv-booking-confirm-services">
             <summary>

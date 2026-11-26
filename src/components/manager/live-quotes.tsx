@@ -14,6 +14,7 @@ import {
   ManagerPanel,
   ManagerSearch,
   FilterSelect,
+  ManagerFilters,
   ManagerTable,
   ManagerEmpty,
 } from "./manager-ui";
@@ -75,11 +76,11 @@ export function LiveQuotes() {
   return (
     <>
       <PageHeading
-        title="Giám sát báo giá"
+        title="Báo giá"
         description="Theo dõi từng bản báo giá và quyết định của khách."
       />
       <ManagerPanel title="Danh sách báo giá">
-        <div className="mgr-toolbar">
+        <div className="adm-search-row">
           <ManagerSearch
             value={query}
             onChange={(value) => {
@@ -88,6 +89,13 @@ export function LiveQuotes() {
             }}
             placeholder="Mã phiếu, khách hàng, biển số…"
           />
+          <ManagerFilters
+            active={!!status}
+            onReset={() => {
+              setStatus("");
+              reset();
+            }}
+          >
           <FilterSelect
             label="Trạng thái báo giá"
             value={status}
@@ -103,6 +111,7 @@ export function LiveQuotes() {
               </option>
             ))}
           </FilterSelect>
+          </ManagerFilters>
         </div>
         {error && (
           <p className="adm-error-text" role="alert">

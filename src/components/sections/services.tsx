@@ -17,6 +17,7 @@ import { Photo } from "@/components/ui/photo";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { HomeScrollFrame } from "./home-motion";
+import { priceText, type ServicePrice } from "@/lib/service-price";
 import { HomeSectionHeading as SectionHeading } from "./home-motion";
 
 export function ServicesSection({
@@ -86,33 +87,40 @@ export function ServicesSection({
                     }}
                   >
                     <p>{service.description}</p>
-                    <motion.span
-                      className="service-card-cta"
-                      variants={{
-                        rest: {
-                          backgroundColor: "var(--service-button-bg, #202428)",
-                        },
-                        hover: {
-                          backgroundColor: "var(--service-button-bg, #202428)",
-                        },
-                      }}
-                    >
+                    <div className="service-card-foot">
+                      <ServicePriceTag
+                        price={("price" in service && service.price) || null}
+                      />
                       <motion.span
-                        className="service-card-cta-text"
+                        className="service-card-cta"
                         variants={{
-                          rest: { width: 0, opacity: 0 },
-                          hover: { width: "auto", opacity: 1 },
-                        }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 254,
-                          damping: 24,
+                          rest: {
+                            backgroundColor:
+                              "var(--service-button-bg, #202428)",
+                          },
+                          hover: {
+                            backgroundColor:
+                              "var(--service-button-bg, #202428)",
+                          },
                         }}
                       >
-                        Xem chi tiết
+                        <motion.span
+                          className="service-card-cta-text"
+                          variants={{
+                            rest: { width: 0, opacity: 0 },
+                            hover: { width: "auto", opacity: 1 },
+                          }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 254,
+                            damping: 24,
+                          }}
+                        >
+                          Xem chi tiết
+                        </motion.span>
+                        <Icon name="arrow" />
                       </motion.span>
-                      <Icon name="arrow" />
-                    </motion.span>
+                    </div>
                   </motion.div>
                 </Link>
               </motion.div>
@@ -171,7 +179,9 @@ export function ServicesList() {
 function ServiceStackCard({
   service,
 }: {
-  service: Pick<Service, "slug" | "title" | "description" | "image">;
+  service: Pick<Service, "slug" | "title" | "description" | "image"> & {
+    price?: ServicePrice;
+  };
 }) {
   const reduced = useReducedMotion();
   const enter = reduced ? { scale: 1, y: 0 } : { scale: 1.06, y: 40 };
@@ -197,9 +207,23 @@ function ServiceStackCard({
             <h2>{service.title}</h2>
           </Link>
           <p>{service.description}</p>
-          <Button href={`/dich-vu/${service.slug}`}>Xem chi tiết</Button>
+          <div className="service-list-foot">
+            <ServicePriceTag price={service.price ?? null} />
+            <Button href={`/dich-vu/${service.slug}`}>Xem chi tiết</Button>
+          </div>
         </div>
       </article>
     </motion.div>
+  );
+}
+
+/** "Giá từ 239.000đ" / "Giá chỉ …" / "Liên hệ báo giá" on a service card. */
+function ServicePriceTag({ price }: { price: ServicePrice }) {
+  const { label, value } = priceText(price);
+  return (
+    <p className={`service-card-price${price ? "" : " is-contact"}`}>
+      {label && <span>{label}</span>}
+      <strong>{value}</strong>
+    </p>
   );
 }

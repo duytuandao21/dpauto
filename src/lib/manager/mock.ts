@@ -40,6 +40,8 @@ export type ManagerService = {
   group: string;
   duration: number;
   active: boolean;
+  /** Soft-deleted: hidden from management lists, still resolves names on old records. */
+  deleted?: boolean;
   code?: string;
   version?: number;
   bookable?: boolean;
@@ -57,6 +59,7 @@ export type ManagerStaff = {
   phone: string;
   email: string;
   active: boolean;
+  deleted?: boolean;
   version?: number;
   accountEnabled?: boolean;
   createAccount?: boolean;
@@ -132,38 +135,36 @@ export const managerNavigation: {
   {
     title: "Tổng quan",
     items: [
-      { path: "", label: "Dashboard", icon: "overview" },
-      { path: "/lich-hen", label: "Quản lý lịch hẹn", icon: "calendar" },
-      { path: "/bao-cao", label: "Báo cáo & thống kê", icon: "overview" },
-      { path: "/canh-bao", label: "Cảnh báo điều hành", icon: "bell" },
+      { path: "", label: "Tổng quan", icon: "overview" },
+      { path: "/bao-cao", label: "Báo cáo", icon: "chart" },
     ],
   },
   {
-    title: "Vận hành garage",
+    title: "Vận hành",
     items: [
+      { path: "/lich-hen", label: "Lịch hẹn", icon: "calendar" },
       { path: "/dieu-phoi", label: "Điều phối xe", icon: "car" },
-      { path: "/phieu-dich-vu", label: "Phiếu dịch vụ", icon: "tool" },
-      { path: "/bao-gia", label: "Giám sát báo giá", icon: "website" },
-      { path: "/nang-luc", label: "Khung giờ đặt lịch", icon: "time" },
-      { path: "/dich-vu", label: "Danh mục dịch vụ", icon: "tool" },
-      { path: "/nhan-su", label: "Nhân sự & ca làm", icon: "customers" },
-      { path: "/khach-hang", label: "Khách hàng & phương tiện", icon: "car" },
-      { path: "/doi-tac", label: "Đối tác", icon: "customers" },
+      { path: "/phieu-dich-vu", label: "Phiếu dịch vụ", icon: "clipboard" },
+      { path: "/bao-gia", label: "Báo giá", icon: "receipt" },
     ],
   },
   {
-    title: "Nguồn lực & tài chính",
+    title: "Quản lý",
     items: [
-      { path: "/kho", label: "Kho & phụ tùng", icon: "tool" },
-      { path: "/tai-chinh", label: "Tài chính & công nợ", icon: "overview" },
+      { path: "/khach-hang", label: "Khách hàng", icon: "customers" },
+      { path: "/doi-tac", label: "Đối tác", icon: "briefcase" },
+      { path: "/nhan-su", label: "Nhân sự & ca làm", icon: "team" },
+      { path: "/dich-vu", label: "Danh mục dịch vụ", icon: "tool" },
+      { path: "/kho", label: "Kho phụ tùng", icon: "box" },
+      { path: "/tai-chinh", label: "Tài chính", icon: "wallet" },
     ],
   },
   {
     title: "Hệ thống",
     items: [
-      { path: "/thong-bao", label: "Thông báo & Zalo OA", icon: "bell" },
-      { path: "/cau-hinh", label: "Cấu hình hệ thống", icon: "settings" },
-      { path: "/nhat-ky", label: "Nhật ký hoạt động", icon: "time" },
+      { path: "/cau-hinh", label: "Thiết lập", icon: "settings" },
+      { path: "/thong-bao", label: "Thông báo", icon: "bell" },
+      { path: "/nhat-ky", label: "Nhật ký", icon: "history" },
     ],
   },
 ];

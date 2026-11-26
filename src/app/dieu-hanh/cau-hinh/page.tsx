@@ -1,1 +1,1 @@
-export { ManagerSettingsPage as default } from "@/components/manager/system-pages";
+export { ManagerSetupPage as default } from "@/components/manager/capacity-page";

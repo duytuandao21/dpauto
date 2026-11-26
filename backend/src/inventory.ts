@@ -40,6 +40,7 @@ export class Inventory {
         name: x.name,
         ...(!warehouse ? { unit: x.unit } : {}),
         active: x.active,
+        deletedAt: x.deleted_at ?? null,
         version: x.version,
       })),
       page: p.page,
@@ -59,26 +60,11 @@ export class Inventory {
     if (id) {
       const old = await one(
         c,
-        sql`SELECT * FROM ${table} WHERE id=${id} AND station_id=${ctx.station.id}`,
+        sql`SELECT * FROM ${table} WHERE id=${id} AND station_id=${ctx.station.id} AND deleted_at IS NULL`,
       );
       if (!old) fail(404, "NOT_FOUND");
       expectVersion(old, input.expectedVersion);
-      if (input.active === false) {
-        if (
-          await one(
-            c,
-            sql`SELECT b.part_id FROM stock_balances b WHERE ${warehouse ? sql`b.warehouse_id=${id}` : sql`b.part_id=${id}`} AND (b.on_hand<>0 OR b.reserved<>0) LIMIT 1`,
-          )
-        )
-          fail(409, "STOCK_REMAINS");
-        if (
-          await one(
-            c,
-            sql`SELECT r.id FROM stock_requests r JOIN service_visits v ON v.id=r.visit_id WHERE ${warehouse ? sql`r.warehouse_id=${id}` : sql`r.part_id=${id}`} AND v.deleted_at IS NULL AND v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') LIMIT 1`,
-          )
-        )
-          fail(409, "STOCK_REQUESTS_REMAIN");
-      }
+      if (input.active === false) await this.assertUnused(c, id, warehouse);
       value = await one(
         c,
         sql`UPDATE ${table} SET name=${input.name || old.name},active=${input.active ?? old.active},version=version+1 WHERE id=${id} RETURNING id,version`,
@@ -99,6 +85,70 @@ export class Inventory {
       input.reason || "Tạo danh mục kho",
     );
     return { ...value, eventId: randomUUID() };
+  }
+  /** Stock on hand, reservations or open ticket requests keep a part/warehouse in use. */
+  private async assertUnused(c: Conn, id: string, warehouse: boolean) {
+    if (
+      await one(
+        c,
+        sql`SELECT b.part_id FROM stock_balances b WHERE ${warehouse ? sql`b.warehouse_id=${id}` : sql`b.part_id=${id}`} AND (b.on_hand<>0 OR b.reserved<>0) LIMIT 1`,
+      )
+    )
+      fail(
+        409,
+        "STOCK_REMAINS",
+        "Vẫn còn tồn kho hoặc hàng đang giữ chỗ. Hãy xuất hoặc điều chỉnh về 0 trước.",
+      );
+    if (
+      await one(
+        c,
+        sql`SELECT r.id FROM stock_requests r JOIN service_visits v ON v.id=r.visit_id WHERE ${warehouse ? sql`r.warehouse_id=${id}` : sql`r.part_id=${id}`} AND v.deleted_at IS NULL AND v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') LIMIT 1`,
+      )
+    )
+      fail(
+        409,
+        "STOCK_REQUESTS_REMAIN",
+        "Đang có yêu cầu xuất kho trên phiếu dịch vụ chưa xong.",
+      );
+  }
+  async catalogRemove(
+    c: Conn,
+    ctx: Context,
+    id: string,
+    input: Row,
+    warehouse = false,
+  ) {
+    const table = sql.identifier(warehouse ? "warehouses" : "parts");
+    const old = await one(
+      c,
+      sql`SELECT * FROM ${table} WHERE id=${id}::uuid AND station_id=${ctx.station.id} AND deleted_at IS NULL FOR UPDATE`,
+    );
+    if (!old) fail(404, "NOT_FOUND");
+    expectVersion(old!, input.expectedVersion);
+    await this.assertUnused(c, id, warehouse);
+    if (
+      await one(
+        c,
+        sql`SELECT d.id FROM stock_documents d ${warehouse ? sql`` : sql`JOIN stock_document_lines l ON l.document_id=d.id`} WHERE d.status='DRAFT' AND d.deleted_at IS NULL AND ${warehouse ? sql`d.warehouse_id=${id}::uuid` : sql`l.part_id=${id}::uuid`} LIMIT 1`,
+      )
+    )
+      fail(
+        409,
+        "STOCK_DRAFTS_REMAIN",
+        "Còn phiếu kho nháp dùng mục này. Hãy ghi sổ hoặc xóa phiếu nháp trước.",
+      );
+    await c.execute(
+      sql`UPDATE ${table} SET active=false,deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId},version=version+1 WHERE id=${id}::uuid`,
+    );
+    await audit(
+      c,
+      ctx,
+      "STOCK_CATALOG_DELETED",
+      warehouse ? "warehouse" : "part",
+      id,
+      input.reason,
+    );
+    return { id, deleted: true, version: old!.version + 1 };
   }
   async balance(c: Conn, warehouse: string, part: string) {
     await c.execute(
@@ -139,7 +189,7 @@ export class Inventory {
   async doc(c: Conn, ctx: Context, id: string) {
     const d = await one(
       c,
-      sql`SELECT * FROM stock_documents WHERE id=${id} AND station_id=${ctx.station.id}`,
+      sql`SELECT * FROM stock_documents WHERE id=${id} AND station_id=${ctx.station.id} AND deleted_at IS NULL`,
     );
     if (!d) fail(404, "NOT_FOUND");
     return d;
@@ -181,7 +231,7 @@ export class Inventory {
       c,
       this.config,
       ctx,
-      sql`SELECT d.*,d.created_at AS cursor_key,w.name AS warehouse_name FROM stock_documents d JOIN warehouses w ON w.id=d.warehouse_id WHERE d.station_id=${ctx.station.id} ${q.warehouseId ? sql`AND d.warehouse_id=${q.warehouseId}` : sql``} ${q.kind ? sql`AND d.kind=${q.kind}` : sql``}`,
+      sql`SELECT d.*,d.created_at AS cursor_key,w.name AS warehouse_name FROM stock_documents d JOIN warehouses w ON w.id=d.warehouse_id WHERE d.station_id=${ctx.station.id} AND d.deleted_at IS NULL ${q.warehouseId ? sql`AND d.warehouse_id=${q.warehouseId}` : sql``} ${q.kind ? sql`AND d.kind=${q.kind}` : sql``}`,
       q,
       "createdAt:desc",
       true,
@@ -278,6 +328,25 @@ export class Inventory {
       input.reason,
     );
     return { id: d.id, version: d.version, eventId: randomUUID() };
+  }
+  /** Drafts never touched the ledger, so they can simply be hidden. */
+  async removeDraft(c: Conn, ctx: Context, id: string, input: Row) {
+    const d = await this.doc(c, ctx, id);
+    expectVersion(d, input.expectedVersion);
+    if (d.status !== "DRAFT")
+      fail(409, "DOCUMENT_POSTED", "Phiếu đã ghi sổ, không thể xóa.");
+    await c.execute(
+      sql`UPDATE stock_documents SET deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId},version=version+1 WHERE id=${id}`,
+    );
+    await audit(
+      c,
+      ctx,
+      "STOCK_DRAFT_DELETED",
+      "stock_document",
+      id,
+      input.reason,
+    );
+    return { id, deleted: true, version: d.version + 1 };
   }
   async netIssued(c: Conn, requestId: string) {
     const x = await one(

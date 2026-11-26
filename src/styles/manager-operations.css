@@ -175,15 +175,6 @@
 .mgr-app .mgr-panel-head > h2 {
   min-width: 0;
 }
-.mgr-capacity-impact {
-  padding: 14px;
-  border: 1px solid var(--adm-status-pending-border);
-  background: var(--adm-warning-bg);
-  color: var(--adm-warning);
-  border-radius: 6px;
-  font-size: 14px;
-  line-height: 1.7;
-}
 .mgr-app .mgr-staff-load {
   display: grid;
   gap: 6px;
@@ -192,14 +183,8 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 @media (min-width: 1024px) {
-  .mgr-desktop-scale .mgr-sidebar {
-    width: 280px;
-  }
   .mgr-app .mgr-nav-group {
     margin-bottom: 14px;
-  }
-  .mgr-app .mgr-group-toggle {
-    min-height: 34px;
   }
   .mgr-app .mgr-nav-link {
     min-height: 44px;
@@ -326,18 +311,6 @@
     grid-template-columns: 1fr;
   }
 }
-
-/* ---------- Shell following the /admin layout (light sidebar, plain header) ---------- */
-.adm-app.mgr-app .mgr-body,
-.adm-app.mgr-app .mgr-main {
-  background: var(--adm-surface);
-}
-.adm-app.mgr-app .mgr-sidebar {
-  padding: 0 0 8px;
-  color: var(--adm-text);
-  background: var(--adm-surface);
-  border-right: 1px solid var(--adm-border);
-}
 .adm-app.mgr-app .mgr-brand {
   gap: 10px;
   min-height: 64px;
@@ -362,10 +335,6 @@
   margin: 0;
   color: var(--adm-muted);
   font-size: 11px;
-}
-.adm-app.mgr-app .mgr-sidebar nav {
-  flex: 1;
-  padding: 16px 8px 8px;
 }
 .adm-app.mgr-app .mgr-nav-group {
   margin: 0;
@@ -429,96 +398,11 @@
   padding: 8px 8px 0;
   border-top: 1px solid var(--adm-border);
 }
-.adm-app.mgr-app .mgr-header {
-  min-height: 64px;
-  padding: 0 24px;
-  gap: 16px;
-}
-.adm-app.mgr-app .mgr-breadcrumb {
-  gap: 6px;
-  font-size: 14px;
-  white-space: nowrap;
-}
-.adm-app.mgr-app .mgr-breadcrumb > a:hover {
-  color: var(--adm-text);
-}
-.adm-app.mgr-app .mgr-account {
-  gap: 10px;
-  min-height: 44px;
-  padding: 4px 8px;
-  border-radius: 6px;
-}
-.adm-app.mgr-app .mgr-account:hover {
-  background: var(--adm-raised);
-}
-.adm-app.mgr-app .mgr-account .adm-avatar,
-.adm-app.mgr-app .mgr-sidebar .adm-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  border-color: var(--mgr-brand);
-  color: #fff;
-  background: var(--mgr-brand);
-  font-weight: 600;
-}
-.adm-app.mgr-app .mgr-account strong {
-  font-size: 13px;
-  font-weight: 500;
-}
-.adm-app.mgr-app .mgr-account small {
-  font-size: 11px;
-}
-.adm-app.mgr-app .mgr-account-menu {
-  top: calc(100% + 8px);
-  gap: 4px;
-  padding: 6px;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px #0f172a1f;
-}
-.adm-app.mgr-app .mgr-account-menu > strong {
-  padding: 6px 10px;
-}
-.adm-app.mgr-app .mgr-account-menu > :is(a, button) {
-  width: 100%;
-  min-height: 36px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  color: var(--adm-text);
-  font-size: 14px;
-  text-decoration: none;
-}
-.adm-app.mgr-app .mgr-account-menu > :is(a, button):hover {
-  background: var(--adm-raised);
-}
 @media (min-width: 1024px) {
-  .adm-app.mgr-app .mgr-sidebar {
-    width: 255px;
-    padding: 0 0 8px;
-  }
-  .adm-app.mgr-app .mgr-body {
-    margin-left: 255px;
-  }
-  .adm-app.mgr-app.mgr-collapsed .mgr-sidebar {
-    width: 72px;
-  }
-  .adm-app.mgr-app.mgr-collapsed .mgr-body {
-    margin-left: 72px;
-  }
   .adm-app.mgr-app .mgr-brand img {
     width: 32px;
     height: 32px;
   }
-}
-.adm-app.mgr-app.mgr-collapsed
-  :is(.mgr-group-title, .mgr-nav-link > span, .mgr-nav-link > small) {
-  display: none;
-}
-.adm-app.mgr-app.mgr-collapsed .mgr-nav-link {
-  justify-content: center;
-}
-.adm-app.mgr-app.mgr-collapsed .mgr-brand {
-  justify-content: center;
-  padding: 0;
 }
 
 /* ---------- Stats, cards and tables following /admin ---------- */
@@ -655,4 +539,246 @@
   display: block;
   padding: 8px 0 0;
   border-top: 1px solid var(--adm-border);
+}
+
+/* ---------- GĐ2: shared building blocks take the /co-van values (advisor-redesign.css) ---------- */
+.adm-app.adv-ui.mgr-app .adm-page-heading h1 {
+  font-size: 28px;
+  line-height: 36px;
+}
+.adm-app.adv-ui.mgr-app .adm-page-heading .adm-muted {
+  line-height: 22px;
+}
+.adm-app.adv-ui.mgr-app .mgr-panel {
+  padding: 24px;
+  box-shadow: 0 1px 2px #0f172a0d;
+}
+/* Tabs: the /co-van underlined row (.adm-quick-filters). */
+.adm-app.adv-ui.mgr-app .mgr-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--adm-border);
+  border-radius: 0;
+  background: var(--adm-surface);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.adm-app.adv-ui.mgr-app .mgr-tabs button {
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  color: var(--adm-muted);
+  background: transparent;
+  font-size: calc(12px + var(--adm-font-increase));
+  font-weight: 500;
+}
+.adm-app.adv-ui.mgr-app .mgr-tabs button:is([aria-pressed="true"], .is-active) {
+  color: var(--adm-accent-text);
+  border-bottom-color: var(--adv-brand);
+  background: var(--adm-accent-soft);
+  font-weight: 600;
+}
+/* Tables: the /co-van data table rhythm. */
+.adm-app.adv-ui.mgr-app .mgr-table :is(th, td) {
+  padding: 12px;
+  font-size: 14px;
+}
+.adm-app.adv-ui.mgr-app .mgr-table th {
+  color: var(--adm-muted);
+  background: var(--adm-raised);
+  font-weight: 600;
+}
+.adm-app.adv-ui.mgr-app .mgr-table tbody td {
+  border-bottom: 1px solid var(--adm-border);
+}
+.adm-app.adv-ui.mgr-app .mgr-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.adm-app.adv-ui.mgr-app .mgr-table tbody tr:hover {
+  background: var(--adm-raised);
+}
+.adm-app.adv-ui.mgr-app .mgr-panel-head h2 {
+  font-size: 17px;
+  line-height: 24px;
+}
+/* KPI cards: /co-van .adm-kpi sizes. */
+.adm-app.adv-ui.mgr-app .mgr-kpi {
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px #0f172a0d;
+}
+.adm-app.adv-ui.mgr-app .mgr-kpi > div {
+  color: var(--adm-muted);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+.adm-app.adv-ui.mgr-app .mgr-kpi > strong {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 40px;
+}
+.adm-app.adv-ui.mgr-app .mgr-kpi p {
+  font-size: 13px;
+}
+/* Pagination: /co-van ghost buttons (.adv-pagination). */
+.adm-app.adv-ui.mgr-app .mgr-pagination .adm-btn {
+  min-height: 44px;
+  padding: 8px 12px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--adm-muted);
+}
+.adm-app.adv-ui.mgr-app .mgr-pagination .adm-btn:hover:not(:disabled) {
+  border-color: var(--adm-border);
+  background: var(--adm-raised);
+  color: var(--adm-text);
+}
+.adm-app.adv-ui.mgr-app .mgr-pagination .adm-btn:disabled {
+  opacity: 0.4;
+}
+/* Dialogs portal to <body>; drawers take the /co-van side drawer (.adv-workspace-drawer). */
+.mgr-dialog .mgr-modal-head h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+.mgr-dialog.mgr-drawer {
+  width: min(900px, calc(100vw - 72px));
+  border: 0;
+  border-left: 1px solid var(--adm-border);
+  border-radius: 0;
+}
+.mgr-dialog.mgr-drawer[open] {
+  animation: adv-drawer-in 0.3s ease-out;
+}
+.mgr-dialog.mgr-drawer::backdrop {
+  background: #0009;
+}
+.mgr-dialog.mgr-drawer .mgr-modal-head {
+  padding: 16px 24px;
+}
+@media (max-width: 767px) {
+  .mgr-dialog.mgr-drawer {
+    width: 100%;
+  }
+}
+
+/* ---------- GĐ3: Điều phối xe ---------- */
+/* Five stage columns fit a desktop screen without scrolling sideways. */
+.adm-app.adv-ui.mgr-app .mgr-ops-board {
+  grid-auto-columns: minmax(200px, 1fr);
+  gap: 12px;
+}
+.adm-app.adv-ui.mgr-app .mgr-board-column {
+  border-radius: 8px;
+}
+.adm-app.adv-ui.mgr-app .mgr-board-column h3 {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+.adm-app.adv-ui.mgr-app .mgr-vehicle-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  color: var(--adm-text);
+  text-decoration: none;
+}
+.adm-app.adv-ui.mgr-app .mgr-vehicle-card:hover {
+  border-color: var(--adm-muted);
+}
+.adm-app.adv-ui.mgr-app .mgr-vehicle-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.adm-app.adv-ui.mgr-app .mgr-vehicle-card small {
+  line-height: 1.5;
+}
+
+/* ---------- GĐ3: Tổng quan ---------- */
+@media (min-width: 1024px) {
+  .adm-app.adv-ui.mgr-app .mgr-kpis-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+/* Alerts read as a compact list: severity pill and title share one line. */
+.adm-app.adv-ui.mgr-app .mgr-alert {
+  padding: 12px 16px;
+}
+.adm-app.adv-ui.mgr-app .mgr-alert > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 2px;
+}
+.adm-app.adv-ui.mgr-app .mgr-alert > div > small {
+  grid-column: 2;
+}
+.adm-app.adv-ui.mgr-app .mgr-alert .mgr-pill {
+  margin: 0;
+}
+
+/* ---------- GĐ3: Thiết lập ---------- */
+/* One station card: keep the form readable and its save button right under it. */
+.adm-app.adv-ui.mgr-app .mgr-settings-embedded {
+  max-width: 720px;
+}
+.adm-app.adv-ui.mgr-app .mgr-settings-embedded .mgr-settings-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Nhật ký: the two dates stay a compact pair instead of spanning the card. */
+.adm-app.adv-ui.mgr-app .mgr-audit-dates {
+  max-width: 520px;
+  margin-bottom: 16px;
+}
+/* Báo cáo: range tabs and the date pair share one row */
+.adm-app.adv-ui.mgr-app .mgr-report-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+.adm-app.adv-ui.mgr-app .mgr-report-bar .adm-quick-filters {
+  margin: 0;
+}
+.adm-app.adv-ui.mgr-app .mgr-report-bar .mgr-audit-dates {
+  flex: 0 1 420px;
+  margin: 0;
+}
+.adm-app.adv-ui.mgr-app .mgr-report-note {
+  margin: 16px 0 0;
+}
+/* Booking detail drawer: heading rows, compact actions, delete on the footer's left. */
+.adm-app.adv-ui.mgr-app .mgr-detail-section > .adm-section-line {
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+.adm-app.adv-ui.mgr-app .mgr-detail-section > .adm-section-line h3 {
+  margin: 0;
+}
+.adm-app.adv-ui.mgr-app .mgr-detail-section > .adm-section-line + h2 {
+  margin-top: 0;
+}
+.adm-app.adv-ui.mgr-app .mgr-detail-section .adm-dialog-actions {
+  margin-top: 16px;
+}
+.adm-app.adv-ui.mgr-app .mgr-detail-section .adm-timeline {
+  margin: 0;
+}
+.adm-app.adv-ui.mgr-app .mgr-modal-footer .mgr-footer-start {
+  margin-right: auto;
+}
+.adm-app.adv-ui.mgr-app .mgr-detail-section > .mgr-row-actions + * {
+  margin-top: 16px;
 }

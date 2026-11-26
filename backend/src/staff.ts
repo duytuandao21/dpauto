@@ -50,6 +50,7 @@ export class Staff {
         email: s.email,
         version: s.version,
         accountEnabled: !!s.user_id,
+        deletedAt: s.deleted_at ?? null,
         workload: { pending: s.pending, confirmed: s.confirmed },
         shiftsAvailable: false,
       };
@@ -99,29 +100,44 @@ export class Staff {
         sql`SELECT id FROM staff_shifts WHERE staff_id=${staffId} AND kind='WORK' AND canceled_at IS NULL AND ends_at>${ctx.now} LIMIT 1`,
       )
     )
-      fail(409, "FUTURE_SHIFTS_REMAIN");
+      fail(
+        409,
+        "FUTURE_SHIFTS_REMAIN",
+        "Nhân sự còn ca làm sắp tới. Hãy hủy các ca này trước.",
+      );
     if (
       await one(
         c,
         sql`SELECT a.id FROM work_item_assignments a JOIN work_items i ON i.id=a.work_item_id JOIN work_orders w ON w.id=i.work_order_id JOIN service_visits v ON v.id=w.visit_id WHERE a.technician_id=${staffId} AND a.ended_at IS NULL AND i.status NOT IN ('DONE','SKIPPED') AND v.deleted_at IS NULL AND v.stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') LIMIT 1`,
       )
     )
-      fail(409, "WORK_ASSIGNMENTS_REMAIN");
+      fail(
+        409,
+        "WORK_ASSIGNMENTS_REMAIN",
+        "Nhân sự đang được giao công việc chưa xong trên phiếu dịch vụ.",
+      );
     if (
       await one(
         c,
         sql`SELECT id FROM service_visits WHERE assigned_advisor_id=${staffId} AND station_id=${ctx.station.id} AND deleted_at IS NULL AND stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED') LIMIT 1`,
       )
     )
-      fail(409, "ASSIGNMENTS_REMAIN");
+      fail(
+        409,
+        "ASSIGNMENTS_REMAIN",
+        "Nhân sự đang phụ trách lịch hẹn hoặc phiếu chưa xong. Hãy chuyển cho người khác trước.",
+      );
     if (
       await one(
         c,
         sql`SELECT id FROM bookings WHERE assigned_advisor_id=${staffId} AND station_id=${ctx.station.id} AND status IN ('PENDING','CONFIRMED') LIMIT 1`,
       )
     )
-      fail(409, "ASSIGNMENTS_REMAIN");
-
+      fail(
+        409,
+        "ASSIGNMENTS_REMAIN",
+        "Nhân sự đang phụ trách lịch hẹn hoặc phiếu chưa xong. Hãy chuyển cho người khác trước.",
+      );
   }
   async lastAuthority(c: Conn, userId: string, losing: boolean) {
     if (!losing) return;
@@ -134,7 +150,12 @@ export class Staff {
       c,
       sql`SELECT count(*)::int AS n FROM user_permission_grants g JOIN users u ON u.id=g.user_id JOIN staff_profiles s ON s.user_id=u.id JOIN user_roles r ON r.user_id=u.id WHERE g.permission_code='roles.manage' AND r.role_code='MANAGER' AND u.status='ACTIVE' AND s.active AND u.id<>${userId}`,
     );
-    if (!others!.n) fail(409, "LAST_ADMIN_REQUIRED");
+    if (!others!.n)
+      fail(
+        409,
+        "LAST_ADMIN_REQUIRED",
+        "Đây là quản lý cuối cùng có quyền phân quyền. Hãy cấp quyền cho người khác trước.",
+      );
   }
   async createAccount(
     c: Conn,
@@ -190,7 +211,7 @@ export class Staff {
   ) {
     const s = await one(
       c,
-      sql`SELECT * FROM staff_profiles WHERE id=${id} AND station_id=${ctx.station.id} FOR UPDATE`,
+      sql`SELECT * FROM staff_profiles WHERE id=${id} AND station_id=${ctx.station.id} AND deleted_at IS NULL FOR UPDATE`,
     );
     if (!s) fail(404, "NOT_FOUND");
     expectVersion(s, input.expectedVersion);
@@ -264,6 +285,36 @@ export class Staff {
     }
     await audit(c, ctx, "STAFF_UPDATED", "staff", id, input.reason);
     return { id, version: s.version + 1, eventId: randomUUID() };
+  }
+  /** Hides the staff member and disables their login; history keeps their name. */
+  async remove(c: Conn, ctx: Context, id: string, input: Row) {
+    const s = await one(
+      c,
+      sql`SELECT * FROM staff_profiles WHERE id=${id}::uuid AND station_id=${ctx.station.id} AND deleted_at IS NULL FOR UPDATE`,
+    );
+    if (!s) fail(404, "NOT_FOUND");
+    expectVersion(s!, input.expectedVersion);
+    if (s!.id === ctx.actor!.staffId)
+      fail(
+        409,
+        "CANNOT_DELETE_SELF",
+        "Không thể tự xóa tài khoản đang đăng nhập.",
+      );
+    await this.guardOffboard(c, ctx, id);
+    if (s!.user_id) {
+      await this.lastAuthority(c, s!.user_id, true);
+      await c.execute(
+        sql`UPDATE users SET status='DISABLED',auth_version=auth_version+1,version=version+1 WHERE id=${s!.user_id}`,
+      );
+      await c.execute(
+        sql`UPDATE sessions SET revoked_at=${ctx.now} WHERE user_id=${s!.user_id} AND revoked_at IS NULL`,
+      );
+    }
+    await c.execute(
+      sql`UPDATE staff_profiles SET active=false,deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId},version=version+1,updated_at=${ctx.now} WHERE id=${id}::uuid`,
+    );
+    await audit(c, ctx, "STAFF_DELETED", "staff", id, input.reason);
+    return { id, deleted: true, version: s!.version + 1 };
   }
   async reset(
     c: Conn,

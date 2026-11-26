@@ -6,6 +6,7 @@ const view = (p: Row, sales: Row[]) => ({
   name: p.name,
   phone: p.phone_normalized,
   active: p.active,
+  deletedAt: p.deleted_at ?? null,
   version: p.version,
   sales: sales
     .filter((s) => s.partner_id === p.id)
@@ -14,6 +15,7 @@ const view = (p: Row, sales: Row[]) => ({
       name: s.name,
       phone: s.phone_normalized,
       active: s.active,
+      deletedAt: s.deleted_at ?? null,
       version: s.version,
     })),
 });
@@ -62,7 +64,7 @@ export class Partners {
   private async locked(c: Conn, ctx: Context, id: string) {
     const p = await one(
       c,
-      sql`SELECT * FROM partners WHERE id=${id}::uuid AND station_id=${ctx.station.id} FOR UPDATE`,
+      sql`SELECT * FROM partners WHERE id=${id}::uuid AND station_id=${ctx.station.id} AND deleted_at IS NULL FOR UPDATE`,
     );
     if (!p) fail(404, "NOT_FOUND");
     return p!;
@@ -93,18 +95,70 @@ export class Partners {
     await audit(c, ctx, "PARTNER_SALE_CREATED", "partner_sale", s.id);
     return { id: s.id, version: 1 };
   }
-  /** Sales are never deleted: old tickets point at them; inactive ones just leave the picker. */
-  async updateSale(c: Conn, ctx: Context, id: string, input: Row) {
+  /** Sales are only soft-deleted: old tickets point at them; inactive/deleted ones leave the picker. */
+  private async lockedSale(c: Conn, ctx: Context, id: string) {
     const s = await one(
       c,
-      sql`SELECT s.* FROM partner_sales s JOIN partners p ON p.id=s.partner_id WHERE s.id=${id}::uuid AND p.station_id=${ctx.station.id} FOR UPDATE OF s`,
+      sql`SELECT s.* FROM partner_sales s JOIN partners p ON p.id=s.partner_id WHERE s.id=${id}::uuid AND p.station_id=${ctx.station.id} AND s.deleted_at IS NULL FOR UPDATE OF s`,
     );
     if (!s) fail(404, "NOT_FOUND");
-    expectVersion(s!, input.expectedVersion);
+    return s!;
+  }
+  /** Open bookings/tickets brought by these sales block deletion. */
+  private async salesInUse(c: Conn, saleIds: ReturnType<typeof sql>) {
+    const r = await one(
+      c,
+      sql`SELECT EXISTS(SELECT 1 FROM bookings WHERE partner_sale_id IN (${saleIds}) AND deleted_at IS NULL AND status IN ('PENDING','CONFIRMED'))
+        OR EXISTS(SELECT 1 FROM service_visits WHERE partner_sale_id IN (${saleIds}) AND deleted_at IS NULL AND stage NOT IN ('HANDED_OVER','COMPLETED','ABORTED')) AS used`,
+    );
+    if (r!.used)
+      fail(
+        409,
+        "PARTNER_IN_USE",
+        "Đối tác đang có lịch hẹn hoặc phiếu chưa xong. Hãy xử lý xong trước khi xóa.",
+      );
+  }
+  /** Hides the partner and all its sales; old tickets keep their snapshot names. */
+  async remove(c: Conn, ctx: Context, id: string, input: Row) {
+    const p = await this.locked(c, ctx, id);
+    expectVersion(p, input.expectedVersion);
+    await this.salesInUse(
+      c,
+      sql`SELECT id FROM partner_sales WHERE partner_id=${id}::uuid`,
+    );
+    await c.execute(
+      sql`UPDATE partner_sales SET active=false,deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId},version=version+1,updated_at=${ctx.now} WHERE partner_id=${id}::uuid AND deleted_at IS NULL`,
+    );
+    await c.execute(
+      sql`UPDATE partners SET active=false,deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId},version=version+1,updated_at=${ctx.now} WHERE id=${id}::uuid`,
+    );
+    await audit(c, ctx, "PARTNER_DELETED", "partner", id, input.reason);
+    return { id, deleted: true, version: p.version + 1 };
+  }
+  async removeSale(c: Conn, ctx: Context, id: string, input: Row) {
+    const s = await this.lockedSale(c, ctx, id);
+    expectVersion(s, input.expectedVersion);
+    await this.salesInUse(c, sql`${id}::uuid`);
+    await c.execute(
+      sql`UPDATE partner_sales SET active=false,deleted_at=${ctx.now},deleted_by=${ctx.actor!.userId},version=version+1,updated_at=${ctx.now} WHERE id=${id}::uuid`,
+    );
+    await audit(
+      c,
+      ctx,
+      "PARTNER_SALE_DELETED",
+      "partner_sale",
+      id,
+      input.reason,
+    );
+    return { id, deleted: true, version: s.version + 1 };
+  }
+  async updateSale(c: Conn, ctx: Context, id: string, input: Row) {
+    const s = await this.lockedSale(c, ctx, id);
+    expectVersion(s, input.expectedVersion);
     await c.execute(
       sql`UPDATE partner_sales SET name=${input.name},phone_normalized=${input.phone || null},active=${input.active},version=version+1,updated_at=${ctx.now} WHERE id=${id}::uuid`,
     );
     await audit(c, ctx, "PARTNER_SALE_UPDATED", "partner_sale", id);
-    return { id, version: s!.version + 1 };
+    return { id, version: s.version + 1 };
   }
 }

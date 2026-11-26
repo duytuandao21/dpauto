@@ -418,7 +418,7 @@ function AccountList({
               ))}
             </tbody>
           </ManagerTable>
-          {!p.data.length && <p>Chưa có phiếu phù hợp.</p>}
+          {!p.data.length && <ManagerEmpty message="Chưa có phiếu phù hợp" />}
         </div>
       )}
       <PageButtons manager page={p} />

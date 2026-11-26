@@ -69,10 +69,7 @@ export function ManagerModal({
       }}
     >
       <header className="mgr-modal-head">
-        <div>
-          <span className="adm-eyebrow">DPAUTO · ĐIỀU HÀNH</span>
-          <h2 id={titleId}>{title}</h2>
-        </div>
+        <h2 id={titleId}>{title}</h2>
         <button
           type="button"
           className="adm-icon-btn"
@@ -85,6 +82,7 @@ export function ManagerModal({
       <div className="mgr-modal-body">{children}</div>
       {footer && <footer className="mgr-modal-footer">{footer}</footer>}
     </dialog>,
-    document.body,
+    // Inside the app root so the shared .adm-app.adv-ui styles (forms, fields) apply.
+    document.querySelector(".adm-app") ?? document.body,
   );
 }

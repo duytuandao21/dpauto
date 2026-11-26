@@ -20,7 +20,7 @@ import {
 import { WorkflowQuote } from "./workflow-quote";
 import { WorkflowWork } from "./workflow-work";
 import { VisitSettlement } from "./visit-settlement";
-import { FreeWork, Quality } from "./live-workflow";
+import { AbortVisit, FreeWork, Quality } from "./live-workflow";
 
 const stages = [
   ["QUOTING", "Báo giá"],
@@ -59,7 +59,8 @@ export function ServiceWorkflowPanel({
   const params = useSearchParams(),
     path = usePathname(),
     session = useSession()!;
-  const workspace = root === "/co-van";
+  // Both /co-van and /dieu-hanh use the ticket workspace layout; actions stay permission-gated via can().
+  const workspace = root === "/co-van" || root === "/dieu-hanh";
   const [completionOpen, setCompletionOpen] = useState(false);
   const stage = data.stage as VisitDetail["stage"];
   const raw = params.get("tab"),
@@ -163,17 +164,13 @@ export function ServiceWorkflowPanel({
                   </a>
                 </p>
               </div>
-              <span
-                className={`adm-badge adm-status-${data.isPaused ? "pending" : visitStageTone[stage]}`}
-              >
-                {data.isPaused ? "Tạm dừng thi công" : visitStages[stage]}
-              </span>
-            </div>
-            <div className="adv-service-meta">
-              <span>Cố vấn: {visit.assignedAdvisor.name}</span>
-              <span>Tiếp nhận: {workflowTime(visit.receivedAt)}</span>
-              {/* Actions apart from the info text: list = secondary, follow-up = primary. */}
+              {/* Status and page actions share the top-right corner. */}
               <span className="adv-service-actions">
+                <span
+                  className={`adm-badge adm-status-${data.isPaused ? "pending" : visitStageTone[stage]}`}
+                >
+                  {data.isPaused ? "Tạm dừng thi công" : visitStages[stage]}
+                </span>
                 <Link className="adm-btn" href={`${root}/phieu-dich-vu`}>
                   Danh sách phiếu
                 </Link>
@@ -186,6 +183,10 @@ export function ServiceWorkflowPanel({
                   </Link>
                 )}
               </span>
+            </div>
+            <div className="adv-service-meta">
+              <span>Cố vấn: {visit.assignedAdvisor.name}</span>
+              <span>Tiếp nhận: {workflowTime(visit.receivedAt)}</span>
             </div>
             <dl className="adv-service-totals">
               <div>
@@ -425,7 +426,9 @@ export function ServiceWorkflowPanel({
             </>
           )}
           {!open && (
-            <section className="adm-panel">
+            <section
+              className={`adm-panel ${workspace && selected ? "adv-service-bar" : ""}`}
+            >
               <div className="adm-section-line">
                 <h2>Báo giá · {visit.code}</h2>
                 {can("quotes.write") &&
@@ -585,25 +588,7 @@ export function ServiceWorkflowPanel({
                   )}
               </div>
             </div>
-          </section>
-          {data.stage === "IN_PROGRESS" &&
-            !data.isPaused &&
-            can("acceptance.record") && (
-              <div
-                className="adm-panel adv-service-completion"
-                hidden={!completionOpen}
-              >
-                <CompletionForm
-                  data={data}
-                  run={run}
-                  busy={busy}
-                  onDirty={onDirty}
-                  canFinish={can("work.write")}
-                />
-              </div>
-            )}
-          <section className="adm-panel">
-            <h2>Phạm vi đã duyệt</h2>
+            <h3 className="adv-service-subhead">Phạm vi đã duyệt</h3>
             {data.approvedLines?.length ? (
               <div className="adv-lines">
                 {data.approvedLines.map((line) => (
@@ -625,6 +610,22 @@ export function ServiceWorkflowPanel({
               <p key={item.id}>Miễn phí · {item.scope}</p>
             ))}
           </section>
+          {data.stage === "IN_PROGRESS" &&
+            !data.isPaused &&
+            can("acceptance.record") && (
+              <div
+                className="adm-panel adv-service-completion"
+                hidden={!completionOpen}
+              >
+                <CompletionForm
+                  data={data}
+                  run={run}
+                  busy={busy}
+                  onDirty={onDirty}
+                  canFinish={can("work.write")}
+                />
+              </div>
+            )}
           {data.stage === "QUOTING" && (
             <p className="adm-feedback">
               Chốt các hạng mục hoặc phê duyệt công việc miễn phí tại{" "}
@@ -654,7 +655,9 @@ export function ServiceWorkflowPanel({
             ) : (
               <p>Xác nhận hoàn tất công việc trước khi bàn giao.</p>
             )}
-            <p>Các kết quả kiểm tra được lưu cùng lịch sử phiếu.</p>
+            <p className="adm-muted">
+              Các kết quả kiểm tra được lưu cùng lịch sử phiếu.
+            </p>
           </section>
         </>
       )}
@@ -713,6 +716,7 @@ export function ServiceWorkflowPanel({
             root={root}
             onDirty={onDirty}
             customerName={visit.customer.name}
+            abort={!workspace}
           />
           {closed && (
             <button className="adm-btn" onClick={() => window.print()}>
@@ -721,6 +725,9 @@ export function ServiceWorkflowPanel({
           )}
           {workspace && quoteHistory}
           {historyContent}
+          {workspace && (
+            <AbortVisit data={data} run={run} busy={busy} onDirty={onDirty} />
+          )}
         </>
       )}
     </div>

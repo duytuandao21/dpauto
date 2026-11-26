@@ -14,9 +14,11 @@ import {
   ManagerTable,
   ManagerSearch,
   FilterSelect,
+  ManagerFilters,
   ManagerPager,
   ManagerEmpty,
   ManagerField,
+  ManagerDeleteButton,
 } from "./manager-ui";
 import { ManagerModal } from "./manager-modal";
 import { apiEnabled } from "@/lib/api/client";
@@ -32,6 +34,7 @@ export function ManagerServicesPage() {
   const [error, setError] = useState("");
   const filtered = data.services.filter(
     (service) =>
+      !service.deleted &&
       service.name
         .toLocaleLowerCase("vi")
         .includes(query.toLocaleLowerCase("vi")) &&
@@ -112,7 +115,7 @@ export function ManagerServicesPage() {
         </button>
       </PageHeading>
       <ManagerPanel title={`${filtered.length} dịch vụ`}>
-        <div className="mgr-toolbar">
+        <div className="adm-search-row">
           <ManagerSearch
             value={query}
             onChange={(value) => {
@@ -121,6 +124,13 @@ export function ManagerServicesPage() {
             }}
             placeholder="Tìm dịch vụ…"
           />
+          <ManagerFilters
+            active={!!filter}
+            onReset={() => {
+              setFilter("");
+              setPage(1);
+            }}
+          >
           <FilterSelect
             label="Trạng thái"
             value={filter}
@@ -133,6 +143,7 @@ export function ManagerServicesPage() {
             <option value="active">Đang hoạt động</option>
             <option value="inactive">Tạm ngưng</option>
           </FilterSelect>
+          </ManagerFilters>
         </div>
         <div className="mgr-table-scroll">
           <ManagerTable className="mgr-table">
@@ -200,6 +211,14 @@ export function ManagerServicesPage() {
                       >
                         {service.active ? "Tạm ngưng" : "Mở lại"}
                       </button>
+                      {apiEnabled && (
+                        <ManagerDeleteButton
+                          className="adm-text-link adm-subtle-danger"
+                          path={`admin/services/${service.id}`}
+                          version={service.version}
+                          message={`Xóa dịch vụ ${service.name}? Dịch vụ sẽ bị ẩn khỏi danh mục và không nhận lịch mới. Lịch hẹn, phiếu cũ vẫn giữ tên dịch vụ.`}
+                        />
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -356,6 +375,7 @@ export function ManagerStaffPage() {
   const session = useSession();
   const staff = data.staff.filter(
     (item) =>
+      !item.deleted &&
       (!role || item.role === role) &&
       `${item.name} ${item.phone} ${item.email}`
         .toLocaleLowerCase("vi")
@@ -418,18 +438,20 @@ export function ManagerStaffPage() {
         </button>
       </PageHeading>
       <ManagerPanel title={`${staff.length} nhân sự`}>
-        <div className="mgr-toolbar">
+        <div className="adm-search-row">
           <ManagerSearch
             value={query}
             onChange={setQuery}
             placeholder="Tìm tên, số điện thoại, email…"
           />
+          <ManagerFilters active={!!role} onReset={() => setRole("")}>
           <FilterSelect label="Vai trò" value={role} onChange={setRole}>
             <option value="">Tất cả vai trò</option>
             <option value="manager">Quản lý cửa hàng</option>
             <option value="advisor">Cố vấn dịch vụ</option>
             <option value="technician">Kỹ thuật viên</option>
           </FilterSelect>
+          </ManagerFilters>
         </div>
         <div className="mgr-table-scroll">
           <ManagerTable className="mgr-table">
@@ -526,15 +548,26 @@ export function ManagerStaffPage() {
                     </span>
                   </td>
                   <td>
-                    <button
-                      className="adm-btn"
-                      onClick={() => {
-                        setEditing({ ...item });
-                        setError("");
-                      }}
-                    >
-                      Quản lý
-                    </button>
+                    <div className="mgr-row-actions">
+                      <button
+                        className="adm-btn"
+                        onClick={() => {
+                          setEditing({ ...item });
+                          setError("");
+                        }}
+                      >
+                        Quản lý
+                      </button>
+                      {apiEnabled &&
+                        session?.permissions.includes("staff.manage") &&
+                        session.staff.id !== item.id && (
+                          <ManagerDeleteButton
+                            path={`admin/staff/${item.id}`}
+                            version={item.version}
+                            message={`Xóa nhân sự ${item.name}? Tài khoản đăng nhập (nếu có) sẽ bị khóa. Lịch hẹn, phiếu cũ vẫn giữ tên người phụ trách.`}
+                          />
+                        )}
+                    </div>
                   </td>
                 </tr>
               ))}

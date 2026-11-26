@@ -88,6 +88,7 @@ export type ApiVehicle = {
   model: string | null;
   plate: string | null;
   year: number | null;
+  version?: number;
   customerContacts: { customerId: string; name: string }[];
 };
 export const customerFromApi = (c: ApiCustomer): Customer => ({

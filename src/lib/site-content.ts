@@ -1,6 +1,7 @@
 // Merges the built-in website content with published CMS documents. Pure functions,
 // shared by server pages and the client-side SiteContent context.
 import { localPath } from "./public-paths";
+import { servicePrice, servicePricing } from "./service-price";
 import type { CmsAsset, PublicDocument } from "./api/cms";
 import type { SiteImage } from "./content";
 import type { IconName } from "@/components/ui/icon";
@@ -276,6 +277,8 @@ export function siteServices(feed: Feed) {
         gallery: images(p.gallery, feed.assets),
         videos: images(p.videos, feed.assets),
         priceFrom: p.priceFrom as string | undefined,
+        price: servicePrice(p),
+        pricing: servicePricing(p),
         isDefault: !!base,
       };
     },

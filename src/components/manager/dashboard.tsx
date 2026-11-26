@@ -226,7 +226,7 @@ function PrototypeDashboard({ report = false }: { report?: boolean }) {
                 `/dieu-hanh/lich-hen?status=confirmed&from=${start}&to=${today}`,
                 `/dieu-hanh/lich-hen?status=cancelled&from=${start}&to=${today}`,
                 `/dieu-hanh/lich-hen?status=checkedin&from=${start}&to=${today}`,
-                `/dieu-hanh/nang-luc?date=${today}`,
+                `/dieu-hanh/cau-hinh?tab=khung-gio&date=${today}`,
               ][index]
             }
             className="adm-panel mgr-kpi mgr-kpi-link"
@@ -260,7 +260,7 @@ function PrototypeDashboard({ report = false }: { report?: boolean }) {
           title="Công suất theo khung giờ"
           description="Nguồn lực đã đặt và còn lại hôm nay"
           action={
-            <Link href="/dieu-hanh/nang-luc" className="adm-text-link">
+            <Link href="/dieu-hanh/cau-hinh" className="adm-text-link">
               Chi tiết
               <AdminIcon name="arrow" />
             </Link>

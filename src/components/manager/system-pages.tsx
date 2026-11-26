@@ -20,7 +20,7 @@ import {
   ManagerPager,
 } from "./manager-ui";
 
-export function ManagerSettingsPage() {
+export function ManagerSettingsPage({ embedded = false }: { embedded?: boolean }) {
   const { data, update, ask } = useManager();
   const [value, setValue] = useState<ManagerSettings>({ ...data.settings });
   const [error, setError] = useState("");
@@ -64,12 +64,19 @@ export function ManagerSettingsPage() {
   }
   return (
     <>
-      <PageHeading
-        title="Cấu hình hệ thống"
-        description="Thông tin trạm và thiết lập vận hành."
-      />
-      {apiEnabled && <ManagerPolicyEditor />}
-      <form className="mgr-settings-form" onSubmit={submit} noValidate>
+      {/* Embedded in "Thiết lập", which shows the booking policy on its own tab. */}
+      {!embedded && (
+        <PageHeading
+          title="Cấu hình hệ thống"
+          description="Thông tin trạm và thiết lập vận hành."
+        />
+      )}
+      {apiEnabled && !embedded && <ManagerPolicyEditor />}
+      <form
+        className={`mgr-settings-form ${embedded ? "mgr-settings-embedded" : ""}`}
+        onSubmit={submit}
+        noValidate
+      >
         <div className="mgr-settings-grid">
           <ManagerPanel title="Thông tin trạm">
             <div className="mgr-form">
@@ -224,7 +231,7 @@ function PrototypeNotificationsPage() {
   return (
     <>
       <PageHeading
-        title="Thông báo & Zalo OA"
+        title="Thông báo"
         description="Theo dõi thông báo và cảnh báo vận hành."
       />
       <div className="mgr-settings-grid">

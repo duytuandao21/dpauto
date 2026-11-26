@@ -23,7 +23,7 @@ function PrototypeStaffSchedule() {
   const [editing, setEditing] = useState<WorkShift | null>(null);
   const [error, setError] = useState("");
   const people = data.staff.filter(
-    (s) => (!role || s.role === role) && s.role !== "manager",
+    (s) => !s.deleted && (!role || s.role === role) && s.role !== "manager",
   );
   function save(e: FormEvent) {
     e.preventDefault();

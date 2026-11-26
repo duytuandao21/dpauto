@@ -96,10 +96,11 @@ export const operationStages: Record<string, string> = {
   HANDED_OVER: "Đã bàn giao",
   ABORTED: "Đã dừng",
 };
+// "—" when nothing in the period can be counted yet (denominator 0).
 export const rateText = (r: { numerator: number; denominator: number }) =>
   r.denominator
-    ? `${((100 * r.numerator) / r.denominator).toLocaleString("vi-VN", { maximumFractionDigits: 1 })}% (${r.numerator}/${r.denominator})`
-    : "— (0/0)";
+    ? `${((100 * r.numerator) / r.denominator).toLocaleString("vi-VN", { maximumFractionDigits: 1 })}%`
+    : "—";
 export function subjectHref(base: string, type: string, id: string) {
   return type === "visit"
     ? `${base}/phieu-dich-vu/${id}`

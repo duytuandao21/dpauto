@@ -21,6 +21,7 @@ export function ServiceDetail({
 }) {
   // These two process photos precede the four gallery photos in the archive.
   const hasProcessImages = service.slug === "detail-wash" && service.isDefault;
+  const pricing = service.pricing;
   const gallery = hasProcessImages ? service.gallery.slice(2) : service.gallery;
   const overviewHtml = service.overviewHtml.replace(/<img\b[^>]*>/g, (tag) => {
     const width = tag.match(/\bwidth="(\d+)"/)?.[1];
@@ -58,6 +59,59 @@ export function ServiceDetail({
               dangerouslySetInnerHTML={{ __html: overviewHtml }}
             />
           </section>
+          {pricing && (
+            <section className="service-pricing" id="bang-gia">
+              <div className="service-section-intro">
+                <h2>Bảng giá</h2>
+                {pricing.note && <p>{pricing.note}</p>}
+              </div>
+              {/* Phones: each package row becomes a card, cells labelled by their column. */}
+              <table className="service-pricing-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Gói dịch vụ</th>
+                    {pricing.columns.map((column, index) => (
+                      <th scope="col" key={index}>
+                        {column}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {pricing.rows.map((row, index) => (
+                    <tr
+                      key={index}
+                      className={row.featured ? "is-featured" : undefined}
+                    >
+                      <th scope="row">
+                        <span className="service-pricing-name">
+                          {row.name}
+                          {row.featured && (
+                            <span className="service-pricing-badge">
+                              Phổ biến
+                            </span>
+                          )}
+                        </span>
+                        {row.text && <small>{row.text}</small>}
+                      </th>
+                      {row.prices.map((price, column) => (
+                        <td
+                          key={column}
+                          data-label={pricing.columns[column]}
+                          className={price ? undefined : "is-contact"}
+                        >
+                          {price
+                            ? `${price.toLocaleString("vi-VN")}đ`
+                            : "Liên hệ"}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <BookingLauncher label="Đặt lịch ngay" />
+            </section>
+          )}
           <section className="service-process">
             <div className="service-section-intro">
               <h2>Quy trình dịch vụ</h2>
@@ -132,6 +186,11 @@ export function ServiceDetail({
                 Đặt lịch trước để DPAuto chuẩn bị sẵn sàng, bạn đến là được phục
                 vụ ngay.
               </p>
+              {pricing && (
+                <a className="service-pricing-link" href="#bang-gia">
+                  Xem bảng giá
+                </a>
+              )}
             </div>
             <div className="service-contact-actions">
               <BookingLauncher label="Đặt lịch ngay" />

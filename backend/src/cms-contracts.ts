@@ -190,6 +190,8 @@ const sectionFields = {
   images: z.array(image).max(60).optional(),
   /** Uploaded videos (assets with kind "video"); the workshop gallery shows two. */
   videos: z.array(image).max(2).optional(),
+  /** Home hero: photos that rotate automatically (image-only hero). */
+  slides: z.array(image).max(10).optional(),
   cta: link.optional(),
   cta2: link.optional(),
   items: z.array(item).max(60).optional(),
@@ -227,7 +229,33 @@ const service = z.strictObject({
   gallery: z.array(image).max(60).optional(),
   /** Up to two uploaded videos, shown with the gallery photos. */
   videos: z.array(image).max(2).optional(),
+  /** Legacy free-text price; new edits use priceKind + priceAmount. */
   priceFrom: opt(60),
+  /** Card price: "Giá từ" / "Giá chỉ" + amount in VND; absent = "Liên hệ báo giá". */
+  priceKind: z.enum(["FROM", "FIXED"]).optional(),
+  priceAmount: z.number().int().min(1).max(10_000_000_000).optional(),
+  /**
+   * Detail-page price table, separate from the card price. Columns (e.g. vehicle types) carry an
+   * id so renaming/reordering them keeps each package's prices; no columns = one "Giá" column ("_").
+   */
+  pricingColumns: z
+    .array(z.strictObject({ id: str(12).min(1), name: str(40) }))
+    .max(6)
+    .optional(),
+  pricing: z
+    .array(
+      z.strictObject({
+        name: str(120),
+        text: opt(300),
+        featured: z.boolean().optional(),
+        prices: z
+          .record(z.string().max(12), z.number().int().min(1).max(10_000_000_000))
+          .optional(),
+      }),
+    )
+    .max(30)
+    .optional(),
+  pricingNote: opt(300),
   /** Work time in minutes; drives booking availability (synced to the operations service). */
   durationMinutes: z.number().int().min(15).max(1440).optional(),
 });

@@ -11,7 +11,8 @@ test("CMS plain text round trip preserves headings and never interprets HTML", (
     { tag: "li" as const, text: "Kiểm tra xe" },
   ];
   assert.deepEqual(textToBlocks(blocksToText(blocks)), blocks);
-  assert.equal(rateText({ numerator: 0, denominator: 0 }), "— (0/0)");
+  assert.equal(rateText({ numerator: 0, denominator: 0 }), "—");
+  assert.equal(rateText({ numerator: 1, denominator: 3 }), "33,3%");
   assert.equal(
     subjectHref("/co-van", "visit", "id"),
     "/co-van/phieu-dich-vu/id",

@@ -13,6 +13,7 @@ import {
   ManagerField,
 } from "./manager-ui";
 import { ManagerPolicyEditor } from "./policy-editor";
+import { ManagerSettingsPage } from "./system-pages";
 
 type DayClose = {
   id: string;
@@ -21,11 +22,44 @@ type DayClose = {
   reason: string;
   version: number;
 };
-export function ManagerCapacityPage() {
+/** "Thiết lập": booking slots and station info share one page with /co-van style tabs. */
+export function ManagerSetupPage() {
   return (
     <Suspense fallback={<AdminLoading />}>
-      <Slots />
+      <Setup />
     </Suspense>
+  );
+}
+function Setup() {
+  const params = useSearchParams();
+  const [tab, setTab] = useState(
+    params.get("tab") === "tram" ? "tram" : "khung-gio",
+  );
+  return (
+    <>
+      <PageHeading
+        title="Thiết lập"
+        description="Khung giờ nhận lịch và thông tin trạm."
+      />
+      <div className="adm-quick-filters" aria-label="Nhóm thiết lập">
+        {(
+          [
+            ["khung-gio", "Khung giờ đặt lịch"],
+            ["tram", "Thông tin trạm"],
+          ] as const
+        ).map(([value, label]) => (
+          <button
+            key={value}
+            aria-pressed={tab === value}
+            className={tab === value ? "is-active" : ""}
+            onClick={() => setTab(value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {tab === "khung-gio" ? <Slots /> : <ManagerSettingsPage embedded />}
+    </>
   );
 }
 function Slots() {
@@ -68,10 +102,6 @@ function Slots() {
   }
   return (
     <>
-      <PageHeading
-        title="Khung giờ đặt lịch"
-        description="Theo dõi lịch chờ xác nhận, lịch đã nhận và số chỗ còn lại."
-      />
       <ManagerPolicyEditor />
       <ManagerPanel
         title={formatDate(date)}
@@ -86,9 +116,9 @@ function Slots() {
       >
         <div className="mgr-section-toolbar">
           <span className="adm-muted">
-            Khách đặt theo buổi, không giới hạn · Cảnh báo khi quá{" "}
-            {policy?.maxBookingsPerSlot || 5} lịch đã xác nhận mỗi khung{" "}
-            {policy?.slotMinutes || 60} phút
+            Khách đặt theo buổi sáng/chiều. Mỗi khung{" "}
+            {policy?.slotMinutes || 60} phút có cảnh báo khi vượt{" "}
+            {policy?.maxBookingsPerSlot || 5} lịch đã xác nhận.
           </span>
           <button
             className="adm-btn adm-danger"
@@ -176,14 +206,14 @@ function Slots() {
                       <td>{s.pending ?? 0}</td>
                       <td>{s.confirmed ?? s.reserved}</td>
                       <td>
-                        {s.locked || past || !policy?.bookingEnabled ? 0 : free}
+                        {past ? "—" : s.locked || !policy?.bookingEnabled ? 0 : free}
                       </td>
                       <td>
                         <span
-                          className={`mgr-pill mgr-pill-${past ? "brand" : s.locked || !policy?.bookingEnabled ? "danger" : free ? "success" : "warning"}`}
+                          className={`mgr-pill mgr-pill-${past ? "neutral" : s.locked || !policy?.bookingEnabled ? "danger" : free ? "success" : "warning"}`}
                         >
                           {past
-                            ? "Đã qua giờ"
+                            ? "Đã qua"
                             : s.locked || !policy?.bookingEnabled
                               ? "Đóng nhận lịch"
                               : free
@@ -192,9 +222,12 @@ function Slots() {
                         </span>
                       </td>
                       <td>
+                        {past ? (
+                          <span className="adm-muted">—</span>
+                        ) : (
                         <button
                           className="adm-btn"
-                          disabled={past || closures.length > 0}
+                          disabled={closures.length > 0}
                           onClick={() =>
                             ask({
                               title: s.locked
@@ -223,6 +256,7 @@ function Slots() {
                         >
                           {s.locked ? "Mở nhận lịch" : "Đóng nhận lịch"}
                         </button>
+                        )}
                       </td>
                     </tr>
                   );
