@@ -15,6 +15,7 @@ export const cmsKinds = [
 ] as const;
 export const pageKeys = [
   "home.hero",
+  "home.intro",
   "home.services",
   "home.accessories",
   "home.process",
@@ -192,6 +193,11 @@ const sectionFields = {
   videos: z.array(image).max(2).optional(),
   /** Home hero: photos that rotate automatically (image-only hero). */
   slides: z.array(image).max(10).optional(),
+  /** Home intro: words of the title shown in brand red, and a YouTube video (used before an uploaded one). */
+  highlight: opt(120),
+  youtube: str(600)
+    .refine((v) => v === "" || /^https:\/\/(www\.|m\.)?(youtube\.com|youtu\.be)\//i.test(v), "UNSAFE_EMBED")
+    .optional(),
   cta: link.optional(),
   cta2: link.optional(),
   items: z.array(item).max(60).optional(),

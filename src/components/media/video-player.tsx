@@ -24,6 +24,7 @@ export function VideoPlayer({
   const root = useRef<HTMLDivElement>(null),
     video = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false),
+    [started, setStarted] = useState(false),
     [muted, setMuted] = useState(false),
     [current, setCurrent] = useState(0),
     [duration, setDuration] = useState(0),
@@ -36,7 +37,7 @@ export function VideoPlayer({
   };
   return (
     <div
-      className={`video-player ${playing ? "is-playing" : ""} ${className}`}
+      className={`video-player ${playing ? "is-playing" : ""} ${started ? "has-started" : ""} ${className}`}
       ref={root}
       data-native-scroll
     >
@@ -47,7 +48,10 @@ export function VideoPlayer({
         preload="metadata"
         playsInline
         muted={muted}
-        onPlay={() => setPlaying(true)}
+        onPlay={() => {
+          setPlaying(true);
+          setStarted(true);
+        }}
         onPause={() => setPlaying(false)}
         onTimeUpdate={() => setCurrent(video.current?.currentTime ?? 0)}
         onLoadedMetadata={() => setDuration(video.current?.duration ?? 0)}

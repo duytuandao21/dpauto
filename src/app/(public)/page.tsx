@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/sections/hero";
 import { HomeShortcuts } from "@/components/sections/home-shortcuts";
+import { HomeIntro } from "@/components/sections/home-intro";
 import { ServicesSection } from "@/components/sections/services";
 import { AccessoriesSection } from "@/components/sections/accessories";
 import {
@@ -50,6 +51,7 @@ export default async function HomePage() {
           <Hero copy={hero?.payload} />
         )}
       <HomeShortcuts />
+      <HomeIntro />
       {!services?.withdrawn && (
         <ServicesSection
           title={services?.payload?.title}

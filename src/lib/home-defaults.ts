@@ -1,6 +1,7 @@
 // Built-in content of each homepage section, in the CMS section shape. Components render
 // these until a published CMS document overrides the section; the admin prefills from them.
 import { homeVi } from "./home-vi";
+import { about } from "./content";
 
 export const heroFeatures = [
   { icon: "award", text: "Đội ngũ giàu kinh nghiệm, chăm chút từng chi tiết." },
@@ -68,6 +69,15 @@ export const homeDefaults = {
     cta: { label: "Gọi ngay", href: "" },
     note: "https://share.google/pVB8v0vWu4Mhx44U6",
     items: heroFeatures.map((f) => ({ text: f.text })),
+  },
+  "home.intro": {
+    title: "Trạm dịch vụ Toàn Trung",
+    highlight: "Toàn Trung",
+    description:
+      "Tại Toàn Trung, mỗi khu vực được bố trí phù hợp với từng hạng mục nâng cấp, bảo dưỡng và chăm sóc xe. Xe được kiểm tra kỹ trước khi thực hiện để đội ngũ tư vấn giải pháp phù hợp với tình trạng thực tế và nhu cầu của khách hàng.",
+    images: [about.images[2], about.images[3], about.images[4]],
+    youtube: "",
+    videos: [{ src: about.video[0].src, alt: "Video xưởng Toàn Trung" }],
   },
   "home.services": {
     title: "Dịch vụ chăm sóc xe",
@@ -195,6 +205,7 @@ export type HomeKey = keyof typeof homeDefaults;
 /** Homepage sections in display order. */
 export const homeOrder: HomeKey[] = [
   "home.hero",
+  "home.intro",
   "home.services",
   "home.accessories",
   "home.process",

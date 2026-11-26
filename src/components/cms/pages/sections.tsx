@@ -7,6 +7,7 @@ import { CmsIcon, type CmsIconName } from "../icon";
 import { DocumentEditor, type EditorApi } from "../editor";
 import { GalleryField, ImageField, LinkFields, Repeater } from "../fields";
 import { RichText } from "../rich-text";
+import { youtubeId } from "@/lib/youtube";
 import {
   Alert,
   Badge,
@@ -45,6 +46,8 @@ type Top =
   | "images"
   | "videos"
   | "slides"
+  | "highlight"
+  | "youtube"
   | "cta"
   | "cta2"
   | "body"
@@ -86,6 +89,29 @@ export const homeConfig: Record<HomeKey, Config> = {
       title: "Dùng cho Google và trình đọc màn hình.",
       slides:
         "Tối đa 10 ảnh, tự chuyển sau 5 giây theo thứ tự trên. Nên dùng ảnh ngang khoảng 1920×840; trên điện thoại ảnh được cắt gọn hai bên theo tỉ lệ 3:2.",
+    },
+  },
+  "home.intro": {
+    label: "Giới thiệu",
+    icon: "users",
+    hint: "Đoạn giới thiệu, ảnh xưởng và video trước khối dịch vụ.",
+    preview: "/#gioi-thieu",
+    fields: ["title", "highlight", "description", "images", "youtube", "videos", "image"],
+    labels: {
+      highlight: "Phần tô đỏ trong tiêu đề",
+      description: "Đoạn giới thiệu",
+      images: "Ảnh xưởng",
+      youtube: "Link video YouTube",
+      videos: "Hoặc video tải lên",
+      image: "Ảnh bìa video",
+    },
+    help: {
+      highlight: "Gõ đúng một phần của tiêu đề, ví dụ “Toàn Trung”. Để trống thì tiêu đề không tô đỏ.",
+      images: "Nên 3–6 ảnh ngang. Máy tính hiện 3 ảnh, điện thoại vuốt ngang; bấm vào để xem lớn.",
+      youtube: "Dán link youtube.com hoặc youtu.be. Có link YouTube thì dùng video YouTube, để trống thì dùng video tải lên.",
+      videos: "Dùng video đầu tiên.",
+      image:
+        "Hiện trước khi khách bấm phát, cho cả video YouTube và video tải lên. Nên dùng ảnh ngang 16:9, khoảng 1280×720. Để trống thì dùng ảnh bìa của YouTube (hoặc khung hình đầu của video tải lên).",
     },
   },
   "home.services": {
@@ -439,6 +465,8 @@ const topLabel: Record<Top, string> = {
   images: "Ảnh",
   videos: "Video",
   slides: "Ảnh tự chuyển",
+  highlight: "Phần tô đỏ",
+  youtube: "Link YouTube",
   cta: "Nút",
   cta2: "Nút thứ hai",
   body: "Nội dung",
@@ -464,10 +492,10 @@ function SectionForm({
   const L = (f: Top) => config.labels?.[f] || topLabel[f],
     H = (f: Top) => config.help?.[f];
   const text = config.fields.filter((f) =>
-    ["title", "subtitle", "description", "note"].includes(f),
+    ["title", "highlight", "subtitle", "description", "note"].includes(f),
   );
   const media = config.fields.filter((f) =>
-    ["image", "photo2", "images", "videos", "slides"].includes(f),
+    ["image", "photo2", "images", "youtube", "videos", "slides"].includes(f),
   );
   const buttons = config.fields.filter((f) => f === "cta" || f === "cta2");
   return (
@@ -496,7 +524,7 @@ function SectionForm({
               ) : (
                 <Field key={f} label={L(f)} help={H(f)} wide>
                   <TextLine
-                    maxLength={f === "subtitle" ? 200 : 180}
+                    maxLength={f === "subtitle" ? 200 : f === "highlight" ? 120 : 180}
                     disabled={disabled}
                     value={payload[f] || ""}
                     onChange={(e) => set({ [f]: e.target.value })}
@@ -511,7 +539,28 @@ function SectionForm({
         <Card title="Hình ảnh">
           <div className="cms-form-grid">
             {media.map((f) =>
-              f === "videos" ? (
+              f === "youtube" ? (
+                <Field
+                  key={f}
+                  label={L(f)}
+                  help={H(f)}
+                  error={
+                    payload.youtube && !youtubeId(payload.youtube)
+                      ? "Link YouTube chưa đúng."
+                      : undefined
+                  }
+                  wide
+                >
+                  <Input
+                    type="url"
+                    maxLength={600}
+                    placeholder="https://www.youtube.com/watch?v=…"
+                    disabled={disabled}
+                    value={payload.youtube || ""}
+                    onChange={(e) => set({ youtube: e.target.value.trim() })}
+                  />
+                </Field>
+              ) : f === "videos" ? (
                 <GalleryField
                   key={f}
                   kind="video"
