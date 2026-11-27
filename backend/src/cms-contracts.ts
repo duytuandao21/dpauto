@@ -265,6 +265,32 @@ const service = z.strictObject({
   /** Homepage shortcut icon: an uploaded image (transparent PNG), else a line icon by name
    * (serviceIcons in src/components/ui/icon.tsx), else the site's default icon image. */
   shortcutImage: image.nullable().optional(),
+  /** Detail-page banner; absent = the card image. */
+  banner: image.nullable().optional(),
+  /** Search/share overrides; empty = title "<name> – Bảng giá <year>", the short description, the banner. */
+  seoTitle: opt(180),
+  seoDescription: opt(500),
+  /** Only drives the admin checklist; never sent to search engines. */
+  seoKeyword: opt(120),
+  seoImage: image.nullable().optional(),
+  /** Extra JSON-LD added to the page's own; one object or a list, each with "@type". */
+  seoSchema: z
+    .string()
+    .max(20000)
+    .refine((v) => {
+      if (!v.trim()) return true;
+      try {
+        const value: unknown = JSON.parse(v);
+        const list = Array.isArray(value) ? value : [value];
+        return (
+          list.length > 0 &&
+          list.every((b) => b && typeof b === "object" && !Array.isArray(b) && "@type" in b)
+        );
+      } catch {
+        return false;
+      }
+    }, "INVALID_JSON_LD")
+    .optional(),
   shortcutIcon: opt(20),
   /** Work time in minutes; drives booking availability (synced to the operations service). */
   durationMinutes: z.number().int().min(15).max(1440).optional(),

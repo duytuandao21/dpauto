@@ -20,6 +20,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .map((d) =>
         d.kind === "NEWS"
           ? "/tin-tuc/" + d.key
+          : d.kind === "SERVICE"
+            ? "/dich-vu/" + (services.find((s) => s.key === d.key)?.slug || d.key)
           : d.kind === "SEO"
             ? servicePath.get(d.key) ||
               (d.key === "/services" ? "/dich-vu" : localPath(d.key))

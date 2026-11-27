@@ -7,9 +7,9 @@ import { BookingLauncher } from "@/components/public-booking/booking-dialog";
 import { BookingPreset } from "@/components/public-booking/booking-preset";
 import { FAQ } from "@/components/sections/faq";
 import { WorkFinalCTA } from "@/components/sections/our-work-motion";
-import { AboutGalleryImage, AboutVideo } from "./about-motion";
 import { ServiceHero } from "./service-detail-motion";
 
+/** Service page: compact banner, the article body (text, tables, photos, videos) and FAQ, with a slim sidebar. */
 export function ServiceDetail({
   service,
   others,
@@ -19,32 +19,10 @@ export function ServiceDetail({
   others: SiteService[];
   phone?: { text: string; href: string };
 }) {
-  // These two process photos precede the four gallery photos in the archive.
-  const hasProcessImages = service.slug === "detail-wash" && service.isDefault;
-  const pricing = service.pricing;
-  const gallery = hasProcessImages ? service.gallery.slice(2) : service.gallery;
-  const overviewHtml = service.overviewHtml.replace(/<img\b[^>]*>/g, (tag) => {
+  const bodyHtml = service.overviewHtml.replace(/<img\b[^>]*>/g, (tag) => {
     const width = tag.match(/\bwidth="(\d+)"/)?.[1];
     return width ? tag.replace("<img", `<img style="width:${width}px"`) : tag;
   });
-  const galleryTitle = (
-    <h2 className="service-gallery-heading">
-      <span>{service.title}</span> <span>qua hình ảnh</span>
-    </h2>
-  );
-  // Uploaded videos sit in the same grid as the photos, first.
-  const galleryImages = [
-    ...service.videos.map((video, index) => (
-      <div className="service-gallery-photo" key={"video" + video.src + index}>
-        <AboutVideo src={video.src} />
-      </div>
-    )),
-    ...gallery.map((image, index) => (
-      <div className="service-gallery-photo" key={image.src + index}>
-        <Photo {...image} sizes="(max-width: 809px) 100vw, 50vw" />
-      </div>
-    )),
-  ];
 
   return (
     <div className="detail-page service-detail-page">
@@ -52,131 +30,18 @@ export function ServiceDetail({
       <ServiceHero service={service} />
       <div className="container service-body">
         <div className="service-main">
-          <section className="service-overview">
-            <h2>Tổng quan</h2>
+          {/* Same content and typography as a news article. */}
+          <div className="article-body service-article">
             <div
-              className="rich-content service-overview-content"
-              dangerouslySetInnerHTML={{ __html: overviewHtml }}
+              className="rich-content"
+              dangerouslySetInnerHTML={{ __html: bodyHtml }}
             />
-          </section>
-          {pricing && (
-            <section className="service-pricing" id="bang-gia">
-              <div className="service-section-intro">
-                <h2>Bảng giá</h2>
-                {pricing.note && <p>{pricing.note}</p>}
-              </div>
-              {/* Phones: each package row becomes a card, cells labelled by their column. */}
-              <table className="service-pricing-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Gói dịch vụ</th>
-                    {pricing.columns.map((column, index) => (
-                      <th scope="col" key={index}>
-                        {column}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {pricing.rows.map((row, index) => (
-                    <tr
-                      key={index}
-                      className={row.featured ? "is-featured" : undefined}
-                    >
-                      <th scope="row">
-                        <span className="service-pricing-name">
-                          {row.name}
-                          {row.featured && (
-                            <span className="service-pricing-badge">
-                              Phổ biến
-                            </span>
-                          )}
-                        </span>
-                        {row.text && <small>{row.text}</small>}
-                      </th>
-                      {row.prices.map((price, column) => (
-                        <td
-                          key={column}
-                          data-label={pricing.columns[column]}
-                          className={price ? undefined : "is-contact"}
-                        >
-                          {price
-                            ? `${price.toLocaleString("vi-VN")}đ`
-                            : "Liên hệ"}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <BookingLauncher label="Đặt lịch ngay" />
-            </section>
-          )}
-          <section className="service-process">
-            <div className="service-section-intro">
-              <h2>Quy trình dịch vụ</h2>
-              <p>{service.processIntroduction}</p>
-            </div>
-            <div className="service-process-grid">
-              {service.process.map((step, index) => (
-                <div key={step.title} className="service-process-card">
-                  {hasProcessImages && (index === 1 || index === 2) && (
-                    <div className="service-process-image">
-                      <AboutGalleryImage image={service.gallery[index - 1]} />
-                    </div>
-                  )}
-                  <div className="service-process-row">
-                    <span className="service-process-number">
-                      Bước {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <div className="service-process-copy">
-                      <h3>{step.title}</h3>
-                      <p>{step.description}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-          <section className="service-benefits">
-            <div className="service-section-intro">
-              <h2>{service.benefitsTitle}</h2>
-              <p>{service.benefitsIntroduction}</p>
-            </div>
-            <div className="service-benefits-grid">
-              {service.benefits.map((benefit) => (
-                <div key={benefit.title} className="service-benefit-card">
-                  <span className="service-benefit-accent" aria-hidden="true" />
-                  <span className="service-benefit-icon" aria-hidden="true">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="m4 12 5 5L20 6" />
-                    </svg>
-                  </span>
-                  <div className="service-benefit-copy">
-                    <h3>{benefit.title}</h3>
-                    <p>{benefit.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          </div>
           <FAQ
             items={service.faq}
             description={service.faqIntroduction}
             compact
           />
-          <div className="service-gallery-title-desktop">{galleryTitle}</div>
-          <section className="service-mobile-gallery">
-            {galleryTitle}
-            <div className="service-gallery-grid">{galleryImages}</div>
-          </section>
         </div>
         <aside className="service-sidebar">
           <div className="service-contact-card">
@@ -186,11 +51,6 @@ export function ServiceDetail({
                 Đặt lịch trước để DPAuto chuẩn bị sẵn sàng, bạn đến là được phục
                 vụ ngay.
               </p>
-              {pricing && (
-                <a className="service-pricing-link" href="#bang-gia">
-                  Xem bảng giá
-                </a>
-              )}
             </div>
             <div className="service-contact-actions">
               <BookingLauncher label="Đặt lịch ngay" />
@@ -212,9 +72,6 @@ export function ServiceDetail({
           </div>
         </aside>
       </div>
-      <section className="service-gallery">
-        <div className="service-gallery-grid">{galleryImages}</div>
-      </section>
       <WorkFinalCTA />
     </div>
   );

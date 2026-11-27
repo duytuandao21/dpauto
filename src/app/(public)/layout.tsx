@@ -8,6 +8,8 @@ import {
   type SiteData,
 } from "@/components/site/site-content";
 import { publicFeed } from "@/lib/public-cms";
+import { businessJsonLd } from "@/lib/structured-data";
+import { JsonLd } from "@/components/seo/json-ld";
 import {
   siteAccessories,
   siteCatalog,
@@ -64,6 +66,7 @@ export default async function PublicLayout({
   const data = await siteData();
   return (
     <SiteContentProvider value={data}>
+      <JsonLd data={businessJsonLd(data.settings)} />
       <SiteEffects>
         <Header />
         <main id="main-content">{children}</main>

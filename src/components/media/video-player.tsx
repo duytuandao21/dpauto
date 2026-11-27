@@ -39,7 +39,6 @@ export function VideoPlayer({
     <div
       className={`video-player ${playing ? "is-playing" : ""} ${started ? "has-started" : ""} ${className}`}
       ref={root}
-      data-native-scroll
     >
       <video
         ref={video}

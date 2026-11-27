@@ -1,38 +1,23 @@
-"use client";
-
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "motion/react";
 import { Photo } from "@/components/ui/photo";
-import type { Service } from "@/lib/content";
+import type { SiteImage } from "@/lib/content";
 
-export function ServiceHero({ service }: { service: Service }) {
-  const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, {
-    stiffness: 500,
-    damping: 60,
-    mass: 1,
-  });
-  const scale = useTransform(progress, [0, 1], [1, 1.4]);
+/** Banner as wide as the content below, image only; the article below starts right after it. */
+export function ServiceHero({
+  service,
+}: {
+  service: { title: string; image: SiteImage; banner?: SiteImage };
+}) {
   return (
-    <section className="service-hero">
-      <motion.div
-        className="service-hero-image"
-        style={reduced ? undefined : { scale }}
-      >
-        <Photo {...service.image} priority sizes="100vw" />
-        <div className="service-hero-shade" />
-      </motion.div>
-      <div className="container service-hero-copy">
-        <span className="eyebrow">DỊCH VỤ</span>
-        <h1>{service.title}</h1>
-        <p>{service.description}</p>
+    <section className="container service-banner">
+      <div className="service-banner-image">
+        <Photo
+          {...(service.banner || service.image)}
+          priority
+          sizes="(max-width: 809px) 100vw, 1280px"
+        />
       </div>
+      {/* The article carries its own visible title; this one is for Google and screen readers. */}
+      <h1 className="service-banner-title">{service.title}</h1>
     </section>
   );
 }

@@ -1683,3 +1683,13 @@ a.cms-stat:hover {
 .cms-login-back {
   color: var(--c-muted);
 }
+
+/* Service editor: SEO checklist. */
+.cms-seo-checks {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}

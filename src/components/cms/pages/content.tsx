@@ -12,6 +12,7 @@ import { ContentList, type Row } from "../list";
 import { useSession } from "@/components/admin/auth-gate";
 import { RichText } from "../rich-text";
 import {
+  Alert,
   Badge,
   Button,
   Card,
@@ -39,11 +40,15 @@ import { catalogEntry } from "@/lib/site-content";
 import { request } from "@/lib/api/client";
 import type { PublicCatalog } from "@/lib/api/types";
 import { useCatalog } from "./catalog";
+import { servicePrice } from "@/lib/service-price";
 import {
-  servicePrice,
-  singlePriceColumn,
-  type PricingColumn,
-} from "@/lib/service-price";
+  defaultSeoTitle,
+  parseJsonLd,
+  seoChecks,
+  stripScriptTag,
+} from "@/lib/service-seo";
+import { useSearchParams } from "next/navigation";
+import { Serp } from "./seo";
 
 type PricingRow = {
   name: string;
@@ -123,13 +128,37 @@ function ServiceForm({
   const legacy = servicePrice(payload),
     priceKind = (payload.priceKind as string | undefined) || legacy?.kind || "",
     priceAmount = (payload.priceAmount as number | undefined) ?? legacy?.amount;
-  const [tab, setTab] = useState<
-    "info" | "intro" | "pricing" | "process" | "benefits" | "faq" | "gallery"
-  >("info");
-  const pricingColumns = (payload.pricingColumns || []) as PricingColumn[];
-  const priceColumns = pricingColumns.length
-    ? pricingColumns
-    : [singlePriceColumn];
+  const [tab, setTab] = useState<"info" | "intro" | "faq" | "seo">(
+    useSearchParams().get("tab") === "seo" ? "seo" : "info",
+  );
+  // SEO set earlier on the SEO page; offered for copying until this service has its own.
+  const [oldSeo, setOldSeo] = useState<Payload | null>(null);
+  useEffect(() => {
+    if (!docKey) return;
+    findDocument("SEO", "/services/" + docKey)
+      .then((d) =>
+        setOldSeo(
+          d?.revisions.find((r) => r.id === d.publishedRevisionId)?.payload ||
+            null,
+        ),
+      )
+      .catch(() => setOldSeo(null));
+  }, [docKey]);
+  const seoTitle =
+    (payload.seoTitle || defaultSeoTitle(String(payload.title || ""))) +
+    " | DPAuto";
+  const seoDescription = String(
+    payload.seoDescription || payload.description || "",
+  );
+  const checks = seoChecks({
+    keyword: payload.seoKeyword,
+    title: seoTitle,
+    description: seoDescription,
+    slug: String(payload.slug || docKey || ""),
+    body: payload.body,
+    faqCount: (payload.faq || []).length,
+    hasBanner: !!payload.banner,
+  });
   return (
     <Card pad>
       <Tabs
@@ -138,23 +167,11 @@ function ServiceForm({
         onChange={setTab}
         items={[
           { value: "info", label: "Thông tin" },
-          { value: "intro", label: "Giới thiệu" },
-          {
-            value: "pricing",
-            label: `Bảng giá (${payload.pricing?.length || 0})`,
-          },
-          {
-            value: "process",
-            label: `Quy trình (${payload.process?.length || 0})`,
-          },
-          {
-            value: "benefits",
-            label: `Lợi ích (${payload.benefits?.length || 0})`,
-          },
+          { value: "intro", label: "Nội dung" },
           { value: "faq", label: `FAQ (${payload.faq?.length || 0})` },
           {
-            value: "gallery",
-            label: `Thư viện ảnh (${payload.gallery?.length || 0})`,
+            value: "seo",
+            label: `SEO (${checks.filter((c) => c.ok).length}/${checks.length})`,
           },
         ]}
       />
@@ -229,9 +246,17 @@ function ServiceForm({
             </Field>
             <ImageField
               label="Ảnh đại diện"
+              help="Hiện trên thẻ dịch vụ (trang chủ, trang Dịch vụ, mục Dịch vụ khác)."
               value={payload.image}
               disabled={disabled}
               onChange={(image) => set({ image })}
+            />
+            <ImageField
+              label="Ảnh banner trang chi tiết"
+              help="Ảnh ngang đầu trang chi tiết dịch vụ, nên tỉ lệ 12:5 (ví dụ 1920×800). Để trống thì dùng ảnh đại diện."
+              value={payload.banner}
+              disabled={disabled}
+              onChange={(banner) => set({ banner })}
             />
             <ImageField
               label="Icon lối tắt"
@@ -366,204 +391,155 @@ function ServiceForm({
         {tab === "intro" && (
           <>
             <RichText
-              label="Bài giới thiệu dịch vụ"
-              help="Hiển thị ở phần “Tổng quan” của trang chi tiết dịch vụ."
+              label="Nội dung trang dịch vụ"
+              help="Hiển thị dưới banner, giống bài viết Tin tức. Chèn bảng giá (nút bảng), ảnh và video YouTube ngay trong nội dung."
               initial={payload.body || defaultHtml}
               disabled={disabled}
               onChange={(body) => set({ body })}
             />
-            <GalleryField
-              label="Ảnh minh họa phần giới thiệu"
-              value={payload.overviewImages}
-              disabled={disabled}
-              max={20}
-              onChange={(overviewImages) => set({ overviewImages })}
-            />
           </>
         )}
-        {tab === "pricing" && (
+        {tab === "seo" && (
           <>
-            <Repeater
-              label="Cột giá"
-              help="Ví dụ: Sedan, SUV, 7 chỗ. Để trống nếu dịch vụ chỉ có một mức giá cho mỗi gói (bảng chỉ có cột “Giá”)."
-              items={pricingColumns}
-              disabled={disabled}
-              max={6}
-              addLabel="Thêm cột"
-              // The id ties each package's prices to this column, so renaming or moving it keeps them.
-              create={() => ({
-                id: Math.random().toString(36).slice(2, 10),
-                name: "",
-              })}
-              title={(c: PricingColumn) => c.name}
-              onChange={(pricingColumns) =>
-                set({
-                  pricingColumns: pricingColumns.length
-                    ? pricingColumns
-                    : undefined,
-                })
-              }
-              render={(c: PricingColumn, up) => (
-                <Field label="Tên cột" wide>
-                  <Input
-                    maxLength={40}
-                    value={c.name}
-                    onChange={(e) => up({ name: e.target.value })}
-                  />
-                </Field>
-              )}
-            />
-            <Repeater
-              label="Gói dịch vụ"
-              help="Mỗi gói là một dòng trong bảng giá ở trang chi tiết dịch vụ. Chưa có gói nào thì không hiện bảng giá. Ô giá để trống sẽ hiện “Liên hệ”."
-              items={payload.pricing as PricingRow[] | undefined}
-              disabled={disabled}
-              max={30}
-              addLabel="Thêm gói"
-              create={(): PricingRow => ({ name: "" })}
-              title={(r: PricingRow) => r.name}
-              onChange={(pricing) => set({ pricing })}
-              render={(r: PricingRow, up) => (
-                <>
-                  <Field label="Tên gói" wide>
-                    <Input
-                      maxLength={120}
-                      value={r.name}
-                      onChange={(e) => up({ name: e.target.value })}
-                    />
-                  </Field>
-                  <Field label="Mô tả ngắn" help="Hạng mục bao gồm, thời gian làm…" wide>
-                    <Textarea
-                      maxLength={300}
-                      value={r.text || ""}
-                      onChange={(e) =>
-                        up({ text: e.target.value || undefined })
-                      }
-                    />
-                  </Field>
-                  {priceColumns.map((c) => (
-                    <Field key={c.id} label={`${c.name || "Giá"} (đ)`}>
-                      <Input
-                        inputMode="numeric"
-                        value={r.prices?.[c.id]?.toLocaleString("vi-VN") || ""}
-                        onChange={(e) => {
-                          const { [c.id]: _, ...rest } = r.prices || {};
-                          const v = num(e.target.value);
-                          up({ prices: v ? { ...rest, [c.id]: v } : rest });
-                        }}
-                      />
-                    </Field>
-                  ))}
-                  <Switch
-                    label="Gắn nhãn “Phổ biến”"
-                    checked={!!r.featured}
-                    onChange={(featured) =>
-                      up({ featured: featured || undefined })
+            {oldSeo && !payload.seoTitle && !payload.seoDescription && (
+              <div className="cms-span-2">
+                <Alert tone="info">
+                  Dịch vụ này đang dùng SEO đã nhập ở trang SEO cũ: “
+                  {String(oldSeo.title || "")}”.{" "}
+                  <Button
+                    type="button"
+                    disabled={disabled}
+                    onClick={() =>
+                      set({
+                        seoTitle: oldSeo.title || undefined,
+                        seoDescription: oldSeo.description || undefined,
+                        seoImage: oldSeo.image || undefined,
+                        noindex: oldSeo.noindex || undefined,
+                      })
                     }
-                  />
-                </>
-              )}
-            />
+                  >
+                    Chép vào đây
+                  </Button>
+                </Alert>
+              </div>
+            )}
+            <div className="cms-span-2">
+              <Serp
+                path={"/dich-vu/" + String(payload.slug || docKey || "")}
+                title={seoTitle}
+                description={seoDescription}
+              />
+            </div>
             <Field
-              label="Ghi chú bảng giá"
-              help="Hiện dưới tiêu đề “Bảng giá”, ví dụ: Giá tham khảo, chưa gồm VAT."
+              label={`Tiêu đề SEO (${seoTitle.length}/60)`}
+              help="Để trống sẽ tự dùng “Tên dịch vụ – Bảng giá {năm nay}”. Website tự thêm “| DPAuto” ở cuối."
+              wide
+            >
+              <Input
+                maxLength={180}
+                disabled={disabled}
+                placeholder={defaultSeoTitle(String(payload.title || ""))}
+                value={payload.seoTitle || ""}
+                onChange={(e) => set({ seoTitle: e.target.value || undefined })}
+              />
+            </Field>
+            <Field
+              label={`Mô tả SEO (${seoDescription.length}/160)`}
+              help="Đoạn chữ dưới tiêu đề trên Google. Để trống sẽ dùng mô tả ngắn."
               wide
             >
               <Textarea
-                maxLength={300}
+                maxLength={500}
                 disabled={disabled}
-                value={payload.pricingNote || ""}
+                placeholder={String(payload.description || "")}
+                value={payload.seoDescription || ""}
                 onChange={(e) =>
-                  set({ pricingNote: e.target.value || undefined })
+                  set({ seoDescription: e.target.value || undefined })
                 }
               />
             </Field>
-          </>
-        )}
-        {tab === "process" && (
-          <>
-            <Field label="Giới thiệu quy trình" wide>
-              <Textarea
-                maxLength={1000}
+            <Field
+              label="Từ khoá chính"
+              help="Cụm từ khách hay gõ trên Google, ví dụ “bảo dưỡng ô tô Thủ Đức”. Chỉ dùng để chấm bảng kiểm, không gửi lên Google."
+              wide
+            >
+              <Input
+                maxLength={120}
                 disabled={disabled}
-                value={payload.processIntroduction || ""}
-                onChange={(e) => set({ processIntroduction: e.target.value })}
+                value={payload.seoKeyword || ""}
+                onChange={(e) =>
+                  set({ seoKeyword: e.target.value || undefined })
+                }
               />
             </Field>
-            <Repeater
-              label="Các bước"
-              items={payload.process}
+            <ImageField
+              label="Ảnh khi chia sẻ (Facebook, Zalo)"
+              help="Để trống sẽ dùng ảnh banner, chưa có banner thì dùng ảnh đại diện. Hệ thống tự tạo bản 1200×630."
+              value={payload.seoImage}
               disabled={disabled}
-              addLabel="Thêm bước"
-              create={() => ({ title: "", text: "" })}
-              title={(s: { title: string; text: string }) => s.title}
-              onChange={(process) => set({ process })}
-              render={(s: { title: string; text: string }, up) => (
-                <>
-                  <Field label="Tên bước" wide>
-                    <TextLine
-                      maxLength={200}
-                      value={s.title}
-                      onChange={(e) => up({ title: e.target.value })}
-                    />
-                  </Field>
-                  <Field label="Mô tả" wide>
-                    <Textarea
-                      maxLength={3000}
-                      value={s.text}
-                      onChange={(e) => up({ text: e.target.value })}
-                    />
-                  </Field>
-                </>
-              )}
+              onChange={(seoImage) => set({ seoImage })}
             />
-          </>
-        )}
-        {tab === "benefits" && (
-          <>
-            <Field label="Tiêu đề phần lợi ích">
-              <TextLine
-                maxLength={180}
+            <Field label="Lập chỉ mục" wide>
+              <Switch
+                label="Ẩn trang này khỏi Google (noindex)"
+                checked={!!payload.noindex}
                 disabled={disabled}
-                value={payload.benefitsTitle || ""}
-                onChange={(e) => set({ benefitsTitle: e.target.value })}
+                onChange={(noindex) => set({ noindex: noindex || undefined })}
               />
             </Field>
-            <Field label="Giới thiệu" wide>
+            <Field
+              label="Schema JSON-LD bổ sung (nâng cao)"
+              help={
+                <>
+                  Được thêm vào cùng dữ liệu tự sinh (cửa hàng, dịch vụ, đường dẫn trang, hỏi đáp), không thay thế. Chỉ khai báo đúng nội dung đang hiện trên trang, ví dụ VideoObject cho video trong bài. Dán cả thẻ &lt;script&gt; cũng được, hệ thống tự bỏ thẻ. Sau khi lưu, kiểm tra bằng{" "}
+                  <a
+                    className="cms-link"
+                    href="https://search.google.com/test/rich-results"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Rich Results Test
+                  </a>
+                  .
+                </>
+              }
+              error={parseJsonLd(String(payload.seoSchema || "")).error}
+              wide
+            >
               <Textarea
-                maxLength={1000}
+                rows={8}
+                maxLength={20000}
+                spellCheck={false}
                 disabled={disabled}
-                value={payload.benefitsIntroduction || ""}
-                onChange={(e) => set({ benefitsIntroduction: e.target.value })}
+                placeholder={'{ "@type": "VideoObject", "name": "…" }'}
+                style={{ fontFamily: "ui-monospace, monospace", fontSize: 13 }}
+                value={payload.seoSchema || ""}
+                onChange={(e) => set({ seoSchema: e.target.value || undefined })}
+                onBlur={(e) =>
+                  set({ seoSchema: stripScriptTag(e.target.value) || undefined })
+                }
               />
             </Field>
-            <Repeater
-              label="Lợi ích"
-              items={payload.benefits}
-              disabled={disabled}
-              addLabel="Thêm lợi ích"
-              create={() => ({ title: "", text: "" })}
-              title={(s: { title: string; text: string }) => s.title}
-              onChange={(benefits) => set({ benefits })}
-              render={(s: { title: string; text: string }, up) => (
-                <>
-                  <Field label="Tiêu đề" wide>
-                    <TextLine
-                      maxLength={200}
-                      value={s.title}
-                      onChange={(e) => up({ title: e.target.value })}
-                    />
-                  </Field>
-                  <Field label="Mô tả" wide>
-                    <Textarea
-                      maxLength={3000}
-                      value={s.text}
-                      onChange={(e) => up({ text: e.target.value })}
-                    />
-                  </Field>
-                </>
-              )}
-            />
+            <Field
+              label="Bảng kiểm SEO"
+              help={
+                payload.body
+                  ? "Chỉ là gợi ý, không chặn việc lưu."
+                  : "Nội dung đang là bài mặc định; sửa và lưu tab Nội dung để kiểm tra phần bài viết."
+              }
+              wide
+            >
+              <ul className="cms-seo-checks">
+                {checks.map((c) => (
+                  <li key={c.text}>
+                    <Badge tone={c.ok ? "success" : "warn"}>
+                      {c.ok ? "Đạt" : "Chưa"}
+                    </Badge>{" "}
+                    {c.text}
+                  </li>
+                ))}
+              </ul>
+            </Field>
           </>
         )}
         {tab === "faq" && (
@@ -602,26 +578,6 @@ function ServiceForm({
                   </Field>
                 </>
               )}
-            />
-          </>
-        )}
-        {tab === "gallery" && (
-          <>
-            <GalleryField
-              label="Thư viện ảnh dịch vụ"
-              help="Hiển thị ở cuối trang chi tiết dịch vụ."
-              value={payload.gallery}
-              disabled={disabled}
-              onChange={(gallery) => set({ gallery })}
-            />
-            <GalleryField
-              kind="video"
-              max={2}
-              label="Video dịch vụ"
-              help="Tối đa 2 video, hiển thị cùng thư viện ảnh. MP4 (H.264) hoặc WebM, tối đa 100 MB."
-              value={payload.videos}
-              disabled={disabled}
-              onChange={(videos) => set({ videos })}
             />
           </>
         )}

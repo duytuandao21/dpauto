@@ -35,6 +35,7 @@ function SmoothScroll() {
       if (
         event.ctrlKey ||
         event.metaKey ||
+        document.fullscreenElement ||
         document.body.style.overflow === "hidden"
       )
         return;
@@ -45,8 +46,9 @@ function SmoothScroll() {
           /auto|scroll/.test(style.overflowY) &&
           node.scrollHeight > node.clientHeight + 1
         )
-          return;
-        if (node.hasAttribute("data-native-scroll")) return;
+          return cancel();
+        // A glide still running would fight the browser's own scroll here and stutter.
+        if (node.hasAttribute("data-native-scroll")) return cancel();
         node = node.parentElement;
       }
       event.preventDefault();

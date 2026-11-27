@@ -281,6 +281,12 @@ export function siteServices(feed: Feed) {
         pricing: servicePricing(p),
         icon: p.shortcutIcon as string | undefined,
         shortcutImage: image(p.shortcutImage, feed.assets),
+        banner: image(p.banner, feed.assets),
+        seoTitle: p.seoTitle as string | undefined,
+        seoDescription: p.seoDescription as string | undefined,
+        seoImage: image(p.seoImage, feed.assets),
+        seoSchema: p.seoSchema as string | undefined,
+        noindex: !!p.noindex,
         isDefault: !!base,
       };
     },

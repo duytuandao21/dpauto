@@ -43,6 +43,9 @@ export type DocSummary = {
     vehicle?: string;
     featured?: boolean;
     description?: string;
+    slug?: string;
+    seoTitle?: string;
+    seoDescription?: string;
   };
 };
 export type Revision = {

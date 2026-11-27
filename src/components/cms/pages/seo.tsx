@@ -21,6 +21,7 @@ import {
   Textarea,
 } from "../ui";
 import { statusLabel, statusOf, useDocuments } from "../data";
+import { defaultSeoTitle } from "@/lib/service-seo";
 
 const fixed: [string, string][] = [
   ["/", "Trang chủ"],
@@ -45,7 +46,7 @@ function score(title?: string, description?: string) {
     issues.push(`Mô tả ${description.length} ký tự (nên 70–160)`);
   return issues;
 }
-function Serp({
+export function Serp({
   path,
   title,
   description,
@@ -149,6 +150,11 @@ function SeoEditor({ path }: { path: string }) {
   );
 }
 
+const editHref = (r: { path: string; service: string | null }) =>
+  r.service
+    ? `/admin/dich-vu/${r.service}?tab=seo`
+    : `/admin/seo?path=${encodeURIComponent(r.path)}`;
+
 export function SeoPage() {
   const path = useSearchParams().get("path");
   const docs = useDocuments("SEO"),
@@ -166,10 +172,29 @@ export function SeoPage() {
     for (const a of news.data) paths.set(`/news/${a.key}`, `Tin: ${a.title}`);
     return [...paths].map(([p, label]) => {
       const doc = docs.data.find((d) => d.key === p);
+      // Services keep their SEO in the service itself (tab "SEO").
+      const key = p.startsWith("/services/") ? p.slice(10) : null;
+      if (key) {
+        const s = services.data.find((d) => d.key === key)?.summary;
+        const name = label.replace(/^Dịch vụ: /, "");
+        return {
+          path: p,
+          label,
+          doc,
+          service: key,
+          title: s?.seoTitle,
+          issues: score(
+            (s?.seoTitle || defaultSeoTitle(name)) + " | DPAuto",
+            s?.seoDescription || s?.description,
+          ),
+        };
+      }
       return {
         path: p,
         label,
         doc,
+        service: null,
+        title: doc?.title,
         issues: doc ? score(doc.title, doc.summary?.description) : [],
       };
     });
@@ -178,7 +203,9 @@ export function SeoPage() {
   const shown = rows.filter(
     (r) => !q || `${r.path} ${r.label}`.toLowerCase().includes(q.toLowerCase()),
   );
-  const custom = rows.filter((r) => r.doc?.publishedRevisionId).length;
+  const custom = rows.filter((r) =>
+    r.service ? r.title : r.doc?.publishedRevisionId,
+  ).length;
   return (
     <>
       <PageHeader
@@ -237,10 +264,7 @@ export function SeoPage() {
                   return (
                     <tr key={r.path}>
                       <td>
-                        <Link
-                          className="cms-cell-title"
-                          href={`/admin/seo?path=${encodeURIComponent(r.path)}`}
-                        >
+                        <Link className="cms-cell-title" href={editHref(r)}>
                           <span>
                             <strong>{r.label}</strong>
                             <small>{localPath(r.path)}</small>
@@ -248,12 +272,14 @@ export function SeoPage() {
                         </Link>
                       </td>
                       <td>
-                        {r.doc?.title || (
-                          <span className="cms-help">Mặc định</span>
+                        {r.title || (
+                          <span className="cms-help">
+                            {r.service ? "Tự động" : "Mặc định"}
+                          </span>
                         )}
                       </td>
                       <td>
-                        {!r.doc ? (
+                        {!r.doc && !r.service ? (
                           <span className="cms-help">—</span>
                         ) : r.issues.length ? (
                           <Badge tone="warn">{r.issues[0]}</Badge>
@@ -262,16 +288,20 @@ export function SeoPage() {
                         )}
                       </td>
                       <td>
-                        <Badge tone={r.doc ? statusLabel[st].tone : "neutral"}>
-                          {r.doc ? statusLabel[st].text : "Mặc định"}
-                        </Badge>
+                        {r.service ? (
+                          <Badge tone="info">Trong dịch vụ</Badge>
+                        ) : (
+                          <Badge tone={r.doc ? statusLabel[st].tone : "neutral"}>
+                            {r.doc ? statusLabel[st].text : "Mặc định"}
+                          </Badge>
+                        )}
                       </td>
                       <td className="cms-cell-actions">
                         <ButtonLink
                           size="sm"
                           variant="ghost"
                           icon="pencil"
-                          href={`/admin/seo?path=${encodeURIComponent(r.path)}`}
+                          href={editHref(r)}
                         />
                       </td>
                     </tr>

@@ -103,12 +103,12 @@ body.dpauto-theme .article-detail-page .back-link {
 }
 
 /* Article text uses the dark text token: the grey secondary tone was hard to read in long posts. */
-body.dpauto-theme .article-detail-page .article-body .rich-content {
+body.dpauto-theme :is(.article-detail-page, .service-detail-page) .article-body .rich-content {
   color: var(--text-primary);
   --text-muted: var(--text-primary);
 }
 
-body.dpauto-theme .article-detail-page .article-body .rich-content :is(h2, h3),
+body.dpauto-theme :is(.article-detail-page, .service-detail-page) .article-body .rich-content :is(h2, h3),
 body.dpauto-theme .rich-content strong {
   color: var(--text-primary);
 }

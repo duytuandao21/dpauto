@@ -46,14 +46,14 @@ export default async function ArticlePage({
   return (
     <div className="detail-page article-detail-page">
       <article className="article-page">
-        <header className="article-heading">
-          <ArticleMeta article={article} />
-          <h1>{article.title}</h1>
-          <p>{article.description}</p>
-        </header>
-        {/* With headings: article on the left, a sticky table of contents on the right. */}
+        {/* With headings: article on the left, a sticky table of contents on the right from the title down. */}
         <div className={hasToc ? "article-layout" : undefined}>
           <div className="article-main">
+            <header className="article-heading">
+              <ArticleMeta article={article} />
+              <h1>{article.title}</h1>
+              <p>{article.description}</p>
+            </header>
             <div className="article-cover">
               <div className="article-cover-image">
                 <Photo
